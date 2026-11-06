@@ -1,0 +1,1 @@
+INSERT OR REPLACE INTO LShufOptions (Name, Value) VALUES ('Reveal', 'LSHUF_REVEAL_MET');

@@ -1,0 +1,1 @@
+INSERT OR IGNORE INTO LShufKept (LeaderType) VALUES ('LEADER_MAO_Astolfo');

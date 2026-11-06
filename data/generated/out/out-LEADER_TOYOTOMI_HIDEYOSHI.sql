@@ -1,0 +1,1 @@
+INSERT OR IGNORE INTO LShufOut (LeaderType, Reason) VALUES ('LEADER_TOYOTOMI_HIDEYOSHI', 'list');

@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="lshuf-probe" version="1" xmlns="ModInfo">
+	<Properties>
+		<Name>Leader Shuffle probe</Name>
+		<Description>Probes 1, 7, 8 and 10 for the Leader Shuffle spec. Not for release.</Description>
+		<Authors>tower</Authors>
+		<Package>Mod</Package>
+		<AffectsSavedGames>1</AffectsSavedGames>
+		<ShowInBrowser>1</ShowInBrowser>
+	</Properties>
+	<Dependencies>
+		<Mod id="core" title="Core"/>
+		<Mod id="base-standard" title="LOC_MODULE_BASE_STANDARD_NAME"/>
+	</Dependencies>
+	<ActionCriteria>
+		<Criteria id="always"><AlwaysMet></AlwaysMet></Criteria>
+		<Criteria id="c000">
+			<LeaderPlayable>LEADER_ADA_LOVELACE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c001">
+			<LeaderPlayable>StandardLeaders::LEADER_ADA_LOVELACE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c002">
+			<LeaderPlayable>LEADER_ALEXANDER</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c003">
+			<LeaderPlayable>StandardLeaders::LEADER_ALEXANDER</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c004">
+			<LeaderPlayable>LEADER_AMINA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c005">
+			<LeaderPlayable>StandardLeaders::LEADER_AMINA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c006">
+			<LeaderPlayable>LEADER_ASHOKA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c007">
+			<LeaderPlayable>StandardLeaders::LEADER_ASHOKA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c008">
+			<LeaderPlayable>LEADER_ASHOKA_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c009">
+			<LeaderPlayable>StandardLeaders::LEADER_ASHOKA_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c010">
+			<LeaderPlayable>LEADER_AUGUSTUS</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c011">
+			<LeaderPlayable>StandardLeaders::LEADER_AUGUSTUS</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c012">
+			<LeaderPlayable>LEADER_BENJAMIN_FRANKLIN</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c013">
+			<LeaderPlayable>StandardLeaders::LEADER_BENJAMIN_FRANKLIN</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c014">
+			<LeaderPlayable>LEADER_BOLIVAR</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c015">
+			<LeaderPlayable>StandardLeaders::LEADER_BOLIVAR</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c016">
+			<LeaderPlayable>LEADER_CATHERINE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c017">
+			<LeaderPlayable>StandardLeaders::LEADER_CATHERINE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c018">
+			<LeaderPlayable>LEADER_CHARLEMAGNE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c019">
+			<LeaderPlayable>StandardLeaders::LEADER_CHARLEMAGNE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c020">
+			<LeaderPlayable>LEADER_CONFUCIUS</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c021">
+			<LeaderPlayable>StandardLeaders::LEADER_CONFUCIUS</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c022">
+			<LeaderPlayable>LEADER_EDWARD_TEACH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c023">
+			<LeaderPlayable>StandardLeaders::LEADER_EDWARD_TEACH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c024">
+			<LeaderPlayable>LEADER_ELIZABETH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c025">
+			<LeaderPlayable>StandardLeaders::LEADER_ELIZABETH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c026">
+			<LeaderPlayable>LEADER_FRIEDRICH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c027">
+			<LeaderPlayable>StandardLeaders::LEADER_FRIEDRICH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c028">
+			<LeaderPlayable>LEADER_FRIEDRICH_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c029">
+			<LeaderPlayable>StandardLeaders::LEADER_FRIEDRICH_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c030">
+			<LeaderPlayable>LEADER_GENGHIS_KHAN</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c031">
+			<LeaderPlayable>StandardLeaders::LEADER_GENGHIS_KHAN</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c032">
+			<LeaderPlayable>LEADER_GILGAMESH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c033">
+			<LeaderPlayable>StandardLeaders::LEADER_GILGAMESH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c034">
+			<LeaderPlayable>LEADER_HARRIET_TUBMAN</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c035">
+			<LeaderPlayable>StandardLeaders::LEADER_HARRIET_TUBMAN</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c036">
+			<LeaderPlayable>LEADER_HATSHEPSUT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c037">
+			<LeaderPlayable>StandardLeaders::LEADER_HATSHEPSUT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c038">
+			<LeaderPlayable>LEADER_HIMIKO</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c039">
+			<LeaderPlayable>StandardLeaders::LEADER_HIMIKO</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c040">
+			<LeaderPlayable>LEADER_HIMIKO_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c041">
+			<LeaderPlayable>StandardLeaders::LEADER_HIMIKO_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c042">
+			<LeaderPlayable>LEADER_IBN_BATTUTA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c043">
+			<LeaderPlayable>StandardLeaders::LEADER_IBN_BATTUTA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c044">
+			<LeaderPlayable>LEADER_ISABELLA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c045">
+			<LeaderPlayable>StandardLeaders::LEADER_ISABELLA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c046">
+			<LeaderPlayable>LEADER_JOSE_RIZAL</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c047">
+			<LeaderPlayable>StandardLeaders::LEADER_JOSE_RIZAL</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c048">
+			<LeaderPlayable>LEADER_LAFAYETTE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c049">
+			<LeaderPlayable>StandardLeaders::LEADER_LAFAYETTE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c050">
+			<LeaderPlayable>LEADER_LAKSHMIBAI</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c051">
+			<LeaderPlayable>StandardLeaders::LEADER_LAKSHMIBAI</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c052">
+			<LeaderPlayable>LEADER_MACHIAVELLI</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c053">
+			<LeaderPlayable>StandardLeaders::LEADER_MACHIAVELLI</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c054">
+			<LeaderPlayable>LEADER_NAPOLEON</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c055">
+			<LeaderPlayable>StandardLeaders::LEADER_NAPOLEON</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c056">
+			<LeaderPlayable>LEADER_NAPOLEON_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c057">
+			<LeaderPlayable>StandardLeaders::LEADER_NAPOLEON_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c058">
+			<LeaderPlayable>LEADER_PACHACUTI</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c059">
+			<LeaderPlayable>StandardLeaders::LEADER_PACHACUTI</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c060">
+			<LeaderPlayable>LEADER_SAYYIDA_AL_HURRA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c061">
+			<LeaderPlayable>StandardLeaders::LEADER_SAYYIDA_AL_HURRA</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c062">
+			<LeaderPlayable>LEADER_TECUMSEH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c063">
+			<LeaderPlayable>StandardLeaders::LEADER_TECUMSEH</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c064">
+			<LeaderPlayable>LEADER_TOYOTOMI_HIDEYOSHI</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c065">
+			<LeaderPlayable>StandardLeaders::LEADER_TOYOTOMI_HIDEYOSHI</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c066">
+			<LeaderPlayable>LEADER_TRUNG_TRAC</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c067">
+			<LeaderPlayable>StandardLeaders::LEADER_TRUNG_TRAC</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c068">
+			<LeaderPlayable>LEADER_WASHINGTON</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c069">
+			<LeaderPlayable>StandardLeaders::LEADER_WASHINGTON</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c070">
+			<LeaderPlayable>LEADER_XERXES</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c071">
+			<LeaderPlayable>StandardLeaders::LEADER_XERXES</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c072">
+			<LeaderPlayable>LEADER_XERXES_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c073">
+			<LeaderPlayable>StandardLeaders::LEADER_XERXES_ALT</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c074">
+			<LeaderPlayable>LEADER_YI_SUN_SIN</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c075">
+			<LeaderPlayable>StandardLeaders::LEADER_YI_SUN_SIN</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c076">
+			<LeaderPlayable>LEADER_NOPE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c077">
+			<LeaderPlayable>StandardLeaders::LEADER_NOPE</LeaderPlayable>
+		</Criteria>
+		<Criteria id="c078">
+			<ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufKeep_LEADER_AMINA</ConfigurationId><Value>1</Value></ConfigurationValueMatches>
+		</Criteria>
+		<Criteria id="c079">
+			<ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufKeepStr_LEADER_AMINA</ConfigurationId><Value>1</Value></ConfigurationValueMatches>
+		</Criteria>
+		<Criteria id="c080">
+			<ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufKeep_LEADER_PACHACUTI</ConfigurationId><Value>1</Value></ConfigurationValueMatches>
+		</Criteria>
+		<Criteria id="c081">
+			<ConfigurationValueContains><Group>Game</Group><ConfigurationId>LShufKeepList</ConfigurationId><Value>LEADER_AMINA</Value></ConfigurationValueContains>
+		</Criteria>
+		<Criteria id="c082">
+			<ConfigurationValueContains><Group>Game</Group><ConfigurationId>LShufKeepList</ConfigurationId><Value>LEADER_NOPE</Value></ConfigurationValueContains>
+		</Criteria>
+		<Criteria id="c083">
+			<ConfigurationValueContains><Group>Game</Group><ConfigurationId>LShufKeepCsv</ConfigurationId><Value>LEADER_AMINA</Value></ConfigurationValueContains>
+		</Criteria>
+		<Criteria id="c084">
+			<ConfigurationValueContains><Group>Game</Group><ConfigurationId>LShufKeepStr_LEADER_AMINA</ConfigurationId><Value>1,2,3</Value></ConfigurationValueContains>
+		</Criteria>
+		<Criteria id="c085">
+			<ConfigurationValueContains><Group>Game</Group><ConfigurationId>LShufKeepStr_LEADER_AMINA</ConfigurationId><Value>2,3</Value></ConfigurationValueContains>
+		</Criteria>
+		<Criteria id="c086">
+			<ConfigurationValueContains><Group>Game</Group><ConfigurationId>LShufKeep_LEADER_AMINA</ConfigurationId><Value>1,2,3</Value></ConfigurationValueContains>
+		</Criteria>
+	</ActionCriteria>
+	<ActionGroups>
+		<ActionGroup id="lshuf-probe-shell" scope="shell" criteria="always">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/shell-bias.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-game" scope="game" criteria="always">
+			<Properties><LoadOrder>100</LoadOrder></Properties>
+			<Actions>
+				<UpdateDatabase><Item>data/hits-table.sql</Item><Item>data/amina-trait.sql</Item></UpdateDatabase>
+				<UpdateText><Item>text/amina-trait-text.sql</Item></UpdateText>
+				<UIScripts><Item>ui/lshuf-probe-game.js</Item></UIScripts>
+			</Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c000" scope="game" criteria="c000">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c000.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c001" scope="game" criteria="c001">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c001.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c002" scope="game" criteria="c002">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c002.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c003" scope="game" criteria="c003">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c003.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c004" scope="game" criteria="c004">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c004.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c005" scope="game" criteria="c005">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c005.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c006" scope="game" criteria="c006">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c006.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c007" scope="game" criteria="c007">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c007.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c008" scope="game" criteria="c008">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c008.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c009" scope="game" criteria="c009">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c009.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c010" scope="game" criteria="c010">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c010.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c011" scope="game" criteria="c011">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c011.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c012" scope="game" criteria="c012">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c012.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c013" scope="game" criteria="c013">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c013.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c014" scope="game" criteria="c014">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c014.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c015" scope="game" criteria="c015">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c015.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c016" scope="game" criteria="c016">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c016.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c017" scope="game" criteria="c017">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c017.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c018" scope="game" criteria="c018">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c018.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c019" scope="game" criteria="c019">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c019.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c020" scope="game" criteria="c020">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c020.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c021" scope="game" criteria="c021">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c021.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c022" scope="game" criteria="c022">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c022.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c023" scope="game" criteria="c023">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c023.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c024" scope="game" criteria="c024">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c024.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c025" scope="game" criteria="c025">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c025.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c026" scope="game" criteria="c026">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c026.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c027" scope="game" criteria="c027">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c027.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c028" scope="game" criteria="c028">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c028.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c029" scope="game" criteria="c029">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c029.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c030" scope="game" criteria="c030">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c030.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c031" scope="game" criteria="c031">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c031.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c032" scope="game" criteria="c032">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c032.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c033" scope="game" criteria="c033">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c033.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c034" scope="game" criteria="c034">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c034.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c035" scope="game" criteria="c035">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c035.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c036" scope="game" criteria="c036">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c036.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c037" scope="game" criteria="c037">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c037.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c038" scope="game" criteria="c038">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c038.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c039" scope="game" criteria="c039">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c039.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c040" scope="game" criteria="c040">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c040.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c041" scope="game" criteria="c041">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c041.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c042" scope="game" criteria="c042">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c042.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c043" scope="game" criteria="c043">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c043.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c044" scope="game" criteria="c044">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c044.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c045" scope="game" criteria="c045">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c045.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c046" scope="game" criteria="c046">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c046.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c047" scope="game" criteria="c047">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c047.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c048" scope="game" criteria="c048">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c048.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c049" scope="game" criteria="c049">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c049.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c050" scope="game" criteria="c050">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c050.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c051" scope="game" criteria="c051">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c051.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c052" scope="game" criteria="c052">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c052.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c053" scope="game" criteria="c053">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c053.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c054" scope="game" criteria="c054">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c054.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c055" scope="game" criteria="c055">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c055.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c056" scope="game" criteria="c056">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c056.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c057" scope="game" criteria="c057">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c057.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c058" scope="game" criteria="c058">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c058.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c059" scope="game" criteria="c059">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c059.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c060" scope="game" criteria="c060">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c060.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c061" scope="game" criteria="c061">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c061.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c062" scope="game" criteria="c062">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c062.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c063" scope="game" criteria="c063">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c063.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c064" scope="game" criteria="c064">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c064.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c065" scope="game" criteria="c065">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c065.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c066" scope="game" criteria="c066">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c066.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c067" scope="game" criteria="c067">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c067.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c068" scope="game" criteria="c068">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c068.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c069" scope="game" criteria="c069">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c069.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c070" scope="game" criteria="c070">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c070.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c071" scope="game" criteria="c071">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c071.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c072" scope="game" criteria="c072">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c072.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c073" scope="game" criteria="c073">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c073.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c074" scope="game" criteria="c074">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c074.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c075" scope="game" criteria="c075">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c075.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c076" scope="game" criteria="c076">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c076.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c077" scope="game" criteria="c077">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c077.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c078" scope="game" criteria="c078">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c078.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c079" scope="game" criteria="c079">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c079.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c080" scope="game" criteria="c080">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c080.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c081" scope="game" criteria="c081">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c081.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c082" scope="game" criteria="c082">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c082.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c083" scope="game" criteria="c083">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c083.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c084" scope="game" criteria="c084">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c084.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c085" scope="game" criteria="c085">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c085.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-probe-c086" scope="game" criteria="c086">
+			<Properties><LoadOrder>200</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/hits/c086.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+	</ActionGroups>
+</Mod>

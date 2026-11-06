@@ -1,0 +1,205 @@
+ModId	Subscriptions	Title	Class	Leaders	Scripts
+3632359895	1919	Frieren	cosmetic	LEADER_FRIEREN	
+3736613350	1553	✦ Rimuru Tempest ✦	cosmetic	LEADER_Rimuru	
+3633373341	1462	✦ MASQUERADE SPARKLE ✦	cosmetic	LEADER_SPARKLE	
+3635718174	1377	Remilia Scarlet	data	LEADER_REMILIA	
+3733535738	1338	✦ Amiya ✦	scripted	LEADER_Amiya,LEADER_AmiyaCore	ui/amiya-core-leader.js;ui/amiya-rhodes-leader.js
+3679584272	1305	✦ Wis'adel ✦	cosmetic	LEADER_MAO_Wishadel	
+3688168965	1248	✦Artoria Pendragon (Saber)✦	cosmetic	LEADER_Saber	
+3635171494	1233	Qin Shi Huang (FGO)	data	LEADER_QINSHIHUANG	
+3508502110	1210	Leader: Zhuge Liang（诸葛亮）	cosmetic	LEADER_ZHUGE_LIANG	
+3684636810	1192	Reisalin Stout (Ryza)	scripted	LEADER_Ryza	ui/ryza-alchemy-system.js
+3631520597	1177	Oda Nobunaga(FGO)	data	LEADER_ODA_NOBUNAGA	
+3646519031	1171	Youmu Konpaku	data	LEADER_Youmu	
+3517202110	1161	Leader: 【Mao Zedong】新领袖：毛泽东	data	LEADER_MAOZEDONG	
+3690469042	1156	🐺Holo the Wise Wolf 🐺	cosmetic	LEADER_Holo	
+3677964457	1135	✴Skadi the Corrupting Heart✴	scripted	LEADER_MAO_Skadi	ui/skadi-deep-sea-summoner.js
+3506928502	1132	领袖：【珊瑚宫心海】	cosmetic	LEADER_KOKOMI	
+3643420022	1122	Elaina	cosmetic	LEADER_ELAINA	
+3706611753	1117	Jeanne d'Arc（FGO）	scripted	LEADER_JEANNE_ALTER,LEADER_JEANNE_FGO	ui/jeanne-duo-leader-mechanics.js
+3635072993	1116	✦ Gilgamesh ✦	data	LEADER_KingofHeroes	
+3645230017	1116	Kaguya Houraisan	data	LEADER_Houraisan	
+3656501201	1079	Megumin	cosmetic	LEADER_Megumin	
+3683510006	1075	✦ Rin Tohsaka ✦	scripted	LEADER_RinThosaka	ui/rin-command-seal.js
+3692416206	1066	2B /YoRHa No.2 Type B	cosmetic	LEADER_TwoB	
+3644036091	1057	Shiro	cosmetic	LEADER_SHIRO	
+3759473336	1027	Shu	unclear	LEADER_Shu	ui/shu-abilities.js
+3729182687	1021	Reimu Hakurei	cosmetic	LEADER_HakureiReimu	
+3680373123	1005	✦ Tanya Degurechaff ✦	data	LEADER_MAO_Tanya	
+3637045457	993	Olga Marie	data	LEADER_OLGA	
+3654327522	989	Yuyuko Saigyouji	data	LEADER_Yuyuko	
+3657107055	971	Sanae Kochiya	cosmetic	LEADER_Sanae	
+3552679326	964	Hypatia Leader Pack	cosmetic	LEADER_ML_HYPATIA	
+3747705267	962	Ainz Ooal Gown	cosmetic	LEADER_AinzOoalGown	
+3647483068	958	Nearl	data	LEADER_Nearl	
+3660809274	955	Flandre Scarlet	data	LEADER_FLAN	
+3703071303	949	✧ Sakuya Izayoi ✧	cosmetic	LEADER_Sakuya	
+3711861733	948	🌟 Marisa Kirisame 🍄	scripted	LEADER_MarisaKirisame	ui/marisakirisame-abilities.js
+3653306249	942	Patchouli Knowledge	data	LEADER_Patchouli	
+3649901296	938	♪ Bocchi ♪	data	LEADER_Bocchi	
+3764957722	927	Furina	unclear	LEADER_Furina	ui/furina-abilities.js
+3677067116	917	Astolfo (Saber)	data	LEADER_MAO_Astolfo	
+3642496682	894	Okita Sōji (FGO)	data	LEADER_OKITA_SOUJI	
+3659192739	887	Eirin Yagokoro	data	LEADER_EIRIN	
+3655381520	886	Maho Shojo Witch Trial — Leaders Pack	data	LEADER_Ema,LEADER_Hiro,LEADER_Shelly	
+3650228385	882	♪ Yamada Ryo ♪	data	LEADER_Yamada	
+3700231705	876	✦ Emilia ✦	scripted	LEADER_Emilia	ui/emilia-abilities.js
+3743582607	873	🎤 Hatsune Miku 🎤	scripted	LEADER_HatsuneMiku	ui/miku-song-grant.js
+3648069483	870	Alice Margatroid	data	LEADER_Margatroid	
+3657782510	854	Satori Komeiji	cosmetic	LEADER_Satori	
+3664623474	850	Reisen Udongein Inaba	cosmetic	LEADER_Reisen	
+3660224019	844	Cirno 2.0	data	LEADER_Cirno	
+3665360906	831	Hata no Kokoro	scripted	LEADER_Kokoro	ui/kokoro-emotion-system.js
+3661958452	831	Hieda no Akyuu	data	LEADER_Akyuu	
+3658539064	828	Yukari Yakumo	scripted	LEADER_Yukari	ui/yukari-gap-teleport.js
+3646742676	824	Koishi Komeiji	data	LEADER_Koishi	
+3636713096	823	Wu Zetian (FGO)	data	LEADER_WUZETIAN	
+3661417870	805	Aya Shameimaru	data	LEADER_Aya	
+3703770112	801	♪ Ikuyo Kita ♪	cosmetic	LEADER_KitaIkuyo	
+3653420914	796	Fujiwara no Mokou	data	LEADER_Mokou	
+3663036622	795	Tenshi Hinanawi	data	LEADER_Tenshi	
+3703770444	788	♪ Nijika Ijichi ♪	cosmetic	LEADER_IjichiNijika	
+3678345122	773	Abigail Wiliams (Foreigner)	scripted	LEADER_MAO_Abigail	ui/abigail-madness.js
+3632477590	772	Satoru Gojo	data	LEADER_GOJO	
+3769925139	769	Ishtar	unclear	LEADER_Ishtar	ui/ishtar-abilities.js
+3664208698	768	Eiki Shiki	scripted	LEADER_Eiki	ui/eiki-death-notify.js
+3751889059	753	Lelouch	scripted	LEADER_Lelouch	ui/lelouch-abilities.js
+3642185020	745	Tenochtitlan (FGO)	data	LEADER_TENOCHTITLAN	
+3680979991	737	✦ Enkidu ✦	scripted	LEADER_Enkidu	ui/enkidu-friendship.js
+3655962026	735	Amaori Renako	data	LEADER_Renako	
+3667784516	730	Orin (Kaenbyou Rin)	scripted	LEADER_ORIN	ui/orin-corpse-recycle.js
+3668524792	727	Tewi Inaba	scripted	LEADER_TEWI	ui/tewi-luck-system.js
+3630938116	720	Shana	scripted	LEADER_SHANA	ui/shana-abilities.js
+3730797098	715	Suwako Moriya	scripted	LEADER_SuwakoMoriya	ui/suwakomoriya-abilities.js
+3779593514	713	Kal'tsit·Esperanta	cosmetic	LEADER_KaltsitEsperanta	
+3684499153	709	🌸 Chika Fujiwara 🌸	scripted	LEADER_FujiwaraChika	ui/city-state-bonus-chooser/chika-bonus-chooser-decorator.js
+3761461790	690	🌋Eyjafjalla🌋	scripted	LEADER_Eyjafjalla	ui/eyjafjalla-abilities.js
+3745977669	687	🦈Ellen Joe🦈	scripted	LEADER_EllenJoe	ui/ellenjoe-abilities.js
+3681773898	685	[Leader] Liu Bang	scripted	LEADER_MAO_LiuBang	ui/liubang-gaozu-benji.js
+3741582318	681	Rem	cosmetic	LEADER_Rem	
+3688294012	681	✦ Haruhi Suzumiya ✦	scripted	LEADER_Haruhi	ui/haruhi-abilities.js
+3656433510	679	Yanami Anna	data	LEADER_Yanami	
+3589756013	677	东方Project ~ 冴月麟 (Touhou ~ Satsuki Rin)	cosmetic	LEADER_SATSUKI	
+3756752975	669	Aqua	unclear	LEADER_Aqua	ui/aqua-abilities.js
+3685965862	667	✦ Archer (EMIYA) ✦	scripted	LEADER_Archer	ui/archer-broken-phantasm.js
+3763805120	652	Asuna	unclear	LEADER_Asuna	ui/asuna-abilities.js
+3726089427	651	Iskandar (FGO)	scripted	LEADER_Iskandar	ui/iskandar-ionioi-hetairoi.js
+3665966878	644	uıɾıꞰ ɐɾıǝꙄ	cosmetic	LEADER_SEIJA	
+3755375606	640	Maple	unclear	LEADER_Maple	ui/maple-abilities.js
+3746497840	636	Oguri Cap	unclear	LEADER_OguriCap	ui/oguricap-abilities.js
+3748848223	631	Mordred	scripted	LEADER_Mordred	ui/mordred-abilities.js
+3644886417	630	Karin (Cao Cao)	data	LEADER_KARIN	
+3691818972	609	Aria Holmes Kanzaki	cosmetic	LEADER_Aria	
+3631113868	599	Nagi Sanzenin	data	LEADER_NAGI	
+3774119673	593	Roxy Migurdia	scripted	LEADER_RoxyMigurdia	ui/roxymigurdia-abilities.js
+3669861964	591	Yachie Kicchou	data	LEADER_Yachie	
+3773346675	577	Madoka Kaname	scripted	LEADER_KanameMadoka	ui/kanamemadoka-soulgem-grant.js
+3737800147	563	Nitori Kawashiro	cosmetic	LEADER_KawashiroNitori	
+3734701014	557	Utsuho Reiuji	scripted	LEADER_UtsuhoReiuji	ui/utsuho-abilities.js
+3767435021	554	Uesugi Kenshin	scripted	LEADER_UesugiKenshin	ui/uesugikenshin-abilities.js
+3743053564	553	Junko Enoshima	scripted	LEADER_EnoshimaJunko	ui/enoshimajunko-abilities.js
+3734322205	553	Inubashiri Momiji	cosmetic	LEADER_InubashiriMomiji	
+3506932776	547	Matt's Leaders: Oliver Cromwell [TEST OF TIME COMPATIBLE]	data	LEADER_CROMWELL	
+3770855708	482	Toyosatomimi no Miko	cosmetic	LEADER_ToyosatomimiNoMiko	
+3514101813	474	Matt's Leaders: Sophia Duleep Singh [TEST OF TIME COMPATIBLE]	data	LEADER_SOPHIA	
+3751376449	468	Yuki Yuna	cosmetic	LEADER_YukiYuna	
+3796536379	458	Cosmic Princess Kaguya!	scripted	LEADER_Iroha,LEADER_Kaguya,LEADER_Yachiyo	ui/iroha-abilities.js;ui/moonrise-duet.js
+3542451009	407	主播女孩重度依赖 - 糖糖	data	LEADER_FLAC_AMECHAN	
+3771340058	399	Parsee Mizuhashi	cosmetic	LEADER_MizuhashiParsee	
+3789440519	398	领袖：大黑塔	data	LEADER_Herta	
+3671774722	396	Shadowheart from Baldur's Gate 3 博德之门3影心	data	LEADER_SHADOWHEART_DARK_JUSTICIAR,LEADER_SHADOWHEART_MOONLIGHT_MAIDEN	
+3730626708	384	Liu Bei	cosmetic	LEADER_LiuBei	
+3778828840	372	Leader: Kim Jong Un	scripted	LEADER_Kim_Jong_Un	ui/kim-jong-un-nuclear-strike.js
+3815174518	368	Exploration Age Leaders Pack	cosmetic	LEADER_PLX_BALDWIN_IV,LEADER_PLX_CHARLES_V,LEADER_PLX_FREDERICK_II_HOHENSTAUFEN,LEADER_PLX_GUSTAVUS_ADOLPHUS,LEADER_PLX_HARUN_AL_RASHID,LEADER_PLX_HUAYNA_CAPAC,LEADER_PLX_JADWIGA,LEADER_PLX_KUBLAI_KHAN,LEADER_PLX_MANSA_MUSA,LEADER_PLX_MOCTEZUMA_II,LEADER_PLX_SALADIN,LEADER_PLX_SULEIMAN,LEADER_PLX_WU_ZETIAN,LEADER_PLX_YAROSLAV_THE_WISE	
+3815214297	368	Modern Age Leaders Pack	cosmetic	LEADER_PLX_ABRAHAM_LINCOLN,LEADER_PLX_ALEXANDER_II,LEADER_PLX_EMPEROR_MEIJI,LEADER_PLX_FREDERICK_THE_GREAT,LEADER_PLX_JOHN_F_KENNEDY,LEADER_PLX_LENIN,LEADER_PLX_NIKITA_KHRUSHCHEV,LEADER_PLX_OTTO_VON_BISMARCK,LEADER_PLX_PETER_THE_GREAT,LEADER_PLX_RANAVALONA_I,LEADER_PLX_SHAKA_ZULU,LEADER_PLX_THEODORE_ROOSEVELT,LEADER_PLX_VICTORIA,LEADER_PLX_WILHELM_I	
+3806734658	354	Otto von Bismarck - Custom Leader	cosmetic	LEADER_BISMARCK	
+3810348557	346	✦ Sparxie ✦	scripted	LEADER_Sparxie	ui/sparxie-interact.js;ui/sparxie-live-panel.js
+3807046374	340	Texas	scripted	LEADER_TexasOmertosa	ui/texasomertosa-abilities.js
+3746597696	329	Leader: Elon Musk	cosmetic	LEADER_Elon_Musk	
+3808171702	328	Exusiai	cosmetic	LEADER_Exusiai	
+3814870350	325	Antiquity Age Leaders Pack	cosmetic	LEADER_PLX_BOUDICA,LEADER_PLX_CHANDRAGUPTA_MAURYA,LEADER_PLX_CLEOPATRA,LEADER_PLX_CYRUS_THE_GREAT,LEADER_PLX_DARIUS_I,LEADER_PLX_DIDO,LEADER_PLX_ENHEDUANNA,LEADER_PLX_GWANGGAETO,LEADER_PLX_HAMMURABI,LEADER_PLX_JULIUS_CAESAR,LEADER_PLX_LEONIDAS_I,LEADER_PLX_PERICLES,LEADER_PLX_QIN_SHI_HUANG,LEADER_PLX_RAMESSES_II,LEADER_PLX_TOMYRIS,LEADER_PLX_TRAJAN,LEADER_PLX_VERCINGETORIX	
+3804932179	320	Ray	unclear	LEADER_Ray	ui/ray-abilities.js
+3661752437	314	Touhou Project ~ Shinki(东方Project ~ 神绮)	data	LEADER_E_SHINKI	
+3704670430	312	Touhou Project ~ Renko Usami & Maribel Hearn(东方Project ~ 宇佐见莲子和玛艾露贝莉·赫恩)	data	LEADER_E_MARIBEL,LEADER_E_RENKO	
+3657983381	286	Touhou Project ~ Konpaku Youmu(东方Project ~ 魂魄妖梦)	data	LEADER_E_YOUMU	
+3802549565	284	Homura Akemi	scripted	LEADER_AkemiHomura	ui/akemihomura-abilities.js;ui/akemihomura-soulgem-grant.js
+3793063029	277	Leader: Donald Trump	cosmetic	LEADER_Donald_Trump	
+3803533215	274	Darkness	data	LEADER_Darkness	
+3805718016	274	Sodom's Beast / Draco	cosmetic	LEADER_BeastDraco	
+3787460919	268	领袖：纳西妲 · 智慧之神	data	LEADER_Nahida	
+3758239695	267	Anna de Vries & The Netherlands	cosmetic	LEADER_AnnaDeVries	
+3799779959	263	领袖：银狼	data	LEADER_SilverWolf	
+3759142597	238	German Realms - Principalities of the Empire	cosmetic	LEADER_GR_BISMARCK,LEADER_GR_EBERHARD_IM_BART,LEADER_GR_EBERT,LEADER_GR_ELISABETH_THURINGIA,LEADER_GR_FREDERICK_V_PALATINATE,LEADER_GR_FREDERICK_WILLIAM,LEADER_GR_GEORGE_I,LEADER_GR_HEINRICH_SUDERMANN,LEADER_GR_HENRY_THE_LION,LEADER_GR_HERMANN_VON_SALZA,LEADER_GR_HONECKER,LEADER_GR_MARIA_THERESA,LEADER_GR_MARKUS_SOEDER,LEADER_GR_MAXIMILIAN_BAVARIA,LEADER_GR_OTTO_THE_GREAT,LEADER_GR_ULRICH_SIEGMUND	
+3722624836	234	Leader: Mansa Musa	data	LEADER_MANSA_MUSA	
+3814483909	233	Arturia Giallo	scripted	LEADER_ArturiaGiallo	ui/celebration-chooser/arturia-celebration-chooser.js
+3807667172	225	Junko	data	LEADER_MAOJUNKO	
+3792620852	209	Leader: Volodymyr Zelenskyy	cosmetic	LEADER_Zelenskyy	
+3691313310	199	Touhou Project ~ Alice (PC-98)	data	LEADER_E_ALICE	
+3729120120	198	Touhou Project ~ Joon Yorigami & Shion Yorigami(东方Project ~ 依神女苑和依神紫苑)	data	LEADER_E_JYOON,LEADER_E_SHION	
+3666186723	195	Touhou Project ~ Mima(东方Project ~ 魅魔)	data	LEADER_E_MIMA	
+3729118325	192	TouhouProject ~ Minoriko Aki and Shizuha Aki ( 东方project ~ 秋穰子和秋静叶 )	data	LEADER_E_MINORIKO,LEADER_E_SIZUHA	
+3808370189	181	领袖+文明「昔涟」	cosmetic	LEADER_Xilian	
+3792283399	168	Aventura Kingdom of Israel	cosmetic	LEADER_AVENTURA_DAVID	
+3697117516	162	Yggdra Angel: Planeptune Civilization 2 [BETA]	data	LEADER_LTD_PN_NEPTUNE	
+3728462772	161	Touhou Project ~ Unnamed Book-Reading Youkai "Tokiko" (Touhou ~ 朱鹭子)	data	LEADER_E_TOKIKO	
+3602897276	151	(NOT UPDATED) Mazanti's Yaxuun Bahlam	cosmetic	LEADER_YAXUUN_BAHLAM	
+3816162511	149	Makise Kurisu	scripted	LEADER_MakiseKurisu	ui/makisekurisu-abilities.js
+3781613069	147	Zhang Jiao	unclear	LEADER_ZhangJiao	ui/zhangjiao-abilities.js
+3729121327	147	Touhou Project ~ Sunny, Luna & Star (东方Project ~ 桑尼＆露娜＆斯塔)	data	LEADER_E_SFAIRY	
+3736180671	135	FGO-摩根	data	LEADER_MorganLeFay	
+3770602022	132	Venice Pack	cosmetic	LEADER_VP_ENRICO_DANDOLO	
+3641985544	130	Yggdra Angel: Midgar Civilization 2	cosmetic	LEADER_LTD_CLAIRE,LEADER_LTD_ISLA,LEADER_LTD_KEMA,LEADER_LTD_LUNA,LEADER_LTD_SHIDORI,LEADER_LTD_STYLIS,LEADER_LTD_TAMURA,LEADER_LTD_TOMOYADINOGI	
+3737463811	130	Multiplayer Toolkit (BETA)	scripted	LEADER_MPT_OBSERVER	maps/mpt-observer-eye.js
+3741987984	127	Touhou Project ~ Lily White (东方project ~ 莉莉白)	data	LEADER_E_LILYBLACK,LEADER_E_LILYWHITE	
+3766612977	123	Papal States Pack	cosmetic	LEADER_PS_JULIUS_II	
+3755966333	123	Maximilien Robespierre	cosmetic	LEADER_ROBESPIERRE__UNIT_JACOBIN_ROBESPIERRE	
+3507243751	119	Chewbacka the Tollmaster	cosmetic		
+3730890790	118	Leader: Firelord Ozai (Test of Time Compatible)	data	LEADER_LEME_OZAI	
+3743303456	102	Touhou Project ~ Hourai Doll - Jacketko ( 东方project ~ 蓬莱人形-夹克子 )	data	LEADER_E_PSEUDO	
+3789021433	100	领袖：温迪	data	LEADER_Venti	
+3817009315	92	Mao ZeDong 1.5.0	scripted	LEADER_MAOZEDONG	ui/mao-treatise-grant.js
+3793891172	84	Leader: Han Li	cosmetic	LEADER_HANLI	
+3641403982	83	Lucky Star Civilization 2	data	LEADER_LTD_LUCKYSTAR_AKIRA,LEADER_LTD_LUCKYSTAR_HIKAGE,LEADER_LTD_LUCKYSTAR_HIYORI,LEADER_LTD_LUCKYSTAR_KAGAMI,LEADER_LTD_LUCKYSTAR_KONATA,LEADER_LTD_LUCKYSTAR_MINAMI,LEADER_LTD_LUCKYSTAR_MIYUKI,LEADER_LTD_LUCKYSTAR_NANAKO,LEADER_LTD_LUCKYSTAR_PATTY,LEADER_LTD_LUCKYSTAR_TSUKASA,LEADER_LTD_LUCKYSTAR_YUI,LEADER_LTD_LUCKYSTAR_YUTAKA	
+3741076154	78	Daganev Solomon Leader Pack	cosmetic	LEADER_DAGANEV_SOLOMON	
+3813566757	77	Brennus of the Senones - Custom Leader	cosmetic	LEADER_BRENNUS	
+3767899466	76	Otto von Bismarck - Kanonenfieber Persona	cosmetic	LEADER_GR_BISMARCK_KANONENFIEBER	
+3762477378	72	Markus Söder - Modern Industrialist Persona	data	LEADER_GR_MARKUS_SOEDER_INDUSTRIALIST	
+3741233075	71	Monkey D. Luffy (One Piece)	cosmetic	LEADER_LUFFY	
+3763065457	71	Assassin's Creed IV: Black Flag - Shadows of the Caribbean	cosmetic	LEADER_ACBF_ADEWALE,LEADER_ACBF_AH_TABAI,LEADER_ACBF_DE_TORRES,LEADER_ACBF_EDWARD_KENWAY	
+3795450330	70	Cuchuan's Leader - Liliʻuokalani	cosmetic	LEADER_CUCHUAN_LILI_UOKALANI	
+3765469438	69	Azur Lane: Bismarck Zwei	cosmetic	LEADER_Bismarck_Zwei	
+3814590046	65	Zatygold's Spectator	scripted	LEADER_ZOM_OBSERVER	maps/zom-observer-eye.js
+3767246360	62	George I - Elector of Hannover Persona	cosmetic	LEADER_GR_GEORGE_I_ELECTOR_HANNOVER	
+3780386007	59	Lelouch / Zero	scripted	LEADER_LELOUCH_ZERO	scripts/lelouch-gameplay.js;scripts/lelouch-runtime.js;ui/hq-naming.js;ui/lelouch-runtime-ui.js
+3767900254	55	Julius II - Powerwolf Persona	cosmetic	LEADER_PS_JULIUS_II_POWERWOLF	
+3730854537	52	Leader: Princess Bubblegum (1.4.0 Test of Time Compatible)	cosmetic	LEADER_LEME_BUBBLEGUM	
+3800190208	49	J. Robert Oppenheimer | 奥本海默	cosmetic	LEADER_OPPENHEIMER	
+3799569201	46	Xu Sheng (JIE)	unclear	LEADER_JieXuSheng	ui/jiexusheng-abilities.js
+3792378531	45	Serbia Civilization and Slobodan Milosevic Leader Mod - V2.0	unclear		ui/Serbia_Tradition_Sequence.js
+3763494428	44	Adéwalé - Freedom Cry Persona	cosmetic	LEADER_ACBF_ADEWALE_FREEDOM_CRY	
+3763593501	43	Edward Kenway - Sea Serpent Persona	data	LEADER_ACBF_EDWARD_KENWAY_SEA_SERPENT	
+3764896870	43	Edward Kenway - King of Pirates Persona	cosmetic	LEADER_ACBF_EDWARD_KENWAY_KING_OF_PIRATES	
+3763580219	42	Netaji Subhas Chandra Bose & Bharat	cosmetic	LEADER_SUBHAS_CHANDRA_BOSE	
+3763591497	42	Edward Kenway - Bloodred Blackbeard Persona	data	LEADER_ACBF_EDWARD_KENWAY_BLOODRED_BLACKBEARD	
+3763495661	42	Edward Kenway - Master Assassin Persona	cosmetic	LEADER_ACBF_EDWARD_KENWAY_MASTER_ASSASSIN	
+3767840794	42	Vbit's Croatia — Three Ages: Expansion pack	cosmetic	LEADER_BOSKOVIC,LEADER_CIRO,LEADER_TITO,LEADER_TUDJMAN,LEADER_TUGA_BUGA	
+3763592384	41	Edward Kenway - Dragonstorm Persona	data	LEADER_ACBF_EDWARD_KENWAY_DRAGONSTORM	
+3763592824	39	Edward Kenway - Hellfire Persona	data	LEADER_ACBF_EDWARD_KENWAY_HELLFIRE	
+3822878180	37	Ukrainian Civilizations	cosmetic	LEADER_TAT_ATEAS,LEADER_TAT_HRUSHEVSKY,LEADER_TAT_MAZEPA,LEADER_TAT_YAROSLAV	
+3797958662	34	【仅限单机】苏菲·诺伊恩缪拉｜不可思议的炼金术	scripted	LEADER_SOPHIE	ui/sophie-runtime.js
+3708552544	30	Phoenix Wright Leader	data	LEADER_NAME	
+3719281148	27	Big Destiny (Fully Animated Custom Leader)	data		
+3805896687	22	Nyguita's Dao Zhi	cosmetic	LEADER_NYGUITA_DAO_ZHI	
+3823370143	17	Yevhen Konovalets & Ukraine (UPR)	cosmetic	LEADER_KONOVALETS	
+3540425524	16	Lech – Wielki Jednoczyciel	cosmetic	LEADER_LECH	
+3756735497	14	Jang Bogo Leader	cosmetic	LEADER_JANG_BOGO	
+3806222201	14	Daelaam: The Protoss	data	LEADER_P_ARTANIS	
+3772764135	11	Reverse 1999: Kiperina	cosmetic	LEADER_Kiperina	
+3823910631	11	三界纪元	cosmetic	LEADER_HFSX_HAOTIAN,LEADER_HFSX_HUANGDI,LEADER_HFSX_RULAI,LEADER_HFSX_TAIYI	
+3827304936	7	Ukrainian Civilizations: Danylo of Halych	data	LEADER_TAT_DANYLO	
+3756811156	7	Reverse 1999: Engima	cosmetic	LEADER_Enigma	
+3761269453	7	Reverse 1999: Cheng Heguang	cosmetic	LEADER_Cheng_Heguang	
+3807065674	5	Blankboard leader and civilization	cosmetic	LEADER_BBM_BLANKBOARD	
+3827151665	2	中国杂交水稻之父--袁隆平院士	cosmetic	LEADER_YUAN_LONGPING	
+3746484883	2	Kamil & Barto - Pakiet Liderow	scripted	LEADER_BARTO_CIECHANOWSKI,LEADER_KAMIL_TRENER_SWIATA	barto/scripts/barto-investments.js
+cfc-32375-leader%EF%BC%9A%E3%80%90sangonomiya-kokomi%E3%80%91	0		cosmetic	LEADER_KOKOMI	

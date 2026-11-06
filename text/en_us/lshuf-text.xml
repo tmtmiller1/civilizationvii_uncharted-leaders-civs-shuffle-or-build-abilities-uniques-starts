@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- English text for Re-dealable Leader Abilities, Attributes, and Start Biases. Key names are in CONTRACTS.md
+     section 8. Bullet-piece text (LOC_LSHUF_PIECE_<PieceId>) is generated from the game's own text in
+     data/text-generated/ and isn't written here. text/TRANSLATION.md lists what the other languages need. -->
+<Database>
+    <EnglishText>
+        <!-- The mod -->
+        <Row Tag="LOC_LSHUF_MOD_NAME"><Text>Re-dealable Leader Abilities, Attributes, and Start Biases</Text></Row>
+        <Row Tag="LOC_LSHUF_MOD_DESCRIPTION"><Text>Re-deals leader abilities, attributes and start biases for a new game. Swap whole abilities or whole leaders, or break abilities into their bullet points and deal them out, and switch any of the three off for a game on equal footing. It's built for multiplayer through the game's own lobby, and the game's leader screens show what each leader got, with a line for where they like to start.</Text></Row>
+
+        <!-- The window -->
+        <Row Tag="LOC_LSHUF_OPEN_BUTTON"><Text>Re-dealable Leaders...</Text></Row>
+        <Row Tag="LOC_LSHUF_WINDOW_TITLE"><Text>Re-dealable Leaders</Text></Row>
+        <Row Tag="LOC_LSHUF_CLOSE"><Text>Close</Text></Row>
+        <Row Tag="LOC_LSHUF_HOST_ONLY"><Text>Only the host can change these settings. You'll see them here as the host sets them.</Text></Row>
+        <Row Tag="LOC_LSHUF_LIST_ALL_ON"><Text>All on</Text></Row>
+        <Row Tag="LOC_LSHUF_LIST_ALL_OFF"><Text>All off</Text></Row>
+        <Row Tag="LOC_LSHUF_LIST_COUNT"><Text>{1_On} of {2_Total} on</Text></Row>
+        <Row Tag="LOC_LSHUF_LIST_SHOW"><Text>Show list</Text></Row>
+        <Row Tag="LOC_LSHUF_LIST_HIDE"><Text>Hide list</Text></Row>
+        <Row Tag="LOC_LSHUF_SEED_NEW"><Text>New number</Text></Row>
+        <Row Tag="LOC_LSHUF_SEED_RANGE"><Text>Any whole number from {1_Min} to {2_Max}</Text></Row>
+        <Row Tag="LOC_LSHUF_POOL_EMPTY"><Text>This pool is empty. A slot set to Random from this pool gets an ordinary random leader.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODDED_NONE_INSTALLED"><Text>You don't have any of the listed modded leaders installed and turned on, so modded leaders play as their mods ship them.</Text></Row>
+
+        <!-- Window headings -->
+        <Row Tag="LOC_LSHUF_HEADING_DEAL"><Text>The deal</Text></Row>
+        <Row Tag="LOC_LSHUF_HEADING_LEADERS"><Text>Leaders in the deal</Text></Row>
+        <Row Tag="LOC_LSHUF_HEADING_MODDED"><Text>Modded leaders</Text></Row>
+        <Row Tag="LOC_LSHUF_HEADING_POOLS"><Text>Leader pools</Text></Row>
+        <Row Tag="LOC_LSHUF_ADVANCED_SHOW"><Text>Show advanced settings</Text></Row>
+        <Row Tag="LOC_LSHUF_ADVANCED_HIDE"><Text>Hide advanced settings</Text></Row>
+
+        <!-- Options -->
+        <Row Tag="LOC_LSHUF_MODE_NAME"><Text>How leaders are re-dealt</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_DESC"><Text>Mixes up leader abilities, attributes and start biases for this game. The leader screens show what each leader got.</Text></Row>
+        <Row Tag="LOC_LSHUF_BIASES_NAME"><Text>Start biases</Text></Row>
+        <Row Tag="LOC_LSHUF_BIASES_DESC"><Text>Where leaders and civilizations like to start. Off: the map places everyone without leaning toward any terrain, whatever the mode.</Text></Row>
+        <Row Tag="LOC_LSHUF_ABILITIES_NAME"><Text>Leader abilities</Text></Row>
+        <Row Tag="LOC_LSHUF_ABILITIES_DESC"><Text>Off: leaders play without their abilities, and attributes and start biases still follow the mode.</Text></Row>
+        <Row Tag="LOC_LSHUF_ATTRIBUTES_NAME"><Text>Leader attributes</Text></Row>
+        <Row Tag="LOC_LSHUF_ATTRIBUTES_DESC"><Text>Off: leaders play without attributes, and each leader gets all twelve diplomatic actions the attributes would have unlocked, so everyone has the same set.</Text></Row>
+        <Row Tag="LOC_LSHUF_KEEP_MINE_NAME"><Text>Keep my leader as chosen</Text></Row>
+        <Row Tag="LOC_LSHUF_KEEP_MINE_DESC"><Text>Each human player keeps the leader they picked as the game ships it: ability, attributes, start bias and personality. The AI leaders are re-dealt among themselves.</Text></Row>
+        <Row Tag="LOC_LSHUF_LEADERS_OUT_NAME"><Text>Leaders to re-deal</Text></Row>
+        <Row Tag="LOC_LSHUF_LEADERS_OUT_DESC"><Text>A leader switched off here plays as the game ships it. Only the leaders in the game are re-dealt among themselves, including the ones picked for Random slots. In an online game, if another player leaves their own slot on Random, every leader still switched on goes into the deal, so bonuses can come from leaders who aren't playing.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODDED_ABILITIES_NAME"><Text>Modded leaders' abilities</Text></Row>
+        <Row Tag="LOC_LSHUF_MODDED_ABILITIES_DESC"><Text>Lets the abilities of listed modded leaders into the deal. The leader's mod has to be installed and turned on and pass a check of its files at setup; other modded leaders play as their mods ship them.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODDED_ATTRIBUTES_NAME"><Text>Modded leaders' attributes</Text></Row>
+        <Row Tag="LOC_LSHUF_MODDED_ATTRIBUTES_DESC"><Text>Lets the attributes of listed modded leaders into the deal. The leader's mod has to be installed and turned on and pass a check of its files at setup; other modded leaders play as their mods ship them.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODDED_BIASES_NAME"><Text>Modded leaders' start biases</Text></Row>
+        <Row Tag="LOC_LSHUF_MODDED_BIASES_DESC"><Text>Lets the start biases of listed modded leaders into the deal. The leader's mod has to be installed and turned on and pass a check of its files at setup; other modded leaders play as their mods ship them.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODDED_OUT_NAME"><Text>Modded leaders to re-deal</Text></Row>
+        <Row Tag="LOC_LSHUF_MODDED_OUT_DESC"><Text>The listed modded leaders you have installed. A leader you switch off here plays as its mod ships it.</Text></Row>
+        <Row Tag="LOC_LSHUF_POOL1_NAME"><Text>Leader pool 1</Text></Row>
+        <Row Tag="LOC_LSHUF_POOL1_DESC"><Text>Pick the leaders for this pool. A player slot set to Random from pool 1 gets one of them when the game starts, and two slots never get the same leader.</Text></Row>
+        <Row Tag="LOC_LSHUF_POOL2_NAME"><Text>Leader pool 2</Text></Row>
+        <Row Tag="LOC_LSHUF_POOL2_DESC"><Text>Pick the leaders for this pool. A player slot set to Random from pool 2 gets one of them when the game starts, and two slots never get the same leader.</Text></Row>
+        <Row Tag="LOC_LSHUF_PERSONALITY_NAME"><Text>AI personality</Text></Row>
+        <Row Tag="LOC_LSHUF_PERSONALITY_DESC"><Text>How an AI leader behaves: its agendas and the civilizations it likes to pick in each age.</Text></Row>
+        <Row Tag="LOC_LSHUF_DEALING_NAME"><Text>Dealing</Text></Row>
+        <Row Tag="LOC_LSHUF_DEALING_DESC"><Text>How the split modes hand out the pieces of each ability.</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_NAME"><Text>Show what everyone got</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_DESC"><Text>When you get to see the other leaders' abilities, attributes and start biases for this game.</Text></Row>
+        <Row Tag="LOC_LSHUF_SEED_NAME"><Text>Deal number</Text></Row>
+        <Row Tag="LOC_LSHUF_SEED_DESC"><Text>The same number with the same settings and leaders gives the same deal, so you can share it and a friend can play the same roll. Setup picks a new number each time it opens, and the number shows on the loading screen.</Text></Row>
+
+        <!-- Option values -->
+        <Row Tag="LOC_LSHUF_MODE_NONE"><Text>Not re-dealt</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_NONE_DESC"><Text>Leaders play as the game ships them. The Off switches still apply.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_SWAP_ABILITIES"><Text>Swap whole abilities</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_SWAP_ABILITIES_DESC"><Text>Each leader takes another leader's whole ability, two random attributes, and a start bias rolled from scratch. The three aren't tied to each other.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_SWAP_LEADERS"><Text>Swap whole leaders</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_SWAP_LEADERS_DESC"><Text>Each leader takes another leader's whole package: ability, attributes and start bias together. Amina might play with Pachacuti's mountain bonuses and start beside mountains.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_SPLIT_MATCHED"><Text>Split abilities, matched starts</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_SPLIT_MATCHED_DESC"><Text>Abilities are broken into their bullet points and dealt out with the attributes. Each leader's start bias comes from the pieces they got, so whoever holds Pachacuti's mountain bullets starts near mountains. Until a leader's bullets have been checked by hand, that leader's ability is dealt whole.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_SPLIT_RANDOM"><Text>Split abilities, random starts</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_SPLIT_RANDOM_DESC"><Text>Abilities and attributes are dealt out in pieces as in Split abilities, matched starts, and start biases are rolled from scratch. Until a leader's bullets have been checked by hand, that leader's ability is dealt whole.</Text></Row>
+        <Row Tag="LOC_LSHUF_REDEALT"><Text>Re-dealt with the mode</Text></Row>
+        <Row Tag="LOC_LSHUF_REDEALT_DESC"><Text>Mixed up the way How leaders are re-dealt says.</Text></Row>
+        <Row Tag="LOC_LSHUF_OFF"><Text>Off</Text></Row>
+        <Row Tag="LOC_LSHUF_OFF_DESC"><Text>Switched off for all leaders, for a game on equal footing. A leader kept as chosen keeps theirs.</Text></Row>
+        <Row Tag="LOC_LSHUF_PERSONA_STAYS"><Text>Stays with the leader</Text></Row>
+        <Row Tag="LOC_LSHUF_PERSONA_STAYS_DESC"><Text>Each AI leader keeps its own agendas and civilization picks, and still plays the bonuses it was dealt.</Text></Row>
+        <Row Tag="LOC_LSHUF_PERSONA_FOLLOWS"><Text>Follows the ability</Text></Row>
+        <Row Tag="LOC_LSHUF_PERSONA_FOLLOWS_DESC"><Text>Agendas and civilization picks move with the ability, so the AI acts like the leader whose bonuses it holds. In the split modes they come from the leader who gave it the most pieces.</Text></Row>
+        <Row Tag="LOC_LSHUF_PERSONA_REDEALT"><Text>Re-dealt too</Text></Row>
+        <Row Tag="LOC_LSHUF_PERSONA_REDEALT_DESC"><Text>Whole personalities are dealt out to random leaders on their own, apart from the abilities.</Text></Row>
+        <Row Tag="LOC_LSHUF_DEAL_BALANCED"><Text>Balanced</Text></Row>
+        <Row Tag="LOC_LSHUF_DEAL_BALANCED_DESC"><Text>Each leader's pieces add up to about the same strength, so one leader can't end up with all the strong bullets.</Text></Row>
+        <Row Tag="LOC_LSHUF_DEAL_CHANCE"><Text>Pure chance</Text></Row>
+        <Row Tag="LOC_LSHUF_DEAL_CHANCE_DESC"><Text>Pieces go out at random, strong or weak, the way the cards fall.</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_START"><Text>At the start</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_START_DESC"><Text>The leader screens show everyone's deal from setup on.</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_MET"><Text>As you meet them</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_MET_DESC"><Text>You see your own deal at setup. Another leader's deal shows in the diplomacy panel and the Civilopedia once you've met them.</Text></Row>
+        <Row Tag="LOC_LSHUF_RANDOM_POOL_1"><Text>Random from pool 1</Text></Row>
+        <Row Tag="LOC_LSHUF_RANDOM_POOL_1_DESC"><Text>A random leader from Leader pool 1, picked when the game starts. If the pool is empty or used up, the slot gets an ordinary random leader.</Text></Row>
+        <Row Tag="LOC_LSHUF_RANDOM_POOL_2"><Text>Random from pool 2</Text></Row>
+        <Row Tag="LOC_LSHUF_RANDOM_POOL_2_DESC"><Text>A random leader from Leader pool 2, picked when the game starts. If the pool is empty or used up, the slot gets an ordinary random leader.</Text></Row>
+
+        <!-- Leader screens -->
+        <Row Tag="LOC_LSHUF_BIAS_LINE"><Text>Starts near: {1_List}</Text></Row>
+        <Row Tag="LOC_LSHUF_BIAS_NONE"><Text>Starts anywhere the map puts them</Text></Row>
+        <Row Tag="LOC_LSHUF_BIAS_MAP_SETS"><Text>Starts where this map places them; it doesn't use start biases</Text></Row>
+        <Row Tag="LOC_LSHUF_BIAS_COAST"><Text>Coast</Text></Row>
+        <Row Tag="LOC_LSHUF_BIAS_RIVER"><Text>Rivers</Text></Row>
+        <Row Tag="LOC_LSHUF_BIAS_LAKE"><Text>Lakes</Text></Row>
+        <Row Tag="LOC_LSHUF_BIAS_NATURAL_WONDER"><Text>Natural Wonders</Text></Row>
+        <Row Tag="LOC_LSHUF_BIAS_ISLAND"><Text>Islands</Text></Row>
+        <Row Tag="LOC_LSHUF_ABILITY_OFF"><Text>Leader abilities are off for this game.</Text></Row>
+        <Row Tag="LOC_LSHUF_PIECE_REST"><Text>The rest of {1_Ability}</Text></Row>
+        <Row Tag="LOC_LSHUF_DEAL_NUMBER"><Text>Deal number: {1_Seed}</Text></Row>
+
+        <!-- Reveal panel -->
+        <Row Tag="LOC_LSHUF_REVEAL_TITLE"><Text>Who got what</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_OPEN"><Text>See who got what</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_UNMET"><Text>You haven't met this leader yet.</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_TOO_FEW"><Text>Fewer than two leaders were left to re-deal here, so this part stays as the game ships it.</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_DIFFERS"><Text>Another mod changed the leaders, so this deal is different from the one the setup screen showed.</Text></Row>
+        <Row Tag="LOC_LSHUF_REVEAL_LEFT_OUT"><Text>{1_Leader}: {2_Reason}</Text></Row>
+
+        <!-- Reasons, written to follow "Leader: " -->
+        <Row Tag="LOC_LSHUF_REASON_KEPT"><Text>kept as chosen</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_LIST"><Text>switched off in Leaders to re-deal</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_NOTINGAME"><Text>not in this game</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_MODDEDLIST"><Text>switched off in Modded leaders to re-deal</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_UNKNOWN"><Text>not on this mod's list yet, so it plays as shipped</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_OBSERVER"><Text>an observer, so it stays out of the deal</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_MODDED_OFF"><Text>the modded leaders' box for this part is off</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_MODDED_NOTOK"><Text>its mod didn't pass the setup check</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_MODDED_LEADERTYPE"><Text>its ability checks for its own leader, so it can't move</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_MODDED_CHANGED"><Text>its ability has changed since it was reviewed, so it's dealt whole</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_TOO_FEW"><Text>fewer than two leaders were left to re-deal</Text></Row>
+        <Row Tag="LOC_LSHUF_REASON_MODE_NONE"><Text>How leaders are re-dealt is set to Not re-dealt</Text></Row>
+        <Row Tag="LOC_LSHUF_WHY_SCRIPT"><Text>its mod now runs a gameplay script</Text></Row>
+        <Row Tag="LOC_LSHUF_WHY_UISCRIPT"><Text>its mod now runs an interface script</Text></Row>
+        <Row Tag="LOC_LSHUF_WHY_IMPORTJS"><Text>its mod now loads a script file</Text></Row>
+        <Row Tag="LOC_LSHUF_WHY_MISSING"><Text>its mod isn't installed and turned on</Text></Row>
+
+        <!-- Gameplay traits -->
+        <Row Tag="LOC_LSHUF_TRAIT_DEALT_DESCRIPTION"><Text>Bonuses dealt to this leader from other leaders' abilities at game setup. The leader screens list each one.</Text></Row>
+        <Row Tag="LOC_LSHUF_TRAIT_EQUAL_ACTIONS_NAME"><Text>Equal Footing</Text></Row>
+        <Row Tag="LOC_LSHUF_TRAIT_EQUAL_ACTIONS_DESCRIPTION"><Text>Leader attributes are off for this game, so each leader gets all twelve diplomatic actions the attributes would have unlocked.</Text></Row>
+    </EnglishText>
+</Database>

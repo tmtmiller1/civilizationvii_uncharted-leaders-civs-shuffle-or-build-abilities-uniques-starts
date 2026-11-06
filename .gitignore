@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+*.bak
+.DS_Store
+# Fixture databases are built from the local Debug copies; they aren't shipped or committed.
+tests/fixtures/db/
+__pycache__/

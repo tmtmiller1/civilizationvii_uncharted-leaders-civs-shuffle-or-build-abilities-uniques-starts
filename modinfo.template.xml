@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Template for re-dealable-leader-abilities-attributes-and-start-biases.modinfo. Don't edit the .modinfo by hand:
+     run `npm run build:modinfo`. The markers below are filled from data/generated/modinfo-criteria.xml,
+     data/generated/modinfo-groups.xml (workstream B) and the file tree under ui/ and shared/. -->
+<Mod id="re-dealable-leader-abilities-attributes-and-start-biases" version="1" xmlns="ModInfo">
+	<Properties>
+		<Name>LOC_LSHUF_MOD_NAME</Name>
+		<Description>LOC_LSHUF_MOD_DESCRIPTION</Description>
+		<Authors>Tower</Authors>
+		<Package>ReDealableLeaders</Package>
+		<PackageSortIndex>1000</PackageSortIndex>
+		<!-- The deal is rebuilt from the deal number in the game config at each load and each age, so a save needs the
+		     mod on to play the same leaders. -->
+		<AffectsSavedGames>1</AffectsSavedGames>
+		<Version>0.1.0</Version>
+	</Properties>
+	<!-- No DLC dependency: DLC leaders' rows are selected through their parent tables (workspace rule: any DLC). -->
+	<Dependencies>
+		<Mod id="base-standard" title="LOC_MODULE_BASE_STANDARD_NAME"/>
+	</Dependencies>
+	<ActionCriteria>
+		<Criteria id="always"><AlwaysMet></AlwaysMet></Criteria>
+		<!-- @GENERATED_CRITERIA -->
+	</ActionCriteria>
+	<ActionGroups>
+		<!-- Setup: parameters, the setup-side copy, text and the setup scripts. LoadOrder 20000 runs after leader mods
+		     have added their frontend Leaders rows. -->
+		<ActionGroup id="lshuf-shell" scope="shell" criteria="always">
+			<Properties><LoadOrder>20000</LoadOrder></Properties>
+			<Actions>
+				<UpdateDatabase>
+					<Item>data/schema/gameplay-tables.sql</Item>
+					<Item>data/schema/frontend-tables.sql</Item>
+					<Item>data/frontend/parameters.sql</Item>
+					<Item>data/mapping/lshuf-mapping.sql</Item>
+					<Item>data/generated/known-leaders.sql</Item>
+					<Item>data/setup-copy/setup-copy.sql</Item>
+				</UpdateDatabase>
+				<UpdateText>
+					<Item>text/en_us/lshuf-text.xml</Item>
+				</UpdateText>
+				<UIScripts>
+					<Item>ui/setup/lshuf-setup.js</Item>
+					<Item>ui/display/lshuf-setup-display.js</Item>
+				</UIScripts>
+				<ImportFiles>
+					<!-- @IMPORT_FILES -->
+				</ImportFiles>
+			</Actions>
+		</ActionGroup>
+		<!-- Game: our tables and the mapping first. LoadOrder 20000 sits above Partisans (10000) and Cultural Diffusion
+		     (60), so the deal sees their LeaderTraits rows and leaves them alone. -->
+		<ActionGroup id="lshuf-game-schema" scope="game" criteria="always">
+			<Properties><LoadOrder>20000</LoadOrder></Properties>
+			<Actions>
+				<UpdateDatabase>
+					<Item>data/schema/gameplay-tables.sql</Item>
+					<Item>data/mapping/lshuf-mapping.sql</Item>
+				</UpdateDatabase>
+			</Actions>
+		</ActionGroup>
+		<!-- @GENERATED_GROUPS -->
+		<ActionGroup id="lshuf-game-text" scope="game" criteria="always">
+			<Properties><LoadOrder>20100</LoadOrder></Properties>
+			<Actions>
+				<UpdateText>
+					<Item>text/en_us/lshuf-text.xml</Item>
+					<Item>data/text-generated/lshuf-piece-text.sql</Item>
+				</UpdateText>
+			</Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-game-ui" scope="game" criteria="always">
+			<Properties><LoadOrder>20100</LoadOrder></Properties>
+			<Actions>
+				<UIScripts>
+					<Item>ui/game/lshuf-game.js</Item>
+				</UIScripts>
+				<ImportFiles>
+					<!-- @IMPORT_FILES -->
+				</ImportFiles>
+			</Actions>
+		</ActionGroup>
+	</ActionGroups>
+</Mod>

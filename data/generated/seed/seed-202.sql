@@ -1,0 +1,2 @@
+DELETE FROM LShufSeed;
+INSERT INTO LShufSeed (Seed) VALUES (202);

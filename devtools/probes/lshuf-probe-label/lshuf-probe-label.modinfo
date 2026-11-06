@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="lshuf-probe-label" version="1" xmlns="ModInfo">
+	<Properties>
+		<Name>Leader Shuffle probe: breakdown label</Name>
+		<Description>One probe for the Leader Shuffle spec. Not for release.</Description>
+		<Authors>tower</Authors>
+		<Package>Mod</Package>
+		<AffectsSavedGames>1</AffectsSavedGames>
+	</Properties>
+	<Dependencies>
+		<Mod id="core" title="Core"/>
+		<Mod id="base-standard" title="LOC_MODULE_BASE_STANDARD_NAME"/>
+	</Dependencies>
+	<ActionCriteria>
+		<Criteria id="always"><AlwaysMet></AlwaysMet></Criteria>
+	</ActionCriteria>
+	<ActionGroups>
+		<ActionGroup id="lshuf-probe-label-game" scope="game" criteria="always">
+			<Properties><LoadOrder>100</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/amina-copy.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+	</ActionGroups>
+</Mod>

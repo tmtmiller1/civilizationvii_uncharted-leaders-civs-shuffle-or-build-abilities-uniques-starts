@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="lshuf-probe-cd" version="1" xmlns="ModInfo">
+	<Properties>
+		<Name>Leader Shuffle probe: City Details names</Name>
+		<Description>Probe 11 for the spec. Not for release.</Description>
+		<Authors>tower</Authors>
+		<Package>Mod</Package>
+		<AffectsSavedGames>0</AffectsSavedGames>
+	</Properties>
+	<Dependencies>
+		<Mod id="core" title="Core"/>
+		<Mod id="base-standard" title="LOC_MODULE_BASE_STANDARD_NAME"/>
+	</Dependencies>
+	<ActionCriteria>
+		<Criteria id="always"><AlwaysMet></AlwaysMet></Criteria>
+	</ActionCriteria>
+	<ActionGroups>
+		<ActionGroup id="lshuf-probe-cd-game" scope="game" criteria="always">
+			<Properties><LoadOrder>100</LoadOrder></Properties>
+			<Actions>
+				<UpdateDatabase><Item>data/amina-copy.sql</Item></UpdateDatabase>
+				<UIScripts><Item>ui/lshuf-city-details-names.js</Item></UIScripts>
+			</Actions>
+		</ActionGroup>
+	</ActionGroups>
+</Mod>

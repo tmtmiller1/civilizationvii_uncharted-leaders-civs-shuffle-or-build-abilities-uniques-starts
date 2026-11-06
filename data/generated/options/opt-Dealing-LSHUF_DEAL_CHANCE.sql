@@ -1,0 +1,1 @@
+INSERT OR REPLACE INTO LShufOptions (Name, Value) VALUES ('Dealing', 'LSHUF_DEAL_CHANCE');
