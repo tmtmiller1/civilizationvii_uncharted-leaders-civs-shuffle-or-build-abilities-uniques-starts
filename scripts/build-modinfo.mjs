@@ -12,7 +12,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MOD_ID = "re-dealable-leader-abilities-attributes-and-start-biases";
 const OUT = path.join(root, `${MOD_ID}.modinfo`);
 const IMPORT_ROOTS = ["ui", "shared"];
-const IMPORT_EXT = /\.(js|css|html)$/;
+const IMPORT_EXT = /\.(js|css|html|png)$/;
 
 function readFragment(rel) {
   const file = path.join(root, rel);
@@ -32,6 +32,17 @@ function shippedFiles() {
   return out.sort();
 }
 
+// text/agenda/<locale>.xml, one UpdateText item each (scripts/setup-copy/build-agenda-text.mjs); en_US is the base
+// file every locale loads, the others load for their own locale only.
+function agendaTextItems() {
+  const dir = path.join(root, "text", "agenda");
+  if (!fs.existsSync(dir)) return "<!-- text/agenda not generated yet -->";
+  return fs.readdirSync(dir).filter((f) => f.endsWith(".xml")).sort().map((f) => {
+    const locale = f.replace(/\.xml$/, "");
+    return locale === "en_US" ? `<Item>text/agenda/${f}</Item>` : `<Item locale="${locale}">text/agenda/${f}</Item>`;
+  }).join("\n");
+}
+
 function indentLike(marker, text, template) {
   const line = template.split("\n").find((l) => l.includes(marker)) || "";
   const pad = line.slice(0, line.indexOf("<!--"));
@@ -49,6 +60,7 @@ export function buildModinfo() {
   out = fill(out, "@GENERATED_CRITERIA", readFragment("data/generated/modinfo-criteria.xml"));
   out = fill(out, "@GENERATED_GROUPS", readFragment("data/generated/modinfo-groups.xml"));
   out = fill(out, "@IMPORT_FILES", imports);
+  out = fill(out, "@AGENDA_TEXT", agendaTextItems());
   return out;
 }
 

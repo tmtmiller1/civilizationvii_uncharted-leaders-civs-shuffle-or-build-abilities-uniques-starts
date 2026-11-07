@@ -4,6 +4,7 @@ import { SALT } from "../lshuf-key.js";
 import { cyclicDonors } from "./lshuf-deal-util.js";
 import { isOffFor } from "./lshuf-deal-axes.js";
 import { cardId } from "./lshuf-deal-attributes.js";
+import { buildOf } from "./lshuf-deal-build.js";
 
 export function dealPersona(ctx, axes) {
   const A = axes.A;
@@ -16,6 +17,8 @@ export function dealPersona(ctx, axes) {
 export function personaFrom(ctx, axes, ability, persona, leader) {
   const A = axes.A;
   if (A.dealtSet.has(leader)) {
+    const build = buildOf(ctx, leader);
+    if (build && build.persona != null) return build.persona;
     if (ctx.f.redealtPersona) return persona.donors[leader];
     return ctx.f.follows ? ability.abilityFrom[leader] : leader;
   }
@@ -53,8 +56,9 @@ export function dealUnlocks(ctx, axes, ability, attrs) {
     const row = { ProgressionTreeNodeType: u.node, TargetType: u.target, FromTraitType: u.trait };
     if (axes.A.dealtSet.has(owner)) {
       const holder = ctx.f.isWhole ? ability.wholeHolder[owner] : splitHolder(ctx, { axes, ability, attrs }, u, owner);
-      row.ToLeaderType = holder;
-      row.ToTraitType = holderTrait(ctx, axes, ability, holder) || u.trait;
+      // An ability nobody holds (a whole-mode builder's own, CONTRACTS 13) takes its legend nodes with it.
+      row.ToLeaderType = holder == null ? null : holder;
+      row.ToTraitType = holder == null ? null : holderTrait(ctx, axes, ability, holder) || u.trait;
     } else if (isOffFor(axes.A, owner)) {
       row.ToLeaderType = null;
       row.ToTraitType = null;

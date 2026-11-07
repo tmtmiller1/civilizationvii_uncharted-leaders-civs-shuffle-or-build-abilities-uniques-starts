@@ -1,0 +1,1 @@
+INSERT OR IGNORE INTO LShufBuildPieces (Slot, PieceId) SELECT 3, 'LEADER_Cirno__WHOLE' WHERE EXISTS (SELECT 1 FROM LShufBuild WHERE Slot = 3);

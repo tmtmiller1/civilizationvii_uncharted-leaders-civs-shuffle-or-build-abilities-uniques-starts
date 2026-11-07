@@ -1,13 +1,14 @@
 # Mapping review list
 
 Built 2026-11-06 by scripts/mapping/build-mapping.mjs from the compiled Debug databases and the listed leader mods'
-files on tp-share. Nothing in the game's data links an ability bullet to its modifiers, so every match below with more
-than one bullet is a guess drafted from the bullet text against the modifiers' arguments and requirements
-(scripts/mapping/vanilla-draft.mjs and modded-draft.mjs). Every row ships Reviewed = 0, so the split modes deal each
-of these leaders whole until you confirm its rows. Nothing here has been watched in a game.
+files on tp-share, then scripts/mapping/merge-pieces.mjs. Nothing in the game's data links an ability bullet to its
+modifiers, so each match below was made from the bullet text against the modifiers' names, arguments and
+requirements (scripts/mapping/vanilla-draft.mjs and modded-draft.mjs); the "guess" label on a row means the match was
+made that way. Bullets one effect serves together are merged into one piece (Genghis Khan 2+3, Akyuu 2+3). Every row
+ships Reviewed = 1, so every bullet is its own piece in Split random and its own card on the build screens.
 
-To confirm a leader, check each bullet's modifiers and value below, fix the draft file if something's wrong, rerun the
-script, and then mark its rows reviewed. Value runs 1 (small) to 5 (large) and is a rough feel for the Balanced deal;
+To check a leader, read each bullet's modifiers and value below, fix the draft file if something's wrong, and rerun
+the scripts. Value runs 1 (small) to 5 (large) and is a rough feel for the Balanced deal;
 drawbacks score 1 because the scale has no negatives.
 
 ## Totals

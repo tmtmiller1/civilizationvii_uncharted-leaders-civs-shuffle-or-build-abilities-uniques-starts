@@ -1,0 +1,1 @@
+INSERT OR IGNORE INTO LShufBuildPieces (Slot, PieceId) SELECT 3, 'BIAS_LEADER_Yamada' WHERE EXISTS (SELECT 1 FROM LShufBuild WHERE Slot = 3);

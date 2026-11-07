@@ -2,7 +2,8 @@
 // attribute rows move in LeaderTraits; nothing is deleted from Traits or Modifiers; TraitModifiers gets INSERTs only;
 // every insert selects through the parent table, so a row whose parent is missing is skipped.
 import { BIAS_TABLES, BIAS_TARGET_COLUMN, TRAIT } from "../../shared/lshuf-constants.js";
-import { CFG, header, q } from "./sql-util.mjs";
+import { civApplySql } from "./sql-civ.mjs";
+import { BUILD_OF, CFG, header, q } from "./sql-util.mjs";
 
 const DEALT = q(TRAIT.dealt(""));
 const PERSONA = q(TRAIT.persona(""));
@@ -15,7 +16,9 @@ const BIAS_PARENT = {
 };
 const ATTR = "SELECT TraitType FROM LShufAttributeTraits";
 // Copy path: every split leader, and whole-mode leaders when the personality is kept apart from the ability.
-const COPY_LEADERS = `SELECT LeaderType FROM LShufWork_L WHERE InA = 1 AND NOT (${CFG("IsWhole")} = 1 AND ${CFG("Follows")} = 1)`;
+// A builder with an AI behavior pick is a copy leader in the whole modes too (CONTRACTS 13).
+const COPY_LEADERS = `SELECT LeaderType FROM LShufWork_L WHERE InA = 1 AND (NOT (${CFG("IsWhole")} = 1 AND ${CFG("Follows")} = 1)
+  OR ${BUILD_OF("PersonaPick", "LeaderType")} IS NOT NULL OR COALESCE(${BUILD_OF("BulletBuild", "LeaderType")}, 0) = 1)`;
 const PERSONA_LEADERS = `${COPY_LEADERS} UNION SELECT LeaderType FROM LShufWork_L WHERE ${CFG("OffA")} = 1 AND RA IS NULL`;
 const agendaMods = (leader) => `SELECT mm.ModifierId FROM LShufMappingModifiers mm JOIN LShufMapping m ON m.PieceId = mm.PieceId
       WHERE m.LeaderType = ${leader} AND (m.Kind = 'agenda' OR mm.Role = 'agenda')`;
@@ -144,7 +147,8 @@ function leaderTraits() {
 DELETE FROM LeaderTraits WHERE LeaderType IN (${removeAttrs}) AND TraitType IN (${ATTR});
 INSERT OR IGNORE INTO LeaderTraits (LeaderType, TraitType) SELECT d.LeaderType, l.Ability FROM LShufWork_Donor d
   JOIN LShufWork_L l ON l.LeaderType = d.Donor
-  WHERE d.Axis = 'A' AND ${CFG("IsWhole")} = 1 AND ${CFG("Follows")} = 1 AND l.Ability IN (SELECT TraitType FROM Traits);
+  WHERE d.Axis = 'A' AND ${CFG("IsWhole")} = 1 AND ${CFG("Follows")} = 1 AND l.Ability IN (SELECT TraitType FROM Traits)
+    AND d.LeaderType NOT IN (${COPY_LEADERS});
 INSERT OR IGNORE INTO LeaderTraits (LeaderType, TraitType) SELECT LeaderType, ${DEALT} || LeaderType FROM (${COPY_LEADERS})
   WHERE ${DEALT} || LeaderType IN (SELECT TraitType FROM Traits);
 INSERT OR IGNORE INTO LeaderTraits (LeaderType, TraitType) SELECT LeaderType, ${PERSONA} || LeaderType FROM (${PERSONA_LEADERS})
@@ -214,5 +218,7 @@ export function applySql() {
     unlocks(),
     biases(),
     civPriorities()
-  ].join("\n");
+      ,
+    civApplySql()
+].join("\n");
 }

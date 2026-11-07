@@ -793,6 +793,54 @@ Probes 1, 7, 8 and 10 were watched in a lab game on 2026-11-06 (results above). 
   changing the diplomatic actions list), a loaded save's loading screen, and a moved legend node showing as available
   in the receiving leader's attribute tree. The breakdown label on a copied modifier was watched the same day.
 
+## 7b. Build your own leader and civilization (owner asks, 2026-11-06; built the same day, unwatched; CONTRACTS.md 13 and 14 have the as-built rules)
+
+**What the player sees.** A "Build your own leader..." button with the other buttons in the Re-dealable Leaders
+Settings section opens a screen laid out like the memento select: your leader's slots along the top, a grid of cards
+under them with a search box and filter dropdowns, and a details pane for the card under the cursor. Every piece in
+the shuffle is a card: each bullet of each leader ability, each attribute kind, each AI behavior (a leader's agendas
+and favorite civilizations), each start terrain, and the civilizations' start terrain. Click a card to put it in the
+next open slot; click a slot to empty it. The slots are what your leader gave up: one per ability bullet (or one wide
+slot for a whole ability), one per attribute, one for behavior, one for start terrain, so the pick stays the size of
+the shuffle's own hand. A filled slot shows the card's art the way an equipped memento does. The AI leaders are
+shuffled with whatever is left.
+
+- Filters: by type (Militaristic, Economic, Cultural, Scientific, Expansionist, Political, Diplomatic, Wildcard; the
+  attribute each bullet's leader is tagged with), by kind (abilities, attributes, behavior, start terrain) and by
+  leader; and a "Whole abilities" filter that groups each leader's bullets into one card, so a player can take an
+  ability in one go.
+- Card art: the leader's portrait for a bullet or behavior card, the attribute icon for an attribute card, and for a
+  civilization's start terrain the civilization card's own background (`blp:bg-panel-<civ>`) and symbol
+  (`civ_sym_<civ>.png`), referenced by name the way the game's civ cards do (`civ-card.js`, `civ-select-model.js`).
+  No art file is copied into the mod.
+- The slots are the limit: a card already in a slot is greyed in the grid, and the grid greys out when every slot is
+  full. With Fairness of mixed bonuses on Fair shares, the slot count is by value (the mapping's `Value` column) rather
+  than one per bullet, and the details pane shows each card's value.
+
+**How it's built.** The same route as Human players keep their own leader (section 3), extended to pieces:
+
+- Hidden setting `LShufBuilder` (the human's leader type, `|LEADER_X|`) and `LShufBuilt` (a list of piece ids,
+  `|LEADER_PACHACUTI__B02|`, with `<LEADER>__WHOLE` for a whole ability, `ATTR_<KIND>` for an attribute card,
+  `PERSONA_<LEADER>` for a behavior, `BIAS_<TAG>` for a start terrain). Written by the screen through GameSetup, on
+  the host only; the lobby carries them.
+- One action group per known leader, `ConfigurationValueContains LShufBuilder |LEADER_X|`, inserts the builder row
+  (`LShufBuild (LeaderType)`); then one group per piece, `ConfigurationValueContains LShufBuilt |PIECE|`, inserts the
+  piece into `LShufBuildPieces`, with the receiver read from `LShufBuild` by join. About 38 + 258 + 7 + 40 + 20
+  groups, a small set next to the 500 shuffle groups. Each group's file is one INSERT ... SELECT.
+- The deal (JS and SQL alike) treats built pieces like kept rows: the builder gets exactly its ticked pieces, those
+  pieces leave the deck, and the shuffle deals the rest among the other leaders. Attribute conservation holds for the
+  others; the builder's count is whatever they ticked.
+- Two humans in one game: `LShufBuilder2` / `LShufBuilt2` double the per-leader groups (76) and reuse the per-piece
+  groups with a `Slot` column; more than two fall back to the ordinary shuffle, and the screen says so.
+
+**Single bullets.** Owner decision 2026-11-06: no review gate. The mapping ships reviewed, and a bullet that only
+works together with another (one effect serving both) is merged into that bullet's piece, so every card does what it
+says on its own.
+
+**Still to settle.** Whether the memento screen's card and slot components (`memento-select.js`, Solid, in ui-next)
+can be reused from a Controls.define window, or the cards and slots are rebuilt with plain elements and the same art
+names (likely the latter: the mod's other windows are plain elements).
+
 ## 8. Before release
 
 - Test against a database with the DLC rows removed: zero `PRAGMA foreign_key_check` rows, and a game starts.

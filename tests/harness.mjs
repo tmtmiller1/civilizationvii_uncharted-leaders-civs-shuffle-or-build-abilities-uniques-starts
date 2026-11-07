@@ -72,7 +72,9 @@ test("the template parses: fixed groups, scopes and load orders", async () => {
     assert.equal(byId[id].loadOrder, order);
   }
   const schema = byId["lshuf-game-schema"].actions.find((a) => a.type === "UpdateDatabase").items;
-  assert.deepEqual(schema, ["data/schema/gameplay-tables.sql", "data/mapping/lshuf-mapping.sql"]);
+  assert.deepEqual(schema, [
+    "data/schema/gameplay-tables.sql", "data/mapping/lshuf-mapping.sql", "data/mapping/lshuf-civ-mapping.sql"
+  ]);
 });
 
 const SYNTHETIC = `<Mod id="x" xmlns="ModInfo"><ActionCriteria>

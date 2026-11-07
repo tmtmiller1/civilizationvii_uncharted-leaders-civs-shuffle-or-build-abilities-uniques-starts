@@ -1,27 +1,42 @@
 // Who is in each axis's deal (CONTRACTS.md section 5.4), and the flags the mode and switches set.
-import { DEALING, MODE, ONOFF, PERSONA, REASON } from "../lshuf-constants.js";
+import { A_MODE, B_MODE, DEALING, ONOFF, PERSONA, REASON, T_MODE, presetOf } from "../lshuf-constants.js";
 
 export const AXES = ["A", "T", "B"];
 export const AXIS_NAME = { A: "ABILITY", T: "ATTRIBUTES", B: "BIASES" };
 const MODDED_BOX = { A: "ModdedAbilities", T: "ModdedAttributes", B: "ModdedBiases" };
 const OFF_SWITCH = { A: "Abilities", T: "Attributes", B: "Biases" };
 
+// The three parts (CONTRACTS 15): what each does, and the flags the modules branch on. A part that needs the
+// abilities dealt a certain way falls back when they aren't: attributes paired with normal or off abilities deal at
+// random; start terrain following or paired with them rolls.
+export function partFlags(o) {
+  const A = o.Abilities;
+  const T = o.Attributes;
+  const B = o.Biases;
+  const isWhole = A === A_MODE.Whole;
+  const isSplit = A === A_MODE.Split;
+  const bFollows = B === B_MODE.Paired || B === B_MODE.Matched;
+  const live = (v, normal) => v !== normal && v !== ONOFF.Off;
+  return {
+    A, T, B,
+    mode: presetOf(A, T, B),
+    isWhole,
+    isSplit,
+    tCycle: T === T_MODE.Paired && isWhole,
+    tFromA: T === T_MODE.Paired && isSplit,
+    bCycle: bFollows && isWhole,
+    bFromA: B === B_MODE.Paired && isSplit,
+    isMatched: B === B_MODE.Matched && isSplit,
+    rollBiases: B === B_MODE.Rolled || (bFollows && !isWhole && !isSplit),
+    normal: { A: A === A_MODE.Normal, T: T === T_MODE.Normal, B: B === B_MODE.Normal },
+    active: live(A, A_MODE.Normal) || live(T, T_MODE.Normal) || live(B, B_MODE.Normal)
+  };
+}
+
 export function makeContext(input) {
   const o = input.options;
-  const mode = o.Mode;
-  const isPaired = mode === MODE.SwapLeaders;
-  const isFull = mode === MODE.SwapAbilities;
-  const isMatched = mode === MODE.SplitMatched;
-  const isSplitRandom = mode === MODE.SplitRandom;
   const f = {
-    mode,
-    isPaired,
-    isFull,
-    isMatched,
-    isWhole: isPaired || isFull,
-    isSplit: isMatched || isSplitRandom,
-    active: isPaired || isFull || isMatched || isSplitRandom,
-    rollBiases: isFull || isSplitRandom,
+    ...partFlags(o),
     balanced: o.Dealing !== DEALING.Chance,
     persona: o.Personality,
     follows: o.Personality !== PERSONA.Stays && o.Personality !== PERSONA.Redealt,
@@ -31,7 +46,7 @@ export function makeContext(input) {
   return { input, seed: input.seed, f, byType, majors: input.leaders.map((l) => l.type) };
 }
 
-function baseReason(l) {
+export function baseReason(l) {
   if (!l.known) return REASON.Unknown;
   if (l.kept) return REASON.Kept;
   if (l.outReason != null) return l.outReason;
@@ -55,7 +70,7 @@ function axisState(ctx, axis) {
   const eligibleSet = new Set(eligible);
   const state = { axis, off, reason, eligible, eligibleSet, dealt: [], level: null, fallback: false };
   if (off) return state;
-  if (!ctx.f.active) state.level = REASON.ModeNone;
+  if (!ctx.f.active || ctx.f.normal[axis]) state.level = REASON.ModeNone;
   else if (eligible.length < 2) {
     state.level = REASON.TooFew;
     state.fallback = true;

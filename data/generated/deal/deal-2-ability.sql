@@ -27,6 +27,51 @@ INSERT INTO LShufWork_Pc (PieceId, FromLeader, Kind, BI, Value)
   SELECT m.PieceId, m.LeaderType, 'bullet', COALESCE(m.BulletIndex, 0), COALESCE(m.Value, 1)
   FROM LShufMapping m JOIN LShufWork_Shape s ON s.LeaderType = m.LeaderType AND s.Whole = 0
   WHERE m.Kind = 'bullet' AND COALESCE(m.Movable, 1) = 1;
+CREATE TABLE IF NOT EXISTS LShufWork_BuildTake (PieceId TEXT PRIMARY KEY, Builder TEXT, FromLeader TEXT, Kind TEXT, Value INTEGER);
+DELETE FROM LShufWork_BuildTake;
+INSERT OR IGNORE INTO LShufWork_BuildTake (PieceId, Builder, FromLeader, Kind, Value)
+  SELECT s.LeaderType || '__WHOLE', (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1), s.LeaderType, 'whole', s.WholeValue
+  FROM LShufWork_Shape s WHERE (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1) IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'A') AND s.LeaderType IN (SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'whole' AND p.Slot = 1) AND EXISTS (SELECT 1 FROM LShufWork_Pc c WHERE c.FromLeader = s.LeaderType AND c.PieceId NOT IN (SELECT PieceId FROM LShufWork_BuildTake));
+DELETE FROM LShufWork_Pc WHERE FromLeader IN (SELECT FromLeader FROM LShufWork_BuildTake WHERE Kind = 'whole')
+  AND PieceId NOT IN (SELECT PieceId FROM LShufWork_BuildTake);
+INSERT OR IGNORE INTO LShufWork_Pc (PieceId, FromLeader, Kind, BI, Value) SELECT PieceId, FromLeader, 'whole', 0, Value
+  FROM LShufWork_BuildTake WHERE Kind = 'whole' AND Builder = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1);
+INSERT OR IGNORE INTO LShufWork_BuildTake (PieceId, Builder, FromLeader, Kind, Value)
+  SELECT c.PieceId, (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1), c.FromLeader, 'bullet', c.Value
+  FROM LShufWork_Pc c WHERE (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1) IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'A') AND c.Kind = 'bullet' AND c.PieceId IN (SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'bullet' AND p.Slot = 1);
+INSERT OR IGNORE INTO LShufWork_BuildTake (PieceId, Builder, FromLeader, Kind, Value)
+  SELECT s.LeaderType || '__WHOLE', (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1), s.LeaderType, 'whole', s.WholeValue
+  FROM LShufWork_Shape s WHERE (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1) IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'A') AND s.LeaderType IN (SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'whole' AND p.Slot = 2) AND EXISTS (SELECT 1 FROM LShufWork_Pc c WHERE c.FromLeader = s.LeaderType AND c.PieceId NOT IN (SELECT PieceId FROM LShufWork_BuildTake));
+DELETE FROM LShufWork_Pc WHERE FromLeader IN (SELECT FromLeader FROM LShufWork_BuildTake WHERE Kind = 'whole')
+  AND PieceId NOT IN (SELECT PieceId FROM LShufWork_BuildTake);
+INSERT OR IGNORE INTO LShufWork_Pc (PieceId, FromLeader, Kind, BI, Value) SELECT PieceId, FromLeader, 'whole', 0, Value
+  FROM LShufWork_BuildTake WHERE Kind = 'whole' AND Builder = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1);
+INSERT OR IGNORE INTO LShufWork_BuildTake (PieceId, Builder, FromLeader, Kind, Value)
+  SELECT c.PieceId, (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1), c.FromLeader, 'bullet', c.Value
+  FROM LShufWork_Pc c WHERE (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1) IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'A') AND c.Kind = 'bullet' AND c.PieceId IN (SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'bullet' AND p.Slot = 2);
+INSERT OR IGNORE INTO LShufWork_BuildTake (PieceId, Builder, FromLeader, Kind, Value)
+  SELECT s.LeaderType || '__WHOLE', (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1), s.LeaderType, 'whole', s.WholeValue
+  FROM LShufWork_Shape s WHERE (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1) IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'A') AND s.LeaderType IN (SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'whole' AND p.Slot = 3) AND EXISTS (SELECT 1 FROM LShufWork_Pc c WHERE c.FromLeader = s.LeaderType AND c.PieceId NOT IN (SELECT PieceId FROM LShufWork_BuildTake));
+DELETE FROM LShufWork_Pc WHERE FromLeader IN (SELECT FromLeader FROM LShufWork_BuildTake WHERE Kind = 'whole')
+  AND PieceId NOT IN (SELECT PieceId FROM LShufWork_BuildTake);
+INSERT OR IGNORE INTO LShufWork_Pc (PieceId, FromLeader, Kind, BI, Value) SELECT PieceId, FromLeader, 'whole', 0, Value
+  FROM LShufWork_BuildTake WHERE Kind = 'whole' AND Builder = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1);
+INSERT OR IGNORE INTO LShufWork_BuildTake (PieceId, Builder, FromLeader, Kind, Value)
+  SELECT c.PieceId, (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1), c.FromLeader, 'bullet', c.Value
+  FROM LShufWork_Pc c WHERE (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1) IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'A') AND c.Kind = 'bullet' AND c.PieceId IN (SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'bullet' AND p.Slot = 3);
+INSERT OR IGNORE INTO LShufWork_BuildTake (PieceId, Builder, FromLeader, Kind, Value)
+  SELECT s.LeaderType || '__WHOLE', (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1), s.LeaderType, 'whole', s.WholeValue
+  FROM LShufWork_Shape s WHERE (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1) IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'A') AND s.LeaderType IN (SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'whole' AND p.Slot = 4) AND EXISTS (SELECT 1 FROM LShufWork_Pc c WHERE c.FromLeader = s.LeaderType AND c.PieceId NOT IN (SELECT PieceId FROM LShufWork_BuildTake));
+DELETE FROM LShufWork_Pc WHERE FromLeader IN (SELECT FromLeader FROM LShufWork_BuildTake WHERE Kind = 'whole')
+  AND PieceId NOT IN (SELECT PieceId FROM LShufWork_BuildTake);
+INSERT OR IGNORE INTO LShufWork_Pc (PieceId, FromLeader, Kind, BI, Value) SELECT PieceId, FromLeader, 'whole', 0, Value
+  FROM LShufWork_BuildTake WHERE Kind = 'whole' AND Builder = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1);
+INSERT OR IGNORE INTO LShufWork_BuildTake (PieceId, Builder, FromLeader, Kind, Value)
+  SELECT c.PieceId, (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1), c.FromLeader, 'bullet', c.Value
+  FROM LShufWork_Pc c WHERE (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1) IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'A') AND c.Kind = 'bullet' AND c.PieceId IN (SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'bullet' AND p.Slot = 4);
+UPDATE LShufWork_Shape SET HasRest = 0 WHERE LeaderType IN (SELECT FromLeader FROM LShufWork_BuildTake WHERE Kind = 'whole')
+  OR LeaderType IN (SELECT Builder FROM LShufWork_BuildTake);
+
 UPDATE LShufWork_Pc SET DV = CASE WHEN (SELECT Balanced FROM LShufWork_Cfg) = 1 THEN Value ELSE 0 END;
 UPDATE LShufWork_Pc SET Rank = (SELECT COUNT(*) FROM LShufWork_Pc o WHERE 1 = 1 AND (o.PieceId < LShufWork_Pc.PieceId)) WHERE 1 = 1;
 UPDATE LShufWork_Pc SET K = ((((((((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (2) * 104729 + (Rank) * 1299709 + 1) % 67108859) * ((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (2) * 104729 + (Rank) * 1299709 + 1) % 67108859)) + 1013904223) % 67108859) * (((((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (2) * 104729 + (Rank) * 1299709 + 1) % 67108859) * ((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (2) * 104729 + (Rank) * 1299709 + 1) % 67108859)) + 1013904223) % 67108859)) + 1664525) % 67108859);
@@ -34,11 +79,14 @@ UPDATE LShufWork_Pc SET DeckOrd = (SELECT COUNT(*) FROM LShufWork_Pc o WHERE 1 =
 CREATE TABLE IF NOT EXISTS LShufWork_Slot (LeaderType TEXT PRIMARY KEY, N INTEGER, K INTEGER);
 DELETE FROM LShufWork_Slot;
 INSERT INTO LShufWork_Slot (LeaderType, N, K) SELECT p.LeaderType,
-  (SELECT COUNT(*) FROM LShufWork_Pc c WHERE c.FromLeader = p.LeaderType), p.K
-  FROM LShufWork_Pool p WHERE p.Axis = 'A' AND (SELECT IsSplit FROM LShufWork_Cfg) = 1;
+  CASE WHEN s.Whole = 1 THEN 1 ELSE (SELECT COUNT(*) FROM LShufMapping m WHERE m.LeaderType = p.LeaderType AND m.Kind = 'bullet' AND COALESCE(m.Movable, 1) = 1) END, p.K
+  FROM LShufWork_Pool p JOIN LShufWork_Shape s ON s.LeaderType = p.LeaderType WHERE p.Axis = 'A' AND (SELECT IsSplit FROM LShufWork_Cfg) = 1
+    AND p.LeaderType NOT IN (SELECT Builder FROM LShufWork_BuildTake);
 CREATE TABLE IF NOT EXISTS LShufWork_Dealt (PieceId TEXT PRIMARY KEY, LeaderType TEXT, FromLeader TEXT, Value INTEGER);
 DELETE FROM LShufWork_Dealt;
 CREATE INDEX IF NOT EXISTS LShufWork_Dealt_Leader ON LShufWork_Dealt (LeaderType);
+INSERT INTO LShufWork_Dealt (PieceId, LeaderType, FromLeader, Value) SELECT PieceId, Builder, FromLeader, Value
+  FROM LShufWork_BuildTake;
 
 DROP VIEW IF EXISTS LShufWork_NextPiece;
 CREATE VIEW LShufWork_NextPiece AS SELECT c.PieceId AS PieceId, c.FromLeader AS FromLeader, c.Value AS Value,

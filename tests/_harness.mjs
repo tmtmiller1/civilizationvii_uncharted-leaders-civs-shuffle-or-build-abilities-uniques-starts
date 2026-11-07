@@ -29,13 +29,7 @@ import {
   PROJECT_ROOT
 } from "../scripts/fixtures/build-fixtures.mjs";
 import {
-  CONFIG_KEY,
-  configKeyOf,
-  KEY,
-  listValue,
-  OPTION_DEFAULTS,
-  PARAM,
-  REASON
+  BUILD_SLOTS, CONFIG_KEY, configKeyOf, KEY, listValue, OPTION_DEFAULTS, PARAM, REASON, PRESETS
 } from "../shared/lshuf-constants.js";
 import { KNOWN_LEADERS, MODDED_LEADER_TYPES, VANILLA_LEADERS } from "../shared/lshuf-known-leaders.js";
 
@@ -47,6 +41,7 @@ export const RESULT_TABLES = {
   attributes: "LShufResultAttributes",
   biases: "LShufResultBiases",
   unlocks: "LShufResultUnlocks",
+  civPieces: "LShufResultCivPieces",
   meta: "LShufResultMeta"
 };
 export const BOOL_OPTIONS = ["KeepMine", "ModdedAbilities", "ModdedAttributes", "ModdedBiases"];
@@ -200,11 +195,20 @@ export function criteriaMet(criteria, id, config) {
 // Setup values, written the way the setup screen writes them (CONTRACTS sections 2 and 3).
 
 // spec: { seed, options: {Name: value}, kept: [], excluded: [], moddedExcluded: [], notInGame: [], modOK: [] }
+// A spec that names a preset and not a part gets the preset's part values, the way the setup screen writes them
+// (CONTRACTS 15); a part the spec names wins.
 export function normalizeOptions(options = {}) {
   const out = { ...OPTION_DEFAULTS };
   for (const [k, v] of Object.entries(options)) {
     if (!(k in OPTION_DEFAULTS)) throw new Error(`unknown option ${k}`);
     out[k] = BOOL_OPTIONS.includes(k) ? (v === true || v === "1" || v === 1 ? "1" : "0") : v;
+  }
+  const preset = PRESETS[out.Mode];
+  if (preset) {
+    const [a, t, b] = preset;
+    if (!("Abilities" in options)) out.Abilities = a;
+    if (!("Attributes" in options)) out.Attributes = t;
+    if (!("Biases" in options)) out.Biases = b;
   }
   return out;
 }
@@ -221,14 +225,33 @@ export function gameConfig(spec = {}) {
   config[CONFIG_KEY[PARAM.LeadersOut]] = (spec.excluded || []).map(listValue);
   config[CONFIG_KEY[PARAM.ModdedOut]] = (spec.moddedExcluded || []).map(listValue);
   config[PARAM.Pool1] = [];
-  config[PARAM.Pool2] = [];
   const kept = options.KeepMine === "1" ? spec.kept || [] : [];
   for (const leader of KNOWN_LEADERS) config[KEY.keep(leader)] = kept.includes(leader) ? "1" : "0";
   if (anyModdedBox(options)) {
     for (const leader of MODDED_LEADER_TYPES) config[KEY.modOK(leader)] = (spec.modOK || []).includes(leader) ? "1" : "0";
   }
   config[KEY.NotInGame] = (spec.notInGame || []).map(listValue);
+  // Build your own leader (CONTRACTS 13): spec.builder = { leader, civ, pieces } for slot 1, spec.builders for any
+  // slot ({ slot, leader, civ, pieces }, slot 1 when missing).
+  for (let n = 1; n <= BUILD_SLOTS; n++) {
+    const b = specBuilders(spec).find((x) => x.slot === n);
+    config[KEY.builderN(n)] = b ? [listValue(b.leader)] : [];
+    config[KEY.builderCivN(n)] = b && b.civ ? [listValue(b.civ)] : [];
+    config[KEY.builtN(n)] = b ? (b.pieces || []).map(listValue) : [];
+  }
   return { ...config, ...(spec.extra || {}) };
+}
+
+function builderOf(b, slot = 1) {
+  if (!b) return null;
+  const pieces = [...new Set(b.pieces || [])].sort();
+  return { slot: Number(b.slot || slot), leader: b.leader, civ: b.civ || null, pieces };
+}
+function specBuilders(spec) {
+  const list = (spec.builders || []).map((b, i) => builderOf(b, i + 1));
+  const one = builderOf(spec.builder, 1);
+  if (one && !list.find((b) => b.slot === 1)) list.push(one);
+  return list.filter(Boolean).sort((a, b) => a.slot - b.slot);
 }
 
 // The deal's config object (CONTRACTS 5.2) for the same setup.
@@ -246,7 +269,8 @@ export function dealConfig(spec = {}) {
     options,
     kept: options.KeepMine === "1" ? [...(spec.kept || [])].sort() : [],
     out: sortOut(out),
-    modOK: anyModdedBox(options) ? [...(spec.modOK || [])].sort() : []
+    modOK: anyModdedBox(options) ? [...(spec.modOK || [])].sort() : [],
+    builders: specBuilders(spec)
   };
 }
 
@@ -257,6 +281,8 @@ const sortOut = (out) => [...out].sort((a, b) => (outKey(a) < outKey(b) ? -1 : o
 export function configFromTables(db) {
   const seedRow = db.prepare("SELECT Seed FROM LShufSeed").all();
   const options = { ...OPTION_DEFAULTS };
+  // A part with no row follows the preset (CONTRACTS 15); the deal's normalizeConfig does that for an absent value.
+  for (const part of ["Abilities", "Attributes", "Biases"]) delete options[part];
   for (const r of db.prepare("SELECT Name, Value FROM LShufOptions").all()) options[r.Name] = String(r.Value);
   const col = (sql) => db.prepare(sql).all().map((r) => r.LeaderType).sort();
   return {
@@ -265,8 +291,16 @@ export function configFromTables(db) {
     options,
     kept: col("SELECT LeaderType FROM LShufKept"),
     out: sortOut(db.prepare("SELECT LeaderType, Reason FROM LShufOut").all().map((r) => ({ ...r }))),
-    modOK: col("SELECT LeaderType FROM LShufModOK")
+    modOK: col("SELECT LeaderType FROM LShufModOK"),
+    builders: buildersFromTables(db)
   };
+}
+
+function buildersFromTables(db) {
+  return db.prepare("SELECT Slot, LeaderType, CivilizationType FROM LShufBuild ORDER BY Slot").all().map((b) => {
+    const pieces = db.prepare("SELECT PieceId FROM LShufBuildPieces WHERE Slot = ?").all(b.Slot).map((r) => r.PieceId);
+    return { slot: b.Slot, leader: b.LeaderType, civ: b.CivilizationType, pieces: [...new Set(pieces)].sort() };
+  });
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -291,10 +325,15 @@ function runItems(db, group, { allowMissing, missing, ran }) {
         throw new WaitingError(rel, ` (UpdateDatabase item of ${group.id})`);
       }
       if (!rel.endsWith(".sql")) throw new Error(`harness: ${group.id} loads ${rel}; only .sql items are handled`);
+      // Foreign keys on while our files run, as the game has them: a row whose parent isn't there yet fails its
+      // statement (and the game rolls back every mod), so an INSERT before its parent's must fail here too.
       try {
+        db.exec("PRAGMA foreign_keys = ON");
         db.exec(fs.readFileSync(abs, "utf8"));
       } catch (e) {
         throw new Error(`${group.id}: ${rel}: ${e.message}`);
+      } finally {
+        db.exec("PRAGMA foreign_keys = OFF");
       }
       ran.push(rel);
     }

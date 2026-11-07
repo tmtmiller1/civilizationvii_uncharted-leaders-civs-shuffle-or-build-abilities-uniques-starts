@@ -34,6 +34,9 @@ CREATE TABLE IF NOT EXISTS LShufMapping (
   AbilityTrait TEXT NOT NULL,
   Kind TEXT NOT NULL,
   BulletIndex INTEGER,
+  -- A piece covers bullets BulletIndex .. BulletIndex + BulletCount - 1: bullets one effect serves together are one
+  -- piece (scripts/mapping/merge-pieces.mjs), so nothing is ever dealt that does nothing on its own.
+  BulletCount INTEGER NOT NULL DEFAULT 1,
   BulletText TEXT,
   BiasTags TEXT,
   Value INTEGER NOT NULL DEFAULT 1,
@@ -106,3 +109,18 @@ CREATE TABLE IF NOT EXISTS LShufResultUnlocks (
   PRIMARY KEY (ProgressionTreeNodeType, TargetType)
 );
 CREATE TABLE IF NOT EXISTS LShufResultMeta (Name TEXT NOT NULL PRIMARY KEY, Value TEXT);
+
+-- Build your own leader (CONTRACTS section 13): the builder and the cards it took, written by config-gated groups.
+CREATE TABLE IF NOT EXISTS LShufBuild (Slot INTEGER PRIMARY KEY, LeaderType TEXT NOT NULL, CivilizationType TEXT);
+CREATE TABLE IF NOT EXISTS LShufBuildPieces (Slot INTEGER NOT NULL, PieceId TEXT NOT NULL, PRIMARY KEY (Slot, PieceId));
+
+-- Civilization builds (CONTRACTS section 14): what each built civilization holds after the deal. Kind is 'ability'
+-- (FromCivilization's ability trait) or 'unique' (one unit, building, quarter or improvement type, in PieceId).
+CREATE TABLE IF NOT EXISTS LShufResultCivPieces (
+  CivilizationType TEXT NOT NULL,
+  PieceId TEXT NOT NULL,
+  FromCivilization TEXT NOT NULL,
+  Kind TEXT NOT NULL,
+  SortIndex INTEGER NOT NULL,
+  PRIMARY KEY (CivilizationType, PieceId)
+);

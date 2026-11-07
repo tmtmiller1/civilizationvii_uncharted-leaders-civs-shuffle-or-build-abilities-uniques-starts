@@ -33,11 +33,18 @@
 					<Item>data/schema/frontend-tables.sql</Item>
 					<Item>data/frontend/parameters.sql</Item>
 					<Item>data/mapping/lshuf-mapping.sql</Item>
+					<Item>data/mapping/lshuf-civ-mapping.sql</Item>
 					<Item>data/generated/known-leaders.sql</Item>
 					<Item>data/setup-copy/setup-copy.sql</Item>
+					<Item>data/setup-copy/setup-copy-civ.sql</Item>
 				</UpdateDatabase>
 				<UpdateText>
 					<Item>text/en_us/lshuf-text.xml</Item>
+					<!-- The per-bullet text, so the build screens and the preview read each bonus in the player's language. -->
+					<Item>data/text-generated/lshuf-piece-text.sql</Item>
+					<Item>data/text-generated/lshuf-civ-piece-text.sql</Item>
+					<!-- The game's agenda text only loads in a game; the AI behavior cards need it here (text/agenda/). -->
+					<!-- @AGENDA_TEXT -->
 				</UpdateText>
 				<UIScripts>
 					<Item>ui/setup/lshuf-setup.js</Item>
@@ -56,6 +63,7 @@
 				<UpdateDatabase>
 					<Item>data/schema/gameplay-tables.sql</Item>
 					<Item>data/mapping/lshuf-mapping.sql</Item>
+					<Item>data/mapping/lshuf-civ-mapping.sql</Item>
 				</UpdateDatabase>
 			</Actions>
 		</ActionGroup>
@@ -66,6 +74,7 @@
 				<UpdateText>
 					<Item>text/en_us/lshuf-text.xml</Item>
 					<Item>data/text-generated/lshuf-piece-text.sql</Item>
+					<Item>data/text-generated/lshuf-civ-piece-text.sql</Item>
 				</UpdateText>
 			</Actions>
 		</ActionGroup>

@@ -1,0 +1,1 @@
+INSERT OR REPLACE INTO LShufOptions (Name, Value) VALUES ('Mode', 'LSHUF_MODE_CUSTOM');

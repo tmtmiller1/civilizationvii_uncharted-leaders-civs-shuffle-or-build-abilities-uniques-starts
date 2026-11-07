@@ -11,7 +11,9 @@ import {
   biasLine,
   biasRowsOf
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-text.js";
-import { MODE } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import {
+  MODE, A_MODE
+} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
 
 const sqlText = (value) => (value == null ? "NULL" : `'${String(value).replace(/'/g, "''")}'`);
 
@@ -84,7 +86,70 @@ export function writeLeaderRows(leaderType, view, current, tagTypes) {
   return ok.every((result) => result !== null);
 }
 
-const isSplit = (mode) => mode === MODE.SplitMatched || mode === MODE.SplitRandom;
+// --- the civ select's rows (CONTRACTS 14) ---
+
+const UNIQUE_KINDS = ["KIND_UNIT", "KIND_BUILDING", "KIND_QUARTER", "KIND_IMPROVEMENT"];
+
+/**
+ * The civ select's rows as they stand: CivilizationType -> { rows: [every CivilizationItems row of that civ, as the
+ * table holds it] }. The civ cards read the KIND_TRAIT row (the ability) and the unique rows per age domain.
+ * @returns {Map<string, { rows: object[] }>}
+ */
+export function readCivItemRows() {
+  const out = new Map();
+  const sql = "SELECT CivilizationDomain, CivilizationType, AgeType, Type, Kind, Name, Description, Icon, SortIndex, "
+    + "CanSyncretize FROM CivilizationItems ORDER BY CivilizationType, CivilizationDomain, SortIndex";
+  for (const row of configQuery(sql) || []) {
+    if (!out.has(row.CivilizationType)) out.set(row.CivilizationType, { rows: [] });
+    out.get(row.CivilizationType).rows.push({ ...row });
+  }
+  return out;
+}
+
+/**
+ * What the civ select should show for one civilization: its ability row(s) with these Name/Description keys, and
+ * these unique rows (CivilizationItems-shaped) in place of its own. Returns false when a query failed.
+ * @param {string} civType
+ * @param {{ ability: { Name: string, Description: string } | null, uniques: object[] }} view
+ * @param {{ rows: object[] }} shipped the civ's rows from readCivItemRows
+ */
+export function writeCivItemRows(civType, view, shipped) {
+  const where = `CivilizationType = ${sqlText(civType)}`;
+  const ok = [];
+  if (view.ability) {
+    ok.push(configQuery(`UPDATE CivilizationItems SET Name = ${sqlText(view.ability.Name)}, `
+      + `Description = ${sqlText(view.ability.Description)} WHERE ${where} AND Kind = 'KIND_TRAIT'`));
+  }
+  const kinds = UNIQUE_KINDS.map(sqlText).join(", ");
+  ok.push(configQuery(`DELETE FROM CivilizationItems WHERE ${where} AND Kind IN (${kinds})`));
+  // The civ's own age domains, so a unique shows wherever the civ's cards show.
+  const domains = [...new Set((shipped ? shipped.rows : []).map((r) => `${r.CivilizationDomain}|${r.AgeType || ""}`))];
+  for (const key of domains) {
+    const [domain, age] = key.split("|");
+    for (const u of view.uniques) {
+      ok.push(configQuery("INSERT OR IGNORE INTO CivilizationItems (CivilizationDomain, CivilizationType, AgeType, Type, "
+        + "Kind, Name, Description, Icon, SortIndex, CanSyncretize) VALUES ("
+        + [domain, civType, age || null, u.Type, u.Kind, u.Name, u.Description, u.Icon, u.SortIndex, u.CanSyncretize]
+          .map((v) => (typeof v === "number" ? String(v) : sqlText(v))).join(", ") + ")"));
+    }
+  }
+  return ok.every((result) => result !== null);
+}
+
+/**
+ * A civ's shipped view: its ability keys and its own unique rows (first age domain's), from readCivItemRows.
+ */
+export function shippedCivView(shipped) {
+  const rows = shipped ? shipped.rows : [];
+  const trait = rows.find((r) => r.Kind === "KIND_TRAIT") || null;
+  const firstDomain = rows.length ? rows[0].CivilizationDomain : null;
+  const uniques = rows.filter((r) => UNIQUE_KINDS.includes(r.Kind) && r.CivilizationDomain === firstDomain);
+  return { ability: trait ? { Name: trait.Name, Description: trait.Description } : null, uniques };
+}
+
+// Abilities split into bonuses: the ctx's Abilities part (CONTRACTS 15), with the old mode names as a fallback.
+const isSplit = (ctx) => ctx.abilities === A_MODE.Split
+  || (!ctx.abilities && (ctx.mode === MODE.SplitMatched || ctx.mode === MODE.SplitRandom));
 
 /**
  * What the leader screens show for one leader after a deal.
@@ -98,7 +163,7 @@ export function leaderView(leaderType, deal, ctx) {
   if (!own) return null;
   const leader = (deal.leaders || []).find((row) => row.LeaderType === leaderType);
   if (!leader) return null;
-  const from = !isSplit(ctx.mode) && leader.AbilityFrom ? ctx.abilityOf(leader.AbilityFrom) : null;
+  const from = !isSplit(ctx) && leader.AbilityFrom ? ctx.abilityOf(leader.AbilityFrom) : null;
   const pieces = (deal.pieces || []).filter((row) => row.LeaderType === leaderType);
   const bias = biasLine(biasRowsOf(deal.biases, leaderType), ctx);
   const description = assembleDescription(pieces, { ...ctx, extraLines: [bias, ...(ctx.extraLines || [])] });

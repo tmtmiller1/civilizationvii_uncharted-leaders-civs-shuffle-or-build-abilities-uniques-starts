@@ -7,6 +7,7 @@ import { TRAIT } from "../lshuf-constants.js";
 import { SALT } from "../lshuf-key.js";
 import { ATTR_FILL_CAP, ATTR_REPAIR_CAP, ATTR_STEP_CAP, cmp, compareBy, cyclicDonors, keyMap } from "./lshuf-deal-util.js";
 import { isOffFor } from "./lshuf-deal-axes.js";
+import { buildsFor } from "./lshuf-deal-build.js";
 
 export const cardId = (leader, trait) => `${leader}|${trait}`;
 
@@ -14,11 +15,55 @@ function attrRow(leader, trait, from, copy = 0) {
   return { LeaderType: leader, TraitType: trait, FromLeaderType: from, Copy: copy };
 }
 
+// The builder's attribute picks (CONTRACTS 13): for each kind ticked, its own card of that kind when it gave one,
+// else the first card of that kind in `order`. Null when the builder isn't in the pool or ticked no attribute.
+function takeAttrs(ctx, pool, order) {
+  const takers = new Map();
+  const used = new Set();
+  for (const build of buildsFor(ctx, { dealtSet: new Set(pool) })) {
+    if (!build.attrs.length) continue;
+    const taken = [];
+    for (const trait of build.attrs) {
+      const open = order.filter((c) => c.trait === trait && !used.has(c.id));
+      const card = open.find((c) => c.from === build.leader) || open[0];
+      if (!card) continue;
+      used.add(card.id);
+      taken.push(card);
+    }
+    takers.set(build.leader, taken);
+  }
+  return takers.size ? { takers, used } : null;
+}
+
+// Swap everything with a builder that ticked attributes: the builder gets its cards and leaves the package cycle,
+// so whoever was to take the builder's package takes the builder's donor's instead (minus the taken cards); the
+// builder's own untaken cards go to nobody.
+// Each taker leaves the cycle in slot order: whoever was to take its package takes its donor's instead.
+function leaveCycle(pool, donors, takers) {
+  for (const leader of takers.keys()) {
+    for (const x of pool) if (x !== leader && donors[x] === leader) donors[x] = donors[leader];
+  }
+}
+
 function dealPaired(ctx, pool, res) {
   const donors = cyclicDonors(ctx.seed, SALT.Leaders, pool);
+  const cards = [];
+  for (const x of pool) for (const t of ctx.byType.get(x).attrs) cards.push({ id: cardId(x, t), from: x, trait: t });
+  const build = takeAttrs(ctx, pool, cards.sort((a, b) => cmp(a.id, b.id))) || { takers: new Map(), used: new Set() };
+  leaveCycle(pool, donors, build.takers);
   for (const x of pool) {
+    const copies = {};
+    for (const c of build.takers.get(x) || []) {
+      // A second card of one kind is copy 1 (CONTRACTS 5.3), in the order the cards were taken.
+      const copy = copies[c.trait] || 0;
+      copies[c.trait] = copy + 1;
+      res.rows.push(attrRow(x, c.trait, c.from, copy));
+      res.cardHolder[c.id] = x;
+    }
+    if (build.takers.has(x)) continue;
     const y = donors[x];
     for (const t of ctx.byType.get(y).attrs) {
+      if (build.used.has(cardId(y, t))) continue;
       res.rows.push(attrRow(x, t, y));
       res.cardHolder[cardId(y, t)] = x;
     }
@@ -34,10 +79,13 @@ function buildDeck(ctx, pool) {
   return cards.map((c, ord) => ({ ...c, ord }));
 }
 
-function buildSlots(ctx, pool) {
+function buildSlots(ctx, pool, skip) {
   const keys = keyMap(ctx.seed, SALT.AttributeRedraw, pool);
   const slots = [];
-  for (const x of pool) ctx.byType.get(x).attrs.forEach((_t, j) => slots.push({ x, j, key: keys[x] }));
+  for (const x of pool) {
+    if (skip.has(x)) continue;
+    ctx.byType.get(x).attrs.forEach((_t, j) => slots.push({ x, j, key: keys[x] }));
+  }
   return slots.sort((a, b) => compareBy([[a.j, b.j], [a.key, b.key], [a.x, b.x]]));
 }
 
@@ -57,7 +105,7 @@ function pickCard(deck, used, holds, x) {
 function findSwap(filled, u) {
   const kinds = (x, skip) => filled.filter((f) => f.x === x && f.card && f !== skip).map((f) => f.card.trait);
   for (const c of filled) {
-    if (!c.card) continue;
+    if (!c.card || c.fixed) continue;
     if (kinds(c.x, c).includes(u.trait)) continue;
     const s = filled.find((e) => !e.card && e.x !== c.x && !kinds(e.x, null).includes(c.card.trait));
     if (s) return [c, s];
@@ -104,11 +152,14 @@ function fill(deck, filled, used) {
 
 function dealDeck(ctx, pool, res) {
   const deck = buildDeck(ctx, pool);
-  const slots = buildSlots(ctx, pool);
-  const used = new Set();
+  const build = takeAttrs(ctx, pool, deck);
+  const slots = buildSlots(ctx, pool, build ? build.takers : new Map());
+  const used = new Set(build ? build.used : []);
   const holds = {};
   for (const x of pool) holds[x] = new Set();
+  // The builder's taken cards come first and never move in the swap pass.
   const filled = [];
+  for (const [x, taken] of build ? build.takers : []) for (const card of taken) filled.push({ x, card, fixed: true });
   for (const slot of slots.slice(0, ATTR_STEP_CAP)) {
     const card = pickCard(deck, used, holds[slot.x], slot.x);
     filled.push({ x: slot.x, card });
@@ -129,10 +180,35 @@ function dealDeck(ctx, pool, res) {
   }
 }
 
-export function dealAttributes(ctx, axes) {
+// Paired with the ability while abilities are split: each leader takes the attributes of the leader it got the
+// most pieces from (its own when it got none); builders take their cards first, and a card they took isn't given
+// again.
+function dealFromAbility(ctx, pool, res, ability) {
+  const cards = [];
+  for (const x of pool) for (const t of ctx.byType.get(x).attrs) cards.push({ id: cardId(x, t), from: x, trait: t });
+  const build = takeAttrs(ctx, pool, cards.sort((a, b) => cmp(a.id, b.id))) || { takers: new Map(), used: new Set() };
+  for (const x of pool) {
+    const copies = {};
+    for (const c of build.takers.get(x) || []) {
+      const copy = copies[c.trait] || 0;
+      copies[c.trait] = copy + 1;
+      res.rows.push(attrRow(x, c.trait, c.from, copy));
+      res.cardHolder[c.id] = x;
+    }
+    if (build.takers.has(x)) continue;
+    const y = ability.abilityFrom[x] || x;
+    for (const t of ctx.byType.get(y).attrs) {
+      if (build.used.has(cardId(y, t))) continue;
+      res.rows.push(attrRow(x, t, y));
+    }
+  }
+}
+
+export function dealAttributes(ctx, axes, ability) {
   const T = axes.T;
   const res = { rows: [], cardHolder: {} };
-  if (T.dealt.length && ctx.f.isPaired) dealPaired(ctx, T.dealt, res);
+  if (T.dealt.length && ctx.f.tCycle) dealPaired(ctx, T.dealt, res);
+  else if (T.dealt.length && ctx.f.tFromA) dealFromAbility(ctx, T.dealt, res, ability);
   else if (T.dealt.length) dealDeck(ctx, T.dealt, res);
   for (const l of ctx.input.leaders) {
     if (T.dealtSet.has(l.type)) continue;

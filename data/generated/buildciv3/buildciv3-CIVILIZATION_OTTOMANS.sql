@@ -1,0 +1,1 @@
+UPDATE LShufBuild SET CivilizationType = 'CIVILIZATION_OTTOMANS' WHERE Slot = 3 AND 'CIVILIZATION_OTTOMANS' IN (SELECT CivilizationType FROM Civilizations);

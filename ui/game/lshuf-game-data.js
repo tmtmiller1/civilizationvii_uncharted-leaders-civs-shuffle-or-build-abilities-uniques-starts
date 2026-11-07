@@ -1,7 +1,9 @@
 // What the game dealt, read from the gameplay LShufResult* tables (CONTRACTS.md 5.3), and the lookups the display
 // text needs in the game scope. GameInfo first; a custom table GameInfo doesn't expose is read with
 // Database.query("gameplay") instead (CONTRACTS.md 11).
-import { OPTION_DEFAULTS, MODE } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import {
+  OPTION_DEFAULTS, MODE
+} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
 import { guarded, mapSetsStarts, rowsOf } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
 import { attributeTags, readLeaderRows } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-config-rows.js";
 
@@ -67,6 +69,7 @@ export function readGameDeal() {
   return {
     deal,
     mode: metaValue(deal.meta, "Mode") || option("Mode"),
+    abilities: option("Abilities"),
     seed: metaValue(deal.meta, "Seed"),
     reveal: option("Reveal"),
     tooFew: (deal.meta || []).filter((r) => String(r.Name).startsWith("Fallback_")).map((r) => r.Name)

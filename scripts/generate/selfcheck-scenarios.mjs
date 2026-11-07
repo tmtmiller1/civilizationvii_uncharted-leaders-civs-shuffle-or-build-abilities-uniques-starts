@@ -1,6 +1,6 @@
 // The game configs the self-check runs: every mode at several seeds, the switches, keep and left-out lists, the
 // modded boxes, and the split modes again with the mapping marked reviewed so the piece deal itself runs.
-import { DEALING, MODE, ONOFF, PERSONA } from "../../shared/lshuf-constants.js";
+import { A_MODE, B_MODE, DEALING, MODE, ONOFF, PERSONA, T_MODE } from "../../shared/lshuf-constants.js";
 
 const ALL_MODES = Object.values(MODE);
 
@@ -8,8 +8,21 @@ function cfg(seed, extra = {}) {
   return { LShufSeed: String(seed), ...extra };
 }
 
+// Custom combinations of the three parts (CONTRACTS 15): Leader shuffle reads Custom, the deal follows the parts.
+const CUSTOM = [
+  ["whole abilities, paired attributes, rolled terrain", A_MODE.Whole, T_MODE.Paired, B_MODE.Rolled],
+  ["split abilities, paired attributes, paired terrain", A_MODE.Split, T_MODE.Paired, B_MODE.Paired],
+  ["whole abilities, normal attributes, matched terrain", A_MODE.Whole, T_MODE.Normal, B_MODE.Matched],
+  ["normal abilities, random attributes, paired terrain (falls back to rolled)", A_MODE.Normal, T_MODE.Random, B_MODE.Paired],
+  ["split abilities, attributes off, normal terrain", A_MODE.Split, ONOFF.Off, B_MODE.Normal]
+];
+
 export function scenarios() {
   const out = [];
+  CUSTOM.forEach(([name, a, t, b], i) => {
+    out.push({ name: `custom: ${name}`, reviewed: a === A_MODE.Split,
+      config: cfg(40 + i, { LShufMode: "LSHUF_MODE_CUSTOM", LShufAbilities: a, LShufAttributes: t, LShufBiases: b }) });
+  });
   for (const mode of ALL_MODES) {
     for (const seed of [1, 17, 256]) out.push({ name: `${mode} seed ${seed}`, config: cfg(seed, { LShufMode: mode }) });
   }
@@ -76,5 +89,56 @@ export function scenarios() {
     })
   });
   out.push({ name: "no seed row (defaults to 1), SPLIT_RANDOM", config: { LShufMode: MODE.SplitRandom } });
+  // Build your own leader (CONTRACTS 13).
+  const built = (ids) => ids.map((id) => `|${id}|`);
+  const amina = { LShufBuilder: ["|LEADER_AMINA|"], LShufBuilderCiv: ["|CIVILIZATION_ROME|"] };
+  const hand = built(["LEADER_PACHACUTI__WHOLE", "ATTR_TRAIT_LEADER_ATTRIBUTE_CULTURAL", "ATTR_TRAIT_LEADER_ATTRIBUTE_MILITARISTIC",
+    "PERSONA_LEADER_XERXES", "BIAS_LEADER_PACHACUTI", "CIVBIAS_CIVILIZATION_EGYPT"]);
+  for (const mode of ALL_MODES) {
+    out.push({ name: `build ${mode} seed 21`, config: cfg(21, { LShufMode: mode, ...amina, LShufBuilt: hand }) });
+  }
+  out.push({
+    name: "build SPLIT_MATCHED reviewed bullets seed 22",
+    reviewed: true,
+    config: cfg(22, { LShufMode: MODE.SplitMatched, ...amina, LShufBuilt: built(["LEADER_PACHACUTI__B01", "LEADER_XERXES__B02",
+      "LEADER_AMINA__B01", "ATTR_TRAIT_LEADER_ATTRIBUTE_ECONOMIC"]) })
+  });
+  out.push({
+    name: "build SWAP_LEADERS own whole, no civ, seed 23",
+    config: cfg(23, { LShufMode: MODE.SwapLeaders, LShufBuilder: ["|LEADER_AMINA|"], LShufBuilt: built(["LEADER_AMINA__WHOLE", "BIAS_LEADER_AMINA"]) })
+  });
+  // Builder slots: the host and two AI leaders; Pachacuti's whole is ticked by slots 1 and 2 and goes to slot 1.
+  const ai2 = { LShufBuilder2: ["|LEADER_XERXES|"], LShufBuilderCiv2: ["|CIVILIZATION_PERSIA|"],
+    LShufBuilt2: built(["LEADER_PACHACUTI__WHOLE", "LEADER_AMINA__WHOLE", "ATTR_TRAIT_LEADER_ATTRIBUTE_CULTURAL", "BIAS_LEADER_AMINA"]) };
+  const ai3 = { LShufBuilder3: ["|LEADER_HATSHEPSUT|"],
+    LShufBuilt3: built(["LEADER_HATSHEPSUT__B01", "LEADER_CONFUCIUS__B02", "ATTR_TRAIT_LEADER_ATTRIBUTE_ECONOMIC", "PERSONA_LEADER_AMINA"]) };
+  for (const mode of ALL_MODES) {
+    out.push({ name: `build three slots ${mode} seed 25`, config: cfg(25, { LShufMode: mode, ...amina, LShufBuilt: hand, ...ai2, ...ai3 }) });
+  }
+  out.push({
+    name: "build slot 2 only (host not building), SPLIT_RANDOM seed 26",
+    config: cfg(26, { LShufMode: MODE.SplitRandom, ...ai2 })
+  });
+  out.push({
+    name: "build SWAP_ABILITIES persona re-dealt + builder kept (not in game reason), seed 24",
+    config: cfg(24, { LShufMode: MODE.SwapAbilities, LShufPersonality: PERSONA.Redealt, LShufKeep_LEADER_AMINA: "1", ...amina, LShufBuilt: hand })
+  });
+  // Civilizations shuffle too (CONTRACTS 16): each value of the two rows, with and without the host's civ build.
+  const civHand = built(["CIVABIL_CIVILIZATION_GREECE", "LEADER_PACHACUTI__WHOLE"]);
+  const civValues = [
+    ["LSHUF_CA_SWAPPED", "LSHUF_CU_NORMAL"], ["LSHUF_CA_SWAPPED", "LSHUF_CU_PAIRED"], ["LSHUF_CA_NORMAL", "LSHUF_CU_SHUFFLED"],
+    ["LSHUF_CA_SWAPPED", "LSHUF_CU_SHUFFLED"], ["LSHUF_OFF", "LSHUF_OFF"], ["LSHUF_CA_NORMAL", "LSHUF_CU_PAIRED"]
+  ];
+  for (const mode of [MODE.SwapAbilities, MODE.SplitMatched]) {
+    for (const [ca, cu] of civValues) {
+      out.push({ name: `civ shuffle ${mode} ${ca} ${cu} seed 31`, config: cfg(31, { LShufMode: mode, LShufCivAbilities: ca, LShufCivUniques: cu }) });
+    }
+    out.push({
+      name: `civ shuffle ${mode} swapped+paired with a civ build seed 32`,
+      config: cfg(32, { LShufMode: mode, LShufCivAbilities: "LSHUF_CA_SWAPPED", LShufCivUniques: "LSHUF_CU_PAIRED", ...amina, LShufBuilt: civHand })
+    });
+  }
+  out.push({ name: "civ shuffle on Normal parts (custom) swapped+shuffled seed 33",
+    config: cfg(33, { LShufMode: MODE.None, LShufCivAbilities: "LSHUF_CA_SWAPPED", LShufCivUniques: "LSHUF_CU_SHUFFLED" }) });
   return out;
 }

@@ -18,7 +18,9 @@ import {
   WaitingError
 } from "./_harness.mjs";
 import { MODDED_LEADERS, VANILLA_LEADERS } from "../shared/lshuf-known-leaders.js";
-import { DEALING, MODE, ONOFF, PERSONA, pieceId, PIECE_KIND, STATUS, TRAIT } from "../shared/lshuf-constants.js";
+import {
+  A_MODE, B_MODE, DEALING, MODE, MODE_CUSTOM, ONOFF, PERSONA, pieceId, PIECE_KIND, STATUS, T_MODE, TRAIT
+} from "../shared/lshuf-constants.js";
 
 export const MODES = Object.values(MODE);
 export const DEAL_MODES = MODES.filter((m) => m !== MODE.None);
@@ -30,6 +32,15 @@ export const OFF_SETS = [
   { Abilities: ONOFF.Off },
   { Attributes: ONOFF.Off },
   { Biases: ONOFF.Off, Abilities: ONOFF.Off, Attributes: ONOFF.Off }
+];
+// Custom combinations of the three parts (CONTRACTS 15), as options objects.
+export const CUSTOM_COMBOS = [
+  { Mode: MODE_CUSTOM, Abilities: A_MODE.Whole, Attributes: T_MODE.Paired, Biases: B_MODE.Rolled },
+  { Mode: MODE_CUSTOM, Abilities: A_MODE.Split, Attributes: T_MODE.Paired, Biases: B_MODE.Paired },
+  { Mode: MODE_CUSTOM, Abilities: A_MODE.Whole, Attributes: T_MODE.Normal, Biases: B_MODE.Matched },
+  { Mode: MODE_CUSTOM, Abilities: A_MODE.Normal, Attributes: T_MODE.Random, Biases: B_MODE.Paired },
+  { Mode: MODE_CUSTOM, Abilities: A_MODE.Split, Attributes: ONOFF.Off, Biases: B_MODE.Normal },
+  { Mode: MODE_CUSTOM, Abilities: A_MODE.Normal, Attributes: T_MODE.Normal, Biases: B_MODE.Rolled }
 ];
 export const DEALINGS = Object.values(DEALING);
 export const PERSONAS = Object.values(PERSONA);

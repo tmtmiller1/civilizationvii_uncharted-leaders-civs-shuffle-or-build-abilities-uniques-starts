@@ -4,7 +4,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { configFromTables, DEAL_LOAD_ORDER, dealConfig, gameConfig, loadGame, need, normalizeOptions } from "./_harness.mjs";
-import { DEALING, KEY, MODE, ONOFF, PERSONA, REVEAL, SEED_MAX, SEED_MIN } from "../shared/lshuf-constants.js";
+import {
+  DEALING, KEY, MODE, PERSONA, REVEAL, SEED_MAX, SEED_MIN, A_MODE, B_MODE, T_MODE, CA_MODE, CU_MODE,
+  MODE_CUSTOM
+} from "../shared/lshuf-constants.js";
 import { ADDED_LEADER } from "../scripts/fixtures/build-fixtures.mjs";
 
 async function inputs(spec, { config, fixture = "base" } = {}) {
@@ -35,10 +38,12 @@ test("deal numbers 1..256 each set LShufSeed; anything else leaves it empty", as
 
 test("every option value reads back", async () => {
   const values = {
-    Mode: Object.values(MODE),
-    Biases: Object.values(ONOFF),
-    Abilities: Object.values(ONOFF),
-    Attributes: Object.values(ONOFF),
+    Mode: [...Object.values(MODE), MODE_CUSTOM],
+    Biases: Object.values(B_MODE),
+    Abilities: Object.values(A_MODE),
+    Attributes: Object.values(T_MODE),
+    CivAbilities: Object.values(CA_MODE),
+    CivUniques: Object.values(CU_MODE),
     Personality: Object.values(PERSONA),
     Dealing: Object.values(DEALING),
     Reveal: Object.values(REVEAL),

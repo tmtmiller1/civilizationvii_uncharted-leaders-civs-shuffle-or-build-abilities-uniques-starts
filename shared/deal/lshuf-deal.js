@@ -9,6 +9,8 @@ import { dealAttributes } from "./lshuf-deal-attributes.js";
 import { dealBiases } from "./lshuf-deal-biases.js";
 import { dealPersona, dealUnlocks, personaFrom } from "./lshuf-deal-unlocks.js";
 import { buildDealInput } from "./lshuf-deal-input.js";
+import { buildStates, isBuilder } from "./lshuf-deal-build.js";
+import { dealCivBuilds } from "./lshuf-deal-civ.js";
 
 export { DEAL_VERSION, buildDealInput };
 
@@ -17,6 +19,7 @@ function leaderReason(ctx, axes, ability, leader) {
     const r = axisReasonFor(axes[axis], leader);
     if (r != null) return r;
   }
+  if (isBuilder(ctx, leader)) return REASON.Built;
   return ability.changed[leader] ? REASON.ModdedChanged : null;
 }
 
@@ -47,24 +50,28 @@ function metaRows(ctx, axes) {
     { Name: "DealVersion", Value: String(DEAL_VERSION) }
   ];
   for (const axis of AXES) if (axes[axis].fallback) rows.push({ Name: `Fallback_${AXIS_NAME[axis]}`, Value: REASON.TooFew });
+  for (const b of ctx.builds) rows.push({ Name: b.slot === 1 ? "Builder" : `Builder${b.slot}`, Value: b.ok ? "ok" : b.why });
   return rows;
 }
 
 export function computeDeal(input) {
   const ctx = makeContext(input);
+  ctx.builds = buildStates(ctx);
   const axes = computeAxes(ctx);
   const ability = dealAbility(ctx, axes);
   const persona = dealPersona(ctx, axes);
-  const attributes = dealAttributes(ctx, axes);
+  const attributes = dealAttributes(ctx, axes, ability);
   const biases = dealBiases(ctx, axes, ability);
   const pieces = [];
   for (const leader of sortIds(ctx.majors)) pieces.push(...(ability.pieces[leader] || []));
+  const civ = dealCivBuilds(ctx);
   return {
     leaders: leaderRows(ctx, axes, ability, persona, biases),
     pieces,
     attributes: attributes.rows,
     biases: biases.rows,
     unlocks: dealUnlocks(ctx, axes, ability, attributes),
-    meta: metaRows(ctx, axes)
+    civPieces: civ.rows,
+    meta: [...metaRows(ctx, axes), ...civ.meta]
   };
 }

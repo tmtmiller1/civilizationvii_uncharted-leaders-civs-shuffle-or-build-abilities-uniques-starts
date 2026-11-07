@@ -1,9 +1,9 @@
 # Re-dealable Leader Abilities, Attributes, and Start Biases
 
-A Civilization VII mod, in development. At game setup you pick how leaders are mixed up for the game: each leader takes
-another leader's ability, attributes and start bias, or the abilities are broken into their bullet points and dealt out
-at random. You can also switch abilities, attributes or start biases off for a game where all leaders start on equal
-footing. The game's own leader screens show what each leader got, with a new line for the start bias.
+A Civilization VII mod, in development. At game setup you pick what gets shuffled between leaders: another leader's
+whole ability, another leader's whole package, or a random hand of the separate bonuses inside every ability. You can also turn
+abilities, attributes or start terrain off for everyone, so all leaders start even. The game's own leader screens show
+what each leader got, with a new line for where they like to start.
 
 Status: first build (0.1.0, unreleased). The code and data are written and checked offline with lint and tests, but
 none of it has been watched in a running game yet. Until the lab runs show it working, treat each feature as built,
@@ -11,14 +11,20 @@ not as working. What still has to be seen goes on the workspace [WATCH_LIST.md](
 
 ## What it does
 
-- A Re-dealable Leaders button in Advanced Settings opens the mod's own window. It opens on the main choices, and the
-  fine-tuning, leader lists, pools and modded leaders sit behind Show advanced settings. The options are hidden setup
-  parameters, so they save with the game and travel through the multiplayer lobby.
-- Five modes: Not re-dealt, Swap whole abilities, Swap whole leaders, Split abilities with matched starts, and Split
-  abilities with random starts.
-- Off switches for start biases, leader abilities and leader attributes, plus Keep my leader as chosen, the leaders to
-  re-deal, two Civilization VI-style leader pools, AI personality, Balanced or Pure chance dealing, when the deal is
-  revealed, and a deal number from 1 to 256.
+- The seven main settings, AI behavior among them, are ordinary rows in a Re-dealable Leaders Settings section of
+  Advanced Settings, followed by Leader pool..., Civilization pool..., Build your own leader... and Advanced settings... buttons. Build
+  your own leader is a memento-style card screen: your leader's slots along the top, every piece in the shuffle as a
+  card below, and the rest shuffled among the AI. The advanced
+  window has Split fairness, the shuffle number, and the lists of leaders that are shuffled and leaders from
+  other mods. Every list has All and None. Everything saves with the game and travels through the multiplayer lobby.
+- Build your own leader and Build your own civilization: memento-style card screens (the leader's ability bonuses,
+  attributes, AI behavior and start terrain; the civilization's ability, uniques and start terrain), for you and up to
+  three AI leaders, with the rest shuffled among the others.
+- Presets (Base game, Full random, Paired random, Logical split random, Split random) over one setting per
+  part: leader abilities, leader attributes, start terrain, civilization abilities and civilization uniques.
+- Off entirely values for leader abilities, leader attributes and start terrain, plus Human players keep their
+  own leader, a Civilization VI-style leader pool, AI behavior, Fair shares or Pure luck, when other leaders'
+  bonuses are shown, and a shuffle number from 1 to 256.
 - The deal runs in SQL at load time, gated on the setup values, so it comes out the same after a load, in each age and
   on each machine. The setup screen works out the same deal in JS to show it before the game starts.
 - The leader screens, a Who got what panel and City Details show the result.
@@ -57,6 +63,10 @@ npm test                # runs tests/run-all.mjs
 npm run build:modinfo   # builds the .modinfo from modinfo.template.xml and the generated groups
 npm run verify          # check, lint and test in one go
 ```
+
+The tests build their databases from `tests/fixtures/source-db/` (not committed): copy a gameplay, frontend and
+localization `-copy.sqlite` set there from an in-game Debug folder with the Tower mods on. Without it they read the
+live Debug folder, which a launch that stops at the main menu leaves nearly empty.
 
 These all run offline. Anything in a running game (lab games, deploys, logs) goes through Tower Bench, as the
 workspace rules say.

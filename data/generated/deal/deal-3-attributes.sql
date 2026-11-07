@@ -6,18 +6,89 @@ DELETE FROM LShufWork_ACard;
 INSERT INTO LShufWork_ACard (CardId, FromLeader, TraitType)
   SELECT lt.LeaderType || '|' || lt.TraitType, lt.LeaderType, lt.TraitType
   FROM LeaderTraits lt JOIN LShufWork_Pool p ON p.Axis = 'T' AND p.LeaderType = lt.LeaderType
-  WHERE lt.TraitType IN (SELECT TraitType FROM LShufAttributeTraits) AND (SELECT IsPaired FROM LShufWork_Cfg) = 0;
+  WHERE lt.TraitType IN (SELECT TraitType FROM LShufAttributeTraits) AND (SELECT TCycle FROM LShufWork_Cfg) = 0 AND (SELECT TFromA FROM LShufWork_Cfg) = 0;
 UPDATE LShufWork_ACard SET Rank = (SELECT COUNT(*) FROM LShufWork_ACard o WHERE 1 = 1 AND (o.CardId < LShufWork_ACard.CardId)) WHERE 1 = 1;
 UPDATE LShufWork_ACard SET K = ((((((((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (3) * 104729 + (Rank) * 1299709 + 1) % 67108859) * ((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (3) * 104729 + (Rank) * 1299709 + 1) % 67108859)) + 1013904223) % 67108859) * (((((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (3) * 104729 + (Rank) * 1299709 + 1) % 67108859) * ((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (3) * 104729 + (Rank) * 1299709 + 1) % 67108859)) + 1013904223) % 67108859)) + 1664525) % 67108859);
 UPDATE LShufWork_ACard SET Ord = (SELECT COUNT(*) FROM LShufWork_ACard o WHERE 1 = 1 AND (o.K < LShufWork_ACard.K OR (o.K = LShufWork_ACard.K AND (o.CardId < LShufWork_ACard.CardId)))) WHERE 1 = 1;
+CREATE TABLE IF NOT EXISTS LShufWork_ACardAll (CardId TEXT PRIMARY KEY, FromLeader TEXT, TraitType TEXT, Ord INTEGER);
+DELETE FROM LShufWork_ACardAll;
+INSERT INTO LShufWork_ACardAll (CardId, FromLeader, TraitType)
+  SELECT lt.LeaderType || '|' || lt.TraitType, lt.LeaderType, lt.TraitType
+  FROM LeaderTraits lt JOIN LShufWork_Pool p ON p.Axis = 'T' AND p.LeaderType = lt.LeaderType
+  WHERE lt.TraitType IN (SELECT TraitType FROM LShufAttributeTraits);
+UPDATE LShufWork_ACardAll SET Ord = COALESCE((SELECT c.Ord FROM LShufWork_ACard c WHERE c.CardId = LShufWork_ACardAll.CardId), 0);
+UPDATE LShufWork_Build SET HasT = (OK = 1 AND Leader IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'T') AND EXISTS (SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'attr' AND p.Slot = LShufWork_Build.Slot AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits)));
+CREATE TABLE IF NOT EXISTS LShufWork_ATaken (Builder TEXT, TraitType TEXT, Copy INTEGER NOT NULL DEFAULT 1, Slot INTEGER, CardId TEXT, FromLeader TEXT, Ord INTEGER, PRIMARY KEY (Builder, TraitType, Copy));
+DELETE FROM LShufWork_ATaken;
+INSERT OR IGNORE INTO LShufWork_ATaken (Builder, TraitType, Copy, Slot) SELECT b.Leader, p.Arg, p.Copy, 1 FROM LShufWork_Build b
+  JOIN LShufWork_BuildPiece p ON p.Slot = b.Slot AND p.Kind = 'attr' AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits)
+  WHERE b.Slot = 1 AND b.OK = 1 AND b.HasT = 1;
+UPDATE LShufWork_ATaken SET CardId = COALESCE(
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.FromLeader = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1) AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL)),
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL) ORDER BY a.Ord, a.CardId LIMIT 1))
+  WHERE Slot = 1 AND Copy = 1 AND CardId IS NULL;
+UPDATE LShufWork_ATaken SET CardId = COALESCE(
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.FromLeader = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1) AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL)),
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL) ORDER BY a.Ord, a.CardId LIMIT 1))
+  WHERE Slot = 1 AND Copy = 2 AND CardId IS NULL;
+DELETE FROM LShufWork_ATaken WHERE Slot = 1 AND CardId IS NULL;
+UPDATE LShufWork_Donor SET Donor = (SELECT b.Donor FROM LShufWork_Donor b WHERE b.Axis = 'T' AND b.LeaderType = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1))
+  WHERE Axis = 'T' AND Donor = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1) AND LeaderType <> (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1) AND (SELECT b.HasT FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1) = 1 AND (SELECT TCycle FROM LShufWork_Cfg) = 1;
+INSERT OR IGNORE INTO LShufWork_ATaken (Builder, TraitType, Copy, Slot) SELECT b.Leader, p.Arg, p.Copy, 2 FROM LShufWork_Build b
+  JOIN LShufWork_BuildPiece p ON p.Slot = b.Slot AND p.Kind = 'attr' AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits)
+  WHERE b.Slot = 2 AND b.OK = 1 AND b.HasT = 1;
+UPDATE LShufWork_ATaken SET CardId = COALESCE(
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.FromLeader = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1) AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL)),
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL) ORDER BY a.Ord, a.CardId LIMIT 1))
+  WHERE Slot = 2 AND Copy = 1 AND CardId IS NULL;
+UPDATE LShufWork_ATaken SET CardId = COALESCE(
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.FromLeader = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1) AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL)),
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL) ORDER BY a.Ord, a.CardId LIMIT 1))
+  WHERE Slot = 2 AND Copy = 2 AND CardId IS NULL;
+DELETE FROM LShufWork_ATaken WHERE Slot = 2 AND CardId IS NULL;
+UPDATE LShufWork_Donor SET Donor = (SELECT b.Donor FROM LShufWork_Donor b WHERE b.Axis = 'T' AND b.LeaderType = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1))
+  WHERE Axis = 'T' AND Donor = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1) AND LeaderType <> (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1) AND (SELECT b.HasT FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1) = 1 AND (SELECT TCycle FROM LShufWork_Cfg) = 1;
+INSERT OR IGNORE INTO LShufWork_ATaken (Builder, TraitType, Copy, Slot) SELECT b.Leader, p.Arg, p.Copy, 3 FROM LShufWork_Build b
+  JOIN LShufWork_BuildPiece p ON p.Slot = b.Slot AND p.Kind = 'attr' AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits)
+  WHERE b.Slot = 3 AND b.OK = 1 AND b.HasT = 1;
+UPDATE LShufWork_ATaken SET CardId = COALESCE(
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.FromLeader = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1) AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL)),
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL) ORDER BY a.Ord, a.CardId LIMIT 1))
+  WHERE Slot = 3 AND Copy = 1 AND CardId IS NULL;
+UPDATE LShufWork_ATaken SET CardId = COALESCE(
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.FromLeader = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1) AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL)),
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL) ORDER BY a.Ord, a.CardId LIMIT 1))
+  WHERE Slot = 3 AND Copy = 2 AND CardId IS NULL;
+DELETE FROM LShufWork_ATaken WHERE Slot = 3 AND CardId IS NULL;
+UPDATE LShufWork_Donor SET Donor = (SELECT b.Donor FROM LShufWork_Donor b WHERE b.Axis = 'T' AND b.LeaderType = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1))
+  WHERE Axis = 'T' AND Donor = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1) AND LeaderType <> (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1) AND (SELECT b.HasT FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1) = 1 AND (SELECT TCycle FROM LShufWork_Cfg) = 1;
+INSERT OR IGNORE INTO LShufWork_ATaken (Builder, TraitType, Copy, Slot) SELECT b.Leader, p.Arg, p.Copy, 4 FROM LShufWork_Build b
+  JOIN LShufWork_BuildPiece p ON p.Slot = b.Slot AND p.Kind = 'attr' AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits)
+  WHERE b.Slot = 4 AND b.OK = 1 AND b.HasT = 1;
+UPDATE LShufWork_ATaken SET CardId = COALESCE(
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.FromLeader = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1) AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL)),
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL) ORDER BY a.Ord, a.CardId LIMIT 1))
+  WHERE Slot = 4 AND Copy = 1 AND CardId IS NULL;
+UPDATE LShufWork_ATaken SET CardId = COALESCE(
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.FromLeader = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1) AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL)),
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL) ORDER BY a.Ord, a.CardId LIMIT 1))
+  WHERE Slot = 4 AND Copy = 2 AND CardId IS NULL;
+DELETE FROM LShufWork_ATaken WHERE Slot = 4 AND CardId IS NULL;
+UPDATE LShufWork_Donor SET Donor = (SELECT b.Donor FROM LShufWork_Donor b WHERE b.Axis = 'T' AND b.LeaderType = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1))
+  WHERE Axis = 'T' AND Donor = (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1) AND LeaderType <> (SELECT b.Leader FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1) AND (SELECT b.HasT FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1) = 1 AND (SELECT TCycle FROM LShufWork_Cfg) = 1;
+UPDATE LShufWork_ATaken SET FromLeader = (SELECT a.FromLeader FROM LShufWork_ACardAll a WHERE a.CardId = LShufWork_ATaken.CardId);
+UPDATE LShufWork_ATaken SET Ord = (SELECT COUNT(*) FROM LShufWork_ATaken o WHERE 1 = 1 AND (o.Slot < LShufWork_ATaken.Slot OR (o.Slot = LShufWork_ATaken.Slot AND (o.TraitType < LShufWork_ATaken.TraitType OR (o.TraitType = LShufWork_ATaken.TraitType AND (o.Copy > LShufWork_ATaken.Copy)))))) WHERE 1 = 1;
+
 CREATE TABLE IF NOT EXISTS LShufWork_ASlot (LeaderType TEXT, TraitType TEXT, J INTEGER, K INTEGER, Ord INTEGER, PRIMARY KEY (LeaderType, TraitType));
 DELETE FROM LShufWork_ASlot;
 INSERT INTO LShufWork_ASlot (LeaderType, TraitType, K) SELECT c.FromLeader, c.TraitType, p.K
-  FROM LShufWork_ACard c JOIN LShufWork_Pool p ON p.Axis = 'TS' AND p.LeaderType = c.FromLeader;
+  FROM LShufWork_ACard c JOIN LShufWork_Pool p ON p.Axis = 'TS' AND p.LeaderType = c.FromLeader
+  WHERE NOT EXISTS (SELECT 1 FROM LShufWork_Build b WHERE b.OK = 1 AND b.HasT = 1 AND b.Leader = c.FromLeader);
 UPDATE LShufWork_ASlot SET J = (SELECT COUNT(*) FROM LShufWork_ASlot o WHERE o.LeaderType = LShufWork_ASlot.LeaderType AND (o.TraitType < LShufWork_ASlot.TraitType)) WHERE 1 = 1;
 UPDATE LShufWork_ASlot SET Ord = (SELECT COUNT(*) FROM LShufWork_ASlot o WHERE 1 = 1 AND (o.J < LShufWork_ASlot.J OR (o.J = LShufWork_ASlot.J AND (o.K < LShufWork_ASlot.K OR (o.K = LShufWork_ASlot.K AND (o.LeaderType < LShufWork_ASlot.LeaderType)))))) WHERE 1 = 1;
 CREATE TABLE IF NOT EXISTS LShufWork_ADealt (Ord INTEGER PRIMARY KEY, LeaderType TEXT, CardId TEXT);
 DELETE FROM LShufWork_ADealt;
+INSERT INTO LShufWork_ADealt (Ord, LeaderType, CardId) SELECT -1 - t.Ord, t.Builder, t.CardId FROM LShufWork_ATaken t;
 
 DROP VIEW IF EXISTS LShufWork_NextASlot;
 CREATE VIEW LShufWork_NextASlot AS SELECT s.Ord AS Ord, s.LeaderType AS LeaderType, a.CardId AS CardId
@@ -552,7 +623,7 @@ CREATE VIEW LShufWork_NextRepair AS SELECT u.CardId AS U, p.COrd AS COrd, p.CCar
       AND NOT EXISTS (SELECT 1 FROM LShufWork_ATried t WHERE t.CardId = a.CardId) ORDER BY a.Ord LIMIT 1) u
   LEFT JOIN (SELECT c.Ord AS COrd, c.CardId AS CCard, c.LeaderType AS H, cc.TraitType AS CT, s.Ord AS SOrd, s.LeaderType AS S
     FROM LShufWork_ADealt c JOIN LShufWork_ACard cc ON cc.CardId = c.CardId
-    JOIN LShufWork_ADealt s ON s.CardId IS NULL AND s.LeaderType <> c.LeaderType) p
+    JOIN LShufWork_ADealt s ON s.CardId IS NULL AND s.LeaderType <> c.LeaderType WHERE c.Ord >= 0) p
     ON NOT EXISTS (SELECT 1 FROM LShufWork_ADealt d JOIN LShufWork_ACard b ON b.CardId = d.CardId
       WHERE d.LeaderType = p.S AND b.TraitType = p.CT) AND NOT EXISTS (SELECT 1 FROM LShufWork_ADealt d JOIN LShufWork_ACard b ON b.CardId = d.CardId
       WHERE d.LeaderType = p.H AND b.TraitType = u.TraitType AND d.Ord <> p.COrd)

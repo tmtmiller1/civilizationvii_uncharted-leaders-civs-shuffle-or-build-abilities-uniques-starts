@@ -23,7 +23,7 @@ function lenient(sql) {
   return sql.replace(/\bNOT NULL\b/g, "").replace(/('Hash'\s+INTEGER\s*)UNIQUE/i, "$1");
 }
 
-function scratchDb(schema) {
+export function scratchDb(schema) {
   const db = new DatabaseSync(":memory:", { enableForeignKeyConstraints: false });
   for (const sql of schema.map(lenient)) {
     try {
@@ -58,7 +58,7 @@ function columnsOf(db, table) {
 
 // Database-format XML: <Database><Table><Row .../></Table>... plus <Replace>, <Update><Where/><Set/></Update>,
 // <Delete>.
-function applyDatabaseXml(db, root, file, problems) {
+export function applyDatabaseXml(db, root, file, problems) {
   for (const top of root.children) {
     for (const table of top.children) {
       const name = table.name;
@@ -123,7 +123,7 @@ function readReqs(node) {
   return out;
 }
 
-function resolveXrefs(gameEffects, geRequirements) {
+export function resolveXrefs(gameEffects, geRequirements) {
   const fix = (list) =>
     list.map((r) => {
       if (!r.xref) return r;
@@ -137,7 +137,7 @@ function resolveXrefs(gameEffects, geRequirements) {
 }
 
 // GameEffects-format XML: <GameEffects><Modifier id collection effect>...</Modifier></GameEffects>
-function applyGameEffects(root, file, gameEffects, problems, geRequirements, geSets) {
+export function applyGameEffects(root, file, gameEffects, problems, geRequirements, geSets) {
   const ge = firstChild(root, "GameEffects");
   for (const node of ge.children) {
     if (node.name === "Requirement" && node.attrs.id) {
@@ -167,7 +167,7 @@ function applyGameEffects(root, file, gameEffects, problems, geRequirements, geS
   }
 }
 
-function applySql(db, source, file, problems) {
+export function applySql(db, source, file, problems) {
   for (const stmt of splitSql(source)) {
     try {
       db.exec(stmt);

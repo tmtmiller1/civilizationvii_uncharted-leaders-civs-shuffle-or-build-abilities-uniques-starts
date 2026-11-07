@@ -23,7 +23,11 @@ export const SALT = {
   CivBiases: 9,
   Personality: 10,
   Pools: 11,
-  Unlocks: 12
+  Unlocks: 12,
+  CivAbilities: 13,
+  CivUniques: 14,
+  CivCivics: 15,
+  CivPieces: 16
 };
 
 export function lshufKey(seed, salt, rank) {

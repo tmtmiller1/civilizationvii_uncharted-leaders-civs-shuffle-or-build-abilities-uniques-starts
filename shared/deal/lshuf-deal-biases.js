@@ -1,9 +1,11 @@
 // The start-bias axis: moved with the package (Swap whole leaders), rolled from the shape of the shipped rows
 // (Swap whole abilities, Split abilities with random starts), or built from the bias tags of the pieces a leader
 // holds (Split abilities, matched starts). Civ biases are shuffled among civs of the same age or rolled.
+import { BIAS_TARGET_COLUMN, GENERIC_BIASES, biasTableOfTag } from "../lshuf-constants.js";
 import { SALT } from "../lshuf-key.js";
 import { MAX_TAG_BIASES, cyclicDonors, groupBy, tagSegments } from "./lshuf-deal-util.js";
 import { biasStats, rollBiases, tagBiases } from "./lshuf-deal-bias-stats.js";
+import { buildsFor } from "./lshuf-deal-build.js";
 
 const isLeaderRow = (r) => r.LeaderType != null;
 const isCivRow = (r) => r.LeaderType == null && r.CivilizationType != null;
@@ -44,13 +46,48 @@ function tagRows(ctx, ability, stats, x) {
   return tagBiases(stats, values, MAX_TAG_BIASES);
 }
 
+// Leaders whose start terrain comes whole from one leader: a builder's card (CONTRACTS 13), the cycle (paired
+// with whole abilities), or the leader it got the most pieces from (paired with split abilities). Returns a
+// function giving that leader, or undefined when the leader's terrain is made another way.
+function fixedSources(ctx, B, ability, donors) {
+  const biasPick = new Map(buildsFor(ctx, B).filter((b) => b.bias != null).map((b) => [b.leader, b.bias]));
+  return (x) => {
+    if (biasPick.has(x)) return biasPick.get(x);
+    // A generic card is made in dealLeaders, ahead of the cycle and the ability's leader.
+    if (genericOf(ctx, B).has(x)) return undefined;
+    if (ctx.f.bCycle) return donors[x];
+    if (ctx.f.bFromA) return ability.abilityFrom[x] || x;
+    return undefined;
+  };
+}
+
+let genericCache = null;
+function genericOf(ctx, B) {
+  if (!genericCache || genericCache.ctx !== ctx) {
+    const map = new Map(buildsFor(ctx, B).filter((b) => b.bias == null && b.genericBias != null)
+      .map((b) => [b.leader, b.genericBias]));
+    genericCache = { ctx, map };
+  }
+  return genericCache.map;
+}
+
 function dealLeaders(ctx, B, ability, stats, res) {
   const rowsOf = groupBy(ctx.input.biasRows.filter(isLeaderRow), (r) => r.LeaderType);
-  const donors = ctx.f.isPaired ? cyclicDonors(ctx.seed, SALT.Leaders, B.dealt) : {};
+  const donors = ctx.f.bCycle ? cyclicDonors(ctx.seed, SALT.Leaders, B.dealt) : {};
+  const fixed = fixedSources(ctx, B, ability, donors);
   B.dealt.forEach((x, rank) => {
-    if (ctx.f.isPaired) {
-      res.biasFrom[x] = donors[x];
-      for (const r of rowsOf.get(donors[x]) || []) res.rows.push(out({ ...r, LeaderType: x }, "moved"));
+    const from = fixed(x);
+    if (from !== undefined) {
+      res.biasFrom[x] = from;
+      for (const r of rowsOf.get(from) || []) res.rows.push(out({ ...r, LeaderType: x }, "moved"));
+      return;
+    }
+    if (genericOf(ctx, B).has(x)) {
+      const tag = genericOf(ctx, B).get(x);
+      const table = biasTableOfTag(tag);
+      const score = GENERIC_BIASES.find(([t]) => t === tag)[1];
+      res.biasFrom[x] = null;
+      res.rows.push(newRow({ table, target: BIAS_TARGET_COLUMN[table] ? tag : null, score }, x, null, "moved"));
       return;
     }
     res.biasFrom[x] = null;
@@ -92,6 +129,20 @@ export function dealBiases(ctx, axes, ability) {
   if (civActive) {
     dealLeaders(ctx, B, ability, stats, res);
     dealCivs(ctx, stats, res);
+    civBuild(ctx, B, res);
   }
   return res;
+}
+
+// The builder's civilization start terrain card (CONTRACTS 13): its civ, when picked by hand, gets that
+// civilization's shipped rows (moved) in place of whatever the civ shuffle gave it. Ignored without a civ, and when
+// the card's civilization has no rows in this game.
+function civBuild(ctx, B, res) {
+  for (const build of buildsFor(ctx, B)) {
+    if (build.civ == null || build.civBias == null) continue;
+    const source = ctx.input.biasRows.filter((r) => isCivRow(r) && r.CivilizationType === build.civBias);
+    if (!source.length) continue;
+    res.rows = res.rows.filter((r) => !(isCivRow(r) && r.CivilizationType === build.civ));
+    for (const r of source) res.rows.push(out({ ...r, CivilizationType: build.civ }, "moved"));
+  }
 }

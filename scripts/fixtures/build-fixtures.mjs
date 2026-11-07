@@ -23,8 +23,13 @@ import { DatabaseSync } from "node:sqlite";
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const PROJECT_ROOT = path.resolve(here, "..", "..");
 export const FIXTURE_ROOT = path.join(PROJECT_ROOT, "tests", "fixtures", "db");
+// A saved copy of an in-game database set (tests/fixtures/source-db/, not committed; the 1.5.0 vanilla set from a
+// mods-off Antiquity lab game) comes first, because the game rewrites its Debug copies at every launch, and a launch
+// that stops at the main menu leaves them nearly empty. LSHUF_DEBUG_DIR overrides both.
+const SAVED_DIR = path.join(PROJECT_ROOT, "tests", "fixtures", "source-db");
+const LIVE_DIR = path.join(os.homedir(), "Library", "Application Support", "Civilization VII", "Debug");
 export const DEBUG_DIR =
-  process.env.LSHUF_DEBUG_DIR || path.join(os.homedir(), "Library", "Application Support", "Civilization VII", "Debug");
+  process.env.LSHUF_DEBUG_DIR || (fs.existsSync(path.join(SAVED_DIR, "gameplay-copy.sqlite")) ? SAVED_DIR : LIVE_DIR);
 export const SOURCES = {
   gameplay: path.join(DEBUG_DIR, "gameplay-copy.sqlite"),
   frontend: path.join(DEBUG_DIR, "frontend-copy.sqlite")

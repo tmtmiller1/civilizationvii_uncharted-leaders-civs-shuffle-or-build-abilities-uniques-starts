@@ -16,7 +16,13 @@ import { inputGroups } from "./inputs.mjs";
 import { scenarios } from "./selfcheck-scenarios.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const SOURCE = path.join(os.homedir(), "Library/Application Support/Civilization VII/Debug/gameplay-copy.sqlite");
+// The saved in-game database set first (tests/fixtures/source-db/, as the test fixtures do), then the live Debug
+// copy; LSHUF_DEBUG_DIR overrides both.
+const SAVED = path.join(root, "tests", "fixtures", "source-db", "gameplay-copy.sqlite");
+const LIVE = path.join(os.homedir(), "Library/Application Support/Civilization VII/Debug/gameplay-copy.sqlite");
+const SOURCE = process.env.LSHUF_DEBUG_DIR
+  ? path.join(process.env.LSHUF_DEBUG_DIR, "gameplay-copy.sqlite")
+  : fs.existsSync(SAVED) ? SAVED : LIVE;
 const args = process.argv.slice(2);
 const scratch = path.resolve(args.find((a) => !a.startsWith("--")) || path.join(os.tmpdir(), "lshuf-selfcheck"));
 const quick = args.includes("--quick");
@@ -126,14 +132,26 @@ const readTableOf = (db) => (name) => {
 function configFromTables(db) {
   const seed = db.prepare("SELECT MIN(Seed) AS s FROM LShufSeed").get().s;
   const options = {};
+  // A part with no row follows the preset (CONTRACTS 15): leave it out so normalizeConfig derives it.
+  for (const part of ["Abilities", "Attributes", "Biases"]) delete options[part];
   for (const r of db.prepare("SELECT Name, Value FROM LShufOptions").all()) options[r.Name] = r.Value;
   return {
     seed: seed == null ? 1 : seed,
     options,
     kept: db.prepare("SELECT LeaderType FROM LShufKept").all().map((r) => r.LeaderType),
     out: db.prepare("SELECT LeaderType, Reason FROM LShufOut").all().map((r) => ({ ...r })),
-    modOK: db.prepare("SELECT LeaderType FROM LShufModOK").all().map((r) => r.LeaderType)
+    modOK: db.prepare("SELECT LeaderType FROM LShufModOK").all().map((r) => r.LeaderType),
+    builders: buildersFromTables(db)
   };
+}
+
+function buildersFromTables(db) {
+  return db.prepare("SELECT Slot, LeaderType, CivilizationType FROM LShufBuild ORDER BY Slot").all().map((b) => ({
+    slot: b.Slot,
+    leader: b.LeaderType,
+    civ: b.CivilizationType,
+    pieces: db.prepare("SELECT PieceId FROM LShufBuildPieces WHERE Slot = ?").all(b.Slot).map((r) => r.PieceId)
+  }));
 }
 
 const RESULT_TABLES = {
@@ -142,6 +160,7 @@ const RESULT_TABLES = {
   attributes: "LShufResultAttributes",
   biases: "LShufResultBiases",
   unlocks: "LShufResultUnlocks",
+  civPieces: "LShufResultCivPieces",
   meta: "LShufResultMeta"
 };
 
@@ -189,7 +208,8 @@ function gameChecks(db, before) {
   if (emptyPersona.length) problems.push(`personality traits with no agenda: ${emptyPersona.map((r) => r.LeaderType).join(", ")}`);
   const emptyDealt = db
     .prepare(`SELECT lt.LeaderType FROM LeaderTraits lt WHERE lt.TraitType = 'TRAIT_LSHUF_' || lt.LeaderType
-      AND NOT EXISTS (SELECT 1 FROM TraitModifiers tm WHERE tm.TraitType = lt.TraitType)`)
+      AND NOT EXISTS (SELECT 1 FROM TraitModifiers tm WHERE tm.TraitType = lt.TraitType)
+      AND NOT EXISTS (SELECT 1 FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = lt.LeaderType)`)
     .all();
   if (emptyDealt.length) problems.push(`dealt traits with no modifiers: ${emptyDealt.map((r) => r.LeaderType).join(", ")}`);
   const resultBiases = db.prepare("SELECT COUNT(*) AS c FROM LShufResultBiases").get().c;

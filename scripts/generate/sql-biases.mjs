@@ -1,10 +1,7 @@
 // Deal step 4: start biases. The shape of the shipped rows, rolled rows, rows from bias tags, the civ shuffle, and
 // LShufResultBiases.
 import {
-  BIAS_TABLES,
-  BIAS_TAG_PREFIXES,
-  BIAS_TAG_WORDS,
-  BIAS_TARGET_COLUMN
+  BIAS_TABLES, BIAS_TAG_PREFIXES, BIAS_TAG_WORDS, BIAS_TARGET_COLUMN, GENERIC_BIASES, biasTableOfTag
 } from "../../shared/lshuf-constants.js";
 import { SALT } from "../../shared/lshuf-key.js";
 import {
@@ -15,9 +12,31 @@ import {
   SCORE_STEP,
   TAG_SEGMENT_CAP
 } from "../../shared/deal/lshuf-deal-util.js";
-import { CFG, header, key, q, rankUpdate, work } from "./sql-util.mjs";
+import { BUILDS_IN, CFG, header, key, q, rankUpdate, work } from "./sql-util.mjs";
 
 const dealtB = "(SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B')";
+// A builder's start terrain card applies (lshuf-deal-biases.js dealLeaders), and its civilization card applies
+// (civBuild: the builder's civ is picked by hand and the card's civ has rows). Builders in the bias pool only.
+// No LeaderType column inside these subqueries: `col` is often the outer row's bare LeaderType.
+// A builder's generic start terrain card (GENERIC_BIASES): one row of the tag's table, the usual score, moved.
+function genericRows(ins) {
+  return GENERIC_BIASES.map(([tag, score]) => {
+    const table = biasTableOfTag(tag);
+    const target = BIAS_TARGET_COLUMN[table] ? `'${tag}'` : "NULL";
+    return `${ins} SELECT '${table}', b.Leader, NULL, ${target}, ${score}, 'moved' FROM ${BUILDS_IN("B")}
+  WHERE b.OK = 1 AND b.GenericBiasPick = '${tag}';`;
+  }).join("\n");
+}
+
+const topGiverB = (of) => `(SELECT f.Giver FROM LShufWork_Flow f WHERE f.Receiver = ${of} ORDER BY f.C DESC, f.V DESC, f.Giver LIMIT 1)`;
+const fromAbility = (of) => `COALESCE(${topGiverB(of)}, ${of})`;
+const IN_B = "bb.Leader IN (SELECT pb.LeaderType FROM LShufWork_Pool pb WHERE pb.Axis = 'B')";
+const notBiasBuilder = (col) =>
+  `NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND (bb.BiasPick IS NOT NULL OR bb.GenericBiasPick IS NOT NULL)
+    AND ${IN_B} AND bb.Leader = ${col})`;
+const CIV_ROWS = (civ) => `EXISTS (SELECT 1 FROM LShufWork_BRow rr WHERE rr.LeaderType IS NULL AND rr.CivilizationType = ${civ})`;
+const notCivBuild = (col) => `NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND bb.Civ = ${col}
+  AND bb.CivBiasPick IS NOT NULL AND ${IN_B} AND ${CIV_ROWS("bb.CivBiasPick")})`;
 
 function snapshot() {
   const parts = BIAS_TABLES.map((t) => {
@@ -85,7 +104,7 @@ function rolls() {
   const roll = `${CFG("RollBiases")} = 1 AND ${dealtB} = 1 AND ${shape("Total")} > 0`;
   return `${work("LShufWork_RSub", "Subj TEXT, IsCiv INTEGER, Base INTEGER, Cnt INTEGER, PRIMARY KEY (Subj, IsCiv)")}
 INSERT INTO LShufWork_RSub (Subj, IsCiv, Base) SELECT LeaderType, 0, Rank * ${ROLL_RANK_STRIDE} FROM LShufWork_Pool
-  WHERE Axis = 'B' AND ${roll};
+  WHERE Axis = 'B' AND ${roll} AND ${notBiasBuilder("LeaderType")};
 INSERT INTO LShufWork_RSub (Subj, IsCiv, Base) SELECT CivilizationType, 1, ${CIV_ROLL_RANK_BASE} + Rank * ${ROLL_RANK_STRIDE}
   FROM LShufWork_Civ WHERE ${roll};
 UPDATE LShufWork_RSub SET Cnt = CASE WHEN IsCiv = 1 THEN ${civCnt} ELSE ${leaderCnt} END;
@@ -116,12 +135,13 @@ function tagTable(tagExpr) {
 function tagSources() {
   const own = `SELECT p.LeaderType, m.BiasTags AS BiasTags, COALESCE(m.Value, 1) AS Value FROM LShufWork_Pool p
     JOIN LShufMapping m ON m.LeaderType = p.LeaderType AND m.Kind = 'bullet'
-    WHERE p.Axis = 'B' AND NOT EXISTS (SELECT 1 FROM LShufWork_Shape s WHERE s.LeaderType = p.LeaderType)`;
+    WHERE p.Axis = 'B' AND NOT EXISTS (SELECT 1 FROM LShufWork_Shape s WHERE s.LeaderType = p.LeaderType)
+      AND ${notBiasBuilder("p.LeaderType")}`;
   const held = `SELECT h.LeaderType, m.BiasTags AS BiasTags, COALESCE(m.Value, 1) AS Value FROM LShufWork_Pool p
     JOIN LShufWork_Held h ON h.LeaderType = p.LeaderType
     JOIN LShufMapping m ON m.LeaderType = h.FromLeader AND m.Kind = 'bullet'
     WHERE p.Axis = 'B' AND (h.Kind = 'whole' OR (h.Kind = 'remainder' AND COALESCE(m.Movable, 1) <> 1)
-      OR (h.Kind = 'bullet' AND m.PieceId = h.PieceId))`;
+      OR (h.Kind = 'bullet' AND m.PieceId = h.PieceId)) AND ${notBiasBuilder("p.LeaderType")}`;
   // A pool leader with no held pieces but a Shape row (dealt in pieces, got none) has no rows, as in the JS.
   return `${work("LShufWork_TSeg", "LeaderType TEXT, Rest TEXT, Value INTEGER")}
 INSERT INTO LShufWork_TSeg (LeaderType, Rest, Value) SELECT LeaderType, '|' || BiasTags || '|', Value FROM (
@@ -163,17 +183,27 @@ function results() {
   const ins = "INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin)";
   return `DELETE FROM LShufResultBiases;
 ${ins} SELECT r.TableName, r.LeaderType, r.CivilizationType, r.TargetType, r.Score, 'shipped' FROM LShufWork_BRow r
-  WHERE NOT (${dropped});
+  WHERE NOT (${dropped}) AND NOT (r.LeaderType IS NULL AND NOT ${notCivBuild("r.CivilizationType")});
 ${ins} SELECT r.TableName, d.LeaderType, r.CivilizationType, r.TargetType, r.Score, 'moved'
-  FROM LShufWork_Donor d JOIN LShufWork_BRow r ON r.LeaderType = d.Donor WHERE d.Axis = 'B' AND ${CFG("IsPaired")} = 1;
+  FROM LShufWork_Donor d JOIN LShufWork_BRow r ON r.LeaderType = d.Donor WHERE d.Axis = 'B' AND ${CFG("BCycle")} = 1
+    AND ${notBiasBuilder("d.LeaderType")};
+${ins} SELECT r.TableName, p.LeaderType, r.CivilizationType, r.TargetType, r.Score, 'moved'
+  FROM LShufWork_Pool p JOIN LShufWork_BRow r ON r.LeaderType = ${fromAbility("p.LeaderType")}
+  WHERE p.Axis = 'B' AND ${CFG("BFromA")} = 1 AND ${notBiasBuilder("p.LeaderType")};
+${ins} SELECT r.TableName, b.Leader, r.CivilizationType, r.TargetType, r.Score, 'moved'
+  FROM ${BUILDS_IN("B")} JOIN LShufWork_BRow r ON r.LeaderType = b.BiasPick WHERE b.OK = 1 AND b.BiasPick IS NOT NULL;
+${genericRows(ins)}
 ${ins} SELECT TableName, CASE WHEN IsCiv = 1 THEN NULL ELSE Subj END, CASE WHEN IsCiv = 1 THEN Subj ELSE NULL END,
-  TargetType, Score, 'rolled' FROM LShufWork_Roll;
+  TargetType, Score, 'rolled' FROM LShufWork_Roll WHERE NOT (IsCiv = 1 AND NOT ${notCivBuild("Subj")});
 ${ins} SELECT TableName, LeaderType, NULL, CASE WHEN (SELECT HasTarget FROM LShufWork_BStat b WHERE b.TableName = t.TableName) = 1
   THEN Tag ELSE NULL END, Score, 'tags' FROM LShufWork_TagV t;
 ${ins} SELECT r.TableName, NULL, c.CivilizationType, r.TargetType, r.Score,
   CASE WHEN c.Donor = c.CivilizationType THEN 'shipped' ELSE 'moved' END
   FROM LShufWork_Civ c JOIN LShufWork_BRow r ON r.CivilizationType = c.Donor AND r.LeaderType IS NULL
-  WHERE ${dealtB} = 1 AND (${CFG("IsPaired")} = 1 OR ${CFG("IsMatched")} = 1);
+  WHERE ${dealtB} = 1 AND ${CFG("RollBiases")} = 0 AND ${notCivBuild("c.CivilizationType")};
+${ins} SELECT r.TableName, NULL, b.Civ, r.TargetType, r.Score, 'moved'
+  FROM ${BUILDS_IN("B")} JOIN LShufWork_BRow r ON r.CivilizationType = b.CivBiasPick AND r.LeaderType IS NULL
+  WHERE b.OK = 1 AND b.Civ IS NOT NULL AND b.CivBiasPick IS NOT NULL;
 `;
 }
 

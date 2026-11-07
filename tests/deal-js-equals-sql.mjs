@@ -5,7 +5,9 @@
 import test from "node:test";
 
 import { assertSameResult } from "./_harness.mjs";
-import { DEAL_MODES, DEALINGS, label, MODES, OFF_SETS, PERSONAS, reviewAll, runBoth, SAMPLE_SEEDS, SPLIT_MODES } from "./_deal.mjs";
+import {
+  CUSTOM_COMBOS, DEAL_MODES, DEALINGS, label, MODES, OFF_SETS, PERSONAS, reviewAll, runBoth, SAMPLE_SEEDS, SPLIT_MODES
+} from "./_deal.mjs";
 
 async function same(fixture, spec, hooks = []) {
   const r = await runBoth({ fixture, spec, hooks });
@@ -56,6 +58,14 @@ test("other fixtures: DLC leader removed, a leader added, an extra modifier", as
     for (const Mode of MODES) {
       await same(fixture, { seed: 17, options: { Mode } });
       if (SPLIT_MODES.includes(Mode)) await same(fixture, { seed: 17, options: { Mode } }, [reviewAll()]);
+    }
+  }
+});
+
+test("custom combinations of the three parts: computeDeal vs SQL", async () => {
+  for (const seed of SAMPLE_SEEDS) {
+    for (const combo of CUSTOM_COMBOS) {
+      for (const Dealing of DEALINGS) await same("base", { seed, options: { ...combo, Dealing } });
     }
   }
 });

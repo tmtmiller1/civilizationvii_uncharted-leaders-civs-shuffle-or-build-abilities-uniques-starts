@@ -43,9 +43,12 @@ const BODY = `CASE WHEN instr(${AFTER}, '[/BLIST]') > 0 THEN substr(${AFTER}, 1,
   + `ELSE ${AFTER} END`;
 const SEG = `substr(rest, 1, instr(rest, ${LI}) - 1)`;
 
+// A piece's text: its bullet, or its bullets joined with [N] when it covers several (BulletCount > 1).
 function pieceStatement(piece) {
+  const first = Number(piece.BulletIndex);
+  const last = first + Math.max(1, Number(piece.BulletCount || 1)) - 1;
   return [
-    `-- ${piece.PieceId}: bullet ${piece.BulletIndex} of ${piece.DescriptionKey}`,
+    `-- ${piece.PieceId}: bullet${last > first ? `s ${first}-${last}` : ` ${first}`} of ${piece.DescriptionKey}`,
     "WITH RECURSIVE seg(Language, rest, piece, n) AS (",
     `  SELECT Language, (${BODY}) || ${LI}, NULL, 0 FROM LocalizedText`,
     `  WHERE Tag = ${quote(piece.DescriptionKey)} AND instr(Text, ${LI}) > 0`,
@@ -55,8 +58,9 @@ function pieceStatement(piece) {
     `  FROM seg WHERE instr(rest, ${LI}) > 0`,
     ")",
     "INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)",
-    `SELECT Language, ${quote(`LOC_LSHUF_PIECE_${piece.PieceId}`)}, piece FROM seg`,
-    `WHERE n = ${Number(piece.BulletIndex)} AND piece <> '';`
+    `SELECT Language, ${quote(`LOC_LSHUF_PIECE_${piece.PieceId}`)}, group_concat(piece, '[N]') FROM`,
+    `  (SELECT Language, piece, n FROM seg WHERE n BETWEEN ${first} AND ${last} AND piece <> '' ORDER BY Language, n)`,
+    "GROUP BY Language;"
   ].join("\n");
 }
 
@@ -83,7 +87,7 @@ function piecesFromMapping(keys) {
   readSql(db, path.join(ROOT, "data/schema/gameplay-tables.sql"));
   readSql(db, MAPPING);
   const rows = db.prepare(
-    "SELECT PieceId, LeaderType, AbilityTrait, BulletIndex FROM LShufMapping WHERE Kind = 'bullet' "
+    "SELECT PieceId, LeaderType, AbilityTrait, BulletIndex, BulletCount FROM LShufMapping WHERE Kind = 'bullet' "
     + "AND BulletIndex IS NOT NULL ORDER BY PieceId"
   ).all();
   db.close();
@@ -159,7 +163,10 @@ function check(sqlText, pieces) {
     for (const p of pieces) {
       const source = get.get("en_US", p.DescriptionKey)?.Text;
       if (!source) noSource.push(p.PieceId);
-      const want = bulletAt(source, p.BulletIndex);
+      const count = Math.max(1, Number(p.BulletCount || 1));
+      const parts = [];
+      for (let i = 0; i < count; i++) parts.push(bulletAt(source, Number(p.BulletIndex) + i));
+      const want = parts.filter(Boolean).join("[N]");
       const got = get.get("en_US", `LOC_LSHUF_PIECE_${p.PieceId}`)?.Text || "";
       if (!want && !got) wrong.push(`${p.PieceId}: no bullet ${p.BulletIndex} in the English text`);
       else if (want === got) same++;

@@ -1,6 +1,7 @@
 // Writes data/generated/: the input groups' SQL, LShufKnownLeaders, the always-on deal SQL and the two modinfo
 // fragments. Run: node scripts/generate/generate.mjs
 import fs from "node:fs";
+import { BUILD_SLOTS } from "../../shared/lshuf-constants.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { INPUT_LOAD_ORDER, inputGroups, knownLeadersSql } from "./inputs.mjs";
@@ -10,6 +11,7 @@ import { attributesSql } from "./sql-attributes.mjs";
 import { biasesSql } from "./sql-biases.mjs";
 import { resultsSql } from "./sql-results.mjs";
 import { applySql } from "./sql-apply.mjs";
+import { civSql } from "./sql-civ.mjs";
 import { header } from "./sql-util.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -23,7 +25,8 @@ export const DEAL_FILES = [
   { id: "lshuf-deal-attributes", file: `${GEN}/deal/deal-3-attributes.sql`, order: 20102, sql: attributesSql },
   { id: "lshuf-deal-biases", file: `${GEN}/deal/deal-4-biases.sql`, order: 20103, sql: biasesSql },
   { id: "lshuf-deal-results", file: `${GEN}/deal/deal-5-results.sql`, order: 20104, sql: resultsSql },
-  { id: "lshuf-deal-apply", file: `${GEN}/deal/deal-6-apply.sql`, order: 20105, sql: applySql }
+  { id: "lshuf-deal-civ", file: `${GEN}/deal/deal-5b-civ.sql`, order: 20105, sql: civSql },
+  { id: "lshuf-deal-apply", file: `${GEN}/deal/deal-6-apply.sql`, order: 20106, sql: applySql }
 ];
 
 function group(id, criteria, order, file) {
@@ -57,7 +60,12 @@ export function buildFiles() {
 }
 
 export function writeFiles(files, base = root) {
-  for (const dir of ["seed", "options", "keep", "out", "moddedout", "notin", "modok", "deal"]) {
+  const slotDirs = [];
+  for (let n = 1; n <= BUILD_SLOTS; n++) {
+    const sfx = n === 1 ? "" : String(n);
+    slotDirs.push(`build${sfx}`, `buildciv${sfx}`, `built${sfx}`);
+  }
+  for (const dir of ["seed", "options", "keep", "out", "moddedout", "notin", "modok", ...slotDirs, "deal"]) {
     fs.rmSync(path.join(base, GEN, dir), { recursive: true, force: true });
   }
   for (const [rel, text] of files) {

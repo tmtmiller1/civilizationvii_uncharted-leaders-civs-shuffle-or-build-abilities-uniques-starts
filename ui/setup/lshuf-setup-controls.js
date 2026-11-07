@@ -122,8 +122,9 @@ function listItem(choice, list) {
   const row = el("div", "lshuf-setup__item flex flex-row items-center");
   const cb = el("fxs-checkbox", "mr-2");
   cb.setAttribute("data-audio-group-ref", "options");
-  const name = el("div", "font-body text-sm");
+  const name = el("div", "lshuf-setup__item-name font-body text-sm");
   name.textContent = choice.name || choice.value;
+  name.setAttribute("data-tooltip-content", choice.name || choice.value);
   row.append(cb, name);
   cb.addEventListener(CHECKBOX_CHANGE, (e) => list.toggle(choice.value, !!(e.detail && e.detail.value)));
   return { row, cb, value: choice.value };
@@ -135,8 +136,9 @@ function stored(paramId) {
   return new Set(paramValues(paramId));
 }
 
-// A list of leaders over an array parameter, closed until its header is pressed. inverted: the stored list holds
-// the leaders switched off (UxHint InvertSelection).
+// A list of leaders (or civilizations) over an array parameter, shown open in its own window, with All and None and
+// a count in its header. inverted: the stored list holds the entries switched off (UxHint InvertSelection), so All
+// means every entry on. An empty domain draws an empty list with "0 of 0 on".
 class LeaderList {
   constructor(paramId, ctx, opts) {
     this.paramId = paramId;
@@ -144,34 +146,31 @@ class LeaderList {
     this.inverted = !!(opts && opts.inverted);
     this.emptyKey = (opts && opts.emptyKey) || null;
     this.choices = sortByName(paramChoices(paramId));
-    this.open = false;
   }
 
   build(nameKey, descKey) {
     this.el = el("div", "lshuf-setup__list");
-    const head = el("div", "lshuf-setup__list-head flex flex-row items-center justify-between");
+    // Two lines: the name and count, then All and None, so long names and the buttons never share a line.
+    const head = el("div", "lshuf-setup__list-head");
     if (descKey) head.setAttribute("data-tooltip-content", descKey);
-    this.count = el("div", "lshuf-setup__note font-body text-sm mx-3");
-    this.toggleBtn = el("fxs-button", "lshuf-setup__list-toggle");
-    head.append(el("div", "font-body text-base flex-auto", nameKey), this.count, this.toggleBtn);
-    this.body = el("div", "lshuf-setup__list-body");
-    const tools = el("div", "flex flex-row mb-1");
+    const title = el("div", "flex flex-row items-center");
+    this.count = el("div", "lshuf-setup__note font-body text-sm ml-3");
+    title.append(el("div", "lshuf-setup__list-name font-body text-base", nameKey), this.count);
+    const tools = el("div", "lshuf-setup__list-tools flex flex-row items-center");
     this.allOn = el("fxs-button", "mr-2");
-    this.allOn.setAttribute("caption", "LOC_LSHUF_LIST_ALL_ON");
+    this.allOn.setAttribute("caption", "LOC_LSHUF_LIST_ALL");
     this.allOff = el("fxs-button");
-    this.allOff.setAttribute("caption", "LOC_LSHUF_LIST_ALL_OFF");
+    this.allOff.setAttribute("caption", "LOC_LSHUF_LIST_NONE");
     tools.append(this.allOn, this.allOff);
+    head.append(title, tools);
+    this.body = el("div", "lshuf-setup__list-body");
     const grid = el("div", "lshuf-setup__grid");
     this.items = this.choices.map((c) => listItem(c, this));
     for (const it of this.items) grid.appendChild(it.row);
-    this.body.append(tools, grid);
+    this.body.appendChild(grid);
     this.el.append(head, this.body);
     this.allOn.addEventListener("action-activate", () => this.setAll(true));
     this.allOff.addEventListener("action-activate", () => this.setAll(false));
-    this.toggleBtn.addEventListener("action-activate", () => {
-      this.open = !this.open;
-      this.sync();
-    });
     this.sync();
     return this;
   }
@@ -219,8 +218,6 @@ class LeaderList {
     this.count.textContent = empty ? compose(this.emptyKey) : compose("LOC_LSHUF_LIST_COUNT", on, this.items.length);
     setDisabled(this.allOn, off);
     setDisabled(this.allOff, off);
-    this.toggleBtn.setAttribute("caption", this.open ? "LOC_LSHUF_LIST_HIDE" : "LOC_LSHUF_LIST_SHOW");
-    this.body.style.display = this.open ? "" : "none";
   }
 }
 

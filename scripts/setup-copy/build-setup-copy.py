@@ -58,6 +58,11 @@ TABLES = [
     ("Requirements", ["RequirementId", "RequirementType"]),
     ("LegacyCivilizations", ["CivilizationType", "Age"]),
     ("LeaderCivPriorities", ["Leader", "Civilization", "Priority"]),
+    ("LeaderAgendas", ["LeaderType", "NameKey"]),
+    ("TypeNames", ["Type", "Name"]),
+    ("AttributeActions", ["TraitType", "ActionType", "ActionNameKey"]),
+    ("CivItems", ["CivilizationType", "Age", "Kind", "Type", "NameKey", "DescKey", "TraitType"]),
+    ("CivCivics", ["CivilizationType", "NodeType", "NodeNameKey", "UnlockType", "UnlockKind", "UnlockNameKey"]),
     ("ProgressionTreeNodeUnlocks", ["ProgressionTreeNodeType", "TargetType", "TargetKind", "RequiredTraitType"]),
     ("ProgressionTreeNodes", ["ProgressionTreeNodeType", "ProgressionTree"]),
     ("Attributes", ["AttributeType", "ProgressionTreeType"]),
@@ -105,6 +110,10 @@ def requirement_closure(con, set_ids):
     return sorted(seen)
 
 
+# LShufSetup_CivItems and LShufSetup_CivCivics come from scripts/setup-copy/build-civ-items.mjs (all three ages);
+# this script only empties them so setup-copy-civ.sql can fill them after it.
+
+
 def extract(con, leaders, civ_rows):
     """Rows of every table for these leaders, read from con. civ_rows: copy civilization-keyed rows too."""
     out = {t: [] for t, _ in TABLES}
@@ -139,6 +148,19 @@ def extract(con, leaders, civ_rows):
                                  f"({in_list(reqs)}) ORDER BY 1", reqs)
     out["LeaderCivPriorities"] = q(con, f"SELECT Leader, Civilization, Priority FROM LeaderCivPriorities WHERE Leader "
                                         f"IN ({L}) ORDER BY 1, 2", leaders)
+    out["TypeNames"] = q(con, "SELECT BiomeType, Name FROM Biomes UNION ALL SELECT TerrainType, Name FROM Terrains "
+                              "UNION ALL SELECT FeatureClassType, Name FROM FeatureClasses "
+                              "UNION ALL SELECT ResourceType, Name FROM Resources ORDER BY 1")
+    out["AttributeActions"] = q(con, "SELECT tm.TraitType, da.DiplomacyActionType, da.Name FROM TraitModifiers tm "
+                                     "JOIN ModifierArguments ma ON ma.ModifierId = tm.ModifierId AND ma.Name = 'ActionType' "
+                                     "JOIN DiplomacyActions da ON da.DiplomacyActionType = ma.Value "
+                                     "WHERE tm.TraitType LIKE 'TRAIT_LEADER_ATTRIBUTE_%' ORDER BY 1, 2")
+    # Agenda names: the Name strings on a leader's ability modifiers that are diplomacy agendas.
+    out["LeaderAgendas"] = q(con, f"SELECT DISTINCT lt.LeaderType, ms.Text FROM LeaderTraits lt "
+                                  f"JOIN TraitModifiers tm ON tm.TraitType = lt.TraitType "
+                                  f"JOIN ModifierStrings ms ON ms.ModifierId = tm.ModifierId AND ms.Context = 'Name' "
+                                  f"WHERE lt.LeaderType IN ({L}) AND lt.TraitType IN ({T}) "
+                                  f"AND ms.Text LIKE 'LOC_DIPLOMACY_AGENDA_%_NAME' ORDER BY 1, 2", leaders + traits)
     out["ProgressionTreeNodeUnlocks"] = q(
         con, f"SELECT ProgressionTreeNodeType, TargetType, TargetKind, RequiredTraitType FROM ProgressionTreeNodeUnlocks "
              f"WHERE RequiredTraitType IN ({T}) ORDER BY 1, 2", traits)

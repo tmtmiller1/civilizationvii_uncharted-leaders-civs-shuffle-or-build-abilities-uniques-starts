@@ -1,0 +1,451 @@
+/* The Build your own leader screen. GameFace: flex only, no CSS grid. Art comes in by name from the game (see
+   lshuf-build-art.js); nothing here points at a file in the mod. */
+
+.lshuf-build__frame {
+  width: 96vw;
+  height: 92vh;
+  max-width: 120rem;
+}
+
+.lshuf-build__head {
+  padding-top: 0.5rem;
+}
+
+.lshuf-build__portrait {
+  width: 5.5rem;
+  height: 5.5rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Slots, sized like the memento slots. */
+.lshuf-build__slots {
+  margin-top: 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 0.0555rem solid rgba(197, 176, 128, 0.35);
+}
+
+.lshuf-build__slot {
+  width: 6.2rem;
+  height: 6.4rem;
+  margin-right: 0.3rem;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.lshuf-build__slot--wide {
+  width: 19rem;
+}
+
+.lshuf-build__slot .lshuf-build__art {
+  margin: 0.55rem;
+  background-size: cover;
+  background-position: center;
+}
+
+.lshuf-build__slot-name {
+  position: absolute;
+  left: 0.3rem;
+  right: 0.3rem;
+  bottom: 0.4rem;
+  text-align: center;
+  color: #f1e4c5;
+  text-shadow: 0 0 0.2rem #000, 0 0 0.4rem #000;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.lshuf-build__slot-name--empty {
+  color: rgba(197, 176, 128, 0.55);
+  text-shadow: none;
+}
+
+.lshuf-build__equipped {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2rem;
+  height: 2rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.lshuf-build__toolbar {
+  margin-top: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.lshuf-build__search {
+  width: 16rem;
+}
+
+.lshuf-build__dropdown {
+  width: 14rem;
+}
+
+.lshuf-build__note {
+  color: #e2a46b;
+  margin-bottom: 0.3rem;
+}
+
+.lshuf-build__body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.lshuf-build__scroll {
+  min-height: 0;
+}
+
+/* Cards, in the civ-card proportions. */
+.lshuf-build__card {
+  width: 13.5rem;
+  height: 9.2rem;
+  margin: 0.45rem;
+  border: 0.0555rem solid rgba(197, 176, 128, 0.5);
+  background-color: rgba(10, 12, 18, 0.85);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.lshuf-build__art {
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.lshuf-build__art--portrait {
+  background-size: 62%;
+  background-position: center 0.2rem;
+}
+
+.lshuf-build__art--attribute {
+  background-image: none;
+}
+
+.lshuf-build__big-icon {
+  position: absolute;
+  top: 0.6rem;
+  left: 50%;
+  width: 4rem;
+  height: 4rem;
+  margin-left: -2rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.lshuf-build__symbol {
+  position: absolute;
+  top: 0.8rem;
+  left: 50%;
+  width: 3rem;
+  height: 3rem;
+  margin-left: -1.5rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* The name band at the foot of a card, over a dark fade like the civ cards. */
+.lshuf-build__band {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.25rem 0.4rem 0.3rem 0.4rem;
+  background-color: rgba(8, 10, 16, 0.78);
+}
+
+.lshuf-build__card-name {
+  color: #f1e4c5;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.lshuf-build__pips {
+  margin-top: 0.15rem;
+}
+
+.lshuf-build__pip {
+  width: 1.3rem;
+  height: 1.3rem;
+  margin: 0 0.1rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.lshuf-build__own {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.35rem;
+  color: #c5b080;
+  text-shadow: 0 0 0.2rem #000;
+}
+
+.lshuf-build__card--taken,
+.lshuf-build__card--unreviewed,
+.lshuf-build__card--full,
+.lshuf-build__card--off,
+.lshuf-build__grid--off .lshuf-build__card {
+  opacity: 0.45;
+}
+
+.lshuf-build__card--taken {
+  opacity: 0.7;
+}
+
+/* The details pane. */
+.lshuf-build__details {
+  width: 24rem;
+  margin-left: 1rem;
+  padding: 0.6rem 0.8rem;
+  border-left: 0.0555rem solid rgba(197, 176, 128, 0.35);
+  overflow: hidden;
+}
+
+.lshuf-build__details-text {
+  color: #e9dcc0;
+}
+
+.lshuf-build__warn {
+  color: #e2a46b;
+}
+
+/* The head's civilization art: the civ card's wide background instead of a round portrait. */
+.lshuf-build__portrait--civ {
+  width: 9rem;
+  border-radius: 0.2rem;
+  background-size: cover;
+  background-position: center;
+}
+
+/* The settings strip under the header: the shuffle and switches this build depends on, several to a line. */
+.lshuf-build__settings {
+  margin-top: 0.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 0.0555rem solid rgba(197, 176, 128, 0.35);
+}
+
+.lshuf-build__settings .lshuf-setup__row {
+  width: 31%;
+  min-width: 24rem;
+  margin-right: 1.5rem;
+}
+
+.lshuf-build__settings .lshuf-setup__dropdown {
+  width: 14rem;
+}
+
+/* What the card does, on its face: a few lines, cut off cleanly; the full text is the tooltip and the details pane. */
+.lshuf-build__card-text {
+  max-height: 4.6rem;
+  overflow: hidden;
+  margin: 0.15rem 0.3rem;
+  color: rgba(230, 220, 195, 0.95);
+}
+
+/* The card tooltip. Measured in the game (2026-11-07, 222 cards, scripts/probes in CONTRACTS 13 notes): the frame
+   (.tooltip__content) comes out 30rem wide whatever width this box has, and the text sits inside the frame's own
+   0.94rem paddings, so the usable width is 28rem. Every text block here is 28rem; with that, no card's text reached
+   the border in the measurement. The game's own shell tooltips do the same by putting a fixed max-w-72 on the text
+   itself, not on a parent. */
+.lshuf-build-tip {
+  width: 32rem;
+  min-width: 32rem;
+  max-width: 32rem;
+}
+
+.lshuf-build-tip__head {
+  width: 28rem;
+  max-width: 28rem;
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 0.0555rem solid rgba(197, 176, 128, 0.35);
+}
+
+.lshuf-build-tip__head > .flex-col {
+  flex: none;
+  width: 23rem;
+  max-width: 23rem;
+}
+
+.lshuf-build-tip__name,
+.lshuf-build-tip__head > .flex-col > div {
+  width: 23rem;
+  max-width: 23rem;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.lshuf-build-tip__art {
+  flex: none;
+  width: 4rem;
+  height: 4rem;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0.2rem;
+}
+
+.lshuf-build-tip__body {
+  width: 28rem;
+  max-width: 28rem;
+  line-height: 1.35;
+  color: rgba(230, 220, 195, 0.95);
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.lshuf-build-tip__body * {
+  white-space: normal;
+  max-width: 28rem;
+}
+
+.lshuf-build-tip__foot {
+  width: 28rem;
+  max-width: 28rem;
+  margin-top: 0.5rem;
+  padding-top: 0.3rem;
+  border-top: 0.0555rem solid rgba(197, 176, 128, 0.25);
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.lshuf-build-tip__foot > div {
+  max-width: 14rem;
+  white-space: normal;
+}
+
+/* How many copies of an attribute are in (one or two). */
+.lshuf-build__copies {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.4rem;
+  color: #f3e3b3;
+  text-shadow: 0 0 0.2rem #000;
+}
+
+/* The AI leaders window. */
+.lshuf-ai__frame {
+  width: 60rem;
+  max-width: 90vw;
+  max-height: 88vh;
+}
+
+.lshuf-ai__scroll {
+  max-height: 60vh;
+}
+
+.lshuf-ai__row {
+  padding: 0.5rem 0;
+  border-bottom: 0.0555rem solid rgba(197, 176, 128, 0.25);
+}
+
+.lshuf-ai__portrait {
+  width: 3.4rem;
+  height: 3.4rem;
+}
+
+.lshuf-ai__civ {
+  width: 6rem;
+  height: 3.4rem;
+  margin-left: 0.5rem;
+}
+
+/* Generic start terrain cards: a tile in the terrain's own colours, since the game has no card art for a terrain. */
+.lshuf-build__terrain {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #4a5a6a, #22303c);
+}
+.lshuf-build__terrain--desert { background: linear-gradient(160deg, #d9b56a, #8a6a2a); }
+.lshuf-build__terrain--grassland { background: linear-gradient(160deg, #7fb04e, #2f5a1e); }
+.lshuf-build__terrain--plains { background: linear-gradient(160deg, #c2b35a, #6e6428); }
+.lshuf-build__terrain--tropical { background: linear-gradient(160deg, #2f9a5a, #0d4a2a); }
+.lshuf-build__terrain--tundra { background: linear-gradient(160deg, #cfe3ec, #6a8794); }
+.lshuf-build__terrain--marine { background: linear-gradient(160deg, #4a8fc9, #173b63); }
+.lshuf-build__terrain--flat { background: linear-gradient(160deg, #b7a57a, #6b5c3a); }
+.lshuf-build__terrain--hill { background: linear-gradient(160deg, #9a8a66, #4e432c); }
+.lshuf-build__terrain--mountain { background: linear-gradient(160deg, #b9c0c8, #4a525c); }
+.lshuf-build__terrain--navigable_river { background: linear-gradient(160deg, #6fb6d6, #1e5f80); }
+.lshuf-build__terrain--vegetated { background: linear-gradient(160deg, #5f9a3c, #22461a); }
+.lshuf-build__terrain--floodplain { background: linear-gradient(160deg, #9fc96a, #4a6a2a); }
+.lshuf-build__terrain--coast { background: linear-gradient(160deg, #5aa7d8, #1c4f78); }
+.lshuf-build__terrain--river { background: linear-gradient(160deg, #78bde0, #2a6a8f); }
+.lshuf-build__terrain--lake { background: linear-gradient(160deg, #6aa8d8, #234d78); }
+.lshuf-build__terrain--natural_wonder { background: linear-gradient(160deg, #b98ad6, #4b2a6e); }
+.lshuf-build__terrain--island { background: linear-gradient(160deg, #6fc7c0, #1f5a56); }
+
+.lshuf-build__terrain-picture {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+/* The civics look (lshuf-build-tree.js): one narrow column of cards, the tree in the rest. */
+.lshuf-build__body--tree .lshuf-build__scroll {
+  flex: none;
+  width: 15.2rem;
+}
+
+.lshuf-build__body--tree .lshuf-build__details {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  padding: 0.4rem 0.6rem;
+}
+
+.lshuf-build__tree-scroll {
+  position: absolute;
+  inset: 0;
+}
+
+.lshuf-build__body--tree .lshuf-build__details {
+  position: relative;
+}
+
+.lshuf-tree__canvas {
+  padding: 0.5rem 0.5rem 1rem 0.5rem;
+}
+
+.lshuf-tree__column {
+  margin-right: 3.2rem;
+}
+
+.lshuf-tree__node {
+  width: 15rem;
+  margin: 0.5rem 0;
+  padding: 0.4rem 0.6rem;
+  border: 0.0555rem solid rgba(197, 176, 128, 0.55);
+  background-color: rgba(10, 12, 18, 0.85);
+  position: relative;
+  z-index: 1;
+}
+
+.lshuf-tree__node-name {
+  white-space: normal;
+  width: 13.8rem;
+}
+
+.lshuf-tree__node-cost {
+  margin-bottom: 0.2rem;
+}
+
+.lshuf-tree__unlock {
+  width: 13.8rem;
+  white-space: normal;
+  color: #e9dcc0;
+  margin-top: 0.2rem;
+}
+
+.lshuf-tree__line {
+  position: absolute;
+  background-color: rgba(197, 176, 128, 0.7);
+  z-index: 0;
+}

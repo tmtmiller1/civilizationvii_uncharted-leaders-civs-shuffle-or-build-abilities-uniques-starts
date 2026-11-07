@@ -8,32 +8,52 @@ import test from "node:test";
 
 import { loadShell, need, PROJECT_ROOT, rows } from "./_harness.mjs";
 import { ADDED_LEADER, DLC_LEADER } from "../scripts/fixtures/build-fixtures.mjs";
-import { CONFIG_KEY, DEALING, listValue, MODE, ONOFF, PARAM, PERSONA, REASON, REVEAL } from "../shared/lshuf-constants.js";
+import {
+  CONFIG_KEY, DEALING, listValue, MODE, PARAM, PERSONA, REASON, REVEAL, A_MODE, T_MODE, B_MODE,
+  CA_MODE, CU_MODE, CC_MODE, MODE_CUSTOM
+} from "../shared/lshuf-constants.js";
 import { MODDED_LEADER_TYPES, VANILLA_LEADERS } from "../shared/lshuf-known-leaders.js";
 
 // Section 2's table, in order: [ParameterID, Domain, Array, Default, Name key].
 const PARAMS = [
   [PARAM.Mode, "LShufModeValues", 0, MODE.None, "LOC_LSHUF_MODE_NAME"],
-  [PARAM.Biases, "LShufOnOffValues", 0, ONOFF.Redealt, "LOC_LSHUF_BIASES_NAME"],
-  [PARAM.Abilities, "LShufOnOffValues", 0, ONOFF.Redealt, "LOC_LSHUF_ABILITIES_NAME"],
-  [PARAM.Attributes, "LShufOnOffValues", 0, ONOFF.Redealt, "LOC_LSHUF_ATTRIBUTES_NAME"],
+  [PARAM.Biases, "LShufBValues", 0, B_MODE.Normal, "LOC_LSHUF_BIASES_NAME"],
+  [PARAM.Abilities, "LShufAValues", 0, A_MODE.Normal, "LOC_LSHUF_ABILITIES_NAME"],
+  [PARAM.Attributes, "LShufTValues", 0, T_MODE.Normal, "LOC_LSHUF_ATTRIBUTES_NAME"],
+  [PARAM.CivAbilities, "LShufCAValues", 0, CA_MODE.Normal, "LOC_LSHUF_CIV_ABILITIES_NAME"],
+  [PARAM.CivUniques, "LShufCUValues", 0, CU_MODE.Normal, "LOC_LSHUF_CIV_UNIQUES_NAME"],
+  [PARAM.CivCivics, "LShufCCValues", 0, CC_MODE.Normal, "LOC_LSHUF_CIV_CIVICS_NAME"],
   [PARAM.KeepMine, "bool", 0, "0", "LOC_LSHUF_KEEP_MINE_NAME"],
   [PARAM.LeadersOut, "LShufLeaderValues", 1, null, "LOC_LSHUF_LEADERS_OUT_NAME"],
   [PARAM.ModdedAbilities, "bool", 0, "0", "LOC_LSHUF_MODDED_ABILITIES_NAME"],
   [PARAM.ModdedAttributes, "bool", 0, "0", "LOC_LSHUF_MODDED_ATTRIBUTES_NAME"],
   [PARAM.ModdedBiases, "bool", 0, "0", "LOC_LSHUF_MODDED_BIASES_NAME"],
   [PARAM.ModdedOut, "LShufModdedLeaderValues", 1, null, "LOC_LSHUF_MODDED_OUT_NAME"],
-  [PARAM.Pool1, "LShufPoolLeaderValues", 1, null, "LOC_LSHUF_POOL1_NAME"],
-  [PARAM.Pool2, "LShufPoolLeaderValues", 1, null, "LOC_LSHUF_POOL2_NAME"],
+  [PARAM.Pool1, "LShufPoolLeaderValues", 1, null, "LOC_LSHUF_POOL_NAME"],
   [PARAM.Personality, "LShufPersonalityValues", 0, PERSONA.Follows, "LOC_LSHUF_PERSONALITY_NAME"],
   [PARAM.Dealing, "LShufDealingValues", 0, DEALING.Balanced, "LOC_LSHUF_DEALING_NAME"],
   [PARAM.Reveal, "LShufRevealValues", 0, REVEAL.Start, "LOC_LSHUF_REVEAL_NAME"],
-  [PARAM.Seed, "text", 0, "1", "LOC_LSHUF_SEED_NAME"]
+  [PARAM.Seed, "text", 0, "1", "LOC_LSHUF_SEED_NAME"],
+  [PARAM.CivsOut, "LShufCivValues", 1, null, "LOC_LSHUF_CIVS_OUT_NAME"],
+  // Build your own leader's stored picks (CONTRACTS 13): "|id|id|", named after the screen; slots 2..4 add the AI
+  // leader each slot builds (LShufBuildFor<n>).
+  [PARAM.BuildPicks, "text", 0, null, "LOC_LSHUF_BUILD_TITLE"],
+  ["LShufBuildPicks2", "text", 0, null, "LOC_LSHUF_BUILD_TITLE"],
+  ["LShufBuildFor2", "text", 0, null, "LOC_LSHUF_BUILD_FOR"],
+  ["LShufBuildPicks3", "text", 0, null, "LOC_LSHUF_BUILD_TITLE"],
+  ["LShufBuildFor3", "text", 0, null, "LOC_LSHUF_BUILD_FOR"],
+  ["LShufBuildPicks4", "text", 0, null, "LOC_LSHUF_BUILD_TITLE"],
+  ["LShufBuildFor4", "text", 0, null, "LOC_LSHUF_BUILD_FOR"]
 ];
 
 const SELECT_DOMAINS = {
-  LShufModeValues: Object.values(MODE),
-  LShufOnOffValues: Object.values(ONOFF),
+  LShufModeValues: [...Object.values(MODE), MODE_CUSTOM],
+  LShufAValues: Object.values(A_MODE),
+  LShufTValues: Object.values(T_MODE),
+  LShufBValues: Object.values(B_MODE),
+  LShufCAValues: Object.values(CA_MODE),
+  LShufCUValues: Object.values(CU_MODE),
+  LShufCCValues: Object.values(CC_MODE),
   LShufPersonalityValues: Object.values(PERSONA),
   LShufDealingValues: Object.values(DEALING),
   LShufRevealValues: Object.values(REVEAL)
@@ -61,6 +81,21 @@ test("parameters.sql loads into the frontend copies", async () => {
   }
 });
 
+// The seven main options are ordinary rows in the mod's own section (LShufOptions), in this order; the rest stay hidden
+// in GameOptions and are set from the advanced window.
+const MAIN_SORT = {
+  [PARAM.Mode]: 2300,
+  [PARAM.Abilities]: 2301,
+  [PARAM.Attributes]: 2302,
+  [PARAM.Biases]: 2303,
+  [PARAM.CivAbilities]: 2304,
+  [PARAM.CivUniques]: 2305,
+  [PARAM.CivCivics]: 2306,
+  [PARAM.Personality]: 2307,
+  [PARAM.KeepMine]: 2308,
+  [PARAM.Reveal]: 2309
+};
+
 test("each parameter row matches section 2", async () => {
   const run = await shell("base");
   try {
@@ -73,24 +108,25 @@ test("each parameter row matches section 2", async () => {
         Array: array,
         ConfigurationKey: CONFIG_KEY[id] || id,
         Name: nameKey,
-        Description: nameKey.replace(/_NAME$/, "_DESC"),
+        Description: id.startsWith("LShufBuild") ? "LOC_LSHUF_BUILD_INTRO" : nameKey.replace(/_NAME$/, "_DESC"),
         ConfigurationGroup: "Game",
-        GroupID: "GameOptions",
-        Hidden: 1,
+        GroupID: id in MAIN_SORT ? "LShufOptions" : "GameOptions",
+        Hidden: id in MAIN_SORT ? 0 : 1,
         ReadOnly: 0,
         SupportsSinglePlayer: 1,
         SupportsLANMultiplayer: 1,
         SupportsInternetMultiplayer: 1,
         SupportsHotseatMultiplayer: 1,
         ChangeableAfterGameStart: 0,
-        SortIndex: 2300 + i,
-        UxHint: [PARAM.LeadersOut, PARAM.ModdedOut].includes(id) ? "InvertSelection" : null
+        // Hidden rows keep their numbers from before the two civilization rows went in above them.
+        SortIndex: id in MAIN_SORT ? MAIN_SORT[id] : 2300 + i - 3,
+        UxHint: [PARAM.LeadersOut, PARAM.ModdedOut, PARAM.CivsOut].includes(id) ? "InvertSelection" : null
       };
       for (const [k, v] of Object.entries(want)) assert.equal(p[k], v, `${id}.${k}`);
       assert.equal(p.DefaultValue == null ? null : String(p.DefaultValue), def, `${id}.DefaultValue`);
     });
     const groups = rows(run.db, "SELECT * FROM ParameterGroups WHERE GroupID LIKE 'LShuf%' OR Name LIKE 'LOC_LSHUF%'");
-    assert.deepEqual(groups, [], "no ParameterGroups row");
+    assert.deepEqual(groups, [{ GroupID: "LShufOptions", Name: "LOC_LSHUF_SECTION_TITLE" }], "the section's row");
   } finally {
     run.close();
   }
@@ -107,13 +143,31 @@ test("select domains list their values in order, Description = Name + _DESC", as
         assert.equal(r.Description, `LOC_${r.Value}_DESC`, `${domain} ${r.Value} Description`);
       }
     }
-    for (const n of [1, 2]) {
-      const r = rows(run.db, "SELECT * FROM DomainValues WHERE Domain = 'StandardLeaders' AND Value = ?", `LSHUF_RANDOM_POOL_${n}`);
-      assert.equal(r.length, 1, `Random from pool ${n}`);
-      assert.deepEqual([r[0].Name, r[0].Icon, r[0].SortIndex], [`LOC_LSHUF_RANDOM_POOL_${n}`, "LEADER_RANDOM", -1000 + n]);
-    }
+    const pool = rows(run.db, "SELECT * FROM DomainValues WHERE Domain = 'StandardLeaders' AND Value LIKE 'LSHUF_RANDOM_POOL%'");
+    assert.equal(pool.length, 1, "one Random from the pool entry");
+    assert.deepEqual([pool[0].Value, pool[0].Name, pool[0].Icon, pool[0].SortIndex],
+      ["LSHUF_RANDOM_POOL_1", "LOC_LSHUF_RANDOM_POOL", "LEADER_RANDOM", -999], "right after Random's -1000");
   } finally {
     run.close();
+  }
+});
+
+test("the civilization list comes from the frontend Civilizations table, one value per civ", async () => {
+  for (const fixture of ["base", "dlc-removed", "added-leader"]) {
+    const run = await shell(fixture);
+    try {
+      const civs = rows(
+        run.db,
+        "SELECT CivilizationType, MIN(CivilizationName) AS Name FROM Civilizations WHERE CivilizationType <> 'RANDOM' GROUP BY CivilizationType"
+      );
+      assert.ok(civs.length > 0, `${fixture}: the fixture has civilizations`);
+      const got = rows(run.db, "SELECT Value, Name, Description FROM DomainValues WHERE Domain = 'LShufCivValues'");
+      const sorted = (list) => list.map((r) => JSON.stringify(r)).sort();
+      const want = civs.map((c) => ({ Value: listValue(c.CivilizationType), Name: c.Name, Description: c.Name }));
+      assert.deepEqual(sorted(got), sorted(want), `${fixture}: LShufCivValues`);
+    } finally {
+      run.close();
+    }
   }
 });
 
@@ -202,7 +256,6 @@ test("every LOC key in CONTRACTS sections 2 and 8 has English text", () => {
     for (const p of ph) assert.ok(text.get(key)?.includes(p), `${key} uses ${p}`);
   }
   assert.equal(text.get("LOC_LSHUF_MOD_NAME"), "Re-dealable Leader Abilities, Attributes, and Start Biases");
-  assert.equal(text.get("LOC_LSHUF_OPEN_BUTTON"), "Re-dealable Leaders...");
 });
 
 test("every LOC key parameters.sql names has English text", () => {

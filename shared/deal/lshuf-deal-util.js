@@ -2,7 +2,7 @@
 // baked into the generated SQL too, so changing one means regenerating data/generated/ and bumping DEAL_VERSION.
 import { lshufKey } from "../lshuf-key.js";
 
-export const DEAL_VERSION = 3;
+export const DEAL_VERSION = 10;
 
 // The SQL unrolls each sequential deal to a fixed number of steps; the JS stops at the same count.
 export const PIECE_STEP_CAP = 768;

@@ -1,7 +1,9 @@
-// The mod's own setup window (SPEC section 3, "A window of the mod's own"; probe 16). Opened from the
-// "Re-dealable Leaders..." button in Advanced Settings. Every option is a hidden setup parameter, read and written
-// here through GameSetup, so it still saves with the game and reaches every player through the lobby. In a network
-// game only the host can change values; everyone else sees them locked.
+// The mod's setup windows. The advanced window opens from the button after the mod's rows in its settings section and
+// holds the fairness of mixed bonuses and the shuffle number, then buttons for leaders that are shuffled and leaders
+// from other mods. The Leader pools and Civilization pool windows open from the section itself. Every option here is a
+// hidden setup parameter read and written through GameSetup, so it saves with the game and reaches every player
+// through the lobby. In a network game only the host can change values; everyone else sees them locked. Escape and
+// Close shut only the window on top.
 
 import Panel from "/core/ui/panel-support.js";
 import ContextManager from "/core/ui/context-manager/context-manager.js";
@@ -13,19 +15,66 @@ import { startModdedChecks } from "/re-dealable-leader-abilities-attributes-and-
 import {
   el, dropdownRow, checkboxRow, seedRow, leaderList
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
+import {
+  opt, pageButtons, readRevision
+} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-section.js";
 
-export const WINDOW_TAG = "lshuf-setup-window";
 const SYNC_MS = 500;
-// Advanced settings start closed; opening them holds for the rest of the session.
-let advancedOpen = false;
-
-const opt = (key) => [`LOC_LSHUF_${key}_NAME`, `LOC_LSHUF_${key}_DESC`];
+const tagOf = (page) => `lshuf-setup-window-${page}`;
+export const WINDOW_TAG = tagOf("advanced");
 
 const moddedBoxOn = () =>
   paramBool(PARAM.ModdedAbilities) || paramBool(PARAM.ModdedAttributes) || paramBool(PARAM.ModdedBiases);
 
-function heading(key) {
-  return el("div", "lshuf-setup__heading font-title text-lg text-secondary uppercase", key);
+// Each page: its frame title and a builder that fills `list` and returns its controls ({ el, sync }).
+const PAGES = {
+  leaders: {
+    title: "LOC_LSHUF_LEADERS_OUT_NAME",
+    build: (win, list, ctx) => [win.add(list, leaderList(PARAM.LeadersOut, ...opt("LEADERS_OUT"), ctx, { inverted: true }))]
+  },
+  pools: { title: "LOC_LSHUF_HEADING_POOLS", build: (win, list, ctx) => buildPools(win, list, ctx) },
+  modded: { title: "LOC_LSHUF_HEADING_MODDED", build: (win, list, ctx) => buildModded(win, list, ctx) },
+  civs: {
+    title: "LOC_LSHUF_CIVS_OUT_NAME",
+    build: (win, list, ctx) => [
+      win.add(list, leaderList(PARAM.CivsOut, "LOC_LSHUF_CIVS_OUT_NAME", "LOC_LSHUF_CIVS_OUT_DESC", ctx, { inverted: true }))
+    ]
+  },
+  advanced: {
+    title: "LOC_LSHUF_ADVANCED_TITLE",
+    build: (win, list, ctx) => [
+      win.add(list, dropdownRow(PARAM.Dealing, ...opt("DEALING"), ctx)),
+      win.add(list, seedRow(PARAM.Seed, ...opt("SEED"), ctx)),
+      { el: list.appendChild(pageButtons((page) => openSetupWindow(page))), sync: () => {} }
+    ]
+  }
+};
+
+// The one leader pool: a list with All and None (a slot picks one leader, so one list is all it needs).
+function buildPools(win, list, ctx) {
+  const pool = leaderList(PARAM.Pool1, ...opt("POOL"), ctx, { emptyKey: "LOC_LSHUF_POOL_EMPTY" });
+  win.add(list, pool);
+  return [pool];
+}
+
+// The modded list shows only while a modded box is on and two or more listed modded leaders are installed; with
+// one, the boxes alone decide.
+function buildModded(win, list, ctx) {
+  const controls = [
+    win.add(list, checkboxRow(PARAM.ModdedAbilities, ...opt("MODDED_ABILITIES"), ctx)),
+    win.add(list, checkboxRow(PARAM.ModdedAttributes, ...opt("MODDED_ATTRIBUTES"), ctx)),
+    win.add(list, checkboxRow(PARAM.ModdedBiases, ...opt("MODDED_BIASES"), ctx))
+  ];
+  const none = el("div", "lshuf-setup__note font-body text-sm", "LOC_LSHUF_MODDED_NONE_INSTALLED");
+  list.appendChild(none);
+  const moddedList = win.add(list, leaderList(PARAM.ModdedOut, ...opt("MODDED_OUT"), ctx, { inverted: true }));
+  const syncShow = () => {
+    none.style.display = moddedList.size === 0 ? "" : "none";
+    moddedList.el.style.display = moddedList.size >= 2 && moddedBoxOn() ? "" : "none";
+  };
+  controls.push(moddedList, { sync: syncShow });
+  syncShow();
+  return controls;
 }
 
 class LShufSetupWindow extends Panel {
@@ -33,6 +82,10 @@ class LShufSetupWindow extends Panel {
   revision = -1;
   timer = 0;
   engineInputListener = (e) => this.onEngineInput(e);
+
+  get page() {
+    return "advanced";
+  }
 
   onInitialize() {
     super.onInitialize();
@@ -42,9 +95,9 @@ class LShufSetupWindow extends Panel {
   onAttach() {
     super.onAttach();
     this.Root.addEventListener(InputEngineEventName, this.engineInputListener);
-    this.revision = this.readRevision();
+    this.revision = readRevision();
     this.timer = setInterval(() => this.poll(), SYNC_MS);
-    startModdedChecks();
+    if (this.page === "modded" || this.page === "advanced") startModdedChecks();
   }
 
   onDetach() {
@@ -62,20 +115,13 @@ class LShufSetupWindow extends Panel {
   }
 
   close() {
-    ContextManager.pop(WINDOW_TAG);
+    ContextManager.pop(tagOf(this.page));
   }
 
-  readRevision() {
-    try {
-      return GameSetup.currentRevision;
-    } catch (_) {
-      return -1;
-    }
-  }
-
-  // Redraw from the setup values when they change under the window (the host, in a network game; a restore).
+  // Redraw from the setup values when they change under the window (the host, in a network game; a restore; a change
+  // made in another of our windows or on the Game Setup page).
   poll() {
-    const r = this.readRevision();
+    const r = readRevision();
     if (r === this.revision) return;
     this.revision = r;
     this.syncAll();
@@ -83,30 +129,18 @@ class LShufSetupWindow extends Panel {
 
   syncAll() {
     for (const c of this.controls) c.sync();
-    this.syncModded();
     this.hostNote.style.display = isLocalHost() ? "none" : "";
   }
 
-  ctx() {
-    return {
-      locked: () => !isLocalHost(),
-      changed: () => {
-        this.revision = this.readRevision();
-        this.syncModded();
-      }
-    };
-  }
-
   add(parent, control) {
-    this.controls.push(control);
     parent.appendChild(control.el);
     return control;
   }
 
   render() {
     this.Root.classList.add("fullscreen", "flex", "items-center", "justify-center");
-    const frame = el("fxs-frame", "lshuf-setup__frame");
-    frame.setAttribute("title", "LOC_LSHUF_WINDOW_TITLE");
+    const frame = el("fxs-frame", `lshuf-setup__frame lshuf-setup__frame--${this.page}`);
+    frame.setAttribute("title", PAGES[this.page].title);
     this.hostNote = el("div", "lshuf-setup__host-only font-body text-sm px-6", "LOC_LSHUF_HOST_ONLY");
     const scroll = el("fxs-scrollable", "lshuf-setup__scroll");
     scroll.setAttribute("handle-gamepad-pan", "true");
@@ -121,82 +155,35 @@ class LShufSetupWindow extends Panel {
     closeX.addEventListener("action-activate", () => this.close());
     frame.append(this.hostNote, scroll, footer, closeX);
     this.Root.appendChild(frame);
-    this.buildOptions(list);
+    const ctx = {
+      locked: () => !isLocalHost(),
+      changed: () => {
+        this.revision = readRevision();
+        this.syncAll();
+      }
+    };
+    this.controls = PAGES[this.page].build(this, list, ctx);
     this.syncAll();
-  }
-
-  // The first view holds what most players choose: the mode, what it re-deals, keeping their own leader, and when
-  // the deal is shown. Fine-tuning, the leader lists, pools and modded leaders sit under Advanced settings, closed
-  // until opened (and kept open or closed for the rest of the session).
-  buildOptions(list) {
-    const ctx = this.ctx();
-    list.appendChild(heading("LOC_LSHUF_HEADING_DEAL"));
-    this.add(list, dropdownRow(PARAM.Mode, ...opt("MODE"), ctx));
-    this.add(list, dropdownRow(PARAM.Abilities, ...opt("ABILITIES"), ctx));
-    this.add(list, dropdownRow(PARAM.Attributes, ...opt("ATTRIBUTES"), ctx));
-    this.add(list, dropdownRow(PARAM.Biases, ...opt("BIASES"), ctx));
-    this.add(list, checkboxRow(PARAM.KeepMine, ...opt("KEEP_MINE"), ctx));
-    this.add(list, dropdownRow(PARAM.Reveal, ...opt("REVEAL"), ctx));
-
-    const toggleRow = el("div", "lshuf-setup__advanced-toggle flex flex-row justify-center");
-    this.advancedBtn = el("fxs-button");
-    this.advancedBtn.addEventListener("action-activate", () => {
-      advancedOpen = !advancedOpen;
-      this.syncAdvanced();
-    });
-    toggleRow.appendChild(this.advancedBtn);
-    list.appendChild(toggleRow);
-    this.advanced = el("div", "lshuf-setup__advanced");
-    list.appendChild(this.advanced);
-    this.buildAdvanced(this.advanced, ctx);
-    this.syncAdvanced();
-  }
-
-  buildAdvanced(box, ctx) {
-    this.add(box, dropdownRow(PARAM.Dealing, ...opt("DEALING"), ctx));
-    this.add(box, dropdownRow(PARAM.Personality, ...opt("PERSONALITY"), ctx));
-    this.add(box, seedRow(PARAM.Seed, ...opt("SEED"), ctx));
-
-    box.appendChild(heading("LOC_LSHUF_HEADING_LEADERS"));
-    this.add(box, leaderList(PARAM.LeadersOut, ...opt("LEADERS_OUT"), ctx, { inverted: true }));
-
-    box.appendChild(heading("LOC_LSHUF_HEADING_POOLS"));
-    const pool = { emptyKey: "LOC_LSHUF_POOL_EMPTY" };
-    this.add(box, leaderList(PARAM.Pool1, ...opt("POOL1"), ctx, pool));
-    this.add(box, leaderList(PARAM.Pool2, ...opt("POOL2"), ctx, pool));
-
-    box.appendChild(heading("LOC_LSHUF_HEADING_MODDED"));
-    this.add(box, checkboxRow(PARAM.ModdedAbilities, ...opt("MODDED_ABILITIES"), ctx));
-    this.add(box, checkboxRow(PARAM.ModdedAttributes, ...opt("MODDED_ATTRIBUTES"), ctx));
-    this.add(box, checkboxRow(PARAM.ModdedBiases, ...opt("MODDED_BIASES"), ctx));
-    this.moddedNone = el("div", "lshuf-setup__note font-body text-sm", "LOC_LSHUF_MODDED_NONE_INSTALLED");
-    box.appendChild(this.moddedNone);
-    this.moddedList = this.add(box, leaderList(PARAM.ModdedOut, ...opt("MODDED_OUT"), ctx, { inverted: true }));
-  }
-
-  syncAdvanced() {
-    this.advancedBtn.setAttribute("caption", advancedOpen ? "LOC_LSHUF_ADVANCED_HIDE" : "LOC_LSHUF_ADVANCED_SHOW");
-    this.advanced.style.display = advancedOpen ? "" : "none";
-  }
-
-  // The modded list shows only while a modded box is on and two or more listed modded leaders are installed; with
-  // one, the boxes alone decide.
-  syncModded() {
-    if (!this.moddedList) return;
-    const size = this.moddedList.size;
-    this.moddedNone.style.display = size === 0 ? "" : "none";
-    this.moddedList.el.style.display = size >= 2 && moddedBoxOn() ? "" : "none";
   }
 }
 
-Controls.define(WINDOW_TAG, {
-  createInstance: LShufSetupWindow,
-  description: "Re-dealable Leaders setup window",
-  classNames: [WINDOW_TAG],
-  styles: [`fs://game/${MOD_ID}/ui/setup/lshuf-setup.css`],
-  initializeImmediately: true
-});
+// One tag per page, so a list window stacks over the advanced window and pops on its own.
+for (const page of Object.keys(PAGES)) {
+  const PageWindow = class extends LShufSetupWindow {
+    get page() {
+      return page;
+    }
+  };
+  Controls.define(tagOf(page), {
+    createInstance: PageWindow,
+    description: `Re-dealable Leaders setup window (${page})`,
+    classNames: [tagOf(page), "lshuf-setup-window"],
+    styles: [`fs://game/${MOD_ID}/ui/setup/lshuf-setup.css`],
+    initializeImmediately: true
+  });
+}
 
-export function openSetupWindow() {
-  ContextManager.push(WINDOW_TAG, { singleton: true, createMouseGuard: true });
+export function openSetupWindow(page = "advanced") {
+  const p = PAGES[page] ? page : "advanced";
+  ContextManager.push(tagOf(p), { singleton: true, createMouseGuard: true });
 }

@@ -62,7 +62,8 @@ INSERT INTO LShufWork_BShape SELECT (SELECT COUNT(*) FROM LShufWork_BRow),
 CREATE TABLE IF NOT EXISTS LShufWork_RSub (Subj TEXT, IsCiv INTEGER, Base INTEGER, Cnt INTEGER, PRIMARY KEY (Subj, IsCiv));
 DELETE FROM LShufWork_RSub;
 INSERT INTO LShufWork_RSub (Subj, IsCiv, Base) SELECT LeaderType, 0, Rank * 4 FROM LShufWork_Pool
-  WHERE Axis = 'B' AND (SELECT RollBiases FROM LShufWork_Cfg) = 1 AND (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1 AND (SELECT Total FROM LShufWork_BShape) > 0;
+  WHERE Axis = 'B' AND (SELECT RollBiases FROM LShufWork_Cfg) = 1 AND (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1 AND (SELECT Total FROM LShufWork_BShape) > 0 AND NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND (bb.BiasPick IS NOT NULL OR bb.GenericBiasPick IS NOT NULL)
+    AND bb.Leader IN (SELECT pb.LeaderType FROM LShufWork_Pool pb WHERE pb.Axis = 'B') AND bb.Leader = LeaderType);
 INSERT INTO LShufWork_RSub (Subj, IsCiv, Base) SELECT CivilizationType, 1, 100000 + Rank * 4
   FROM LShufWork_Civ WHERE (SELECT RollBiases FROM LShufWork_Cfg) = 1 AND (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1 AND (SELECT Total FROM LShufWork_BShape) > 0;
 UPDATE LShufWork_RSub SET Cnt = CASE WHEN IsCiv = 1 THEN CASE WHEN (SELECT CivCount FROM LShufWork_BShape) = 0 OR (SELECT CWith FROM LShufWork_BShape) = 0 THEN 0
@@ -89,12 +90,15 @@ INSERT INTO LShufWork_TSeg (LeaderType, Rest, Value) SELECT LeaderType, '|' || B
   SELECT p.LeaderType, m.BiasTags AS BiasTags, COALESCE(m.Value, 1) AS Value FROM LShufWork_Pool p
     JOIN LShufMapping m ON m.LeaderType = p.LeaderType AND m.Kind = 'bullet'
     WHERE p.Axis = 'B' AND NOT EXISTS (SELECT 1 FROM LShufWork_Shape s WHERE s.LeaderType = p.LeaderType)
+      AND NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND (bb.BiasPick IS NOT NULL OR bb.GenericBiasPick IS NOT NULL)
+    AND bb.Leader IN (SELECT pb.LeaderType FROM LShufWork_Pool pb WHERE pb.Axis = 'B') AND bb.Leader = p.LeaderType)
   UNION ALL
   SELECT h.LeaderType, m.BiasTags AS BiasTags, COALESCE(m.Value, 1) AS Value FROM LShufWork_Pool p
     JOIN LShufWork_Held h ON h.LeaderType = p.LeaderType
     JOIN LShufMapping m ON m.LeaderType = h.FromLeader AND m.Kind = 'bullet'
     WHERE p.Axis = 'B' AND (h.Kind = 'whole' OR (h.Kind = 'remainder' AND COALESCE(m.Movable, 1) <> 1)
-      OR (h.Kind = 'bullet' AND m.PieceId = h.PieceId))) WHERE BiasTags IS NOT NULL AND (SELECT IsMatched FROM LShufWork_Cfg) = 1 AND (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1;
+      OR (h.Kind = 'bullet' AND m.PieceId = h.PieceId)) AND NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND (bb.BiasPick IS NOT NULL OR bb.GenericBiasPick IS NOT NULL)
+    AND bb.Leader IN (SELECT pb.LeaderType FROM LShufWork_Pool pb WHERE pb.Axis = 'B') AND bb.Leader = p.LeaderType)) WHERE BiasTags IS NOT NULL AND (SELECT IsMatched FROM LShufWork_Cfg) = 1 AND (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1;
 CREATE TABLE IF NOT EXISTS LShufWork_TTag (LeaderType TEXT, Tag TEXT, Value INTEGER);
 DELETE FROM LShufWork_TTag;
 
@@ -160,14 +164,60 @@ DELETE FROM LShufResultBiases;
 INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT r.TableName, r.LeaderType, r.CivilizationType, r.TargetType, r.Score, 'shipped' FROM LShufWork_BRow r
   WHERE NOT (CASE WHEN r.LeaderType IS NOT NULL THEN (r.LeaderType IN (SELECT LeaderType FROM LShufWork_L WHERE ((SELECT OffB FROM LShufWork_Cfg) = 1 AND RB IS NULL))
     OR r.LeaderType IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'B'))
-    ELSE ((SELECT OffB FROM LShufWork_Cfg) = 1 OR ((SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1 AND r.CivilizationType IN (SELECT CivilizationType FROM LShufWork_Civ))) END);
+    ELSE ((SELECT OffB FROM LShufWork_Cfg) = 1 OR ((SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1 AND r.CivilizationType IN (SELECT CivilizationType FROM LShufWork_Civ))) END) AND NOT (r.LeaderType IS NULL AND NOT NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND bb.Civ = r.CivilizationType
+  AND bb.CivBiasPick IS NOT NULL AND bb.Leader IN (SELECT pb.LeaderType FROM LShufWork_Pool pb WHERE pb.Axis = 'B') AND EXISTS (SELECT 1 FROM LShufWork_BRow rr WHERE rr.LeaderType IS NULL AND rr.CivilizationType = bb.CivBiasPick)));
 INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT r.TableName, d.LeaderType, r.CivilizationType, r.TargetType, r.Score, 'moved'
-  FROM LShufWork_Donor d JOIN LShufWork_BRow r ON r.LeaderType = d.Donor WHERE d.Axis = 'B' AND (SELECT IsPaired FROM LShufWork_Cfg) = 1;
+  FROM LShufWork_Donor d JOIN LShufWork_BRow r ON r.LeaderType = d.Donor WHERE d.Axis = 'B' AND (SELECT BCycle FROM LShufWork_Cfg) = 1
+    AND NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND (bb.BiasPick IS NOT NULL OR bb.GenericBiasPick IS NOT NULL)
+    AND bb.Leader IN (SELECT pb.LeaderType FROM LShufWork_Pool pb WHERE pb.Axis = 'B') AND bb.Leader = d.LeaderType);
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT r.TableName, p.LeaderType, r.CivilizationType, r.TargetType, r.Score, 'moved'
+  FROM LShufWork_Pool p JOIN LShufWork_BRow r ON r.LeaderType = COALESCE((SELECT f.Giver FROM LShufWork_Flow f WHERE f.Receiver = p.LeaderType ORDER BY f.C DESC, f.V DESC, f.Giver LIMIT 1), p.LeaderType)
+  WHERE p.Axis = 'B' AND (SELECT BFromA FROM LShufWork_Cfg) = 1 AND NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND (bb.BiasPick IS NOT NULL OR bb.GenericBiasPick IS NOT NULL)
+    AND bb.Leader IN (SELECT pb.LeaderType FROM LShufWork_Pool pb WHERE pb.Axis = 'B') AND bb.Leader = p.LeaderType);
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT r.TableName, b.Leader, r.CivilizationType, r.TargetType, r.Score, 'moved'
+  FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader JOIN LShufWork_BRow r ON r.LeaderType = b.BiasPick WHERE b.OK = 1 AND b.BiasPick IS NOT NULL;
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasBiomes', b.Leader, NULL, 'BIOME_DESERT', 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'BIOME_DESERT';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasBiomes', b.Leader, NULL, 'BIOME_GRASSLAND', 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'BIOME_GRASSLAND';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasBiomes', b.Leader, NULL, 'BIOME_PLAINS', 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'BIOME_PLAINS';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasBiomes', b.Leader, NULL, 'BIOME_TROPICAL', 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'BIOME_TROPICAL';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasBiomes', b.Leader, NULL, 'BIOME_TUNDRA', 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'BIOME_TUNDRA';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasTerrains', b.Leader, NULL, 'TERRAIN_FLAT', 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'TERRAIN_FLAT';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasTerrains', b.Leader, NULL, 'TERRAIN_HILL', 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'TERRAIN_HILL';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasTerrains', b.Leader, NULL, 'TERRAIN_MOUNTAIN', 40, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'TERRAIN_MOUNTAIN';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasTerrains', b.Leader, NULL, 'TERRAIN_NAVIGABLE_RIVER', 20, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'TERRAIN_NAVIGABLE_RIVER';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasFeatureClasses', b.Leader, NULL, 'FEATURE_CLASS_VEGETATED', 20, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'FEATURE_CLASS_VEGETATED';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasFeatureClasses', b.Leader, NULL, 'FEATURE_CLASS_FLOODPLAIN', 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'FEATURE_CLASS_FLOODPLAIN';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasAdjacentToCoasts', b.Leader, NULL, NULL, 200, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'COAST';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasRivers', b.Leader, NULL, NULL, 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'RIVER';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasLakes', b.Leader, NULL, NULL, 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'LAKE';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasNaturalWonders', b.Leader, NULL, NULL, 1000, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'NATURAL_WONDER';
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT 'StartBiasIslands', b.Leader, NULL, NULL, 10, 'moved' FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader
+  WHERE b.OK = 1 AND b.GenericBiasPick = 'ISLAND';
 INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT TableName, CASE WHEN IsCiv = 1 THEN NULL ELSE Subj END, CASE WHEN IsCiv = 1 THEN Subj ELSE NULL END,
-  TargetType, Score, 'rolled' FROM LShufWork_Roll;
+  TargetType, Score, 'rolled' FROM LShufWork_Roll WHERE NOT (IsCiv = 1 AND NOT NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND bb.Civ = Subj
+  AND bb.CivBiasPick IS NOT NULL AND bb.Leader IN (SELECT pb.LeaderType FROM LShufWork_Pool pb WHERE pb.Axis = 'B') AND EXISTS (SELECT 1 FROM LShufWork_BRow rr WHERE rr.LeaderType IS NULL AND rr.CivilizationType = bb.CivBiasPick)));
 INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT TableName, LeaderType, NULL, CASE WHEN (SELECT HasTarget FROM LShufWork_BStat b WHERE b.TableName = t.TableName) = 1
   THEN Tag ELSE NULL END, Score, 'tags' FROM LShufWork_TagV t;
 INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT r.TableName, NULL, c.CivilizationType, r.TargetType, r.Score,
   CASE WHEN c.Donor = c.CivilizationType THEN 'shipped' ELSE 'moved' END
   FROM LShufWork_Civ c JOIN LShufWork_BRow r ON r.CivilizationType = c.Donor AND r.LeaderType IS NULL
-  WHERE (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1 AND ((SELECT IsPaired FROM LShufWork_Cfg) = 1 OR (SELECT IsMatched FROM LShufWork_Cfg) = 1);
+  WHERE (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1 AND (SELECT RollBiases FROM LShufWork_Cfg) = 0 AND NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND bb.Civ = c.CivilizationType
+  AND bb.CivBiasPick IS NOT NULL AND bb.Leader IN (SELECT pb.LeaderType FROM LShufWork_Pool pb WHERE pb.Axis = 'B') AND EXISTS (SELECT 1 FROM LShufWork_BRow rr WHERE rr.LeaderType IS NULL AND rr.CivilizationType = bb.CivBiasPick));
+INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin) SELECT r.TableName, NULL, b.Civ, r.TargetType, r.Score, 'moved'
+  FROM LShufWork_Build b JOIN LShufWork_Pool p_b ON p_b.Axis = 'B' AND p_b.LeaderType = b.Leader JOIN LShufWork_BRow r ON r.CivilizationType = b.CivBiasPick AND r.LeaderType IS NULL
+  WHERE b.OK = 1 AND b.Civ IS NOT NULL AND b.CivBiasPick IS NOT NULL;

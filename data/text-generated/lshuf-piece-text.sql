@@ -13,8 +13,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ADA_LOVELACE__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ADA_LOVELACE__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ADA_LOVELACE__B02: bullet 2 of LOC_TRAIT_LEADER_ADA_LOVELACE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -26,8 +27,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ADA_LOVELACE__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ADA_LOVELACE__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ALEXANDER__B01: bullet 1 of LOC_TRAIT_LEADER_ALEXANDER_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -39,8 +41,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ALEXANDER__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ALEXANDER__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ALEXANDER__B02: bullet 2 of LOC_TRAIT_LEADER_ALEXANDER_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -52,8 +55,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ALEXANDER__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ALEXANDER__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ALEXANDER__B03: bullet 3 of LOC_TRAIT_LEADER_ALEXANDER_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -65,8 +69,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ALEXANDER__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ALEXANDER__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ALEXANDER__B04: bullet 4 of LOC_TRAIT_LEADER_ALEXANDER_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -78,8 +83,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ALEXANDER__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ALEXANDER__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_AMINA__B01: bullet 1 of LOC_TRAIT_LEADER_AMINA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -91,8 +97,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AMINA__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AMINA__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_AMINA__B02: bullet 2 of LOC_TRAIT_LEADER_AMINA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -104,8 +111,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AMINA__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AMINA__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_AMINA__B03: bullet 3 of LOC_TRAIT_LEADER_AMINA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -117,8 +125,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AMINA__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AMINA__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ASHOKA_ALT__B01: bullet 1 of LOC_TRAIT_LEADER_ASHOKA_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -130,8 +139,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA_ALT__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA_ALT__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ASHOKA_ALT__B02: bullet 2 of LOC_TRAIT_LEADER_ASHOKA_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -143,8 +153,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA_ALT__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA_ALT__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ASHOKA_ALT__B03: bullet 3 of LOC_TRAIT_LEADER_ASHOKA_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -156,8 +167,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA_ALT__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA_ALT__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ASHOKA_ALT__B04: bullet 4 of LOC_TRAIT_LEADER_ASHOKA_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -169,8 +181,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA_ALT__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA_ALT__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ASHOKA__B01: bullet 1 of LOC_TRAIT_LEADER_ASHOKA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -182,8 +195,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ASHOKA__B02: bullet 2 of LOC_TRAIT_LEADER_ASHOKA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -195,8 +209,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ASHOKA__B03: bullet 3 of LOC_TRAIT_LEADER_ASHOKA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -208,8 +223,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ASHOKA__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_AUGUSTUS__B01: bullet 1 of LOC_TRAIT_LEADER_AUGUSTUS_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -221,8 +237,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AUGUSTUS__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AUGUSTUS__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_AUGUSTUS__B02: bullet 2 of LOC_TRAIT_LEADER_AUGUSTUS_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -234,8 +251,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AUGUSTUS__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AUGUSTUS__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_AUGUSTUS__B03: bullet 3 of LOC_TRAIT_LEADER_AUGUSTUS_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -247,8 +265,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AUGUSTUS__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_AUGUSTUS__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Akyuu__B01: bullet 1 of LOC_TRAIT_LEADER_Akyuu_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -260,10 +279,11 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Akyuu__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Akyuu__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
--- LEADER_Akyuu__B02: bullet 2 of LOC_TRAIT_LEADER_Akyuu_ABILITY_DESCRIPTION
+-- LEADER_Akyuu__B02: bullets 2-3 of LOC_TRAIT_LEADER_Akyuu_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
   SELECT Language, (CASE WHEN instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') > 0 THEN substr(substr(Text, instr(Text, '[LI]') + 4), 1, instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') - 1) ELSE substr(Text, instr(Text, '[LI]') + 4) END) || '[LI]', NULL, 0 FROM LocalizedText
   WHERE Tag = 'LOC_TRAIT_LEADER_Akyuu_ABILITY_DESCRIPTION' AND instr(Text, '[LI]') > 0
@@ -273,21 +293,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Akyuu__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
-
--- LEADER_Akyuu__B03: bullet 3 of LOC_TRAIT_LEADER_Akyuu_ABILITY_DESCRIPTION
-WITH RECURSIVE seg(Language, rest, piece, n) AS (
-  SELECT Language, (CASE WHEN instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') > 0 THEN substr(substr(Text, instr(Text, '[LI]') + 4), 1, instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') - 1) ELSE substr(Text, instr(Text, '[LI]') + 4) END) || '[LI]', NULL, 0 FROM LocalizedText
-  WHERE Tag = 'LOC_TRAIT_LEADER_Akyuu_ABILITY_DESCRIPTION' AND instr(Text, '[LI]') > 0
-  UNION ALL
-  SELECT Language, substr(rest, instr(rest, '[LI]') + 4), trim(substr(rest, 1, instr(rest, '[LI]') - 1), ' ' || char(9) || char(10) || char(13)),
-    n + (trim(substr(rest, 1, instr(rest, '[LI]') - 1), ' ' || char(9) || char(10) || char(13)) <> '')
-  FROM seg WHERE instr(rest, '[LI]') > 0
-)
-INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Akyuu__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Akyuu__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Aya__B01: bullet 1 of LOC_TRAIT_LEADER_Aya_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -299,8 +307,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Aya__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Aya__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Aya__B02: bullet 2 of LOC_TRAIT_LEADER_Aya_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -312,8 +321,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Aya__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Aya__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Aya__B03: bullet 3 of LOC_TRAIT_LEADER_Aya_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -325,8 +335,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Aya__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Aya__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_BENJAMIN_FRANKLIN__B01: bullet 1 of LOC_TRAIT_LEADER_BENJAMIN_FRANKLIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -338,8 +349,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BENJAMIN_FRANKLIN__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BENJAMIN_FRANKLIN__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_BENJAMIN_FRANKLIN__B02: bullet 2 of LOC_TRAIT_LEADER_BENJAMIN_FRANKLIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -351,8 +363,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BENJAMIN_FRANKLIN__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BENJAMIN_FRANKLIN__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_BENJAMIN_FRANKLIN__B03: bullet 3 of LOC_TRAIT_LEADER_BENJAMIN_FRANKLIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -364,8 +377,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BENJAMIN_FRANKLIN__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BENJAMIN_FRANKLIN__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_BENJAMIN_FRANKLIN__B04: bullet 4 of LOC_TRAIT_LEADER_BENJAMIN_FRANKLIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -377,8 +391,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BENJAMIN_FRANKLIN__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BENJAMIN_FRANKLIN__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_BOLIVAR__B01: bullet 1 of LOC_TRAIT_LEADER_BOLIVAR_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -390,8 +405,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BOLIVAR__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BOLIVAR__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_BOLIVAR__B02: bullet 2 of LOC_TRAIT_LEADER_BOLIVAR_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -403,8 +419,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BOLIVAR__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BOLIVAR__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_BOLIVAR__B03: bullet 3 of LOC_TRAIT_LEADER_BOLIVAR_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -416,8 +433,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BOLIVAR__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_BOLIVAR__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Bocchi__B01: bullet 1 of LOC_TRAIT_LEADER_BOCCHI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -429,8 +447,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Bocchi__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Bocchi__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Bocchi__B02: bullet 2 of LOC_TRAIT_LEADER_BOCCHI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -442,8 +461,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Bocchi__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Bocchi__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Bocchi__B03: bullet 3 of LOC_TRAIT_LEADER_BOCCHI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -455,8 +475,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Bocchi__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Bocchi__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_CATHERINE__B01: bullet 1 of LOC_TRAIT_LEADER_CATHERINE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -468,8 +489,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CATHERINE__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CATHERINE__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_CATHERINE__B02: bullet 2 of LOC_TRAIT_LEADER_CATHERINE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -481,8 +503,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CATHERINE__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CATHERINE__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_CATHERINE__B03: bullet 3 of LOC_TRAIT_LEADER_CATHERINE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -494,8 +517,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CATHERINE__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CATHERINE__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_CHARLEMAGNE__B01: bullet 1 of LOC_TRAIT_LEADER_CHARLEMAGNE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -507,8 +531,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CHARLEMAGNE__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CHARLEMAGNE__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_CHARLEMAGNE__B02: bullet 2 of LOC_TRAIT_LEADER_CHARLEMAGNE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -520,8 +545,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CHARLEMAGNE__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CHARLEMAGNE__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_CHARLEMAGNE__B03: bullet 3 of LOC_TRAIT_LEADER_CHARLEMAGNE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -533,8 +559,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CHARLEMAGNE__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CHARLEMAGNE__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_CONFUCIUS__B01: bullet 1 of LOC_TRAIT_LEADER_CONFUCIUS_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -546,8 +573,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CONFUCIUS__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CONFUCIUS__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_CONFUCIUS__B02: bullet 2 of LOC_TRAIT_LEADER_CONFUCIUS_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -559,8 +587,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CONFUCIUS__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_CONFUCIUS__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Cirno__B01: bullet 1 of LOC_TRAIT_LEADER_Cirno_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -572,8 +601,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Cirno__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Cirno__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Cirno__B02: bullet 2 of LOC_TRAIT_LEADER_Cirno_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -585,8 +615,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Cirno__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Cirno__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_EDWARD_TEACH__B01: bullet 1 of LOC_TRAIT_LEADER_EDWARD_TEACH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -598,8 +629,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EDWARD_TEACH__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EDWARD_TEACH__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_EDWARD_TEACH__B02: bullet 2 of LOC_TRAIT_LEADER_EDWARD_TEACH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -611,8 +643,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EDWARD_TEACH__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EDWARD_TEACH__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_EDWARD_TEACH__B03: bullet 3 of LOC_TRAIT_LEADER_EDWARD_TEACH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -624,8 +657,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EDWARD_TEACH__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EDWARD_TEACH__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_EIRIN__B01: bullet 1 of LOC_TRAIT_LEADER_EIRIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -637,8 +671,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EIRIN__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EIRIN__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_EIRIN__B02: bullet 2 of LOC_TRAIT_LEADER_EIRIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -650,8 +685,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EIRIN__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EIRIN__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_EIRIN__B03: bullet 3 of LOC_TRAIT_LEADER_EIRIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -663,8 +699,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EIRIN__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_EIRIN__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ELIZABETH__B01: bullet 1 of LOC_TRAIT_LEADER_ELIZABETH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -676,8 +713,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ELIZABETH__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ELIZABETH__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ELIZABETH__B02: bullet 2 of LOC_TRAIT_LEADER_ELIZABETH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -689,8 +727,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ELIZABETH__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ELIZABETH__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ELIZABETH__B03: bullet 3 of LOC_TRAIT_LEADER_ELIZABETH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -702,8 +741,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ELIZABETH__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ELIZABETH__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ELIZABETH__B04: bullet 4 of LOC_TRAIT_LEADER_ELIZABETH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -715,8 +755,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ELIZABETH__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ELIZABETH__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Ema__B01: bullet 1 of LOC_TRAIT_LEADER_Ema_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -728,8 +769,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Ema__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Ema__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Ema__B02: bullet 2 of LOC_TRAIT_LEADER_Ema_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -741,8 +783,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Ema__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Ema__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Ema__B03: bullet 3 of LOC_TRAIT_LEADER_Ema_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -754,8 +797,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Ema__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Ema__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FLAN__B01: bullet 1 of LOC_TRAIT_LEADER_FLAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -767,8 +811,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FLAN__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FLAN__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FLAN__B02: bullet 2 of LOC_TRAIT_LEADER_FLAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -780,8 +825,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FLAN__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FLAN__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FLAN__B03: bullet 3 of LOC_TRAIT_LEADER_FLAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -793,8 +839,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FLAN__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FLAN__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FLAN__B04: bullet 4 of LOC_TRAIT_LEADER_FLAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -806,8 +853,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FLAN__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FLAN__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FRIEDRICH_ALT__B01: bullet 1 of LOC_TRAIT_LEADER_FRIEDRICH_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -819,8 +867,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH_ALT__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH_ALT__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FRIEDRICH_ALT__B02: bullet 2 of LOC_TRAIT_LEADER_FRIEDRICH_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -832,8 +881,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH_ALT__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH_ALT__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FRIEDRICH_ALT__B03: bullet 3 of LOC_TRAIT_LEADER_FRIEDRICH_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -845,8 +895,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH_ALT__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH_ALT__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FRIEDRICH__B01: bullet 1 of LOC_TRAIT_LEADER_FRIEDRICH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -858,8 +909,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FRIEDRICH__B02: bullet 2 of LOC_TRAIT_LEADER_FRIEDRICH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -871,8 +923,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_FRIEDRICH__B03: bullet 3 of LOC_TRAIT_LEADER_FRIEDRICH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -884,8 +937,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_FRIEDRICH__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_GENGHIS_KHAN__B01: bullet 1 of LOC_TRAIT_LEADER_GENGHIS_KHAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -897,10 +951,11 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GENGHIS_KHAN__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GENGHIS_KHAN__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
--- LEADER_GENGHIS_KHAN__B02: bullet 2 of LOC_TRAIT_LEADER_GENGHIS_KHAN_ABILITY_DESCRIPTION
+-- LEADER_GENGHIS_KHAN__B02: bullets 2-3 of LOC_TRAIT_LEADER_GENGHIS_KHAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
   SELECT Language, (CASE WHEN instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') > 0 THEN substr(substr(Text, instr(Text, '[LI]') + 4), 1, instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') - 1) ELSE substr(Text, instr(Text, '[LI]') + 4) END) || '[LI]', NULL, 0 FROM LocalizedText
   WHERE Tag = 'LOC_TRAIT_LEADER_GENGHIS_KHAN_ABILITY_DESCRIPTION' AND instr(Text, '[LI]') > 0
@@ -910,21 +965,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GENGHIS_KHAN__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
-
--- LEADER_GENGHIS_KHAN__B03: bullet 3 of LOC_TRAIT_LEADER_GENGHIS_KHAN_ABILITY_DESCRIPTION
-WITH RECURSIVE seg(Language, rest, piece, n) AS (
-  SELECT Language, (CASE WHEN instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') > 0 THEN substr(substr(Text, instr(Text, '[LI]') + 4), 1, instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') - 1) ELSE substr(Text, instr(Text, '[LI]') + 4) END) || '[LI]', NULL, 0 FROM LocalizedText
-  WHERE Tag = 'LOC_TRAIT_LEADER_GENGHIS_KHAN_ABILITY_DESCRIPTION' AND instr(Text, '[LI]') > 0
-  UNION ALL
-  SELECT Language, substr(rest, instr(rest, '[LI]') + 4), trim(substr(rest, 1, instr(rest, '[LI]') - 1), ' ' || char(9) || char(10) || char(13)),
-    n + (trim(substr(rest, 1, instr(rest, '[LI]') - 1), ' ' || char(9) || char(10) || char(13)) <> '')
-  FROM seg WHERE instr(rest, '[LI]') > 0
-)
-INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GENGHIS_KHAN__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GENGHIS_KHAN__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_GILGAMESH__B01: bullet 1 of LOC_TRAIT_LEADER_GILGAMESH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -936,8 +979,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GILGAMESH__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GILGAMESH__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_GILGAMESH__B02: bullet 2 of LOC_TRAIT_LEADER_GILGAMESH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -949,8 +993,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GILGAMESH__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GILGAMESH__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_GILGAMESH__B03: bullet 3 of LOC_TRAIT_LEADER_GILGAMESH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -962,8 +1007,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GILGAMESH__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_GILGAMESH__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HARRIET_TUBMAN__B01: bullet 1 of LOC_TRAIT_LEADER_HARRIET_TUBMAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -975,8 +1021,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HARRIET_TUBMAN__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HARRIET_TUBMAN__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HARRIET_TUBMAN__B02: bullet 2 of LOC_TRAIT_LEADER_HARRIET_TUBMAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -988,8 +1035,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HARRIET_TUBMAN__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HARRIET_TUBMAN__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HARRIET_TUBMAN__B03: bullet 3 of LOC_TRAIT_LEADER_HARRIET_TUBMAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1001,8 +1049,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HARRIET_TUBMAN__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HARRIET_TUBMAN__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HATSHEPSUT__B01: bullet 1 of LOC_TRAIT_LEADER_HATSHEPSUT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1014,8 +1063,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HATSHEPSUT__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HATSHEPSUT__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HATSHEPSUT__B02: bullet 2 of LOC_TRAIT_LEADER_HATSHEPSUT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1027,8 +1077,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HATSHEPSUT__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HATSHEPSUT__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HIMIKO_ALT__B01: bullet 1 of LOC_TRAIT_LEADER_HIMIKO_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1040,8 +1091,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO_ALT__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO_ALT__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HIMIKO_ALT__B02: bullet 2 of LOC_TRAIT_LEADER_HIMIKO_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1053,8 +1105,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO_ALT__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO_ALT__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HIMIKO_ALT__B03: bullet 3 of LOC_TRAIT_LEADER_HIMIKO_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1066,8 +1119,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO_ALT__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO_ALT__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HIMIKO__B01: bullet 1 of LOC_TRAIT_LEADER_HIMIKO_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1079,8 +1133,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HIMIKO__B02: bullet 2 of LOC_TRAIT_LEADER_HIMIKO_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1092,8 +1147,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_HIMIKO__B03: bullet 3 of LOC_TRAIT_LEADER_HIMIKO_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1105,8 +1161,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_HIMIKO__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Hiro__B01: bullet 1 of LOC_TRAIT_LEADER_Hiro_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1118,8 +1175,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Hiro__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Hiro__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Hiro__B02: bullet 2 of LOC_TRAIT_LEADER_Hiro_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1131,8 +1189,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Hiro__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Hiro__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Hiro__B03: bullet 3 of LOC_TRAIT_LEADER_Hiro_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1144,8 +1203,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Hiro__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Hiro__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Houraisan__B01: bullet 1 of LOC_TRAIT_LEADER_Houraisan_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1157,8 +1217,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Houraisan__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Houraisan__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Houraisan__B02: bullet 2 of LOC_TRAIT_LEADER_Houraisan_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1170,8 +1231,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Houraisan__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Houraisan__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Houraisan__B03: bullet 3 of LOC_TRAIT_LEADER_Houraisan_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1183,8 +1245,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Houraisan__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Houraisan__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_IBN_BATTUTA__B01: bullet 1 of LOC_TRAIT_LEADER_IBN_BATTUTA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1196,8 +1259,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_IBN_BATTUTA__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_IBN_BATTUTA__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_IBN_BATTUTA__B02: bullet 2 of LOC_TRAIT_LEADER_IBN_BATTUTA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1209,8 +1273,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_IBN_BATTUTA__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_IBN_BATTUTA__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_IBN_BATTUTA__B03: bullet 3 of LOC_TRAIT_LEADER_IBN_BATTUTA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1222,8 +1287,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_IBN_BATTUTA__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_IBN_BATTUTA__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ISABELLA__B01: bullet 1 of LOC_TRAIT_LEADER_ISABELLA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1235,8 +1301,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ISABELLA__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ISABELLA__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ISABELLA__B02: bullet 2 of LOC_TRAIT_LEADER_ISABELLA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1248,8 +1315,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ISABELLA__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ISABELLA__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ISABELLA__B03: bullet 3 of LOC_TRAIT_LEADER_ISABELLA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1261,8 +1329,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ISABELLA__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ISABELLA__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ISABELLA__B04: bullet 4 of LOC_TRAIT_LEADER_ISABELLA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1274,8 +1343,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ISABELLA__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ISABELLA__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_JOSE_RIZAL__B01: bullet 1 of LOC_TRAIT_LEADER_JOSE_RIZAL_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1287,8 +1357,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_JOSE_RIZAL__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_JOSE_RIZAL__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_JOSE_RIZAL__B02: bullet 2 of LOC_TRAIT_LEADER_JOSE_RIZAL_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1300,8 +1371,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_JOSE_RIZAL__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_JOSE_RIZAL__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_JOSE_RIZAL__B03: bullet 3 of LOC_TRAIT_LEADER_JOSE_RIZAL_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1313,8 +1385,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_JOSE_RIZAL__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_JOSE_RIZAL__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_JOSE_RIZAL__B04: bullet 4 of LOC_TRAIT_LEADER_JOSE_RIZAL_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1326,8 +1399,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_JOSE_RIZAL__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_JOSE_RIZAL__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_KingofHeroes__B01: bullet 1 of LOC_TRAIT_LEADER_KingofHeroes_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1339,8 +1413,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_KingofHeroes__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_KingofHeroes__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_KingofHeroes__B02: bullet 2 of LOC_TRAIT_LEADER_KingofHeroes_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1352,8 +1427,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_KingofHeroes__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_KingofHeroes__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_KingofHeroes__B03: bullet 3 of LOC_TRAIT_LEADER_KingofHeroes_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1365,8 +1441,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_KingofHeroes__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_KingofHeroes__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Koishi__B01: bullet 1 of LOC_TRAIT_LEADER_KOISHI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1378,8 +1455,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Koishi__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Koishi__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Koishi__B02: bullet 2 of LOC_TRAIT_LEADER_KOISHI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1391,8 +1469,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Koishi__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Koishi__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Koishi__B03: bullet 3 of LOC_TRAIT_LEADER_KOISHI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1404,8 +1483,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Koishi__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Koishi__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_LAFAYETTE__B01: bullet 1 of LOC_TRAIT_LEADER_LAFAYETTE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1417,8 +1497,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAFAYETTE__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAFAYETTE__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_LAFAYETTE__B02: bullet 2 of LOC_TRAIT_LEADER_LAFAYETTE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1430,8 +1511,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAFAYETTE__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAFAYETTE__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_LAFAYETTE__B03: bullet 3 of LOC_TRAIT_LEADER_LAFAYETTE_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1443,8 +1525,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAFAYETTE__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAFAYETTE__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_LAKSHMIBAI__B01: bullet 1 of LOC_TRAIT_LEADER_LAKSHMIBAI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1456,8 +1539,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAKSHMIBAI__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAKSHMIBAI__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_LAKSHMIBAI__B02: bullet 2 of LOC_TRAIT_LEADER_LAKSHMIBAI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1469,8 +1553,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAKSHMIBAI__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAKSHMIBAI__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_LAKSHMIBAI__B03: bullet 3 of LOC_TRAIT_LEADER_LAKSHMIBAI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1482,8 +1567,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAKSHMIBAI__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_LAKSHMIBAI__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MACHIAVELLI__B01: bullet 1 of LOC_TRAIT_LEADER_MACHIAVELLI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1495,8 +1581,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MACHIAVELLI__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MACHIAVELLI__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MACHIAVELLI__B02: bullet 2 of LOC_TRAIT_LEADER_MACHIAVELLI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1508,8 +1595,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MACHIAVELLI__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MACHIAVELLI__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MACHIAVELLI__B03: bullet 3 of LOC_TRAIT_LEADER_MACHIAVELLI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1521,8 +1609,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MACHIAVELLI__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MACHIAVELLI__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MACHIAVELLI__B04: bullet 4 of LOC_TRAIT_LEADER_MACHIAVELLI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1534,8 +1623,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MACHIAVELLI__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MACHIAVELLI__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MAOZEDONG__B01: bullet 1 of LOC_TRAIT_LEADER_MAOZEDONG_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1547,8 +1637,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAOZEDONG__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAOZEDONG__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MAOZEDONG__B02: bullet 2 of LOC_TRAIT_LEADER_MAOZEDONG_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1560,8 +1651,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAOZEDONG__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAOZEDONG__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MAOZEDONG__B03: bullet 3 of LOC_TRAIT_LEADER_MAOZEDONG_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1573,8 +1665,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAOZEDONG__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAOZEDONG__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MAO_Astolfo__B01: bullet 1 of LOC_TRAIT_LEADER_MAO_Astolfo_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1586,8 +1679,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Astolfo__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Astolfo__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MAO_Astolfo__B02: bullet 2 of LOC_TRAIT_LEADER_MAO_Astolfo_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1599,8 +1693,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Astolfo__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Astolfo__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MAO_Tanya__B01: bullet 1 of LOC_TRAIT_LEADER_MAO_Tanya_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1612,8 +1707,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Tanya__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Tanya__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MAO_Tanya__B02: bullet 2 of LOC_TRAIT_LEADER_MAO_Tanya_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1625,8 +1721,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Tanya__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Tanya__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_MAO_Tanya__B03: bullet 3 of LOC_TRAIT_LEADER_MAO_Tanya_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1638,8 +1735,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Tanya__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_MAO_Tanya__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Margatroid__B01: bullet 1 of LOC_TRAIT_LEADER_MARGATROID_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1651,8 +1749,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Margatroid__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Margatroid__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Margatroid__B02: bullet 2 of LOC_TRAIT_LEADER_MARGATROID_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1664,8 +1763,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Margatroid__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Margatroid__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_NAPOLEON_ALT__B01: bullet 1 of LOC_TRAIT_LEADER_NAPOLEON_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1677,8 +1777,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON_ALT__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON_ALT__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_NAPOLEON_ALT__B02: bullet 2 of LOC_TRAIT_LEADER_NAPOLEON_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1690,8 +1791,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON_ALT__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON_ALT__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_NAPOLEON_ALT__B03: bullet 3 of LOC_TRAIT_LEADER_NAPOLEON_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1703,8 +1805,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON_ALT__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON_ALT__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_NAPOLEON__B01: bullet 1 of LOC_TRAIT_LEADER_NAPOLEON_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1716,8 +1819,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_NAPOLEON__B02: bullet 2 of LOC_TRAIT_LEADER_NAPOLEON_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1729,8 +1833,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_NAPOLEON__B03: bullet 3 of LOC_TRAIT_LEADER_NAPOLEON_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1742,8 +1847,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_NAPOLEON__B04: bullet 4 of LOC_TRAIT_LEADER_NAPOLEON_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1755,8 +1861,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_NAPOLEON__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Nearl__B01: bullet 1 of LOC_TRAIT_LEADER_NEARL_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1768,8 +1875,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Nearl__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Nearl__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Nearl__B02: bullet 2 of LOC_TRAIT_LEADER_NEARL_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1781,8 +1889,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Nearl__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Nearl__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Nearl__B03: bullet 3 of LOC_TRAIT_LEADER_NEARL_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1794,8 +1903,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Nearl__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Nearl__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ODA_NOBUNAGA__B01: bullet 1 of LOC_TRAIT_LEADER_ODA_NOBUNAGA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1807,8 +1917,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ODA_NOBUNAGA__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ODA_NOBUNAGA__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ODA_NOBUNAGA__B02: bullet 2 of LOC_TRAIT_LEADER_ODA_NOBUNAGA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1820,8 +1931,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ODA_NOBUNAGA__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ODA_NOBUNAGA__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_ODA_NOBUNAGA__B03: bullet 3 of LOC_TRAIT_LEADER_ODA_NOBUNAGA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1833,8 +1945,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ODA_NOBUNAGA__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_ODA_NOBUNAGA__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_OKITA_SOUJI__B01: bullet 1 of LOC_TRAIT_LEADER_OKITA_SOUJI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1846,8 +1959,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OKITA_SOUJI__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OKITA_SOUJI__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_OKITA_SOUJI__B02: bullet 2 of LOC_TRAIT_LEADER_OKITA_SOUJI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1859,8 +1973,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OKITA_SOUJI__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OKITA_SOUJI__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_OKITA_SOUJI__B03: bullet 3 of LOC_TRAIT_LEADER_OKITA_SOUJI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1872,8 +1987,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OKITA_SOUJI__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OKITA_SOUJI__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_OLGA__B01: bullet 1 of LOC_TRAIT_LEADER_OLGA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1885,8 +2001,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OLGA__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OLGA__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_OLGA__B02: bullet 2 of LOC_TRAIT_LEADER_OLGA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1898,8 +2015,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OLGA__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OLGA__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_OLGA__B03: bullet 3 of LOC_TRAIT_LEADER_OLGA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1911,8 +2029,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OLGA__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_OLGA__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_PACHACUTI__B01: bullet 1 of LOC_TRAIT_LEADER_PACHACUTI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1924,8 +2043,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_PACHACUTI__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_PACHACUTI__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_PACHACUTI__B02: bullet 2 of LOC_TRAIT_LEADER_PACHACUTI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1937,8 +2057,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_PACHACUTI__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_PACHACUTI__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_PACHACUTI__B03: bullet 3 of LOC_TRAIT_LEADER_PACHACUTI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1950,8 +2071,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_PACHACUTI__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_PACHACUTI__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Patchouli__B01: bullet 1 of LOC_TRAIT_LEADER_PATCHOULI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1963,8 +2085,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Patchouli__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Patchouli__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Patchouli__B02: bullet 2 of LOC_TRAIT_LEADER_PATCHOULI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1976,8 +2099,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Patchouli__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Patchouli__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Patchouli__B03: bullet 3 of LOC_TRAIT_LEADER_PATCHOULI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -1989,8 +2113,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Patchouli__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Patchouli__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_QINSHIHUANG__B01: bullet 1 of LOC_TRAIT_LEADER_QINSHIHUANG_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2002,8 +2127,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_QINSHIHUANG__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_QINSHIHUANG__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_QINSHIHUANG__B02: bullet 2 of LOC_TRAIT_LEADER_QINSHIHUANG_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2015,8 +2141,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_QINSHIHUANG__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_QINSHIHUANG__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_QINSHIHUANG__B03: bullet 3 of LOC_TRAIT_LEADER_QINSHIHUANG_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2028,8 +2155,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_QINSHIHUANG__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_QINSHIHUANG__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_SAYYIDA_AL_HURRA__B01: bullet 1 of LOC_TRAIT_LEADER_SAYYIDA_AL_HURRA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2041,8 +2169,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_SAYYIDA_AL_HURRA__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_SAYYIDA_AL_HURRA__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_SAYYIDA_AL_HURRA__B02: bullet 2 of LOC_TRAIT_LEADER_SAYYIDA_AL_HURRA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2054,8 +2183,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_SAYYIDA_AL_HURRA__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_SAYYIDA_AL_HURRA__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_SAYYIDA_AL_HURRA__B03: bullet 3 of LOC_TRAIT_LEADER_SAYYIDA_AL_HURRA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2067,8 +2197,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_SAYYIDA_AL_HURRA__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_SAYYIDA_AL_HURRA__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_SAYYIDA_AL_HURRA__B04: bullet 4 of LOC_TRAIT_LEADER_SAYYIDA_AL_HURRA_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2080,8 +2211,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_SAYYIDA_AL_HURRA__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_SAYYIDA_AL_HURRA__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Shelly__B01: bullet 1 of LOC_TRAIT_LEADER_Shelly_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2093,8 +2225,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Shelly__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Shelly__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Shelly__B02: bullet 2 of LOC_TRAIT_LEADER_Shelly_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2106,8 +2239,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Shelly__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Shelly__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TECUMSEH__B01: bullet 1 of LOC_TRAIT_LEADER_TECUMSEH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2119,8 +2253,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TECUMSEH__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TECUMSEH__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TECUMSEH__B02: bullet 2 of LOC_TRAIT_LEADER_TECUMSEH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2132,8 +2267,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TECUMSEH__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TECUMSEH__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TECUMSEH__B03: bullet 3 of LOC_TRAIT_LEADER_TECUMSEH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2145,8 +2281,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TECUMSEH__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TECUMSEH__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TECUMSEH__B04: bullet 4 of LOC_TRAIT_LEADER_TECUMSEH_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2158,8 +2295,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TECUMSEH__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TECUMSEH__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TOYOTOMI_HIDEYOSHI__B01: bullet 1 of LOC_TRAIT_LEADER_TOYOTOMI_HIDEYOSHI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2171,8 +2309,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TOYOTOMI_HIDEYOSHI__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TOYOTOMI_HIDEYOSHI__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TOYOTOMI_HIDEYOSHI__B02: bullet 2 of LOC_TRAIT_LEADER_TOYOTOMI_HIDEYOSHI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2184,8 +2323,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TOYOTOMI_HIDEYOSHI__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TOYOTOMI_HIDEYOSHI__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TOYOTOMI_HIDEYOSHI__B03: bullet 3 of LOC_TRAIT_LEADER_TOYOTOMI_HIDEYOSHI_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2197,8 +2337,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TOYOTOMI_HIDEYOSHI__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TOYOTOMI_HIDEYOSHI__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TRUNG_TRAC__B01: bullet 1 of LOC_TRAIT_LEADER_TRUNG_TRAC_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2210,8 +2351,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TRUNG_TRAC__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TRUNG_TRAC__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TRUNG_TRAC__B02: bullet 2 of LOC_TRAIT_LEADER_TRUNG_TRAC_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2223,8 +2365,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TRUNG_TRAC__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TRUNG_TRAC__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_TRUNG_TRAC__B03: bullet 3 of LOC_TRAIT_LEADER_TRUNG_TRAC_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2236,8 +2379,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TRUNG_TRAC__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_TRUNG_TRAC__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_WASHINGTON__B01: bullet 1 of LOC_TRAIT_LEADER_WASHINGTON_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2249,8 +2393,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WASHINGTON__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WASHINGTON__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_WASHINGTON__B02: bullet 2 of LOC_TRAIT_LEADER_WASHINGTON_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2262,8 +2407,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WASHINGTON__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WASHINGTON__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_WASHINGTON__B03: bullet 3 of LOC_TRAIT_LEADER_WASHINGTON_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2275,8 +2421,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WASHINGTON__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WASHINGTON__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_WUZETIAN__B01: bullet 1 of LOC_TRAIT_LEADER_WUZETIAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2288,8 +2435,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WUZETIAN__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WUZETIAN__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_WUZETIAN__B02: bullet 2 of LOC_TRAIT_LEADER_WUZETIAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2301,8 +2449,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WUZETIAN__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WUZETIAN__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_WUZETIAN__B03: bullet 3 of LOC_TRAIT_LEADER_WUZETIAN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2314,8 +2463,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WUZETIAN__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_WUZETIAN__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_XERXES_ALT__B01: bullet 1 of LOC_TRAIT_LEADER_XERXES_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2327,8 +2477,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES_ALT__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES_ALT__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_XERXES_ALT__B02: bullet 2 of LOC_TRAIT_LEADER_XERXES_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2340,8 +2491,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES_ALT__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES_ALT__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_XERXES_ALT__B03: bullet 3 of LOC_TRAIT_LEADER_XERXES_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2353,8 +2505,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES_ALT__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES_ALT__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_XERXES_ALT__B04: bullet 4 of LOC_TRAIT_LEADER_XERXES_ALT_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2366,8 +2519,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES_ALT__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES_ALT__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_XERXES__B01: bullet 1 of LOC_TRAIT_LEADER_XERXES_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2379,8 +2533,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_XERXES__B02: bullet 2 of LOC_TRAIT_LEADER_XERXES_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2392,8 +2547,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_XERXES__B03: bullet 3 of LOC_TRAIT_LEADER_XERXES_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2405,8 +2561,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_XERXES__B04: bullet 4 of LOC_TRAIT_LEADER_XERXES_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2418,8 +2575,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_YI_SUN_SIN__B01: bullet 1 of LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2431,8 +2589,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_YI_SUN_SIN__B02: bullet 2 of LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2444,8 +2603,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_YI_SUN_SIN__B03: bullet 3 of LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2457,8 +2617,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_YI_SUN_SIN__B04: bullet 4 of LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2470,8 +2631,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B04', piece FROM seg
-WHERE n = 4 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B04', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Yamada__B01: bullet 1 of LOC_TRAIT_LEADER_Yamada_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2483,8 +2645,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Yamada__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Yamada__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Yamada__B02: bullet 2 of LOC_TRAIT_LEADER_Yamada_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2496,8 +2659,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Yamada__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Yamada__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Yamada__B03: bullet 3 of LOC_TRAIT_LEADER_Yamada_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2509,8 +2673,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Yamada__B03', piece FROM seg
-WHERE n = 3 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Yamada__B03', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Youmu__B01: bullet 1 of LOC_TRAIT_LEADER_YOUMU_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2522,8 +2687,9 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Youmu__B01', piece FROM seg
-WHERE n = 1 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Youmu__B01', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;
 
 -- LEADER_Youmu__B02: bullet 2 of LOC_TRAIT_LEADER_YOUMU_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
@@ -2535,5 +2701,6 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
   FROM seg WHERE instr(rest, '[LI]') > 0
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Youmu__B02', piece FROM seg
-WHERE n = 2 AND piece <> '';
+SELECT Language, 'LOC_LSHUF_PIECE_LEADER_Youmu__B02', group_concat(piece, '[N]') FROM
+  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
+GROUP BY Language;

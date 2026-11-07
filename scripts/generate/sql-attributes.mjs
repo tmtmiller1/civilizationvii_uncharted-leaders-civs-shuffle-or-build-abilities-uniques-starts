@@ -1,23 +1,62 @@
 // Deal step 3: attribute cards (every attribute mode but Swap whole leaders), one unrolled step per slot.
 import { SALT } from "../../shared/lshuf-key.js";
 import { ATTR_FILL_CAP, ATTR_REPAIR_CAP, ATTR_STEP_CAP } from "../../shared/deal/lshuf-deal-util.js";
-import { CFG, header, key, rankUpdate, work } from "./sql-util.mjs";
+import { BUILD_SLOT, CFG, header, key, rankUpdate, SLOTS, work } from "./sql-util.mjs";
 
 function deck() {
   return `${work("LShufWork_ACard", "CardId TEXT PRIMARY KEY, FromLeader TEXT, TraitType TEXT, Rank INTEGER, K INTEGER, Ord INTEGER")}
 INSERT INTO LShufWork_ACard (CardId, FromLeader, TraitType)
   SELECT lt.LeaderType || '|' || lt.TraitType, lt.LeaderType, lt.TraitType
   FROM LeaderTraits lt JOIN LShufWork_Pool p ON p.Axis = 'T' AND p.LeaderType = lt.LeaderType
-  WHERE lt.TraitType IN (SELECT TraitType FROM LShufAttributeTraits) AND ${CFG("IsPaired")} = 0;
+  WHERE lt.TraitType IN (SELECT TraitType FROM LShufAttributeTraits) AND ${CFG("TCycle")} = 0 AND ${CFG("TFromA")} = 0;
 ${rankUpdate("LShufWork_ACard", "Rank", [], [["CardId"]])}
 UPDATE LShufWork_ACard SET K = ${key(SALT.Attributes, "Rank")};
 ${rankUpdate("LShufWork_ACard", "Ord", [], [["K"], ["CardId"]])}
+${buildTake()}
 ${work("LShufWork_ASlot", "LeaderType TEXT, TraitType TEXT, J INTEGER, K INTEGER, Ord INTEGER, PRIMARY KEY (LeaderType, TraitType)")}
 INSERT INTO LShufWork_ASlot (LeaderType, TraitType, K) SELECT c.FromLeader, c.TraitType, p.K
-  FROM LShufWork_ACard c JOIN LShufWork_Pool p ON p.Axis = 'TS' AND p.LeaderType = c.FromLeader;
+  FROM LShufWork_ACard c JOIN LShufWork_Pool p ON p.Axis = 'TS' AND p.LeaderType = c.FromLeader
+  WHERE NOT EXISTS (SELECT 1 FROM LShufWork_Build b WHERE b.OK = 1 AND b.HasT = 1 AND b.Leader = c.FromLeader);
 ${rankUpdate("LShufWork_ASlot", "J", ["LeaderType"], [["TraitType"]])}
 ${rankUpdate("LShufWork_ASlot", "Ord", [], [["J"], ["K"], ["LeaderType"]])}
 ${work("LShufWork_ADealt", "Ord INTEGER PRIMARY KEY, LeaderType TEXT, CardId TEXT")}
+INSERT INTO LShufWork_ADealt (Ord, LeaderType, CardId) SELECT -1 - t.Ord, t.Builder, t.CardId FROM LShufWork_ATaken t;
+`;
+}
+
+// The builders' attribute picks (lshuf-deal-attributes.js takeAttrs), slot by slot: every card in the pool (both
+// modes), and for each kind a builder ticked its own card of that kind, else the first in deck order not taken yet
+// (CardId order in Swap everything, which has no deck). Taken cards sit in ADealt at negative ords, so the steps
+// and swaps leave them. In Swap everything each taker leaves the package cycle in slot order.
+function buildTake() {
+  const picks = "SELECT p.Arg FROM LShufWork_BuildPiece p WHERE p.Kind = 'attr' AND p.Slot = LShufWork_Build.Slot AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits)";
+  const free = "a.CardId NOT IN (SELECT t2.CardId FROM LShufWork_ATaken t2 WHERE t2.CardId IS NOT NULL)";
+  const take = (n, copy) => `UPDATE LShufWork_ATaken SET CardId = COALESCE(
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND a.FromLeader = ${BUILD_SLOT("Leader", n)} AND ${free}),
+  (SELECT a.CardId FROM LShufWork_ACardAll a WHERE a.TraitType = LShufWork_ATaken.TraitType AND ${free} ORDER BY a.Ord, a.CardId LIMIT 1))
+  WHERE Slot = ${n} AND Copy = ${copy} AND CardId IS NULL;`;
+  const steps = SLOTS.map((n) => {
+    const leader = BUILD_SLOT("Leader", n);
+    return `INSERT OR IGNORE INTO LShufWork_ATaken (Builder, TraitType, Copy, Slot) SELECT b.Leader, p.Arg, p.Copy, ${n} FROM LShufWork_Build b
+  JOIN LShufWork_BuildPiece p ON p.Slot = b.Slot AND p.Kind = 'attr' AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits)
+  WHERE b.Slot = ${n} AND b.OK = 1 AND b.HasT = 1;
+${take(n, 1)}
+${take(n, 2)}
+DELETE FROM LShufWork_ATaken WHERE Slot = ${n} AND CardId IS NULL;
+UPDATE LShufWork_Donor SET Donor = (SELECT b.Donor FROM LShufWork_Donor b WHERE b.Axis = 'T' AND b.LeaderType = ${leader})
+  WHERE Axis = 'T' AND Donor = ${leader} AND LeaderType <> ${leader} AND ${BUILD_SLOT("HasT", n)} = 1 AND ${CFG("TCycle")} = 1;`;
+  }).join("\n");
+  return `${work("LShufWork_ACardAll", "CardId TEXT PRIMARY KEY, FromLeader TEXT, TraitType TEXT, Ord INTEGER")}
+INSERT INTO LShufWork_ACardAll (CardId, FromLeader, TraitType)
+  SELECT lt.LeaderType || '|' || lt.TraitType, lt.LeaderType, lt.TraitType
+  FROM LeaderTraits lt JOIN LShufWork_Pool p ON p.Axis = 'T' AND p.LeaderType = lt.LeaderType
+  WHERE lt.TraitType IN (SELECT TraitType FROM LShufAttributeTraits);
+UPDATE LShufWork_ACardAll SET Ord = COALESCE((SELECT c.Ord FROM LShufWork_ACard c WHERE c.CardId = LShufWork_ACardAll.CardId), 0);
+UPDATE LShufWork_Build SET HasT = (OK = 1 AND Leader IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'T') AND EXISTS (${picks}));
+${work("LShufWork_ATaken", "Builder TEXT, TraitType TEXT, Copy INTEGER NOT NULL DEFAULT 1, Slot INTEGER, CardId TEXT, FromLeader TEXT, Ord INTEGER, PRIMARY KEY (Builder, TraitType, Copy)")}
+${steps}
+UPDATE LShufWork_ATaken SET FromLeader = (SELECT a.FromLeader FROM LShufWork_ACardAll a WHERE a.CardId = LShufWork_ATaken.CardId);
+${rankUpdate("LShufWork_ATaken", "Ord", [], [["Slot"], ["TraitType"], ["Copy", true]])}
 `;
 }
 
@@ -55,7 +94,7 @@ CREATE VIEW LShufWork_NextRepair AS SELECT u.CardId AS U, p.COrd AS COrd, p.CCar
       AND NOT EXISTS (SELECT 1 FROM LShufWork_ATried t WHERE t.CardId = a.CardId) ORDER BY a.Ord LIMIT 1) u
   LEFT JOIN (SELECT c.Ord AS COrd, c.CardId AS CCard, c.LeaderType AS H, cc.TraitType AS CT, s.Ord AS SOrd, s.LeaderType AS S
     FROM LShufWork_ADealt c JOIN LShufWork_ACard cc ON cc.CardId = c.CardId
-    JOIN LShufWork_ADealt s ON s.CardId IS NULL AND s.LeaderType <> c.LeaderType) p
+    JOIN LShufWork_ADealt s ON s.CardId IS NULL AND s.LeaderType <> c.LeaderType WHERE c.Ord >= 0) p
     ON NOT ${holds("p.S", "p.CT")} AND NOT ${holds("p.H", "u.TraitType", " AND d.Ord <> p.COrd")}
   ORDER BY p.COrd, p.SOrd LIMIT 1;
 `;

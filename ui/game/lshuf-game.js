@@ -24,6 +24,7 @@ import {
   setRevealSource
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-reveal-panel.js";
 import { installCityDetailsNames } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-city-details-names.js";
+import { installTransitionButtons } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-game-transition.js";
 
 const LOG = "[lshuf-game]";
 const state = { data: null, context: null, written: new Map(), views: new Map(), opened: false, differs: [] };
@@ -142,6 +143,7 @@ function start() {
 }
 
 guarded("city details", () => installCityDetailsNames());
+guarded("transition buttons", () => installTransitionButtons());
 installRevealDock(() => readGameplay("LShufResultLeaders").length > 0);
 const ready = guarded("whenReady", () => engine.whenReady, null);
 if (ready && typeof ready.then === "function") ready.then(() => guarded("start", start));

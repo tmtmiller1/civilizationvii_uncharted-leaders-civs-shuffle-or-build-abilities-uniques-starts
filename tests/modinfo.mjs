@@ -6,7 +6,10 @@ import path from "node:path";
 import test from "node:test";
 
 import { builder, need, ownerOf, parseModinfo, PROJECT_ROOT } from "./_harness.mjs";
-import { configKeyOf, DEALING, KEY, MODE, ONOFF, OPTION_DEFAULTS, PARAM, PERSONA, REVEAL, SEED_MAX, SEED_MIN } from "../shared/lshuf-constants.js";
+import {
+  configKeyOf, DEALING, KEY, MODE, OPTION_DEFAULTS, PARAM, PERSONA, REVEAL, SEED_MAX, SEED_MIN, A_MODE, B_MODE,
+  T_MODE, CA_MODE, CU_MODE, MODE_CUSTOM, CC_MODE
+} from "../shared/lshuf-constants.js";
 import { KNOWN_LEADERS, MODDED_LEADER_TYPES, VANILLA_LEADERS } from "../shared/lshuf-known-leaders.js";
 
 const MODINFO = "re-dealable-leader-abilities-attributes-and-start-biases.modinfo";
@@ -73,10 +76,13 @@ function expectGroup(model, id, { type, key, value }) {
 
 const BOOLS = ["KeepMine", "ModdedAbilities", "ModdedAttributes", "ModdedBiases"];
 const VALUES = {
-  Mode: Object.values(MODE),
-  Biases: Object.values(ONOFF),
-  Abilities: Object.values(ONOFF),
-  Attributes: Object.values(ONOFF),
+  Mode: [...Object.values(MODE), MODE_CUSTOM],
+  Biases: Object.values(B_MODE),
+  Abilities: Object.values(A_MODE),
+  Attributes: Object.values(T_MODE),
+  CivAbilities: Object.values(CA_MODE),
+  CivUniques: Object.values(CU_MODE),
+  CivCivics: Object.values(CC_MODE),
   Personality: Object.values(PERSONA),
   Dealing: Object.values(DEALING),
   Reveal: Object.values(REVEAL)

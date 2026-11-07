@@ -2,7 +2,7 @@
 // writes the game config keys from the same functions, so the preview and the game read the same leaders.
 
 import {
-  PARAM, OPTION_DEFAULTS, RANDOM_POOL, REASON, fromListValue
+  PARAM, OPTION_DEFAULTS, RANDOM_POOL, REASON, BUILD_SLOTS, fromListValue
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
 import {
   KNOWN_LEADERS, MODDED_LEADER_TYPES
@@ -39,7 +39,12 @@ export function readSlots() {
   for (const id of ids) {
     const p = Configuration.getPlayer(id);
     if (!p) continue;
-    out.push({ id, human: !!p.isHuman, leader: String(p.leaderTypeName || PLAIN_RANDOM) });
+    out.push({
+      id,
+      human: !!p.isHuman,
+      leader: String(p.leaderTypeName || PLAIN_RANDOM),
+      civ: String(p.civilizationTypeName || PLAIN_RANDOM)
+    });
   }
   return out;
 }
@@ -80,10 +85,7 @@ export function poolDrawOrder(sortedLeaders, seed) {
 export function planPoolSlots(slots, pools, seed) {
   const plan = new Map();
   const taken = new Set(slots.map((s) => s.leader));
-  const order = {
-    [RANDOM_POOL[1]]: poolDrawOrder(pools[1] || [], seed),
-    [RANDOM_POOL[2]]: poolDrawOrder(pools[2] || [], seed)
-  };
+  const order = { [RANDOM_POOL[1]]: poolDrawOrder(pools[1] || [], seed) };
   const sorted = [...slots].sort((a, b) => a.id - b.id);
   for (const slot of sorted) {
     const list = order[slot.leader];
@@ -96,20 +98,26 @@ export function planPoolSlots(slots, pools, seed) {
 }
 
 export function readPools() {
-  return { 1: poolLeaders(PARAM.Pool1), 2: poolLeaders(PARAM.Pool2) };
+  return { 1: poolLeaders(PARAM.Pool1) };
 }
 
-const NOT_A_LEADER = new Set([PLAIN_RANDOM, RANDOM_POOL[1], RANDOM_POOL[2]]);
+const NOT_A_LEADER = new Set([PLAIN_RANDOM, RANDOM_POOL[1]]);
 
 // The leaders a slot's own leader list offers as a valid pick (owned and unlocked), in domain order: the same test
 // the game's leader list uses to grey a leader out. Random and the pool entries are left out.
-export function randomChoices(slotId) {
+const validReason = () =>
+  typeof GameSetupDomainValueInvalidReason === "object" ? GameSetupDomainValueInvalidReason.Valid : 0;
+
+function possibleValues(slotId, paramName) {
+  const p = GameSetup.findPlayerParameter(slotId, paramName);
+  return p && p.domain && p.domain.possibleValues ? p.domain.possibleValues : [];
+}
+
+export function randomChoices(slotId, paramName = "PlayerLeader") {
   try {
-    const p = GameSetup.findPlayerParameter(slotId, "PlayerLeader");
-    const list = p && p.domain && p.domain.possibleValues ? p.domain.possibleValues : [];
-    const valid = typeof GameSetupDomainValueInvalidReason === "object" ? GameSetupDomainValueInvalidReason.Valid : 0;
+    const valid = validReason();
     const out = [];
-    for (const v of list) {
+    for (const v of possibleValues(slotId, paramName)) {
       const id = v && v.value != null ? String(v.value) : "";
       if (id && !NOT_A_LEADER.has(id) && v.invalidReason === valid) out.push(id);
     }
@@ -130,6 +138,32 @@ export function planRandomSlots(slots, choicesOf, pickIndex, canPick = () => tru
   for (const slot of sorted) {
     if (slot.leader !== PLAIN_RANDOM || !canPick(slot)) continue;
     const open = choicesOf(slot.id).filter((l) => !taken.has(l));
+    if (!open.length) continue;
+    const pick = open[Math.min(open.length - 1, Math.max(0, pickIndex(open.length)))];
+    taken.add(pick);
+    plan.set(slot.id, pick);
+  }
+  return plan;
+}
+
+// A civilization slot's valid choices (owned and unlocked), from its own PlayerCivilization list.
+export const civChoices = (slotId) => randomChoices(slotId, "PlayerCivilization");
+
+// The civilizations switched off in "Civilizations in the game", as a Set of CIVILIZATION_X.
+export function civsSwitchedOff() {
+  return new Set(paramValues(PARAM.CivsOut).map(fromListValue));
+}
+
+// What each plain Random civilization slot gets: a civ its own list offers, not switched off, not in another slot.
+// Slots go in id order; a slot with nothing allowed left stays Random. A civ picked by hand is left as it is.
+// choicesOf(slotId) lists the slot's civs; off is a Set of switched-off civs; pickIndex and canPick as above.
+export function planRandomCivSlots(slots, choicesOf, off, pickIndex, canPick = () => true) {
+  const plan = new Map();
+  const taken = new Set(slots.map((s) => s.civ).filter((c) => c && c !== PLAIN_RANDOM));
+  const sorted = [...slots].sort((a, b) => a.id - b.id);
+  for (const slot of sorted) {
+    if ((slot.civ || PLAIN_RANDOM) !== PLAIN_RANDOM || !canPick(slot)) continue;
+    const open = choicesOf(slot.id).filter((c) => !taken.has(c) && !off.has(c));
     if (!open.length) continue;
     const pick = open[Math.min(open.length - 1, Math.max(0, pickIndex(open.length)))];
     taken.add(pick);
@@ -171,11 +205,72 @@ export function buildOut(slots) {
   return out;
 }
 
-// The config object of CONTRACTS 5.2: { seed, options, kept, out, modOK }.
+// Builder slot n's hidden parameters (CONTRACTS 13): its picks, and for n > 1 the AI leader it builds.
+export const buildPicksParam = (n = 1) => (n === 1 ? PARAM.BuildPicks : `${PARAM.BuildPicks}${n}`);
+export const buildForParam = (n) => `LShufBuildFor${n}`;
+
+// The card ids a build screen stored for slot n ("|id|id|"), unique, in order.
+export function buildPicks(n = 1) {
+  const raw = paramValue(buildPicksParam(n));
+  const ids = raw ? String(raw).split("|").filter(Boolean) : [];
+  return [...new Set(ids)];
+}
+
+// The leader slot n builds: the local player for slot 1, else the leader LShufBuildFor<n> names ("|LEADER_X|").
+export function buildForLeader(n) {
+  if (n === 1) return null;
+  const raw = paramValue(buildForParam(n));
+  const ids = raw ? String(raw).split("|").filter(Boolean) : [];
+  return ids.length ? ids[0] : null;
+}
+
+const realLeader = (slot) => !!(slot && slot.leader && slot.leader !== PLAIN_RANDOM && !NOT_A_LEADER.has(slot.leader));
+
+// Build your own leader (CONTRACTS 13): builder slot n as a deal builder { slot, leader, civ, pieces }, or null.
+// Slot 1 is the local player's slot; slot n > 1 is the AI slot whose leader LShufBuildFor<n> names, if that leader
+// is in the game as an AI. Null without picks, or while the slot is still Random.
+export function builderFromSetup(slots, n = 1, picks = buildPicks(n)) {
+  if (!picks.length) return null;
+  let slot = null;
+  if (n === 1) {
+    let id = -1;
+    try {
+      id = GameContext.localPlayerID;
+    } catch (_) {
+      return null;
+    }
+    slot = slots.find((s) => s.id === id);
+  } else {
+    const leader = buildForLeader(n);
+    slot = leader ? slots.find((s) => !s.human && s.leader === leader) : null;
+  }
+  if (!realLeader(slot)) return null;
+  const civ = slot.civ && slot.civ !== PLAIN_RANDOM ? slot.civ : null;
+  return { slot: n, leader: slot.leader, civ, pieces: picks };
+}
+
+// Every builder slot that resolves, in slot order.
+export function buildersFromSetup(slots) {
+  const out = [];
+  for (let n = 1; n <= BUILD_SLOTS; n++) {
+    const b = builderFromSetup(slots, n);
+    if (b) out.push(b);
+  }
+  return out;
+}
+
+// The config object of CONTRACTS 5.2: { seed, options, kept, out, modOK, builders }.
 export function readDealConfigFromSetup() {
   const seed = currentSeed();
   const options = readOptions();
   const raw = readSlots();
   const slots = slotsAfterPools(raw, planPoolSlots(raw, readPools(), seed));
-  return { seed, options, kept: keptLeaders(slots, options), out: buildOut(slots), modOK: modOKLeaders(options) };
+  return {
+    seed,
+    options,
+    kept: keptLeaders(slots, options),
+    out: buildOut(slots),
+    modOK: modOKLeaders(options),
+    builders: buildersFromSetup(slots)
+  };
 }

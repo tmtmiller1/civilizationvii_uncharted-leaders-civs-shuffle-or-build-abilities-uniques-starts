@@ -5,4 +5,5 @@ coverage/
 .DS_Store
 # Fixture databases are built from the local Debug copies; they aren't shipped or committed.
 tests/fixtures/db/
+tests/fixtures/source-db/
 __pycache__/

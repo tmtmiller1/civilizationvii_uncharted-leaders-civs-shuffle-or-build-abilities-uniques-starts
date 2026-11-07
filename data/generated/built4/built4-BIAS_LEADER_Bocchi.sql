@@ -1,0 +1,1 @@
+INSERT OR IGNORE INTO LShufBuildPieces (Slot, PieceId) SELECT 4, 'BIAS_LEADER_Bocchi' WHERE EXISTS (SELECT 1 FROM LShufBuild WHERE Slot = 4);
