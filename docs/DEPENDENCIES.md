@@ -21,11 +21,11 @@ These are the cases where a player would hold something they can never make.
 
 | Item | Needs | Why (game data) |
 | ---- | ----- | --------------- |
-| Logios (Greece, Antiquity great person) | Acropolis quarter (Agoge + Ekklesia civics) | `GreatPersonClasses.UniqueQuarterType = QUARTER_ACROPOLIS`; Arete's action needs a completed Acropolis |
+| Logios (Greece, Antiquity great person) | Acropolis quarter (Agoge + Ekklesia civics) | its grant asks for `QUARTER_ACROPOLIS` (1.5.1; [GREAT-PEOPLE.md](./GREAT-PEOPLE.md)); Arete's action needs a completed Acropolis |
 | Tjaty (Egypt) | Necropolis (Scales of Anubis + Arrival of Hapi) | same, `QUARTER_NECROPOLIS` |
 | Alim (Abbasid, Exploration) | Ulema (Mawla + Round City) | same, `QUARTER_ULEMA` |
 | Conquistador (Spain) | Plaza (Council of the Indies) | same, `QUARTER_PLAZA` |
-| Saga Hero (Iceland) | the Thing improvement (Landnámabók civic) | `GreatPersonClasses.ConstructibleType = IMPROVEMENT_THING` |
+| Saga Hero (Iceland) | the Thing improvement (Landnámabók civic) | its grant asks for `IMPROVEMENT_THING` |
 | Jacobin (French Empire, Modern) | Avenue (Voie Triomphale + Belle Époque) | `QUARTER_AVENUE` |
 | Revolucionario (Mexico) | Zócalo (Planes Políticos) | `QUARTER_ZOCALO` |
 | Highland Power Station (Nepal) | Sherpa | `Unit_BuildConstructibles`: the Sherpa is the only unit that builds it |

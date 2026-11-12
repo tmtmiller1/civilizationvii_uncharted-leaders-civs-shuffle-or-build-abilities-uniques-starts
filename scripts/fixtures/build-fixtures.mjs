@@ -23,7 +23,7 @@ import { DatabaseSync } from "node:sqlite";
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const PROJECT_ROOT = path.resolve(here, "..", "..");
 export const FIXTURE_ROOT = path.join(PROJECT_ROOT, "tests", "fixtures", "db");
-// A saved copy of an in-game database set (tests/fixtures/source-db/, not committed; the 1.5.0 vanilla set from a
+// A saved copy of an in-game database set (tests/fixtures/source-db/, not committed; the 1.5.1 set from a
 // mods-off Antiquity lab game) comes first, because the game rewrites its Debug copies at every launch, and a launch
 // that stops at the main menu leaves them nearly empty. LSHUF_DEBUG_DIR overrides both.
 const SAVED_DIR = path.join(PROJECT_ROOT, "tests", "fixtures", "source-db");
@@ -51,7 +51,7 @@ export const FIXTURES = ["base", "dlc-removed", "added-leader", "extra-modifier"
 
 // The later ages' fixtures: the game loads another database for each age (other civilizations, units, civics), so
 // each has its own saved copies, tests/fixtures/source-db/<folder>/, from a mods-off lab game started in that age
-// (2026-11-10, 1.5.0). The four fixtures above are the Antiquity database.
+// (1.5.1, from the bench's compiled copies 2026-11-11). The four fixtures above are the Antiquity database.
 const AGE_FIXTURES = { exploration: "AGE_EXPLORATION", modern: "AGE_MODERN" };
 // The age each fixture's database was loaded for (the harness's AgeInUse default).
 export const fixtureAge = (name) => AGE_FIXTURES[name] || "AGE_ANTIQUITY";

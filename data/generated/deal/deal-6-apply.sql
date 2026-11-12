@@ -440,9 +440,19 @@ UPDATE RequirementArguments SET Value = 'TRAIT_LSHUF_CIVA_' || (SELECT i.Civ FRO
 -- Bound modifiers (CONTRACTS 23 R4): a unique's own rules go wherever the unique went.
 CREATE TABLE IF NOT EXISTS LShufWork_Bound (ModifierId TEXT PRIMARY KEY, Trait TEXT);
 DELETE FROM LShufWork_Bound;
+-- A great person's grants (1.5.1): every grant of one that a quarter or unique constructible earns sits on the trait
+-- that quarter's building or that constructible is on now, the grants that ask for something else included.
+INSERT OR IGNORE INTO LShufWork_Bound (ModifierId, Trait) SELECT g.ModifierId, COALESCE(
+    (SELECT x.TraitType FROM Buildings x WHERE x.ConstructibleType = a.Anchor),
+    (SELECT v.TraitType FROM Improvements v WHERE v.ConstructibleType = a.Anchor))
+  FROM LShufWork_GpGrant g JOIN (SELECT UnitType, MIN(Anchor) Anchor FROM LShufWork_GpGrant WHERE Anchor IS NOT NULL GROUP BY UnitType) a
+    ON a.UnitType = g.UnitType
+  WHERE (EXISTS (SELECT 1 FROM LShufResultCivPieces) OR (SELECT CA FROM LShufWork_Cfg) = 'LSHUF_OFF'
+      OR (SELECT CU FROM LShufWork_Cfg) = 'LSHUF_OFF' OR (SELECT CC FROM LShufWork_Cfg) = 'LSHUF_OFF');
 INSERT OR IGNORE INTO LShufWork_Bound (ModifierId, Trait) SELECT b.ModifierId, COALESCE(
     (SELECT u.TraitType FROM Units u WHERE u.UnitType = b.AnchorType),
     (SELECT x.TraitType FROM Buildings x WHERE x.ConstructibleType = b.AnchorType),
+    (SELECT v.TraitType FROM Improvements v WHERE v.ConstructibleType = b.AnchorType),
     (SELECT q.TraitType FROM UniqueQuarters q WHERE q.UniqueQuarterType = b.AnchorType))
   FROM LShufBoundModifiers b WHERE b.ModifierId IN (SELECT ModifierId FROM Modifiers)
     AND (b.ByPiece IS NULL OR b.ByPiece NOT IN (SELECT PieceId FROM LShufResultCivPieces WHERE Kind = 'bullet'))
@@ -453,6 +463,21 @@ DELETE FROM TraitModifiers WHERE ModifierId IN (SELECT ModifierId FROM LShufWork
   OR (ModifierId LIKE 'LSHUF\_%' ESCAPE '\' AND EXISTS (SELECT 1 FROM LShufWork_Bound b
     WHERE substr(TraitModifiers.ModifierId, -(length(b.ModifierId) + 2)) = '__' || b.ModifierId));
 INSERT OR IGNORE INTO TraitModifiers (ModifierId, TraitType) SELECT ModifierId, Trait FROM LShufWork_Bound;
+-- A granted great person (1.5.1) reaches only a player who holds the unit's own trait as well as the grant (lab
+-- 2026-11-11: Iceland's ability on Sengoku gave nobody a Saga Hero). The unit family goes onto the trait a
+-- civilization holds that carries its grants now, copies included.
+UPDATE Units SET TraitType = (SELECT MIN(tm.TraitType) FROM TraitModifiers tm JOIN LShufWork_GpGrant g
+      ON (tm.ModifierId = g.ModifierId OR (tm.ModifierId LIKE 'LSHUF\_%' ESCAPE '\'
+        AND substr(tm.ModifierId, -(length(g.ModifierId) + 2)) = '__' || g.ModifierId))
+    WHERE (Units.UnitType = g.UnitType OR Units.UnitType LIKE g.UnitType || '\_%' ESCAPE '\')
+      AND tm.TraitType IN (SELECT TraitType FROM CivilizationTraits))
+  WHERE (EXISTS (SELECT 1 FROM LShufResultCivPieces) OR (SELECT CA FROM LShufWork_Cfg) = 'LSHUF_OFF'
+      OR (SELECT CU FROM LShufWork_Cfg) = 'LSHUF_OFF' OR (SELECT CC FROM LShufWork_Cfg) = 'LSHUF_OFF') AND EXISTS (SELECT 1 FROM LShufWork_GpGrant g WHERE (Units.UnitType = g.UnitType OR Units.UnitType LIKE g.UnitType || '\_%' ESCAPE '\'))
+    AND (SELECT MIN(tm.TraitType) FROM TraitModifiers tm JOIN LShufWork_GpGrant g
+      ON (tm.ModifierId = g.ModifierId OR (tm.ModifierId LIKE 'LSHUF\_%' ESCAPE '\'
+        AND substr(tm.ModifierId, -(length(g.ModifierId) + 2)) = '__' || g.ModifierId))
+    WHERE (Units.UnitType = g.UnitType OR Units.UnitType LIKE g.UnitType || '\_%' ESCAPE '\')
+      AND tm.TraitType IN (SELECT TraitType FROM CivilizationTraits)) IS NOT NULL;
 
 -- Favored-wonder pieces (CONTRACTS 31).
 CREATE TABLE IF NOT EXISTS LShufWork_Wonder (ModifierId TEXT PRIMARY KEY, Civ TEXT, Wonder TEXT, Pct TEXT, NewId TEXT);

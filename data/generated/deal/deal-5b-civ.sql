@@ -49,6 +49,37 @@ INSERT OR IGNORE INTO LShufWork_CivicGP (UnitType, Anchor)
     ON n.ProgressionTreeNodeType = u.ProgressionTreeNodeType WHERE n.ProgressionTree LIKE 'TREE\_CIVICS\_%' ESCAPE '\' AND n.ProgressionTree NOT LIKE '%\_MAIN' ESCAPE '\')),
       CASE WHEN g.ConstructibleType IN (SELECT u.TargetType FROM ProgressionTreeNodeUnlocks u JOIN ProgressionTreeNodes n
     ON n.ProgressionTreeNodeType = u.ProgressionTreeNodeType WHERE n.ProgressionTree LIKE 'TREE\_CIVICS\_%' ESCAPE '\' AND n.ProgressionTree NOT LIKE '%\_MAIN' ESCAPE '\') THEN g.ConstructibleType END) IS NOT NULL;
+-- Since 1.5.1 the class no longer names the quarter: a civ's great person is granted by modifiers on its ability
+-- (EFFECT_CITY_GRANT_UNIT, directly or through a modifier the ability attaches). Each grant is read here with the
+-- quarter (its BuildingType1) or unique constructible its requirements name, if any. A great person with such a
+-- grant belongs to that quarter or constructible, with every one of its grants; one with none goes with the ability.
+CREATE TABLE IF NOT EXISTS LShufWork_GpGrant (ModifierId TEXT PRIMARY KEY, UnitType TEXT, Anchor TEXT);
+DELETE FROM LShufWork_GpGrant;
+INSERT OR IGNORE INTO LShufWork_GpGrant (ModifierId, UnitType, Anchor)
+  SELECT x.ModifierId, x.UnitType, COALESCE(
+      (SELECT MIN(q.BuildingType1) FROM Modifiers m JOIN RequirementSetRequirements rsr
+          ON rsr.RequirementSetId IN (m.SubjectRequirementSetId, m.OwnerRequirementSetId)
+        JOIN RequirementArguments ra ON ra.RequirementId = rsr.RequirementId AND ra.Name = 'UniqueQuarterType'
+        JOIN UniqueQuarters q ON q.UniqueQuarterType = ra.Value WHERE m.ModifierId = x.InnerId),
+      (SELECT MIN(ra.Value) FROM Modifiers m JOIN RequirementSetRequirements rsr
+          ON rsr.RequirementSetId IN (m.SubjectRequirementSetId, m.OwnerRequirementSetId)
+        JOIN RequirementArguments ra ON ra.RequirementId = rsr.RequirementId AND ra.Name IN ('BuildingType', 'ConstructibleType')
+        WHERE m.ModifierId = x.InnerId AND (ra.Value IN (SELECT b.ConstructibleType FROM Buildings b WHERE b.TraitType IN (SELECT Base FROM LShufWork_CivInfo))
+          OR ra.Value IN (SELECT v.ConstructibleType FROM Improvements v WHERE v.TraitType IN (SELECT Base FROM LShufWork_CivInfo)))))
+  FROM (SELECT g.ModifierId, g.InnerId, (SELECT MIN(a.Value) FROM ModifierArguments a JOIN Modifiers m ON m.ModifierId = a.ModifierId
+        JOIN DynamicModifiers d ON d.ModifierType = m.ModifierType
+        WHERE a.ModifierId = g.InnerId AND a.Name = 'UnitType' AND d.EffectType = 'EFFECT_CITY_GRANT_UNIT'
+          AND a.Value IN (SELECT UnitType FROM GreatPersonClasses)) UnitType
+    FROM (SELECT DISTINCT tm.ModifierId, COALESCE((SELECT MIN(a.Value) FROM ModifierArguments a
+          WHERE a.ModifierId = tm.ModifierId AND a.Name = 'ModifierId' AND a.Value IN (SELECT ModifierId FROM Modifiers)), tm.ModifierId) InnerId
+      FROM TraitModifiers tm JOIN LShufWork_CivInfo i ON i.Ability = tm.TraitType) g) x
+  WHERE x.UnitType IS NOT NULL;
+INSERT OR IGNORE INTO LShufWork_CivicGP (UnitType, Anchor)
+  SELECT f.UnitType, g.Anchor FROM (SELECT UnitType, MIN(Anchor) Anchor FROM LShufWork_GpGrant WHERE Anchor IS NOT NULL GROUP BY UnitType) g
+  JOIN Units b ON b.UnitType = g.UnitType JOIN LShufWork_CivInfo i ON i.Base = b.TraitType
+  JOIN Units f ON f.TraitType = b.TraitType AND (f.UnitType = b.UnitType OR f.UnitType LIKE b.UnitType || '\_%' ESCAPE '\')
+  WHERE g.Anchor IN (SELECT u.TargetType FROM ProgressionTreeNodeUnlocks u JOIN ProgressionTreeNodes n
+    ON n.ProgressionTreeNodeType = u.ProgressionTreeNodeType WHERE n.ProgressionTree LIKE 'TREE\_CIVICS\_%' ESCAPE '\' AND n.ProgressionTree NOT LIKE '%\_MAIN' ESCAPE '\');
 -- A unit family a civic of the civ's own tree names in a modifier (LShufCivUnitLinks, CONTRACTS 23 R1: Sengoku's
 -- Samurai and Kinsei) belongs to that civic the same way; its anchor is the civic.
 INSERT OR IGNORE INTO LShufWork_CivicGP (UnitType, Anchor)

@@ -95,6 +95,35 @@ INSERT OR IGNORE INTO LShufWork_CivicGP (UnitType, Anchor)
     AND COALESCE(
       (SELECT q.BuildingType1 FROM UniqueQuarters q WHERE q.UniqueQuarterType = g.UniqueQuarterType AND q.BuildingType1 IN (${CIVIC_UNLOCKED})),
       CASE WHEN g.ConstructibleType IN (${CIVIC_UNLOCKED}) THEN g.ConstructibleType END) IS NOT NULL;
+-- Since 1.5.1 the class no longer names the quarter: a civ's great person is granted by modifiers on its ability
+-- (EFFECT_CITY_GRANT_UNIT, directly or through a modifier the ability attaches). Each grant is read here with the
+-- quarter (its BuildingType1) or unique constructible its requirements name, if any. A great person with such a
+-- grant belongs to that quarter or constructible, with every one of its grants; one with none goes with the ability.
+${work("LShufWork_GpGrant", "ModifierId TEXT PRIMARY KEY, UnitType TEXT, Anchor TEXT")}
+INSERT OR IGNORE INTO LShufWork_GpGrant (ModifierId, UnitType, Anchor)
+  SELECT x.ModifierId, x.UnitType, COALESCE(
+      (SELECT MIN(q.BuildingType1) FROM Modifiers m JOIN RequirementSetRequirements rsr
+          ON rsr.RequirementSetId IN (m.SubjectRequirementSetId, m.OwnerRequirementSetId)
+        JOIN RequirementArguments ra ON ra.RequirementId = rsr.RequirementId AND ra.Name = 'UniqueQuarterType'
+        JOIN UniqueQuarters q ON q.UniqueQuarterType = ra.Value WHERE m.ModifierId = x.InnerId),
+      (SELECT MIN(ra.Value) FROM Modifiers m JOIN RequirementSetRequirements rsr
+          ON rsr.RequirementSetId IN (m.SubjectRequirementSetId, m.OwnerRequirementSetId)
+        JOIN RequirementArguments ra ON ra.RequirementId = rsr.RequirementId AND ra.Name IN ('BuildingType', 'ConstructibleType')
+        WHERE m.ModifierId = x.InnerId AND (ra.Value IN (SELECT b.ConstructibleType FROM Buildings b WHERE b.TraitType IN (SELECT Base FROM LShufWork_CivInfo))
+          OR ra.Value IN (SELECT v.ConstructibleType FROM Improvements v WHERE v.TraitType IN (SELECT Base FROM LShufWork_CivInfo)))))
+  FROM (SELECT g.ModifierId, g.InnerId, (SELECT MIN(a.Value) FROM ModifierArguments a JOIN Modifiers m ON m.ModifierId = a.ModifierId
+        JOIN DynamicModifiers d ON d.ModifierType = m.ModifierType
+        WHERE a.ModifierId = g.InnerId AND a.Name = 'UnitType' AND d.EffectType = 'EFFECT_CITY_GRANT_UNIT'
+          AND a.Value IN (SELECT UnitType FROM GreatPersonClasses)) UnitType
+    FROM (SELECT DISTINCT tm.ModifierId, COALESCE((SELECT MIN(a.Value) FROM ModifierArguments a
+          WHERE a.ModifierId = tm.ModifierId AND a.Name = 'ModifierId' AND a.Value IN (SELECT ModifierId FROM Modifiers)), tm.ModifierId) InnerId
+      FROM TraitModifiers tm JOIN LShufWork_CivInfo i ON i.Ability = tm.TraitType) g) x
+  WHERE x.UnitType IS NOT NULL;
+INSERT OR IGNORE INTO LShufWork_CivicGP (UnitType, Anchor)
+  SELECT f.UnitType, g.Anchor FROM (SELECT UnitType, MIN(Anchor) Anchor FROM LShufWork_GpGrant WHERE Anchor IS NOT NULL GROUP BY UnitType) g
+  JOIN Units b ON b.UnitType = g.UnitType JOIN LShufWork_CivInfo i ON i.Base = b.TraitType
+  JOIN Units f ON f.TraitType = b.TraitType AND ${FAMILY("f.UnitType", "b.UnitType")}
+  WHERE g.Anchor IN (${CIVIC_UNLOCKED});
 -- A unit family a civic of the civ's own tree names in a modifier (LShufCivUnitLinks, CONTRACTS 23 R1: Sengoku's
 -- Samurai and Kinsei) belongs to that civic the same way; its anchor is the civic.
 INSERT OR IGNORE INTO LShufWork_CivicGP (UnitType, Anchor)
@@ -605,9 +634,18 @@ const GP_ANCHOR_TRAIT = `(SELECT COALESCE((SELECT b.TraitType FROM Buildings b W
 function boundApply() {
   return `-- Bound modifiers (CONTRACTS 23 R4): a unique's own rules go wherever the unique went.
 ${work("LShufWork_Bound", "ModifierId TEXT PRIMARY KEY, Trait TEXT")}
+-- A great person's grants (1.5.1): every grant of one that a quarter or unique constructible earns sits on the trait
+-- that quarter's building or that constructible is on now, the grants that ask for something else included.
+INSERT OR IGNORE INTO LShufWork_Bound (ModifierId, Trait) SELECT g.ModifierId, COALESCE(
+    (SELECT x.TraitType FROM Buildings x WHERE x.ConstructibleType = a.Anchor),
+    (SELECT v.TraitType FROM Improvements v WHERE v.ConstructibleType = a.Anchor))
+  FROM LShufWork_GpGrant g JOIN (SELECT UnitType, MIN(Anchor) Anchor FROM LShufWork_GpGrant WHERE Anchor IS NOT NULL GROUP BY UnitType) a
+    ON a.UnitType = g.UnitType
+  WHERE ${CIV_DEAL_RAN()};
 INSERT OR IGNORE INTO LShufWork_Bound (ModifierId, Trait) SELECT b.ModifierId, COALESCE(
     (SELECT u.TraitType FROM Units u WHERE u.UnitType = b.AnchorType),
     (SELECT x.TraitType FROM Buildings x WHERE x.ConstructibleType = b.AnchorType),
+    (SELECT v.TraitType FROM Improvements v WHERE v.ConstructibleType = b.AnchorType),
     (SELECT q.TraitType FROM UniqueQuarters q WHERE q.UniqueQuarterType = b.AnchorType))
   FROM LShufBoundModifiers b WHERE b.ModifierId IN (SELECT ModifierId FROM Modifiers)
     AND (b.ByPiece IS NULL OR b.ByPiece NOT IN (SELECT PieceId FROM LShufResultCivPieces WHERE Kind = 'bullet'))
@@ -618,9 +656,21 @@ DELETE FROM TraitModifiers WHERE ModifierId IN (SELECT ModifierId FROM LShufWork
   OR (ModifierId LIKE 'LSHUF\\_%' ESCAPE '\\' AND EXISTS (SELECT 1 FROM LShufWork_Bound b
     WHERE substr(TraitModifiers.ModifierId, -(length(b.ModifierId) + 2)) = '__' || b.ModifierId));
 INSERT OR IGNORE INTO TraitModifiers (ModifierId, TraitType) SELECT ModifierId, Trait FROM LShufWork_Bound;
+-- A granted great person (1.5.1) reaches only a player who holds the unit's own trait as well as the grant (lab
+-- 2026-11-11: Iceland's ability on Sengoku gave nobody a Saga Hero). The unit family goes onto the trait a
+-- civilization holds that carries its grants now, copies included.
+UPDATE Units SET TraitType = ${GP_GRANT_TRAIT}
+  WHERE ${CIV_DEAL_RAN()} AND EXISTS (SELECT 1 FROM LShufWork_GpGrant g WHERE ${FAMILY("Units.UnitType", "g.UnitType")})
+    AND ${GP_GRANT_TRAIT} IS NOT NULL;
 `;
 }
 
+// The trait a civilization holds that carries a granted great person's grants (or their copies) now.
+const GP_GRANT_TRAIT = `(SELECT MIN(tm.TraitType) FROM TraitModifiers tm JOIN LShufWork_GpGrant g
+      ON (tm.ModifierId = g.ModifierId OR (tm.ModifierId LIKE 'LSHUF\\_%' ESCAPE '\\'
+        AND substr(tm.ModifierId, -(length(g.ModifierId) + 2)) = '__' || g.ModifierId))
+    WHERE (Units.UnitType = g.UnitType OR Units.UnitType LIKE g.UnitType || '\\_%' ESCAPE '\\')
+      AND tm.TraitType IN (SELECT TraitType FROM CivilizationTraits))`;
 // The civ deal touched this game (as boundApply reads it): a game it didn't touch stays as shipped.
 const CIV_DEAL_RAN = () => `(EXISTS (SELECT 1 FROM LShufResultCivPieces) OR ${CFG("CA")} = ${q(CA_MODE.Off)}
       OR ${CFG("CU")} = ${q(CU_MODE.Off)} OR ${CFG("CC")} = ${q(CC_MODE.Off)})`;

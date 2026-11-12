@@ -177,6 +177,7 @@ Merged pieces: CIVILIZATION_MAJAPAHIT__B03 -> CIVILIZATION_MAJAPAHIT__B02.
   - Why: +30% favored wonder production.
   - Modifiers: MOD_CIV_WONDER_PRODUCTION_EGYPT
   - Note: Wonder: dealt as +30% towards this civilization's favored wonder, named (CONTRACTS 31).
+- Unplaced: TRAIT_MOD_GRANT_TJAY. Grants the civilization's great person (1.5.1); no bullet describes it.
 
 ## CIVILIZATION_ENGLAND (AGE_EXPLORATION, TRAIT_ENGLAND_ABILITY, text LOC_TRAIT_ENGLAND_ABILITY_EX_DESCRIPTION)
 
@@ -275,6 +276,8 @@ Merged pieces: CIVILIZATION_MAJAPAHIT__B03 -> CIVILIZATION_MAJAPAHIT__B02.
   - Why: +30% favored wonder production.
   - Modifiers: MOD_CIV_WONDER_PRODUCTION_GREECE
   - Note: Wonder: dealt as +30% towards this civilization's favored wonder, named (CONTRACTS 31).
+- Unplaced: TRAIT_MOD_GRANT_LOGIOS_QUARTER. Grants the civilization's great person (1.5.1); no bullet describes it.
+- Unplaced: TRAIT_MOD_GRANT_LOGIOS_SUZERAIN. Grants the civilization's great person (1.5.1); no bullet describes it.
 
 ## CIVILIZATION_HAN (AGE_ANTIQUITY, TRAIT_HAN_ABILITY, text LOC_TRAIT_HAN_ABILITY_DESCRIPTION)
 
@@ -288,6 +291,7 @@ Merged pieces: CIVILIZATION_MAJAPAHIT__B03 -> CIVILIZATION_MAJAPAHIT__B02.
   - Why: +30% favored wonder production.
   - Modifiers: MOD_CIV_WONDER_PRODUCTION_HAN
   - Note: Wonder: dealt as +30% towards this civilization's favored wonder, named (CONTRACTS 31).
+- Unplaced: TRAIT_MOD_GRANT_SHI_DAFU_SCIENCE. Grants the civilization's great person (1.5.1); no bullet describes it.
 
 ## CIVILIZATION_HAWAII (AGE_EXPLORATION, TRAIT_HAWAII_ABILITY, text LOC_TRAIT_HAWAII_ABILITY_DESCRIPTION)
 
@@ -314,6 +318,8 @@ Merged pieces: CIVILIZATION_MAJAPAHIT__B03 -> CIVILIZATION_MAJAPAHIT__B02.
   - Why: +30% favored wonder production.
   - Modifiers: MOD_CIV_WONDER_PRODUCTION_HEIAN
   - Note: Wonder: dealt as +30% towards this civilization's favored wonder, named (CONTRACTS 31).
+- Unplaced: TRAIT_MOD_GRANT_SHIJIN. Grants the civilization's great person (1.5.1); no bullet describes it.
+- Unplaced: TRAIT_MOD_GRANT_SHIJIN_HAPPINESS. Grants the civilization's great person (1.5.1); no bullet describes it.
 
 ## CIVILIZATION_ICELAND (AGE_EXPLORATION, TRAIT_ICELAND_ABILITY, text LOC_TRAIT_ICELAND_ABILITY_DESCRIPTION)
 
