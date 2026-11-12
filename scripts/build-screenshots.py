@@ -2,12 +2,12 @@
 
     python3 -I scripts/build-screenshots.py <raw folder>
 
-Each <raw folder>/NN-name.png (a `screencapture -o -l <window>` of the game window, title bar included) becomes:
+Each <raw folder>/NN-name.png (a `screencapture -o -l <window>` of the game window) becomes:
 
     docs/steam-screenshots/NN-name.jpg   1920x1200, for the Steam Workshop page
     docs/screenshots/NN-name.jpg         1280x800, for the README and the GitHub release
 
-The title bar is cut off, the rest is trimmed to 16:10 from the right and scaled.
+A title bar, when the capture has one, is cut off; the rest is trimmed to 16:10 and scaled.
 
 CROPS adds zoomed-in close-ups of one part of a capture (the new buttons on the leader and civilization select),
 numbered in sequence with the full shots at 1600 (Steam) and 960 (GitHub) pixels wide. The JPEGs are written from the
@@ -39,7 +39,10 @@ RATIO = 16 / 10
 
 def crop(img):
     w, h = img.size
-    img = img.crop((0, TITLE_BAR, w, h))
+    # A capture of the whole window carries the title bar and is that much taller than 16:10; one of the game's
+    # content alone (3024x1890) has none to cut.
+    if h - round(w / RATIO) >= TITLE_BAR - 8:
+        img = img.crop((0, TITLE_BAR, w, h))
     w, h = img.size
     if w / h > RATIO:
         # Trimmed from the right: the game's panels sit at the left edge, the leader art at the right.
