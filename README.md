@@ -52,6 +52,7 @@ Steam doesn't take the preview through `steamcmd` for this account, so it goes u
 
 ## Screenshots
 
+![Uncharted Leaders & Civs Settings in Advanced Options](docs/screenshots/01-settings.jpg)
 ![A leader's mixed bonuses on the leader select, the new buttons boxed](docs/screenshots/02-leader-select.jpg)
 ![The Leader pool button beside Random](docs/screenshots/03-leader-pool-button.jpg)
 ![The Build your own leader button](docs/screenshots/04-build-your-own-leader.jpg)
