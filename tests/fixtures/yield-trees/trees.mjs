@@ -57,3 +57,40 @@ export const UNDER_MODIFIER = () => {
   t.base.modifier = percentStep(70, "Earth Shaker", 0.5, 10);
   return t;
 };
+
+// The 1.5.1 shape read in lab run econ-21 (2026-11-12): the step worth 0.5 carries the name, and the percentage
+// nodes inside it carry the same name with values of 50. A flat bonus the game puts in "Other" too (Augustus's +2
+// Production per town, two towns) stays there.
+export const NESTED_151 = () => {
+  const inner = (id) => ({ id, type: STEP.PERCENTAGE, description: "Earth Shaker", value: 50,
+    steps: [{ id: id + 1000, type: STEP.MULTIPLY, value: 50, modifier: { value: 10 }, steps: [] }] });
+  const shaker = { id: 80, type: STEP.ADDITION, description: "Earth Shaker", value: 0.5, base: inner(81), steps: [inner(82)] };
+  const towns = { id: 90, type: STEP.ADDITION, description: "Number of Towns", value: 4,
+    steps: [{ id: 91, type: STEP.ADDITION, description: "Number of Towns", value: 2, steps: [] },
+      { id: 92, type: STEP.ADDITION, description: "Yield per Town", value: 2, steps: [] }] };
+  return tree([towns, shaker], 4.5);
+};
+
+// The capital's Production tree exactly as lab run rel-citydetails read it (2026-11-12, game 1.5.1, getYields()): the
+// PERCENTAGE step "Earth Shaker" 0.5 sits under Income's base ADDITION beside "From Buildings". Type numbers follow
+// STEP; ATTRIBUTE is a fourth kind.
+export const ATTRIBUTE = 3;
+export const RCD_TREE = () => ({
+  type: ATTRIBUTE, description: "Total Yield", value: 5.5,
+  base: { type: STEP.ADDITION, description: "", value: 5.5, steps: [
+    { type: ATTRIBUTE, description: "Income", value: 5.5,
+      base: { type: STEP.ADDITION, description: "", value: 5.5, steps: [
+        { type: ATTRIBUTE, description: "From Buildings", value: 5,
+          base: { type: STEP.ADDITION, description: "", value: 5, steps: [{ type: STEP.ADDITION, description: "", value: 5, steps: [] }] },
+          modifier: { type: STEP.ADDITION, description: "", value: 0, steps: [] } },
+        { type: STEP.PERCENTAGE, description: "Earth Shaker", value: 0.5, steps: [
+          { type: STEP.ADDITION, description: "Earth Shaker", value: 50, steps: [
+            { type: STEP.MULTIPLY, description: "Earth Shaker", value: 50, modifier: { value: 10 }, steps: [] }] }] }] },
+      modifier: { type: STEP.ADDITION, description: "", value: 0, steps: [] } }] },
+  modifier: { type: STEP.ADDITION, description: "", value: 0, steps: [] }
+});
+// City Details' own rows for that city: "From Buildings" with its Palace child, and "Other" 0.5.
+export const RCD_ROWS = () => [
+  { name: "From Buildings", value: 5, valueType: DISPLAY.FLAT, children: [{ name: "Palace", value: 5, children: [] }] },
+  { name: OTHER, value: 0.5, valueType: DISPLAY.FLAT, children: [] }
+];

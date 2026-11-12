@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { importShipped } from "./_harness.mjs";
-import { DISPLAY, NO_OTHER, ONE_STEP, OTHER, REPEATED_STEP, STEP, TOO_LARGE, TWO_STEPS, UNDER_MODIFIER } from "./fixtures/yield-trees/trees.mjs";
+import { DISPLAY, NESTED_151, NO_OTHER, RCD_ROWS, RCD_TREE, ONE_STEP, OTHER, REPEATED_STEP, STEP, TOO_LARGE, TWO_STEPS, UNDER_MODIFIER } from "./fixtures/yield-trees/trees.mjs";
 
 const load = () => importShipped("ui/game/lshuf-city-details-names.js");
 
@@ -115,4 +115,54 @@ test("matchSourceModifier: a percent mismatch gives null; a null percent skips t
     { fromYieldType: "YIELD_GOLD", percent: 10 },
     "the 15% row drops out, leaving one match"
   );
+});
+
+test("1.5.1: the named step holds percentage nodes of the same name; the line is the step's own value", async () => {
+  const { nameStepsInTree } = await load();
+  const t = NESTED_151();
+  const c = ctx();
+  const added = nameStepsInTree(t, c);
+  assert.deepEqual(names(t), [["From Buildings", 5], ["Earth Shaker", 0.5], [OTHER, 4]], "a flat bonus stays in Other");
+  assert.equal(added.length, 1);
+  assert.deepEqual(c.asked, [["Earth Shaker", 10]]);
+});
+
+// cityYields as City Details hands it over (city.Yields), with the income summary in each shape it might take.
+const INCOME = 7;
+function fakeYields({ summaryBase, forNode = null, prodIndex = 1 }) {
+  const all = [];
+  all[prodIndex] = RCD_TREE();
+  return {
+    getYields: () => all,
+    getYieldSummaryForNode: (index, path) =>
+      (index === prodIndex && path[0] === INCOME ? { value: 5.5, base: summaryBase } : null),
+    getYieldsForNode: (index, path) => (index === prodIndex && path[0] === INCOME ? forNode : null)
+  };
+}
+
+test("the rel-citydetails tree: Earth Shaker 0.5 is named whichever yield read carries the steps", async () => {
+  const { incomeBase, nameStepsInTree } = await load();
+  const income = RCD_TREE().base.steps[0];
+  const shapes = [
+    ["summary without steps, getYieldsForNode empty", { summaryBase: { type: STEP.ADDITION, value: 5.5 } }],
+    ["getYieldsForNode carries the steps", { summaryBase: { type: STEP.ADDITION, value: 5.5 }, forNode: income }],
+    ["summary carries the steps", { summaryBase: income.base }]
+  ];
+  for (const [label, shape] of shapes) {
+    const base = incomeBase(fakeYields(shape), 1, INCOME);
+    const t = { children: RCD_ROWS(), base };
+    const c = ctx();
+    nameStepsInTree(t, c);
+    assert.deepEqual(names(t), [["From Buildings", 5], ["Earth Shaker", 0.5]], label);
+    assert.deepEqual(c.asked, [["Earth Shaker", 10]], `${label}: the step's percent`);
+  }
+});
+
+test("incomeBase: no yields, no income node id, or no steps anywhere gives null", async () => {
+  const { incomeBase } = await load();
+  assert.equal(incomeBase(null, 1, INCOME), null);
+  assert.equal(incomeBase(fakeYields({ summaryBase: { value: 5.5 } }), 1, undefined), null);
+  const empty = { getYields: () => [], getYieldSummaryForNode: () => ({ value: 1, base: { value: 1 } }),
+    getYieldsForNode: () => null };
+  assert.equal(incomeBase(empty, 1, INCOME), null);
 });

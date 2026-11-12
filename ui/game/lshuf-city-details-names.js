@@ -11,13 +11,24 @@ const PATCHED = Symbol.for("uncharted-leaders-and-civs.city-details-names");
 const VERSION = "1";
 const EPSILON = 1e-6;
 
-// Named percentage steps under a node, walking base and steps but never into a `modifier` branch.
-function percentSteps(node, percentType, out = [], seen = new Set()) {
+// Named percentage steps under a node, walking base and steps but never into a `modifier` branch. A percentage node
+// counts as its outermost ancestor of the same name: on 1.5.1 the step worth 0.5 carries the name and the percentage
+// nodes inside it carry the same name with values of 50 (lab run econ-21, 2026-11-12).
+function ownersWith(named, node) {
+  return node.description && !named.has(node.description) ? new Map(named).set(node.description, node) : named;
+}
+
+function addOwner(out, owner) {
+  if (owner && owner.value && !out.includes(owner)) out.push(owner);
+}
+
+function percentSteps(node, percentType, out = [], seen = new Set(), named = new Map()) {
   if (!node || typeof node !== "object" || seen.has(node)) return out;
   seen.add(node);
-  if (node.type === percentType && node.description && node.value) out.push(node);
-  percentSteps(node.base, percentType, out, seen);
-  for (const step of node.steps || []) percentSteps(step, percentType, out, seen);
+  const owners = ownersWith(named, node);
+  addOwner(out, node.type === percentType ? owners.get(node.description) : null);
+  percentSteps(node.base, percentType, out, seen, owners);
+  for (const step of node.steps || []) percentSteps(step, percentType, out, seen, owners);
   return out;
 }
 
@@ -117,15 +128,39 @@ function sourceRowFor(yieldIndex) {
   };
 }
 
-function incomeBase(cityYields, yieldIndex) {
-  const nodes = globalThis.CityYieldNodes;
-  if (!nodes || !cityYields || typeof cityYields.getYieldSummaryForNode !== "function") return null;
-  const income = cityYields.getYieldSummaryForNode(yieldIndex, [nodes.INCOME]);
-  return income && income.base ? income.base : null;
+const hasSteps = (node) => !!(node && Array.isArray(node.steps) && node.steps.length);
+const call = (target, name, ...args) => (target && typeof target[name] === "function" ? target[name](...args) : null);
+
+/**
+ * The income node's base step with its steps, from whichever of the city's yield reads carries them. City Details reads
+ * only the value of the summary node (getYieldSummaryForNode) and takes steps from getYieldsForNode; in lab run
+ * rel-citydetails (2026-11-12) the summary path named nothing although the full tree (getYields) held the step. So the
+ * steps come from getYieldsForNode, then from the full tree at the step whose value is the income's, and the summary
+ * last. Pure apart from the calls on cityYields.
+ * @returns {object|null}
+ */
+export function incomeBase(cityYields, yieldIndex, incomeNode) {
+  if (!cityYields || incomeNode == null) return null;
+  const summary = call(cityYields, "getYieldSummaryForNode", yieldIndex, [incomeNode]);
+  const node = call(cityYields, "getYieldsForNode", yieldIndex, [incomeNode], true);
+  if (node && hasSteps(node.base)) return node.base;
+  const income = incomeStepOfTree(call(cityYields, "getYields"), yieldIndex, summary);
+  if (income) return income.base;
+  return summary && hasSteps(summary.base) ? summary.base : null;
+}
+
+// The income step in the full tree: the root's base step whose value is the summary's, else the first with steps.
+function incomeStepOfTree(all, yieldIndex, summary) {
+  const root = all ? all[yieldIndex] : null;
+  const steps = (root && root.base && root.base.steps) || [];
+  const same = (step) => summary && Math.abs(step.value - summary.value) < EPSILON;
+  return steps.find((step) => same(step) && hasSteps(step.base)) || steps.find((step) => hasSteps(step.base)) || null;
 }
 
 function nameLines(cityYields, yieldIndex, topYieldData) {
-  nameStepsInTree({ children: topYieldData.children, base: incomeBase(cityYields, yieldIndex) }, {
+  const nodes = globalThis.CityYieldNodes;
+  const base = incomeBase(cityYields, yieldIndex, nodes && nodes.INCOME);
+  nameStepsInTree({ children: topYieldData.children, base }, {
     otherName: Locale.compose("LOC_GLOBAL_YIELDS_OTHER"),
     percentType: GameValueStepTypes.PERCENTAGE,
     multiplyType: GameValueStepTypes.MULTIPLY,
