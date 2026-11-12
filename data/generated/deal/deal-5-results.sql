@@ -64,6 +64,12 @@ INSERT INTO LShufWork_U (Node, Target, Trait, Tree, Owner) SELECT u.ProgressionT
 UPDATE LShufWork_U SET AttrTrait = (SELECT MIN(at.TraitType) FROM LShufAttributeTraits at JOIN Attributes a ON a.AttributeType = at.AttributeType
     JOIN LeaderTraits lt ON lt.TraitType = at.TraitType AND lt.LeaderType = LShufWork_U.Owner WHERE a.ProgressionTreeType = LShufWork_U.Tree);
 UPDATE LShufWork_U SET Holder = CASE
+  WHEN (SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 0 AND (SELECT IsWhole FROM LShufWork_Cfg) = 1 AND EXISTS (SELECT 1 FROM LShufWork_Donor d WHERE d.Axis = 'A' AND d.Donor = LShufWork_U.Owner)
+    THEN (SELECT d.LeaderType FROM LShufWork_Donor d WHERE d.Axis = 'A' AND d.Donor = Owner)
+  WHEN (SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 0 AND (SELECT IsWhole FROM LShufWork_Cfg) = 0 AND EXISTS (SELECT 1 FROM LShufWork_Dealt d WHERE d.FromLeader = LShufWork_U.Owner AND d.LeaderType IS NOT NULL)
+    THEN COALESCE(CASE WHEN EXISTS (SELECT 1 FROM LShufMappingUnlocks mu WHERE mu.ProgressionTreeNodeType = LShufWork_U.Node AND mu.TargetType = LShufWork_U.Target
+    AND mu.PieceId IS NOT NULL) THEN (SELECT d.LeaderType FROM LShufMappingUnlocks mu JOIN LShufWork_Dealt d ON d.PieceId = mu.PieceId
+    WHERE mu.ProgressionTreeNodeType = LShufWork_U.Node AND mu.TargetType = LShufWork_U.Target AND d.LeaderType IS NOT NULL) ELSE (SELECT f.Receiver FROM LShufWork_Flow f WHERE f.Giver = Owner ORDER BY f.C DESC, f.V DESC, f.Receiver LIMIT 1) END, Owner)
   WHEN (SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 1 AND (SELECT IsWhole FROM LShufWork_Cfg) = 1 THEN (SELECT d.LeaderType FROM LShufWork_Donor d WHERE d.Axis = 'A' AND d.Donor = Owner)
   WHEN (SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 1 THEN COALESCE((SELECT d.LeaderType FROM LShufMappingUnlocks mu JOIN LShufWork_Dealt d ON d.PieceId = mu.PieceId
     WHERE mu.ProgressionTreeNodeType = LShufWork_U.Node AND mu.TargetType = LShufWork_U.Target AND d.LeaderType IS NOT NULL), CASE WHEN AttrTrait IS NULL OR ((SELECT OffT FROM LShufWork_Cfg) = 1 AND (SELECT l.RT FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) IS NULL) THEN NULL
@@ -71,7 +77,7 @@ UPDATE LShufWork_U SET Holder = CASE
     ELSE Owner END, (SELECT f.Receiver FROM LShufWork_Flow f WHERE f.Giver = Owner ORDER BY f.C DESC, f.V DESC, f.Receiver LIMIT 1), Owner)
   WHEN (SELECT OffA FROM LShufWork_Cfg) = 1 AND (SELECT l.RA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) IS NULL THEN NULL ELSE Owner END;
 UPDATE LShufWork_U SET ToTrait = CASE WHEN Holder IS NULL THEN NULL
-  WHEN (SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 0 THEN Trait
+  WHEN (SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 0 AND Holder = Owner THEN Trait
   WHEN (SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Holder) = 1 THEN CASE WHEN (SELECT IsWhole FROM LShufWork_Cfg) = 1 AND (SELECT Follows FROM LShufWork_Cfg) = 1 AND NOT ((SELECT b.PersonaPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = Holder) IS NOT NULL OR COALESCE((SELECT b.BulletBuild FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = Holder), 0) = 1) THEN Trait
     ELSE 'TRAIT_LSHUF_' || Holder END
   ELSE COALESCE((SELECT l.Ability FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Holder), Trait) END;
@@ -82,7 +88,7 @@ INSERT INTO LShufResultUnlocks (ProgressionTreeNodeType, TargetType, FromTraitTy
 DELETE FROM LShufResultMeta;
 INSERT INTO LShufResultMeta (Name, Value) SELECT 'Seed', CAST(Seed AS TEXT) FROM LShufWork_Cfg;
 INSERT INTO LShufResultMeta (Name, Value) SELECT 'Mode', Mode FROM LShufWork_Cfg;
-INSERT INTO LShufResultMeta (Name, Value) VALUES ('DealVersion', '10');
+INSERT INTO LShufResultMeta (Name, Value) VALUES ('DealVersion', '15');
 INSERT INTO LShufResultMeta (Name, Value) SELECT 'Builder' || CASE WHEN Slot = 1 THEN '' ELSE CAST(Slot AS TEXT) END,
   CASE WHEN OK = 1 THEN 'ok' ELSE Why END FROM LShufWork_Build ORDER BY Slot;
 INSERT INTO LShufResultMeta (Name, Value) SELECT 'Fallback_' || CASE Axis WHEN 'A' THEN 'ABILITY' WHEN 'T' THEN 'ATTRIBUTES'

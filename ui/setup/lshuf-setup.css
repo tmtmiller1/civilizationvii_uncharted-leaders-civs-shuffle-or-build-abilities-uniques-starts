@@ -123,3 +123,58 @@
 .lshuf-setup__frame--advanced {
   width: 52rem;
 }
+
+/* The AI players window: one compact row per AI player. */
+.lshuf-ai-players__head {
+  margin-bottom: 0.4rem;
+}
+
+.lshuf-ai-players__row {
+  padding: 0.25rem 0;
+  border-bottom: 0.0555rem solid rgba(197, 176, 128, 0.25);
+}
+
+.lshuf-ai-players__label {
+  width: 4rem;
+  flex-shrink: 0;
+}
+
+.lshuf-ai-players__portrait {
+  width: 2.6rem;
+  height: 2.6rem;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.lshuf-ai-players__civ {
+  width: 4.6rem;
+  height: 2.6rem;
+  margin: 0 0.6rem 0 0.4rem;
+  flex-shrink: 0;
+  border-radius: 0.2rem;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Leader and Civilization share one line: the dropdowns give up the game's 20rem minimum width. */
+.lshuf-ai-players__picks {
+  flex-wrap: nowrap;
+}
+
+.lshuf-ai-players__picks .lshuf-build__pick {
+  margin-top: 0;
+  margin-right: 0.8rem;
+  flex-wrap: nowrap;
+}
+
+.lshuf-ai-players__picks fxs-dropdown {
+  width: 12rem;
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.lshuf-ai-players__note {
+  width: 100%;
+  margin-bottom: 0.2rem;
+}

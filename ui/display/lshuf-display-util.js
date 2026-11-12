@@ -41,3 +41,40 @@ export function guarded(label, fn, fallback) {
     return fallback;
   }
 }
+
+const AGE_SUFFIX = { AGE_ANTIQUITY: "AQ", AGE_EXPLORATION: "EX", AGE_MODERN: "MO" };
+
+/** The age being played: the running game's, or on the setup screens the start age row; null when neither reads. */
+export function currentAge() {
+  try {
+    const row = typeof Game !== "undefined" && Game.age != null ? GameInfo.Ages.lookup(Game.age) : null;
+    if (row && row.AgeType) return String(row.AgeType);
+  } catch (_) { /* not in a game */ }
+  try {
+    const p = GameSetup.findGameParameter("Age");
+    const v = p && p.value ? p.value.value : null;
+    return v ? String(v) : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * The text key of a civilization bonus in the age being played. The game scales an ability's numbers by age
+ * (Spain's coastal yields read +1 in Antiquity, +2 in Exploration, +3 in Modern), so a bonus whose wording differs
+ * in that age has its own key there (LOC_LSHUF_CIVPIECE_<PieceId>__AQ, __EX, __MO); the rest read the plain one.
+ * @param {string} pieceId
+ * @param {string | null} [age]
+ */
+export function civPieceKey(pieceId, age = currentAge()) {
+  const plain = `LOC_LSHUF_CIVPIECE_${pieceId}`;
+  const suffix = age ? AGE_SUFFIX[age] : null;
+  if (!suffix) return plain;
+  const aged = `${plain}__${suffix}`;
+  try {
+    const text = Locale.compose(aged);
+    return text && text !== aged ? aged : plain;
+  } catch (_) {
+    return plain;
+  }
+}

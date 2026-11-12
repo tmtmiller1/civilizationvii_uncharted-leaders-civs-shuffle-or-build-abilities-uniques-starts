@@ -37,6 +37,9 @@ CREATE TABLE IF NOT EXISTS LShufMapping (
   -- A piece covers bullets BulletIndex .. BulletIndex + BulletCount - 1: bullets one effect serves together are one
   -- piece (scripts/mapping/merge-pieces.mjs), so nothing is ever dealt that does nothing on its own.
   BulletCount INTEGER NOT NULL DEFAULT 1,
+  -- The bullets of a piece whose bullets aren't next to each other, joined by '|' ('1|3|4'); NULL means the range
+  -- above. Yi Sun-sin's Fleet Commander bullets are one piece this way (CONTRACTS 23 R5).
+  BulletList TEXT,
   BulletText TEXT,
   BiasTags TEXT,
   Value INTEGER NOT NULL DEFAULT 1,

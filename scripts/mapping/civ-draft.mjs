@@ -10,21 +10,28 @@
 // civilization, keep (a Movable 0 piece that stays its own row instead of merging into the bullet before it), note.
 // unplaced: modifiers no bullet describes, with unplacedWhy (one string, or one per modifier id).
 //
-// Every "+30% Production towards constructing <wonder>" bullet has MOD_CIV_WONDER_PRODUCTION_<CIV> behind it, and
-// that modifier only fires for a player with the civilization's own base trait
-// (REQUIREMENT_PLAYER_HAS_CIVILIZATION_OR_LEADER_TRAIT), so the piece is kept with its civilization and never dealt.
+// Every "+30% Production towards constructing <wonder>" bullet has MOD_CIV_WONDER_PRODUCTION_<CIV> behind it, an
+// EFFECT_CITY_ADJUST_FAVORED_WONDER_PRODUCTION that only fires for a player with the civilization's own base trait.
+// The piece is dealt like any other (wonder: true): when the civilization deal runs, the apply swaps the modifier for
+// one of the mod's own that names the civilization's favored wonder (CONTRACTS 31), so it works for whoever holds it.
+// A piece the game implements outside the ability (Assyria's codices) moves as a rule piece (rule: the home trait and
+// the modifiers whose exception names it); one that explains the bullet before it joins that bullet (joins: true);
+// one the game ties to a civic or a unique shows on the build screen as going with it (goesWith: a build card id).
 // MOD_REVEAL_CIV_CULTURE_TREE_<CIV> (Exploration and Modern) reveals the civilization's own civics tree; it goes
 // with the civics (CONTRACTS 18), not with an ability bullet, so it's listed unplaced.
 
-const NO_EFFECT = (what) => ({ mods: [], value: 1, movable: 0, why: `No effect: ${what}`, note: `No effect: ${what}` });
 const WONDER = (civ) => ({
   mods: [`MOD_CIV_WONDER_PRODUCTION_${civ}`],
   value: 1,
-  movable: 0,
-  keep: true,
-  why: "+30% favored wonder production; the modifier needs the civilization's own base trait, so it only works at home.",
-  note: "Home only: the +30% needs the civilization's own base trait."
+  wonder: true,
+  why: "+30% favored wonder production.",
+  note: "Wonder: dealt as +30% towards this civilization's favored wonder, named (CONTRACTS 31)."
 });
+// A line the game ties to a civic or a unique: it stays with them and shows on the build screen as going with them.
+const GOES_WITH = (id, what) => ({ mods: [], value: 1, movable: 0, goesWith: id, why: `Goes with ${what}.`,
+  note: `Goes with ${what} (CONTRACTS 31).` });
+// A line that explains the bullet before it: its text joins that bullet's card.
+const JOINS = (what) => ({ mods: [], value: 1, movable: 0, joins: true, why: what, note: what });
 const REVEAL_WHY = "Reveals the civilization's own civics tree; it travels with the civics, not with an ability bullet.";
 // An Exploration or Modern entry: the bullets, with the civics-tree reveal (and any other unplaced modifiers) listed
 // unplaced.
@@ -57,7 +64,11 @@ export const CIV_DRAFT = {
   ]),
   CIVILIZATION_ASSYRIA: [
     { mods: ["MOD_CIV_FIRST_TIME_CONQUER", "MOD_CIV_FIRST_TIME_CONQUER_CODEX"], value: 3, why: "A tech node and a writing great work on first-time settlement occupation." },
-    NO_EFFECT("codices not coming from technologies is the game's own rule for Assyria, not a modifier on the ability."),
+    {
+      mods: [], value: 1, rule: { home: "TRAIT_ASSYRIA", targets: ["MOD_AQ_CODEX_REDUX", "MOD_AQ_MATHEMATICS_CODEX_REDUX"] },
+      why: "Technologies award no codex: the codex rewards skip TRAIT_ASSYRIA.",
+      note: "Rule: the codex rewards' exception follows whoever holds this piece (CONTRACTS 31)."
+    },
     WONDER("ASSYRIA")
   ],
   CIVILIZATION_BABYLON: [
@@ -91,7 +102,8 @@ export const CIV_DRAFT = {
       mods: ["MOD_CIV_DOUBLE_COLONISTS", "MOD_CIV_DOUBLE_MERCHANTS"],
       hidden: ["TRAIT_MOD_COLONIST_POP"],
       value: 4,
-      why: "An extra copy of each Colonist and Merchant; the hidden +1 Population for Colonist-founded settlements rides with them."
+      why: "An extra copy of each Colonist and Merchant; the hidden +1 Population for Colonist-founded settlements rides with them.",
+      note: "A card of its own on the build screen; in the random deal it goes with the Colonist (LShufBoundPieces, CONTRACTS 29)."
     },
     WONDER("CARTHAGE")
   ],
@@ -182,7 +194,7 @@ export const CIV_DRAFT = {
   CIVILIZATION_INCA: withReveal("INCA", [
     { mods: ["TRAIT_MOD_APUS_IMPROVE_MOUNTAINS"], value: 3, bias: ["TERRAIN_MOUNTAIN"], why: "Unlocks IMPROVEMENT_INCA_MOUNTAIN, so Mountain plots can be worked." },
     { mods: ["TRAIT_MOD_APUS_MOUNTAIN_FOOD", "TRAIT_MOD_APUS_MOUNTAIN_PRODUCTION"], value: 3, bias: ["TERRAIN_MOUNTAIN"], why: "+2 Food and +1 Production on rural Mountain plots." },
-    NO_EFFECT("the Homelands treasure convoys come from the Qhapaq Ñan civic's own modifiers, not the ability."),
+    GOES_WITH("CIVNODE_NODE_CIVIC_EX_INCA_QHAPAQ_NAN", "the Qhapaq Ñan civic, whose own modifiers make the convoys"),
     WONDER("INCA")
   ]),
   CIVILIZATION_JOSEON: withReveal("JOSEON", [
@@ -191,7 +203,10 @@ export const CIV_DRAFT = {
       mods: ["MOD_JOSEON_NON_CAPITAL_SPECIALIST_LIMIT_SEOWON_INCREASE", "MOD_JOSEON_NON_CAPITAL_SPECIALIST_LIMIT_NO_SEOWON_DECREASE"],
       value: 1,
       why: "+1 worker cap in cities with a Seowon quarter, -1 without; away from Joseon only the -1 can apply.",
-      note: "Away from Joseon no city has a Seowon, so only the -1 applies."
+      movable: 0,
+      keep: true,
+      goesWith: "CIVNODE_NODE_CIVIC_MO_JOSEON_IHAK",
+      note: "Goes with the Seowon: both modifiers are in LShufBoundModifiers and follow the quarter (CONTRACTS 23 R4)."
     },
     { mods: ["MOD_JOSEON_CITY_LIMIT_LARGE_INCREASE"], value: 2, why: "+2 city limit (the text's initial limit of 2)." },
     { mods: ["MOD_TOWN_TIER1_BUILDINGS"], value: 2, why: "Towns buy JOSEON-tagged buildings with any focus." },
@@ -205,7 +220,7 @@ export const CIV_DRAFT = {
   CIVILIZATION_MAJAPAHIT: withReveal("MAJAPAHIT", [
     { mods: ["TRAIT_MOD_NEGARA_CULTURE_BUILDING_ADJACENCY"], value: 3, bias: ["COAST"], why: "Activates the NegaraCultureBuildingCoastCulture adjacency." },
     { mods: ["TRAIT_MOD_NEGARA_SPECIALIST_CAP_INCREASE"], value: 3, bias: ["COAST"], why: "+1 district worker cap on or next to coast." },
-    NO_EFFECT("a note about transitioning away from the Majapahit; the game's own rule, not a modifier."),
+    JOINS("Explains the specialist-limit bullet before it, so it joins that card."),
     WONDER("MAJAPAHIT")
   ]),
   CIVILIZATION_MAURYA: {
@@ -284,8 +299,16 @@ export const CIV_DRAFT = {
   ],
   CIVILIZATION_PIRATE_REPUBLIC: withReveal("PIRATE_REPUBLIC", [
     { mods: ["MOD_CIV_NAVAL_UNITS_FOREIGN_TERRITORY"], value: 2, why: "Naval, fleet commander and treasure units enter foreign lands." },
-    { mods: ["MOD_CIV_PIRATE_REPUBLIC_FLEET_COMMANDER_LAND_CLAIM_CHARGE"], value: 2, why: "A land-claim charge for fleet commanders with one promotion." },
-    { mods: ["MOD_CIV_PIRATE_REPUBLIC_DISABLE_SETTLERS", "MOD_CIV_PIRATE_REPUBLIC_CAPTURE_SETTLERS"], value: 2, why: "No settlers of your own; capture others'." },
+    {
+      mods: ["MOD_CIV_PIRATE_REPUBLIC_FLEET_COMMANDER_LAND_CLAIM_CHARGE"], value: 2,
+      why: "A land-claim charge for fleet commanders with one promotion.",
+      note: "A card of its own on the build screen; in the random deal it goes with the Buccaneer (LShufBoundPieces, CONTRACTS 29)."
+    },
+    {
+      mods: ["MOD_CIV_PIRATE_REPUBLIC_DISABLE_SETTLERS", "MOD_CIV_PIRATE_REPUBLIC_CAPTURE_SETTLERS"], value: 2,
+      why: "No settlers of your own; capture others'.",
+      note: "A card of its own on the build screen; in the random deal it goes with the Buccaneer and the settle charge (LShufBoundPieces, CONTRACTS 29)."
+    },
     { mods: ["MOD_CIV_PIRATE_REPUBLIC_CAPTURE_NAVAL_GDP"], value: 2, why: "+5 economic victory points per naval kill." },
     WONDER("PIRATE_REPUBLIC")
   ]),
@@ -349,7 +372,7 @@ export const CIV_DRAFT = {
   CIVILIZATION_SONGHAI: withReveal("SONGHAI", [
     { mods: ["TRAIT_MOD_NAVIGABLE_RIVER_RESOURCE_CAP"], value: 3, bias: ["TERRAIN_NAVIGABLE_RIVER"], why: "+2 resource cap in cities whose center is on a navigable river." },
     { mods: ["TRAIT_MOD_RESOURCE_PRODUCTION"], value: 3, bias: ["TERRAIN_NAVIGABLE_RIVER"], why: "Production per assigned resource in navigable-river cities." },
-    NO_EFFECT("the Homelands treasure convoys come from the Kanta civic's own modifiers, not the ability."),
+    GOES_WITH("CIVNODE_NODE_CIVIC_EX_SONGHAI_KANTA", "the Kanta civic, whose own modifiers make the convoys"),
     WONDER("SONGHAI")
   ]),
   CIVILIZATION_SPAIN: withReveal("SPAIN", [
@@ -372,4 +395,191 @@ export const CIV_DRAFT = {
     unplaced: ["MOD_TONGA_MEET_DISTANT_LAND_CIVS", "MOD_TONGA_OCEAN_TRADE"],
     unplacedWhy: "Meeting distant-lands civilizations and safe deep-water trade units; no bullet describes them."
   }
+};
+
+// Since 1.5.1 a civilization's great person can't be trained; modifiers on the ability grant it. No bullet describes
+// them, so they're unplaced. The ones whose requirement names the civ's quarter or improvement are bound to it
+// (LShufBoundModifiers, scripts/mapping/build-deps.mjs) and go to whoever holds that.
+const GP_GRANT_WHY = "Grants the civilization's great person (1.5.1); no bullet describes it.";
+const GP_GRANTS = {
+  CIVILIZATION_EGYPT: ["TRAIT_MOD_GRANT_TJAY"],
+  CIVILIZATION_GREECE: ["TRAIT_MOD_GRANT_LOGIOS_QUARTER", "TRAIT_MOD_GRANT_LOGIOS_SUZERAIN"],
+  CIVILIZATION_HAN: ["TRAIT_MOD_GRANT_SHI_DAFU_SCIENCE"],
+  CIVILIZATION_HEIAN: ["TRAIT_MOD_GRANT_SHIJIN", "TRAIT_MOD_GRANT_SHIJIN_HAPPINESS"],
+  CIVILIZATION_ABBASID: ["TRAIT_MOD_GRANT_ALIM_QUARTER"],
+  CIVILIZATION_ICELAND: ["TRAIT_MOD_GRANT_SAGA_HERO_IMPROVEMENT", "TRAIT_MOD_GRANT_SAGA_HERO_NATURAL_WONDER"],
+  CIVILIZATION_SPAIN: ["TRAIT_MOD_GRANT_CONQUISTADOR_DISTANT_LANDS", "TRAIT_MOD_GRANT_CONQUISTADOR_QUARTER"],
+  CIVILIZATION_FRENCH_EMPIRE: ["TRAIT_MOD_GRANT_JACOBIN_CELEBRATION", "TRAIT_MOD_GRANT_JACOBIN_QUARTER"],
+  CIVILIZATION_MEXICO: ["TRAIT_MOD_GRANT_REVOLUCIONARIO_CELEBRATION", "TRAIT_MOD_GRANT_REVOLUCIONARIO_QUARTER"],
+  CIVILIZATION_SIAM: ["TRAIT_MOD_GRANT_UPARAT"]
+};
+for (const [civ, mods] of Object.entries(GP_GRANTS)) {
+  const was = CIV_DRAFT[civ];
+  const entry = Array.isArray(was) ? { bullets: was } : was;
+  const before = entry.unplaced || [];
+  const whyOf = (id) => (typeof entry.unplacedWhy === "object" ? entry.unplacedWhy[id] : entry.unplacedWhy);
+  entry.unplacedWhy = Object.fromEntries([
+    ...before.map((id) => [id, whyOf(id)]), ...mods.map((id) => [id, GP_GRANT_WHY])
+  ]);
+  entry.unplaced = [...before, ...mods];
+  CIV_DRAFT[civ] = entry;
+}
+
+// A civilization played outside its own age (Test of Time) keeps its ability trait, but the game swaps some of the
+// modifiers behind a bullet for that age's versions (Spain's coastal yields are +1 in Antiquity, +2 in Exploration,
+// +3 in Modern, each under its own modifier id). CIV_AGE_VARIANTS names, per piece and age, the modifiers that stand
+// in for the piece's own there, read off each age's ability text and modifier data like the draft above. A piece's
+// own modifier that an age still attaches needs no entry. CIV_AGE_EXTRAS lists what an age attaches that no bullet
+// of the civilization's own age covers (a bullet the age adds, or a unit's rider); those stay with the civilization.
+// The build fails on a modifier an age attaches that is in neither list, so a game update can't slip one past.
+const AQ = "AGE_ANTIQUITY";
+const EX = "AGE_EXPLORATION";
+const MO = "AGE_MODERN";
+export const CIV_AGE_VARIANTS = {
+  CIVILIZATION_ABBASID: {
+    B01: { [AQ]: ["TRAIT_MOD_TOT_AQ_GOLD_SPECIALISTS"], [MO]: ["TRAIT_MOD_TOT_MO_GOLD_SPECIALISTS"] },
+    B02: { [MO]: ["MOD_TRAIT_ABBASID_PRODUCTION_MO_SPECIALISTS"] }
+  },
+  CIVILIZATION_AKSUM: { B01: { [MO]: ["TRAIT_MOD_MO_KINGDOM_OF_NATURAL_WEALTH_RESOURCE"] } },
+  CIVILIZATION_ASSYRIA: {
+    B01: { [EX]: ["MOD_CIV_FIRST_TIME_CONQUER_RELIC"], [MO]: ["MOD_CIV_FIRST_TIME_CONQUER_ARTIFACT"] }
+  },
+  CIVILIZATION_CHOLA: {
+    B02: {
+      [AQ]: ["TRAIT_MOD_TOT_AQ_TRADE_ROUTE_GOLD", "TRAIT_MOD_TOT_AQ_TRADE_ROUTE_INFLUENCE"],
+      [MO]: ["TRAIT_MOD_TOT_MO_TRADE_ROUTE_GOLD", "TRAIT_MOD_TOT_MO_TRADE_ROUTE_INFLUENCE"]
+    }
+  },
+  CIVILIZATION_DAI_VIET: {
+    B01: { [AQ]: ["MOD_CIV_WALL_AQ_YIELD"], [MO]: ["MOD_CIV_WALL_MO_YIELD"] },
+    B02: { [AQ]: ["MOD_DAI_VIET_AQ_FORTIFICATION_CULTURE", "MOD_DAI_VIET_AQ_FORTIFICATION_FOOD"] }
+  },
+  CIVILIZATION_FRENCH_EMPIRE: {
+    B01: { [AQ]: ["TRAIT_MOD_LIBERTE_AQ_GOVERNMENT_CHANGE"], [EX]: ["TRAIT_MOD_LIBERTE_EX_GOVERNMENT_CHANGE"] }
+  },
+  // Modern's second bullet is "+1 GDP per turn for every Settlement within 6 tiles of another Civilization's border",
+  // the age's version of the Gold bullet.
+  CIVILIZATION_GAUL: { B02: { [MO]: ["TRAIT_MOD_GAUL_VP"] } },
+  CIVILIZATION_GREECE: {
+    B01: { [EX]: ["TRAIT_MOD_DEMOKRATIA_INFLUENCE_TOT_EX"], [MO]: ["TRAIT_MOD_DEMOKRATIA_INFLUENCE_TOT_MO"] },
+    // Exploration and Modern add Espionage Actions to the same bullet.
+    B02: {
+      [EX]: ["TRAIT_MOD_DEMOKRATIA_CULTURE_ESPIONAGE"],
+      [MO]: ["TRAIT_MOD_DEMOKRATIA_CULTURE_ENDEAVOR_TOT_MO", "TRAIT_MOD_DEMOKRATIA_CULTURE_SANCTION_TOT_MO",
+        "TRAIT_MOD_DEMOKRATIA_CULTURE_PROJECT_TOT_MO", "TRAIT_MOD_DEMOKRATIA_CULTURE_ESPIONAGE_TOT_MO"]
+    }
+  },
+  CIVILIZATION_HAN: {
+    B01: { [EX]: ["TRAIT_MOD_NINE_PROVINCES_POP_IN_CITIES_ON_SCIENCE_BUILDING"], [MO]: ["TRAIT_MOD_NINE_PROVINCES_POP_ON_SCIENCE_BUILDING"] },
+    B02: { [EX]: ["TRAIT_MOD_NINE_PROVINCES_TOT_TOWN"], [MO]: ["TRAIT_MOD_NINE_PROVINCES_TOT_TOWN"] }
+  },
+  CIVILIZATION_HAWAII: {
+    B02: {
+      [AQ]: ["TRAIT_MOD_HAWAII_TOT_AQ_CULTURE_ON_MARINE", "TRAIT_MOD_HAWAII_TOT_AQ_CULTURE_WAREHOUSE"],
+      [MO]: ["TRAIT_MOD_HAWAII_TOT_MO_HAPPINESS_WAREHOUSE"]
+    }
+  },
+  CIVILIZATION_HEIAN: { B01: { [EX]: ["TRAIT_MOD_APPEALING_MORE_CULTURE"], [MO]: ["TRAIT_MOD_APPEALING_MORE_CULTURE"] } },
+  // Modern's second bullet is "+4 Culture on Natural Wonder and Volcano Tiles", the age's version of the discovery one.
+  CIVILIZATION_ICELAND: {
+    B02: { [AQ]: ["ICELAND_AQ_MOD_NATURAL_WONDER_DISCOVERY"], [MO]: ["ICELAND_MO_MOD_NATURAL_WONDER_CULTURE"] }
+  },
+  CIVILIZATION_INCA: {
+    B02: { [AQ]: ["TRAIT_MOD_TOT_AQ_APUS_MOUNTAIN_FOOD"], [MO]: ["TRAIT_MOD_TOT_MO_APUS_MOUNTAIN_FOOD", "TRAIT_MOD_TOT_MO_APUS_MOUNTAIN_PRODUCTION"] }
+  },
+  CIVILIZATION_JOSEON: {
+    B01: { [AQ]: ["MOD_JOSEON_CAPITAL_SPECIALIST_LIMIT_INCREASE"] },
+    B03: { [AQ]: ["MOD_JOSEON_CITY_LIMIT_INCREASE"] }
+  },
+  CIVILIZATION_MAURYA: {
+    B01: { [MO]: ["TRAIT_MOD_DHAMMA_THAMBHA_MO_HAPPINESS_BUILDING_HAPPINESS", "TRAIT_MOD_DHAMMA_THAMBHA_MO_MILITARY_BUILDING_HAPPINESS",
+      "TRAIT_MOD_DHAMMA_THAMBHA_MO_SCIENCE_BUILDING_HAPPINESS"] }
+  },
+  CIVILIZATION_MEIJI: { B01: { [AQ]: ["TRAIT_MOD_GOISSHIN_AQ_SCIENCE_ON_BUILD"] } },
+  CIVILIZATION_MEXICO: { B02: { [EX]: ["TRAIT_MOD_REVOLUCION_EX_CELEBRATION_TOURISM"] } },
+  CIVILIZATION_MING: {
+    B02: { [AQ]: ["TRAIT_MOD_TOT_AQ_LOSE_SCIENCE_PER_NON_UNIQUE_TRADITION"], [MO]: ["TRAIT_MOD_TOT_MO_LOSE_SCIENCE_PER_NON_UNIQUE_TRADITION"] }
+  },
+  // Antiquity and Exploration open with "Can work Mountain Terrain", which the warehouse bullet needs to do anything.
+  CIVILIZATION_NEPAL: { B01: { [AQ]: ["MOD_NEPAL_IMPROVE_MOUNTAINS"], [EX]: ["MOD_NEPAL_IMPROVE_MOUNTAINS"] } },
+  // The first bullet is a Codex (Antiquity) or a Relic (Exploration) on a Celebration or a conquered capital, where
+  // Modern has the extra Artifact.
+  CIVILIZATION_OTTOMANS: {
+    B01: {
+      [AQ]: ["MOD_CIV_OTTOMAN_GOLDEN_AGE_CODEX", "MOD_CIV_OTTOMAN_CONQUEST_GREATWORK"],
+      [EX]: ["MOD_CIV_OTTOMAN_GOLDEN_AGE_RELIC", "MOD_CIV_OTTOMAN_CONQUEST_GREATWORK"]
+    }
+  },
+  CIVILIZATION_QAJAR: {
+    B02: { [AQ]: ["MOD_CIV_QAJAR_YIELDS_UNDER_SETTLEMENT_CAP_AQ"], [EX]: ["MOD_CIV_QAJAR_YIELDS_UNDER_SETTLEMENT_CAP_EX"] }
+  },
+  CIVILIZATION_QING: {
+    B01: {
+      [AQ]: ["TRAIT_MOD_AQ_SHENGSHI_GOLD_PER_IMPORTED_RESOURCE", "TRAIT_MOD_AQ_SHENGSHI_CULTURE_PER_IMPORTED_RESOURCE",
+        "TRAIT_MOD_AQ_SHENGSHI_SCIENCE_MALUS_PER_TRADE_ROUTE"],
+      [EX]: ["TRAIT_MOD_EX_SHENGSHI_GOLD_PER_IMPORTED_RESOURCE", "TRAIT_MOD_EX_SHENGSHI_CULTURE_PER_IMPORTED_RESOURCE",
+        "TRAIT_MOD_EX_SHENGSHI_SCIENCE_MALUS_PER_TRADE_ROUTE"]
+    }
+  },
+  CIVILIZATION_ROME: { B01: { [MO]: ["TRAIT_MOD_MO_TWELVE_TABLES_CAPITAL", "TRAIT_MOD_MO_TWELVE_TABLES_TOWNS"] } },
+  CIVILIZATION_SENGOKU: { B01: { [MO]: ["SENGOKU_MOD_COMMANDER_XP_INFLUENCE_MODERN"] } },
+  CIVILIZATION_SIAM: {
+    B02: {
+      [AQ]: ["TRAIT_MOD_ITSARAPHAB_AQ_INFLUENCE_FRIENDLY", "TRAIT_MOD_ITSARAPHAB_AQ_INFLUENCE_HELPFUL"],
+      [EX]: ["TRAIT_MOD_ITSARAPHAB_EX_INFLUENCE_FRIENDLY", "TRAIT_MOD_ITSARAPHAB_EX_INFLUENCE_HELPFUL"]
+    }
+  },
+  CIVILIZATION_SONGHAI: {
+    B01: { [AQ]: ["TRAIT_MOD_SONGHAI_TOT_AQ_NAVIGABLE_RIVER_RESOURCE_CAP"] },
+    B02: { [MO]: ["TRAIT_MOD_SONGHAI_TOT_MO_RESOURCE_PRODUCTION"] }
+  },
+  // Antiquity has no Religion, so its second half is "Settlements with an Altar".
+  CIVILIZATION_SPAIN: {
+    B01: {
+      [AQ]: ["TRAIT_MOD_TOT_AQ_COASTAL_SETTLEMENT_YIELDS", "TRAIT_MOD_TOT_AQ_ALTAR_SETTLEMENT_YIELDS"],
+      [MO]: ["TRAIT_MOD_TOT_MO_COASTAL_SETTLEMENT_YIELDS", "TRAIT_MOD_TOT_MO_RELIGION_SETTLEMENT_YIELDS",
+        "TRAIT_MOD_TOT_MO_COASTAL_SETTLEMENT_YIELDS_DISTANT_LANDS", "TRAIT_MOD_TOT_MO_RELIGION_SETTLEMENT_YIELDS_DISTANT_LANDS"]
+    }
+  }
+};
+export const CIV_AGE_EXTRAS = {
+  CIVILIZATION_BABYLON: { [MO]: ["TRAIT_MOD_BABYLON_QUARTER_TOURISM"] }, // Modern adds "+1 Tourism for every Quarter"
+  CIVILIZATION_EGYPT: { [MO]: ["TRAIT_MOD_GIFTS_OF_OSIRIS_WONDER_TOURISM"] }, // Modern adds "+1 Tourism from Wonders"
+  CIVILIZATION_ENGLAND: { [MO]: ["TRAIT_MOD_ENGLAND_GOLD_GDP"] }, // Modern adds "+2 GDP for Island and Distant Lands Settlements"
+  CIVILIZATION_GORYEO: { [MO]: ["TRAIT_MOD_GORYEO_IMPROVEMENT_TOURISM"] }, // Modern adds "+1 Tourism from Unique Improvements"
+  CIVILIZATION_HEIAN: { [MO]: ["TRAIT_MOD_APPEALING_VP"] }, // Modern adds Tourism on Breathtaking tiles
+  // Modern's third bullet (Coastal Raids on Archaeology Sites) needs Iceland's raiders.
+  CIVILIZATION_ICELAND: { [MO]: ["ICELAND_MO_MOD_COASTAL_RAID_ARTIFACTS"] },
+  // The other cities' -1 Specialist Limit, the age's version of the Seowon bullet that goes with the Ihak civic.
+  CIVILIZATION_JOSEON: { [AQ]: ["MOD_JOSEON_NON_CAPITAL_SPECIALIST_LIMIT_DECREASE"], [EX]: ["MOD_JOSEON_NON_CAPITAL_SPECIALIST_LIMIT_DECREASE"] },
+  // The Mandarin's naval trade riders.
+  CIVILIZATION_MING: {
+    [AQ]: ["MANDARIN_MOD_NAVAL_TRADE_ATTACH_HOMELANDS", "MANDARIN_MOD_NAVAL_TRADE_ATTACH_DISTANT"],
+    [MO]: ["MANDARIN_MOD_NAVAL_TRADE_ATTACH_HOMELANDS", "MANDARIN_MOD_NAVAL_TRADE_ATTACH_DISTANT"]
+  },
+  CIVILIZATION_MONGOLIA: { [MO]: ["TRAIT_MOD_TOT_MO_MONGOLIA_SETTLEMENT_CAP"] }, // Modern adds "+3 Settlement Limit in Advanced Starts"
+  // Exploration's third bullet is "Trade Routes can cross Ocean without taking damage"; Modern attaches it too.
+  CIVILIZATION_TONGA: { [EX]: ["MOD_TONGA_OCEAN_TRADE"], [MO]: ["MOD_TONGA_OCEAN_TRADE"] }
+};
+
+// The text of a piece in an age other than its civilization's own: the game keeps the ability's text per age
+// (LOC_TRAIT_<CIV>_ABILITY_AQ/EX/MO_DESCRIPTION), with that age's numbers. The build matches each piece to the age's
+// bullet by its words, the same position first; a match that moved or changed a lot has to be listed here with the
+// age's bullet number (null: the age has no bullet for it, the piece keeps its own text), read off both texts.
+export const CIV_AGE_TEXT_REVIEWED = {
+  "CIVILIZATION_ENGLAND__B02|AGE_MODERN": 3, // Modern puts "+2 GDP for Island and Distant Lands Settlements" second
+  "CIVILIZATION_GAUL__B02|AGE_MODERN": 2, // the Gold bullet is "+1 GDP per turn" in Modern
+  "CIVILIZATION_HAN__B01|AGE_MODERN": 1, // "All Settlements gain a Population"
+  "CIVILIZATION_ICELAND__B02|AGE_MODERN": 2, // "+4 Culture on Natural Wonder and Volcano Tiles"
+  "CIVILIZATION_INCA__B01|AGE_MODERN": null, // Modern's one bullet is the yields; "Can work Mountain Terrain" isn't said
+  "CIVILIZATION_INCA__B02|AGE_MODERN": 1,
+  "CIVILIZATION_NEPAL__B01|AGE_ANTIQUITY": 2, // "Can work Mountain Terrain" comes first in Antiquity and Exploration
+  "CIVILIZATION_NEPAL__B01|AGE_EXPLORATION": 2,
+  "CIVILIZATION_OTTOMANS__B01|AGE_ANTIQUITY": 1, // a Codex on a Celebration or a conquered capital
+  "CIVILIZATION_OTTOMANS__B01|AGE_EXPLORATION": 1, // a Relic
+  "CIVILIZATION_PIRATE_REPUBLIC__B03|AGE_ANTIQUITY": 2, // the Buccaneer bullet is gone in Antiquity
+  "CIVILIZATION_PIRATE_REPUBLIC__B04|AGE_ANTIQUITY": 3,
+  "CIVILIZATION_QING__B03|AGE_ANTIQUITY": 2, // the GDP bullet is gone before Modern
+  "CIVILIZATION_QING__B03|AGE_EXPLORATION": 2,
+  "CIVILIZATION_SPAIN__B01|AGE_ANTIQUITY": 1 // Coastal Settlements and Settlements with an Altar
 };

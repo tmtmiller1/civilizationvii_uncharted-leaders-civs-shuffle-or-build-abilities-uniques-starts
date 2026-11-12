@@ -355,8 +355,10 @@ Each leader's legend nodes follow the setup options, so they always belong to wh
 
 In the split modes the mod rewrites `RequiredTraitType` on each moved unlock to the receiving leader's new trait
 (`TRAIT_LSHUF_<LEADER>`). The mapping table records each legend node's tree, read from `ProgressionTreeNodes` at build
-time, so nodes a DLC or another mod adds follow the same rule. Not yet watched: the attribute tree screen showing a
-moved legend node as available to the receiving leader.
+time, so nodes a DLC or another mod adds follow the same rule. Watched 2026-11-11 (Mix bonuses, Antiquity): Amina's
+Economic and Militaristic legend nodes went to Confucius and Yi Sun-sin with their attribute cards, each unlock row
+read the receiver's `TRAIT_LSHUF_` trait, and Pachacuti's Scientific tree drew Yi Sun-sin's legend node as "To Unlock:
+Reach Level 7 with Pachacuti" (`working_screenshots/night-2026-11-10/rd-legend/04-attribute-tree.png`).
 
 ### Showing the result on the leader screens
 

@@ -27,24 +27,44 @@ function countShape(rows, keyOf) {
   return { with: counts.size, two };
 }
 
-export function biasStats(rows, civCount) {
-  const tables = {};
+// The table weights, starts and targets of `rows`, in BIAS_TABLES order.
+function tableShape(rows) {
+  const out = {};
   let start = 0;
+  for (const t of BIAS_TABLES) {
+    const all = rows.filter((r) => r.TableName === t);
+    out[t] = {
+      w: all.length,
+      start,
+      targets: BIAS_TARGET_COLUMN[t] ? sortIds(all.map((r) => r.TargetType).filter((x) => x != null)) : []
+    };
+    start += all.length;
+  }
+  return { tables: out, total: start };
+}
+
+// Civilizations roll from every row; leaders from the leader rows alone, which are the same in every age, so a
+// leader's rolled or logical start terrain doesn't change when the next age loads a different set of civilizations.
+export function biasStats(rows, civCount) {
+  const every = tableShape(rows);
+  const lead = tableShape(rows.filter(isLeaderRow));
+  const tables = {};
   for (const t of BIAS_TABLES) {
     const all = rows.filter((r) => r.TableName === t);
     const allRange = range(all.map((r) => r.Score));
     tables[t] = {
-      w: all.length,
-      start,
-      targets: BIAS_TARGET_COLUMN[t] ? sortIds(all.map((r) => r.TargetType).filter((x) => x != null)) : [],
+      ...every.tables[t],
+      lw: lead.tables[t].w,
+      lstart: lead.tables[t].start,
+      ltargets: lead.tables[t].targets,
       leader: range(all.filter(isLeaderRow).map((r) => r.Score)) || allRange,
       civ: range(all.filter(isCivRow).map((r) => r.Score)) || allRange
     };
-    start += all.length;
   }
   return {
     tables,
-    total: start,
+    total: every.total,
+    leaderTotal: lead.total,
     leaders: countShape(rows.filter(isLeaderRow), (r) => r.LeaderType),
     civs: countShape(rows.filter(isCivRow), (r) => r.CivilizationType),
     civCount
@@ -64,10 +84,13 @@ function rollCount(seed, stats, base, isCiv) {
 }
 
 function rollOne(seed, stats, rank, isCiv) {
-  const r = lshufKey(seed, SALT.BiasKind, rank) % stats.total;
-  const table = BIAS_TABLES.find((t) => r >= stats.tables[t].start && r < stats.tables[t].start + stats.tables[t].w);
+  const total = isCiv ? stats.total : stats.leaderTotal;
+  const r = lshufKey(seed, SALT.BiasKind, rank) % total;
+  const startOf = (t) => (isCiv ? stats.tables[t].start : stats.tables[t].lstart);
+  const wOf = (t) => (isCiv ? stats.tables[t].w : stats.tables[t].lw);
+  const table = BIAS_TABLES.find((t) => r >= startOf(t) && r < startOf(t) + wOf(t));
   const t = stats.tables[table];
-  const targets = t.targets;
+  const targets = isCiv ? t.targets : t.ltargets;
   const target = targets.length ? targets[lshufKey(seed, SALT.BiasTarget, rank) % targets.length] : null;
   const span = isCiv ? t.civ : t.leader;
   const steps = floorDiv(span.hi - span.lo, SCORE_STEP) + 1;
@@ -78,7 +101,7 @@ function rollOne(seed, stats, rank, isCiv) {
 
 // Rolled rows for one leader (rank in the bias pool) or one civ (rank in the civ list).
 export function rollBiases(seed, stats, rank, isCiv) {
-  if (stats.total === 0) return [];
+  if ((isCiv ? stats.total : stats.leaderTotal) === 0) return [];
   const base = isCiv ? CIV_ROLL_RANK_BASE + rank * ROLL_RANK_STRIDE : rank * ROLL_RANK_STRIDE;
   const count = rollCount(seed, stats, base, isCiv);
   const out = [];
@@ -95,7 +118,7 @@ export function tagBiases(stats, tagValues, max) {
   const list = [];
   for (const [tag, value] of tagValues) {
     const table = biasTableOfTag(tag);
-    if (!table || stats.tables[table].w === 0) continue;
+    if (!table || stats.tables[table].lw === 0) continue;
     list.push({ tag, table, value });
   }
   list.sort((a, b) => b.value - a.value || cmp(a.tag, b.tag));

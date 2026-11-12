@@ -1,6 +1,7 @@
-// Deal step 6: write the result into the game tables (CONTRACTS.md section 6). Only a leader's ability row and its
-// attribute rows move in LeaderTraits; nothing is deleted from Traits or Modifiers; TraitModifiers gets INSERTs only;
-// every insert selects through the parent table, so a row whose parent is missing is skipped.
+// Deal step 6: write the result into the game tables (CONTRACTS.md section 6). Only a leader's ability row, its
+// attribute rows and a trait a dealt unlock's unit hangs on (CONTRACTS 23 R5) move in LeaderTraits; nothing is
+// deleted from Traits or Modifiers; TraitModifiers gets INSERTs only; every insert selects through the parent table,
+// so a row whose parent is missing is skipped.
 import { BIAS_TABLES, BIAS_TARGET_COLUMN, TRAIT } from "../../shared/lshuf-constants.js";
 import { civApplySql } from "./sql-civ.mjs";
 import { BUILD_OF, CFG, header, q } from "./sql-util.mjs";
@@ -95,14 +96,12 @@ DELETE FROM LShufWork_Copy WHERE ModifierId NOT IN (SELECT ModifierId FROM Modif
 
 function copyModifiers() {
   const newId = `${COPY_PREFIX} || c.Receiver || '__' || m.ModifierId`;
-  const tooltip = `(SELECT l.AbilityName FROM LShufWork_L l WHERE l.LeaderType = c.Receiver)`;
   return `INSERT OR IGNORE INTO Modifiers (ModifierId, ModifierType, NewOnly, OwnerRequirementSetId, OwnerStackLimit, Permanent, RunOnce,
     SubjectRequirementSetId, SubjectStackLimit)
   SELECT ${newId}, m.ModifierType, m.NewOnly, m.OwnerRequirementSetId, m.OwnerStackLimit, m.Permanent, m.RunOnce,
     m.SubjectRequirementSetId, m.SubjectStackLimit FROM LShufWork_Copy c JOIN Modifiers m ON m.ModifierId = c.ModifierId;
 INSERT OR IGNORE INTO ModifierArguments (ModifierId, Name, Extra, SecondExtra, Type, Value)
-  SELECT ${newId.replace(/m\.ModifierId/g, "a.ModifierId")}, a.Name, a.Extra, a.SecondExtra, a.Type,
-    CASE WHEN a.Name = 'Tooltip' AND ${tooltip} IS NOT NULL THEN ${tooltip} ELSE a.Value END
+  SELECT ${newId.replace(/m\.ModifierId/g, "a.ModifierId")}, a.Name, a.Extra, a.SecondExtra, a.Type, a.Value
   FROM LShufWork_Copy c JOIN ModifierArguments a ON a.ModifierId = c.ModifierId
   WHERE ${newId.replace(/m\.ModifierId/g, "a.ModifierId")} IN (SELECT ModifierId FROM Modifiers);
 INSERT OR IGNORE INTO ModifierStrings (Context, ModifierId, Text)
@@ -174,6 +173,59 @@ function unlocks() {
 `;
 }
 
+// A leader trait that a dealt unlock's unit hangs on follows the unlock (CONTRACTS 23 R5): in Antiquity Yi Sun-sin's
+// Fleet Commanders are UNIT_FLEET_COMMANDER with TraitType TRAIT_UNLOCK_FLEET_COMMANDER, and his Discipline unlock row
+// goes to whoever holds the bonus that promises them (LShufMappingUnlocks pins it), so the trait goes there too. Nobody
+// (ability Off for everyone) means nobody has it. A unit with no TraitType (any later age) leaves the trait alone.
+function unlockTraits() {
+  return `CREATE TABLE IF NOT EXISTS LShufWork_UnitTrait (Owner TEXT, TraitType TEXT, ToLeader TEXT, PRIMARY KEY (Owner, TraitType));
+DELETE FROM LShufWork_UnitTrait;
+INSERT OR IGNORE INTO LShufWork_UnitTrait (Owner, TraitType, ToLeader)
+  SELECT l.LeaderType, u.TraitType, r.ToLeaderType FROM LShufResultUnlocks r
+  JOIN LShufWork_L l ON l.Ability = r.FromTraitType
+  JOIN Units u ON u.UnitType = r.TargetType
+  JOIN LeaderTraits lt ON lt.LeaderType = l.LeaderType AND lt.TraitType = u.TraitType
+  WHERE u.TraitType <> l.Ability AND (r.ToLeaderType IS NULL OR r.ToLeaderType <> l.LeaderType);
+DELETE FROM LeaderTraits WHERE EXISTS (SELECT 1 FROM LShufWork_UnitTrait w
+  WHERE w.Owner = LeaderTraits.LeaderType AND w.TraitType = LeaderTraits.TraitType);
+INSERT OR IGNORE INTO LeaderTraits (LeaderType, TraitType) SELECT ToLeader, TraitType FROM LShufWork_UnitTrait
+  WHERE ToLeader IN (SELECT LeaderType FROM Leaders) AND TraitType IN (SELECT TraitType FROM Traits);
+`;
+}
+
+// Ibn Battuta's "2 Wildcard Attribute Points after the first Civic in every age" isn't a modifier on his ability:
+// it's the base game's narrative event ATTRIBUTE_79A, gated on "the player's leader is Ibn Battuta"
+// (REQ_STORY_LEADER_IBN_BATTUTA) and one completed culture node; its reward 79B gives the points. Watched 2026-11-09:
+// a copy of his Wildcard bonus on another leader gave nothing, while Ibn Battuta himself bought two attribute nodes
+// after his first civic. So when his ability is in the deal, the event's two requirement sets ask for a trait instead,
+// held by whoever has the Wildcard bonus (the leader his pinned legend node went to), nobody when it went to nobody.
+// While Ibn Battuta keeps the bonus, nothing changes. His own story chains keep the leader check.
+const STORY_TRAIT = "TRAIT_LSHUF_IBN_WILDCARD";
+const STORY_REQ = "REQ_LSHUF_IBN_WILDCARD";
+const STORY_SETS = ["REQSET_ATTRIBUTE_79A_NARRATIVE", "REQSET_ATTRIBUTE_79A_NARRATIVE_REQUISITE"];
+const STORY_PIN = "(SELECT r.ToLeaderType FROM LShufResultUnlocks r WHERE r.FromTraitType = 'TRAIT_LEADER_IBN_BATTUTA_ABILITY' "
+  + "AND r.ProgressionTreeNodeType = 'NODE_ATTRIBUTE_EXPANSIONIST_LEGEND_IBN_BATTUTA_L2' LIMIT 1)";
+// Only when the bonus left him (to another leader or to nobody): while he holds it, the game runs as shipped.
+const STORY_DEALT = "EXISTS (SELECT 1 FROM LShufResultUnlocks r WHERE r.FromTraitType = 'TRAIT_LEADER_IBN_BATTUTA_ABILITY' "
+  + "AND r.ProgressionTreeNodeType = 'NODE_ATTRIBUTE_EXPANSIONIST_LEGEND_IBN_BATTUTA_L2' "
+  + "AND (r.ToLeaderType IS NULL OR r.ToLeaderType <> 'LEADER_IBN_BATTUTA'))";
+function storyFollows() {
+  const sets = STORY_SETS.map((x) => `'${x}'`).join(", ");
+  return `INSERT OR IGNORE INTO Types (Type, Kind) SELECT '${STORY_TRAIT}', 'KIND_TRAIT' WHERE ${STORY_DEALT}
+  AND EXISTS (SELECT 1 FROM RequirementSetRequirements WHERE RequirementId = 'REQ_STORY_LEADER_IBN_BATTUTA' AND RequirementSetId IN (${sets}));
+INSERT OR IGNORE INTO Traits (TraitType, InternalOnly) SELECT '${STORY_TRAIT}', 1 WHERE '${STORY_TRAIT}' IN (SELECT Type FROM Types);
+INSERT OR IGNORE INTO Requirements (RequirementId, RequirementType)
+  SELECT '${STORY_REQ}', 'REQUIREMENT_PLAYER_HAS_CIVILIZATION_OR_LEADER_TRAIT' WHERE '${STORY_TRAIT}' IN (SELECT TraitType FROM Traits);
+INSERT OR IGNORE INTO RequirementArguments (RequirementId, Name, Value)
+  SELECT '${STORY_REQ}', 'TraitType', '${STORY_TRAIT}' WHERE '${STORY_REQ}' IN (SELECT RequirementId FROM Requirements);
+UPDATE RequirementSetRequirements SET RequirementId = '${STORY_REQ}'
+  WHERE RequirementId = 'REQ_STORY_LEADER_IBN_BATTUTA' AND RequirementSetId IN (${sets})
+    AND '${STORY_REQ}' IN (SELECT RequirementId FROM Requirements);
+INSERT OR IGNORE INTO LeaderTraits (LeaderType, TraitType) SELECT ${STORY_PIN}, '${STORY_TRAIT}'
+  WHERE ${STORY_DEALT} AND ${STORY_PIN} IN (SELECT LeaderType FROM Leaders) AND '${STORY_TRAIT}' IN (SELECT TraitType FROM Traits);
+`;
+}
+
 function biases() {
   const legacyDrop = `SELECT CivilizationType FROM LShufWork_Civ WHERE ${CFG("RollBiases")} = 1 OR Donor <> CivilizationType`;
   const leaders = `SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'B'
@@ -216,6 +268,8 @@ export function applySql() {
     aiLists(),
     leaderTraits(),
     unlocks(),
+    unlockTraits(),
+    storyFollows(),
     biases(),
     civPriorities()
       ,

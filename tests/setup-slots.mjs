@@ -1,5 +1,5 @@
-// planRandomSlots and planPoolSlots from ui/setup/lshuf-setup-config.js: which leader each Random or pool slot gets
-// before the keys are written.
+// planRandomSlots from ui/setup/lshuf-setup-config.js: which leader each Random slot gets before the keys are
+// written, and the Leader pool that narrows the draw.
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -58,17 +58,41 @@ test("each slot uses its own list, and an out-of-range index is clamped", async 
   ]);
 });
 
-test("after pools and Random picks every slot names a leader, so the not-in-game list fills", async () => {
-  const { planPoolSlots, planRandomSlots, slotsAfterPools, notInGame, PLAIN_RANDOM } = await load();
+test("Random slots only draw leaders ticked in the Leader pool", async () => {
+  const { planRandomSlots, PLAIN_RANDOM } = await load();
+  const slots = [
+    { id: 0, human: true, leader: "LEADER_AMINA" },
+    { id: 1, human: false, leader: PLAIN_RANDOM },
+    { id: 2, human: false, leader: PLAIN_RANDOM },
+    { id: 3, human: false, leader: PLAIN_RANDOM }
+  ];
+  const off = new Set(["LEADER_ASHOKA", "LEADER_AMINA"]);
+  const plan = planRandomSlots(slots, () => CHOICES, first, () => true, off);
+  assert.deepEqual([...plan], [
+    [1, "LEADER_AUGUSTUS"],
+    [2, "LEADER_CONFUCIUS"]
+  ], "Ashoka is unticked, Amina is taken, and slot 3 has nobody left so it stays Random");
+});
+
+test("a leader picked by hand stays, ticked in the pool or not", async () => {
+  const { planRandomSlots, PLAIN_RANDOM } = await load();
+  const slots = [
+    { id: 0, human: true, leader: "LEADER_ASHOKA" },
+    { id: 1, human: false, leader: PLAIN_RANDOM }
+  ];
+  const plan = planRandomSlots(slots, () => CHOICES, first, () => true, new Set(["LEADER_ASHOKA"]));
+  assert.deepEqual([...plan], [[1, "LEADER_AMINA"]], "only the Random slot is planned");
+});
+
+test("after the Random picks every slot names a leader, so the not-in-game list fills", async () => {
+  const { planRandomSlots, slotsAfterPools, notInGame, PLAIN_RANDOM } = await load();
   const raw = [
     { id: 0, human: true, leader: "LEADER_AMINA" },
-    { id: 1, human: false, leader: "LSHUF_RANDOM_POOL_1" },
+    { id: 1, human: false, leader: PLAIN_RANDOM },
     { id: 2, human: false, leader: PLAIN_RANDOM }
   ];
-  const afterPools = slotsAfterPools(raw, planPoolSlots(raw, { 1: ["LEADER_ASHOKA"] }, 7));
-  assert.equal(afterPools[1].leader, "LEADER_ASHOKA");
-  assert.deepEqual(notInGame(afterPools), [], "a Random slot still open keeps the list empty");
-  const slots = slotsAfterPools(afterPools, planRandomSlots(afterPools, () => CHOICES, first));
+  assert.deepEqual(notInGame(raw), [], "a Random slot still open keeps the list empty");
+  const slots = slotsAfterPools(raw, planRandomSlots(raw, () => CHOICES, first));
   assert.equal(slots[2].leader, "LEADER_AUGUSTUS");
   const out = notInGame(slots);
   assert.ok(out.length > 0);
@@ -115,3 +139,15 @@ test("a slot with no civ field counts as Random", async () => {
   const plan = planRandomCivSlots([{ id: 3, human: false, leader: "LEADER_AMINA" }], () => CIVS, new Set(), first);
   assert.deepEqual([...plan], [[3, "CIVILIZATION_AKSUM"]]);
 });
+
+test("Random civilizations come from the starting age only under Apex Only, the game's other setting",
+  async () => {
+    const { inAge, randomCivAges } = await load();
+    assert.equal(randomCivAges("GAME_START_CIV_SELECTION_MODE_APEX"), true);
+    assert.equal(randomCivAges("GAME_START_CIV_SELECTION_MODE_ANACHRONISTIC"), false, "Time-Tested Allowed: every age");
+    assert.equal(randomCivAges(null), false, "the game's default is Time-Tested Allowed");
+    const all = ["CIVILIZATION_ROME", "CIVILIZATION_MEIJI", "CIVILIZATION_PRUSSIA", "CIVILIZATION_EGYPT"];
+    const antiquity = new Set(["CIVILIZATION_ROME", "CIVILIZATION_EGYPT", "CIVILIZATION_AKSUM"]);
+    assert.deepEqual(inAge(all, antiquity), ["CIVILIZATION_ROME", "CIVILIZATION_EGYPT"]);
+    assert.deepEqual(inAge(all, null), all);
+  });

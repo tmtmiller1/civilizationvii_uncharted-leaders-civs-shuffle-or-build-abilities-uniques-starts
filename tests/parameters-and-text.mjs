@@ -8,7 +8,7 @@ import test from "node:test";
 
 import { loadShell, need, PROJECT_ROOT, rows } from "./_harness.mjs";
 import { ADDED_LEADER, DLC_LEADER } from "../scripts/fixtures/build-fixtures.mjs";
-import {
+import { CIV_MODE_CUSTOM, CIV_PRESETS,
   CONFIG_KEY, DEALING, listValue, MODE, PARAM, PERSONA, REASON, REVEAL, A_MODE, T_MODE, B_MODE,
   CA_MODE, CU_MODE, CC_MODE, MODE_CUSTOM
 } from "../shared/lshuf-constants.js";
@@ -20,6 +20,7 @@ const PARAMS = [
   [PARAM.Biases, "LShufBValues", 0, B_MODE.Normal, "LOC_LSHUF_BIASES_NAME"],
   [PARAM.Abilities, "LShufAValues", 0, A_MODE.Normal, "LOC_LSHUF_ABILITIES_NAME"],
   [PARAM.Attributes, "LShufTValues", 0, T_MODE.Normal, "LOC_LSHUF_ATTRIBUTES_NAME"],
+  [PARAM.CivMode, "LShufCivModeValues", 0, "LSHUF_CM_NORMAL", "LOC_LSHUF_CIV_MODE_NAME"],
   [PARAM.CivAbilities, "LShufCAValues", 0, CA_MODE.Normal, "LOC_LSHUF_CIV_ABILITIES_NAME"],
   [PARAM.CivUniques, "LShufCUValues", 0, CU_MODE.Normal, "LOC_LSHUF_CIV_UNIQUES_NAME"],
   [PARAM.CivCivics, "LShufCCValues", 0, CC_MODE.Normal, "LOC_LSHUF_CIV_CIVICS_NAME"],
@@ -29,7 +30,7 @@ const PARAMS = [
   [PARAM.ModdedAttributes, "bool", 0, "0", "LOC_LSHUF_MODDED_ATTRIBUTES_NAME"],
   [PARAM.ModdedBiases, "bool", 0, "0", "LOC_LSHUF_MODDED_BIASES_NAME"],
   [PARAM.ModdedOut, "LShufModdedLeaderValues", 1, null, "LOC_LSHUF_MODDED_OUT_NAME"],
-  [PARAM.Pool1, "LShufPoolLeaderValues", 1, null, "LOC_LSHUF_POOL_NAME"],
+  [PARAM.LeaderPoolOut, "LShufPoolLeaderValues", 1, null, "LOC_LSHUF_POOL_NAME"],
   [PARAM.Personality, "LShufPersonalityValues", 0, PERSONA.Follows, "LOC_LSHUF_PERSONALITY_NAME"],
   [PARAM.Dealing, "LShufDealingValues", 0, DEALING.Balanced, "LOC_LSHUF_DEALING_NAME"],
   [PARAM.Reveal, "LShufRevealValues", 0, REVEAL.Start, "LOC_LSHUF_REVEAL_NAME"],
@@ -43,11 +44,15 @@ const PARAMS = [
   ["LShufBuildPicks3", "text", 0, null, "LOC_LSHUF_BUILD_TITLE"],
   ["LShufBuildFor3", "text", 0, null, "LOC_LSHUF_BUILD_FOR"],
   ["LShufBuildPicks4", "text", 0, null, "LOC_LSHUF_BUILD_TITLE"],
-  ["LShufBuildFor4", "text", 0, null, "LOC_LSHUF_BUILD_FOR"]
+  ["LShufBuildFor4", "text", 0, null, "LOC_LSHUF_BUILD_FOR"],
+  // Added after the hidden rows took their numbers; its own row number comes from MAIN_SORT.
+  [PARAM.KeepBuiltCiv, "bool", 0, "1", "LOC_LSHUF_KEEP_BUILT_CIV_NAME"]
 ];
 
 const SELECT_DOMAINS = {
-  LShufModeValues: [...Object.values(MODE), MODE_CUSTOM],
+  // Swap whole before Swap partial, the order the civilization mode uses too (CONTRACTS 32).
+  LShufModeValues: [MODE.None, MODE.SwapLeaders, MODE.SwapAbilities, MODE.SplitMatched, MODE.SplitRandom, MODE_CUSTOM],
+  LShufCivModeValues: [...Object.keys(CIV_PRESETS), CIV_MODE_CUSTOM],
   LShufAValues: Object.values(A_MODE),
   LShufTValues: Object.values(T_MODE),
   LShufBValues: Object.values(B_MODE),
@@ -81,19 +86,21 @@ test("parameters.sql loads into the frontend copies", async () => {
   }
 });
 
-// The seven main options are ordinary rows in the mod's own section (LShufOptions), in this order; the rest stay hidden
+// The main options are ordinary rows in the mod's own section (LShufOptions), in this order; the rest stay hidden
 // in GameOptions and are set from the advanced window.
 const MAIN_SORT = {
   [PARAM.Mode]: 2300,
   [PARAM.Abilities]: 2301,
   [PARAM.Attributes]: 2302,
   [PARAM.Biases]: 2303,
-  [PARAM.CivAbilities]: 2304,
-  [PARAM.CivUniques]: 2305,
-  [PARAM.CivCivics]: 2306,
-  [PARAM.Personality]: 2307,
-  [PARAM.KeepMine]: 2308,
-  [PARAM.Reveal]: 2309
+  [PARAM.CivMode]: 2304,
+  [PARAM.CivAbilities]: 2305,
+  [PARAM.CivUniques]: 2306,
+  [PARAM.CivCivics]: 2307,
+  [PARAM.Personality]: 2308,
+  [PARAM.KeepMine]: 2309,
+  [PARAM.KeepBuiltCiv]: 2310,
+  [PARAM.Reveal]: 2311
 };
 
 test("each parameter row matches section 2", async () => {
@@ -118,9 +125,9 @@ test("each parameter row matches section 2", async () => {
         SupportsInternetMultiplayer: 1,
         SupportsHotseatMultiplayer: 1,
         ChangeableAfterGameStart: 0,
-        // Hidden rows keep their numbers from before the two civilization rows went in above them.
-        SortIndex: id in MAIN_SORT ? MAIN_SORT[id] : 2300 + i - 3,
-        UxHint: [PARAM.LeadersOut, PARAM.ModdedOut, PARAM.CivsOut].includes(id) ? "InvertSelection" : null
+        // Hidden rows keep their numbers from before the civilization rows went in above them.
+        SortIndex: id in MAIN_SORT ? MAIN_SORT[id] : 2300 + i - 4,
+        UxHint: [PARAM.LeadersOut, PARAM.ModdedOut, PARAM.CivsOut, PARAM.LeaderPoolOut].includes(id) ? "InvertSelection" : null
       };
       for (const [k, v] of Object.entries(want)) assert.equal(p[k], v, `${id}.${k}`);
       assert.equal(p.DefaultValue == null ? null : String(p.DefaultValue), def, `${id}.DefaultValue`);
@@ -143,10 +150,10 @@ test("select domains list their values in order, Description = Name + _DESC", as
         assert.equal(r.Description, `LOC_${r.Value}_DESC`, `${domain} ${r.Value} Description`);
       }
     }
-    const pool = rows(run.db, "SELECT * FROM DomainValues WHERE Domain = 'StandardLeaders' AND Value LIKE 'LSHUF_RANDOM_POOL%'");
-    assert.equal(pool.length, 1, "one Random from the pool entry");
-    assert.deepEqual([pool[0].Value, pool[0].Name, pool[0].Icon, pool[0].SortIndex],
-      ["LSHUF_RANDOM_POOL_1", "LOC_LSHUF_RANDOM_POOL", "LEADER_RANDOM", -999], "right after Random's -1000");
+    // The Leader pool is only a filter on Random slots: the mod adds no entry of its own to the game's leader list
+    // (a "Random from the pool" entry had no 3D model, and picking it crashed the leader select, 2026-11-09).
+    const added = rows(run.db, "SELECT Value FROM DomainValues WHERE Domain = 'StandardLeaders' AND Value LIKE 'LSHUF%'");
+    assert.deepEqual(added, [], "no entry of ours in the leader list");
   } finally {
     run.close();
   }

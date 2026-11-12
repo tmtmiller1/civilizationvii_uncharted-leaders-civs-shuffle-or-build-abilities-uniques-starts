@@ -101,6 +101,11 @@ function unlocks() {
     WHEN ${ownerL("InT")} = 1 THEN (SELECT d.LeaderType FROM LShufWork_ADealt d WHERE d.CardId = Owner || '|' || AttrTrait)
     ELSE Owner END`;
   const holderIn = `(SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = ${U}.Holder)`;
+  // An absent leader's ability a builder took (lshuf-deal-unlocks.js absentRow, CONTRACTS 24).
+  const absentDonor = `SELECT 1 FROM LShufWork_Donor d WHERE d.Axis = 'A' AND d.Donor = ${U}.Owner`;
+  const absentDealt = `SELECT 1 FROM LShufWork_Dealt d WHERE d.FromLeader = ${U}.Owner AND d.LeaderType IS NOT NULL`;
+  const pinned = `SELECT 1 FROM LShufMappingUnlocks mu WHERE mu.ProgressionTreeNodeType = ${U}.Node AND mu.TargetType = ${U}.Target
+    AND mu.PieceId IS NOT NULL`;
   return `${"CREATE TABLE IF NOT EXISTS LShufWork_U (Node TEXT, Target TEXT, Trait TEXT, Tree TEXT, Owner TEXT, AttrTrait TEXT, Holder TEXT, ToTrait TEXT, PRIMARY KEY (Node, Target));"}
 DELETE FROM ${U};
 INSERT INTO ${U} (Node, Target, Trait, Tree, Owner) SELECT u.ProgressionTreeNodeType, u.TargetType, u.RequiredTraitType,
@@ -109,11 +114,15 @@ INSERT INTO ${U} (Node, Target, Trait, Tree, Owner) SELECT u.ProgressionTreeNode
   FROM ProgressionTreeNodeUnlocks u WHERE u.RequiredTraitType IN (SELECT Ability FROM LShufWork_L WHERE Ability IS NOT NULL);
 UPDATE ${U} SET AttrTrait = ${attrTrait};
 UPDATE ${U} SET Holder = CASE
+  WHEN ${ownerL("InA")} = 0 AND ${CFG("IsWhole")} = 1 AND EXISTS (${absentDonor})
+    THEN (SELECT d.LeaderType FROM LShufWork_Donor d WHERE d.Axis = 'A' AND d.Donor = Owner)
+  WHEN ${ownerL("InA")} = 0 AND ${CFG("IsWhole")} = 0 AND EXISTS (${absentDealt})
+    THEN COALESCE(CASE WHEN EXISTS (${pinned}) THEN ${override} ELSE ${topReceiver("Owner")} END, Owner)
   WHEN ${ownerL("InA")} = 1 AND ${CFG("IsWhole")} = 1 THEN (SELECT d.LeaderType FROM LShufWork_Donor d WHERE d.Axis = 'A' AND d.Donor = Owner)
   WHEN ${ownerL("InA")} = 1 THEN COALESCE(${override}, ${viaAttr}, ${topReceiver("Owner")}, Owner)
   WHEN ${CFG("OffA")} = 1 AND ${ownerL("RA")} IS NULL THEN NULL ELSE Owner END;
 UPDATE ${U} SET ToTrait = CASE WHEN Holder IS NULL THEN NULL
-  WHEN ${ownerL("InA")} = 0 THEN Trait
+  WHEN ${ownerL("InA")} = 0 AND Holder = Owner THEN Trait
   WHEN ${holderIn} = 1 THEN CASE WHEN ${CFG("IsWhole")} = 1 AND ${CFG("Follows")} = 1 AND NOT ${copyBuilder("Holder")} THEN Trait
     ELSE ${q(dealtPrefix)} || Holder END
   ELSE COALESCE((SELECT l.Ability FROM LShufWork_L l WHERE l.LeaderType = ${U}.Holder), Trait) END;

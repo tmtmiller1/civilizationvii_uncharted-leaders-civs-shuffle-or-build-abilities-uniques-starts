@@ -1,7 +1,7 @@
 // The per-value and per-leader input groups (CONTRACTS.md section 9): one small SQL file each, and their criteria.
 import {
   DEALING, MODE, OPTION_DEFAULTS, PARAM, PERSONA, REVEAL, SEED_MAX, SEED_MIN, configKeyOf, BUILD_SLOTS, KEY,
-  listValue, A_MODE, B_MODE, T_MODE, CA_MODE, CU_MODE, MODE_CUSTOM, CC_MODE
+  listValue, A_MODE, B_MODE, T_MODE, CA_MODE, CU_MODE, MODE_CUSTOM, CC_MODE, AGE_ORDER
 } from "../../shared/lshuf-constants.js";
 import { MODDED_LEADER_TYPES, MODDED_LEADERS, VANILLA_LEADERS, KNOWN_LEADERS } from "../../shared/lshuf-known-leaders.js";
 import { KNOWN_CIVS } from "../../shared/lshuf-known-civs.js";
@@ -20,7 +20,9 @@ const VALUES = {
   CivCivics: Object.values(CC_MODE),
   Personality: Object.values(PERSONA),
   Dealing: Object.values(DEALING),
-  Reveal: Object.values(REVEAL)
+  Reveal: Object.values(REVEAL),
+  // On by default, so turning it off needs its own group.
+  KeepBuiltCiv: ["1", "0"]
 };
 
 const matches = (key, value) =>
@@ -49,6 +51,16 @@ export function inputGroups() {
         sql: `INSERT OR REPLACE INTO LShufOptions (Name, Value) VALUES (${q(name)}, ${q(value)});\n`
       });
     }
+  }
+  // The age this game's database is loaded for (the start age, then each new age): the deal plays builder civs in
+  // it, so a civ picked from another age (Test of Time) builds as a civ of this one.
+  for (const age of AGE_ORDER) {
+    out.push({
+      id: `lshuf-age-${age}`,
+      criterion: `<AgeInUse>${age}</AgeInUse>`,
+      file: `data/generated/options/age-${age}.sql`,
+      sql: `INSERT OR REPLACE INTO LShufOptions (Name, Value) VALUES ('Age', ${q(age)});\n`
+    });
   }
   const leaderGroup = (kind, leader, criterion, sql) => ({
     id: `lshuf-${kind}-${leader}`,

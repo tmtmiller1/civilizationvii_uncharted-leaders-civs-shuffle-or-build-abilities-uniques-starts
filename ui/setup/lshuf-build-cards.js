@@ -1,56 +1,37 @@
-// Card data for the Build your own leader screen (CONTRACTS section 13, SPEC 7b), shell scope. Every card is one
-// build piece id: a bullet or whole ability from LShufMapping, an attribute kind from LShufAttributeTraits, a
-// leader's AI behavior, a leader's start terrain, or a civilization's start terrain. Read from the setup-side copies
-// the shell group loads (LShufSetup_*, the mapping) and the frontend Leaders / Civilizations rows, with the game's
-// text composed in the player's language. The picks live in the hidden text parameter LShufBuildPicks.
+// Card data for the Build your own leader and civilization screens (CONTRACTS sections 13, 14, 18, 19 and 21, SPEC
+// 7b), shell scope. Every card is one build piece id: a bullet or whole ability from LShufMapping, an attribute kind
+// from LShufAttributeTraits, a leader's AI behavior, a leader's start terrain, or a civilization's ability, bonus,
+// unique, civics tree, single civic (lshuf-build-civics.js) or start terrain. Read from the setup-side copies the
+// shell group loads (LShufSetup_*, the mapping) and the frontend Leaders / Civilizations rows, with the game's text
+// composed in the player's language. The picks live in the hidden text parameter LShufBuildPicks.
 
 import {
-  A_MODE, B_MODE, BUILD, BUILD_KIND, BUILD_UNREVIEWED_BULLETS, BIAS_TABLES, GENERIC_BIASES, ONOFF, PARAM, T_MODE,
+  A_MODE, B_MODE, BUILD, BUILD_KIND, CU_MODE, BUILD_UNREVIEWED_BULLETS, BIAS_TABLES, CIV_OWN_AGE_PIECES,
+  GENERIC_BIASES, ONOFF, PARAM, T_MODE,
   biasTableOfTag, pieceId,
   splitTags, joinTags, buildKindOf
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
 import { KNOWN_LEADERS } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-known-leaders.js";
 import { joinBullets, splitBullets } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-text.js";
 import {
-  findParam, paramValue, setParam
+  findParam, paramValue, setParam, startAge
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
 import { isLocalHost } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
 import {
   attributeIcon, civBackground, civSymbol, leaderPortrait, uniqueIcon
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-art.js";
+import {
+  compose, composedOrEmpty, plainWords, query
+} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-query.js";
+import { civPieceKey } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+import {
+  UNIQUE_KIND_KEY, civCivicsText, civicCards, civicsTreeData, leadOf, slotWeight, uniqueRiders, withLine
+} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-civics.js";
+
+export { compose, civicsTreeData };
 
 export const PICKS_PARAM = "LShufBuildPicks";
 const PLAIN_RANDOM = "RANDOM";
-
-const log = (msg) => console.warn(`[lshuf-build] ${msg}`);
-
-export function compose(key, ...args) {
-  try {
-    const text = Locale.compose(key, ...args);
-    return text === undefined || text === null ? "" : String(text);
-  } catch (_) {
-    return "";
-  }
-}
-
-// Composed text, or "" when the key isn't in the text database.
-const composedOrEmpty = (key) => {
-  if (!key) return "";
-  const text = compose(key);
-  return text === key ? "" : text;
-};
-
-const plainWords = (type) => String(type || "").replace(/^(BIOME|TERRAIN|FEATURE_CLASS|RESOURCE)_/, "")
-  .toLowerCase().split("_").map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w)).join(" ");
-
-function query(sql) {
-  try {
-    return Database.query("config", sql) || [];
-  } catch (e) {
-    log(`query failed: ${e} :: ${sql.slice(0, 120)}`);
-    return [];
-  }
-}
 
 // --- the host's slot ---
 
@@ -161,88 +142,17 @@ function civItems() {
   return out;
 }
 
-// CivilizationType -> its age (LShufSetup_LegacyCivilizations).
-// The civics card text (CONTRACTS 18), in the detail the other cards have: the tree's civics, then each tradition
-// with its description, then each building, quarter, improvement and civics-only unit with its icon and description.
-// Traditions come from the shell's own Traditions table (by the civ's base trait), the unlocks' text and icons from
-// its CivilizationItems rows; LShufSetup_CivCivics says which types the tree unlocks. A name the shell can't compose
-// reads as plain words from its type.
-const CIVIC_KIND_WORD = {
-  KIND_BUILDING: "building", KIND_QUARTER: "quarter", KIND_IMPROVEMENT: "improvement", KIND_UNIT: "unit"
-};
-const sq = (text) => String(text).replace(/'/g, "''");
-const plainType = (type) => plainWords(String(type || "").replace(/^(NODE_CIVIC|TRADITION|BUILDING|QUARTER|IMPROVEMENT|UNIT)_/, ""));
-const nameOrType = (key, type) => composedOrEmpty(key) || plainType(type);
-
-// One unlock's line: "<icon> <Kind> <Name>: <description>" from its CivilizationItems row where the shell has one.
-function civicsUnlockLine(r, item) {
-  const kind = CIVIC_KIND_WORD[item ? item.Kind : r.UnlockKind] || (r.UnlockKind === "KIND_UNIT" ? "unit" : "building");
-  const name = nameOrType(item ? item.Name : r.UnlockNameKey, r.UnlockType);
-  const icon = kind === "quarter" ? "" : `[icon:${r.UnlockType}] `;
-  const text = item ? composedOrEmpty(item.Description) : "";
-  return `${icon}${compose("LOC_LSHUF_BUILD_CIVICS_UNLOCK", compose(UNIQUE_KIND_KEY[kind]), name, text)}`;
-}
-
-function civicsUnlockLines(civ, rows) {
-  const items = new Map();
-  for (const r of query(`SELECT Kind, Type, Name, Description FROM CivilizationItems WHERE CivilizationType = '${sq(civ)}'`)) {
-    if (!items.has(r.Type)) items.set(r.Type, r);
-  }
-  const lines = [];
-  const seen = new Set();
-  for (const r of rows) {
-    if (!r.UnlockType || r.UnlockKind === "KIND_TRADITION" || seen.has(r.UnlockType)) continue;
-    seen.add(r.UnlockType);
-    lines.push(civicsUnlockLine(r, items.get(r.UnlockType)));
-  }
-  return lines;
-}
-
-// The tree for the civ build screen's tree view: [{ node, name, cost, depth, prereqs: [...], unlocks: [lines] }] in
-// depth then node order, each node's unlock lines in the detail the civics card has.
-export function civicsTreeData(civ) {
-  const nodes = query("SELECT NodeType, NameKey, Cost, Depth, Prereqs FROM LShufSetup_CivicNodes "
-    + `WHERE CivilizationType = '${sq(civ)}' ORDER BY Depth, NodeType`);
-  if (!nodes.length) return [];
-  const rows = query("SELECT NodeType, NodeNameKey, UnlockType, UnlockKind, UnlockNameKey FROM LShufSetup_CivCivics "
-    + `WHERE CivilizationType = '${sq(civ)}' ORDER BY NodeType, UnlockKind, UnlockType`);
-  const traditions = new Map();
-  for (const t of query("SELECT TraditionType, Name, Description FROM Traditions")) traditions.set(t.TraditionType, t);
-  return nodes.map((n) => {
-    const own = rows.filter((r) => r.NodeType === n.NodeType && r.UnlockType);
-    const unlocks = own.filter((r) => r.UnlockKind === "KIND_TRADITION").map((r) => {
-      const t = traditions.get(r.UnlockType);
-      return compose("LOC_LSHUF_BUILD_CIVICS_TRADITION", nameOrType(t ? t.Name : r.UnlockNameKey, r.UnlockType),
-        t ? composedOrEmpty(t.Description) : "");
-    });
-    unlocks.push(...civicsUnlockLines(civ, own));
-    return {
-      node: n.NodeType, name: nameOrType(n.NameKey, n.NodeType), cost: Number(n.Cost || 0), depth: Number(n.Depth || 0),
-      prereqs: String(n.Prereqs || "").split("|").filter(Boolean), unlocks
-    };
-  });
-}
-
-function civCivicsText(civ, treeName, baseTrait) {
-  const rows = query("SELECT NodeType, NodeNameKey, UnlockType, UnlockKind, UnlockNameKey FROM LShufSetup_CivCivics "
-    + `WHERE CivilizationType = '${sq(civ)}' ORDER BY NodeType, UnlockKind, UnlockType`);
-  const civics = [...new Set(rows.map((r) => nameOrType(r.NodeNameKey, r.NodeType)).filter(Boolean))].join(", ");
-  const lines = [compose("LOC_LSHUF_BUILD_CIVICS_TREE", treeName, civics || "-")];
-  const traditions = baseTrait
-    ? query(`SELECT TraditionType, Name, Description FROM Traditions WHERE TraitType = '${sq(baseTrait)}' ORDER BY TraditionType`)
-    : [];
-  for (const t of traditions) {
-    lines.push(compose("LOC_LSHUF_BUILD_CIVICS_TRADITION", nameOrType(t.Name, t.TraditionType), composedOrEmpty(t.Description)));
-  }
-  lines.push(...civicsUnlockLines(civ, rows));
-  return joinBullets(lines);
-}
-
-// CivilizationType -> its movable bonus pieces (CONTRACTS 19), from the civilization mapping the shell loads.
+// CivilizationType -> its movable bonus pieces (CONTRACTS 19), from the civilization mapping the shell loads, and
+// the pieces that go with one of its civics or uniques (LShufCivGoesWith, CONTRACTS 31) with the card they go with.
 function civPieces() {
   const out = new Map();
-  const rows = query("SELECT PieceId, CivilizationType, Age, BulletIndex, BulletCount, Value FROM LShufCivMapping "
-    + "WHERE Kind = 'bullet' AND Movable = 1 ORDER BY CivilizationType, BulletIndex");
+  let rows = query("SELECT m.PieceId, m.CivilizationType, m.Age, m.BulletIndex, m.BulletCount, m.Value, g.GoesWithId "
+    + "FROM LShufCivMapping m LEFT JOIN LShufCivGoesWith g ON g.PieceId = m.PieceId "
+    + "WHERE m.Kind = 'bullet' AND (m.Movable = 1 OR g.GoesWithId IS NOT NULL) ORDER BY m.CivilizationType, m.BulletIndex");
+  if (!rows.length) {
+    rows = query("SELECT PieceId, CivilizationType, Age, BulletIndex, BulletCount, Value FROM LShufCivMapping "
+      + "WHERE Kind = 'bullet' AND Movable = 1 ORDER BY CivilizationType, BulletIndex");
+  }
   for (const r of rows) {
     if (!out.has(r.CivilizationType)) out.set(r.CivilizationType, []);
     out.get(r.CivilizationType).push(r);
@@ -250,6 +160,7 @@ function civPieces() {
   return out;
 }
 
+// CivilizationType -> its age (LShufSetup_LegacyCivilizations).
 function civAges() {
   const out = new Map();
   for (const r of query("SELECT CivilizationType, Age FROM LShufSetup_LegacyCivilizations")) {
@@ -391,18 +302,21 @@ function biasText(rows) {
 
 // A bullet piece's text: the generated per-bullet key first, else the bullet(s) cut from the live description.
 // Written as a bullet list, so a single bonus reads the way the whole ability does.
-function bulletPieceText(piece, liveBullets, prefix = "LOC_LSHUF_PIECE_") {
+function bulletPieceText(piece, liveBullets, key = `LOC_LSHUF_PIECE_${piece.PieceId}`) {
   const first = Number(piece.BulletIndex);
   const count = Math.max(1, Number(piece.BulletCount || 1));
-  const generated = composedOrEmpty(`${prefix}${piece.PieceId}`);
-  const parts = generated ? generated.split("[N]") : liveBullets.slice(first - 1, first - 1 + count);
+  const generated = composedOrEmpty(key);
+  // BulletList names bullets that aren't side by side ("1|3|4", Yi Sun-sin's Fleet Commander piece).
+  const list = String(piece.BulletList || "").split("|").map(Number).filter((n) => n > 0);
+  const live = list.length ? list.map((n) => liveBullets[n - 1]) : liveBullets.slice(first - 1, first - 1 + count);
+  const parts = generated ? generated.split("[N]") : live;
   return joinBullets(parts.filter(Boolean));
 }
 
 function abilityCards(ctx) {
   const cards = [];
   const mapping = query(
-    "SELECT PieceId, LeaderType, BulletIndex, BulletCount, Value, Reviewed FROM LShufMapping WHERE Kind = 'bullet' ORDER BY LeaderType, BulletIndex"
+    "SELECT PieceId, LeaderType, BulletIndex, BulletCount, BulletList, Value, Reviewed FROM LShufMapping WHERE Kind = 'bullet' ORDER BY LeaderType, BulletIndex"
   );
   const bulletsOf = new Map();
   for (const r of mapping) {
@@ -505,13 +419,6 @@ function personaAndBiasCards(ctx) {
 // The civ build screen's ability and unique cards (CONTRACTS 14): every civilization of the builder civ's age, one
 // card for its ability and one per unique. A unique's text is the game's own description; the ability's text is its
 // description as a bullet list, like a leader's.
-const UNIQUE_KIND_KEY = {
-  unit: "LOC_LSHUF_BUILD_UNIQUE_KIND_UNIT",
-  building: "LOC_LSHUF_BUILD_UNIQUE_KIND_BUILDING",
-  quarter: "LOC_LSHUF_BUILD_UNIQUE_KIND_QUARTER",
-  improvement: "LOC_LSHUF_BUILD_UNIQUE_KIND_IMPROVEMENT"
-};
-
 function civTextOf(descKey, fallback) {
   const text = composedOrEmpty(descKey);
   if (!text) return joinBullets([fallback].filter(Boolean));
@@ -520,7 +427,8 @@ function civTextOf(descKey, fallback) {
 }
 
 // One bonus card per movable piece of the civ's own age (CONTRACTS 19): "<ability name> n", the piece's text from
-// its generated key, else cut from the live description like the leader bullets.
+// its generated key (the builder's age's wording where the game scales the bonus by age), else cut from the live
+// description like the leader bullets.
 function civBulletCards(ctx, civ, base, ability) {
   const age = ctx.civAges.get(civ);
   const live = splitBullets(composedOrEmpty(ability.descKey)).bullets;
@@ -528,35 +436,97 @@ function civBulletCards(ctx, civ, base, ability) {
     .filter((p) => age == null || p.Age === age)
     .map((p) => ({
       ...base, id: p.PieceId, kind: BUILD_KIND.CivBullet, name: `${ability.name} ${Number(p.BulletIndex)}`,
-      text: bulletPieceText(p, live, "LOC_LSHUF_CIVPIECE_"), value: Number(p.Value || 1)
+      text: bulletPieceText(p, live, civPieceKey(p.PieceId, startAge() || null)), value: Number(p.Value || 1),
+      ...(p.GoesWithId ? { goesWith: String(p.GoesWithId) } : {})
     }));
 }
+
+function itemCards(ctx, civ, base, item) {
+  const name = composedOrEmpty(item.nameKey) || item.type;
+  if (item.kind === "ability") {
+    return [{ ...base, id: BUILD.civAbility(civ), kind: BUILD_KIND.CivAbility, name,
+      text: civTextOf(item.descKey, name), value: 4 },
+    ...civBulletCards(ctx, civ, base, { name, descKey: item.descKey })];
+  }
+  // The whole tree (CONTRACTS 18) and one card per civic of it (CONTRACTS 21); the Whole toggle shows one or the other.
+  if (item.kind === "civics") {
+    return [{ ...base, id: BUILD.civCivics(civ), kind: BUILD_KIND.CivCivics, name, tree: name,
+      text: civCivicsText(civ, name, item.trait), value: 3 }, ...civicCards(civ, base, name)];
+  }
+  if (!UNIQUE_KIND_KEY[item.kind]) return [];
+  // An improvement only this unit builds comes with it (CONTRACTS 23): named on the card, its text in the details.
+  const id = BUILD.civUnique(item.type);
+  const riders = uniqueRiders(civ, id);
+  const own = civTextOf(item.descKey, name);
+  // own is already a list; its bullets join the With line's list rather than nesting inside it.
+  const ownBullets = splitBullets(own).bullets;
+  const text = riders.names.length ? joinBullets([withLine(riders.names), ...ownBullets, ...riders.lines]) : own;
+  return [{ ...base, id, kind: BUILD_KIND.CivUnique, name, text, value: 2 + riders.names.length,
+    icon: uniqueIcon(item.type), uniqueKind: item.kind, kindLine: compose(UNIQUE_KIND_KEY[item.kind]),
+    withNames: riders.names, withLine: withLine(riders.names) }];
+}
+
+// The age a card's civ belongs to, for a civ of another age than the builder's (Every age): its age type and name.
+function ageNames() {
+  const out = new Map();
+  for (const r of query("SELECT AgeType, Name FROM Ages")) out.set(r.AgeType, composedOrEmpty(r.Name) || r.AgeType);
+  return out;
+}
+
+// The bonuses the game drops in an age other than their civ's own (LShufCivPieceDead), as "piece|age".
+function deadPieces() {
+  try {
+    return new Set(query("SELECT PieceId, Age FROM LShufCivPieceDead").map((r) => `${r.PieceId}|${r.Age}`));
+  } catch (_) {
+    return new Set();
+  }
+}
+
+// A card of another age's civ can be taken when it's the ability or one of its bonuses (CIV_OWN_AGE_PIECES aside,
+// and a bonus the builder's age leaves with nothing to do).
+function markAge(card, otherAge, dead, age) {
+  if (!otherAge) return card;
+  const ageOnly = (card.kind !== BUILD_KIND.CivAbility && card.kind !== BUILD_KIND.CivBullet)
+    || CIV_OWN_AGE_PIECES.includes(card.id) || dead.has(`${card.id}|${age}`);
+  return { ...card, otherAge, ageOnly };
+}
+
+// The builder's civ plays in the start age, its own or another (Test of Time).
+const builderAgeOf = (ctx, civ) => (civ ? startAge() || ctx.civAges.get(civ) : null);
 
 function civCards(ctx, builderCiv) {
   const cards = [];
   if (!builderCiv) return cards;
-  const age = ctx.civAges.get(builderCiv);
+  const age = builderAgeOf(ctx, builderCiv);
+  const names = ageNames();
+  const dead = deadPieces();
   for (const [civ, info] of ctx.civs) {
-    if (age != null && ctx.civAges.get(civ) !== age) continue;
+    const civAge = ctx.civAges.get(civ);
+    const otherAge = age != null && civAge !== age ? (names.get(civAge) || civAge || "") : null;
+    const at = cards.length;
     const base = { leader: null, civ, tags: [], from: info.name, reviewed: true, background: civBackground(civ),
       symbol: civSymbol(civ, info.icon), own: civ === builderCiv };
-    for (const item of ctx.civItems.get(civ) || []) {
-      const name = composedOrEmpty(item.nameKey) || item.type;
-      if (item.kind === "ability") {
-        cards.push({ ...base, id: BUILD.civAbility(civ), kind: BUILD_KIND.CivAbility, name,
-          text: civTextOf(item.descKey, name), value: 4 });
-        cards.push(...civBulletCards(ctx, civ, base, { name, descKey: item.descKey }));
-      } else if (item.kind === "civics") {
-        cards.push({ ...base, id: BUILD.civCivics(civ), kind: BUILD_KIND.CivCivics, name,
-          text: civCivicsText(civ, name, item.trait), value: 3 });
-      } else if (UNIQUE_KIND_KEY[item.kind]) {
-        cards.push({ ...base, id: BUILD.civUnique(item.type), kind: BUILD_KIND.CivUnique, name,
-          text: civTextOf(item.descKey, name), value: 2, icon: uniqueIcon(item.type), uniqueKind: item.kind,
-          kindLine: compose(UNIQUE_KIND_KEY[item.kind]) });
-      }
-    }
+    for (const item of ctx.civItems.get(civ) || []) cards.push(...itemCards(ctx, civ, base, item));
+    for (let i = at; i < cards.length; i++) cards[i] = markAge(cards[i], otherAge, dead, age);
   }
   return cards;
+}
+
+// The grid's kind order: on the civ screen the ability comes first, the civics (single or whole tree) sit together
+// and start terrain comes last.
+const GRID_ORDER = [BUILD_KIND.Bullet, BUILD_KIND.Whole, BUILD_KIND.Attribute, BUILD_KIND.Persona, BUILD_KIND.Bias,
+  BUILD_KIND.CivAbility, BUILD_KIND.CivBullet, BUILD_KIND.CivUnique, BUILD_KIND.CivCivic, BUILD_KIND.CivCivics,
+  BUILD_KIND.CivBias];
+
+// A civilization's start terrain can be taken from any age; another age's shows only with Every age on.
+function markCivBiasAges(ctx, cards, builderCiv) {
+  const age = builderAgeOf(ctx, builderCiv);
+  if (age == null) return;
+  const names = ageNames();
+  for (const c of cards) {
+    const civAge = c.kind === BUILD_KIND.CivBias ? ctx.civAges.get(c.civ) : age;
+    if (civAge !== age) c.otherAge = names.get(civAge) || civAge || "";
+  }
 }
 
 // Every card, in grid order: the player's own leader's cards first within each kind.
@@ -579,30 +549,54 @@ export function buildCards(builder, builderCiv = null) {
   const cards = [...abilityCards(ctx), ...attributeCards(ctx), ...personaAndBiasCards(ctx)];
   for (const c of cards) c.own = !!builder && c.leader === builder;
   cards.push(...civCards(ctx, builderCiv));
-  const kindOrder = Object.values(BUILD_KIND);
+  markCivBiasAges(ctx, cards, builderCiv);
+  markGoesWith(cards);
   // Kind by kind; within start terrain the generic cards sit together at the front; then the builder's own, then
   // by name.
-  cards.sort((a, b) => kindOrder.indexOf(a.kind) - kindOrder.indexOf(b.kind)
+  cards.sort((a, b) => GRID_ORDER.indexOf(a.kind) - GRID_ORDER.indexOf(b.kind)
     || Number(!!b.generic) - Number(!!a.generic)
     || Number(b.own) - Number(a.own) || String(a.name).localeCompare(String(b.name)));
-  return { cards, tagNames: ctx.tagNames, leaderNames: names, civNames: ctx.civs, civItems: ctx.civItems };
+  const builderAge = builderAgeOf(ctx, builderCiv);
+  return { cards, tagNames: ctx.tagNames, leaderNames: names, civNames: ctx.civs, civItems: ctx.civItems, builderAge };
+}
+
+// A bonus the game ties to a civic or a unique (CONTRACTS 31) says which one on its card; a click takes that card
+// (lshuf-build-window.js take). A civic that rides on another card (Joseon's Ihak on its quarter's lead) points at
+// that card. One whose card isn't on this screen says so and can't be taken.
+export function markGoesWith(cards) {
+  const byId = new Map(cards.map((c) => [c.id, c]));
+  for (const c of cards) {
+    if (!c.goesWith) continue;
+    const target = byId.get(c.goesWith) || byId.get(leadOf(c.goesWith));
+    if (target) c.goesWith = target.id;
+    c.goesWithName = target ? target.name : null;
+    c.kindLine = compose("LOC_LSHUF_BUILD_GOES_WITH", c.goesWithName || "");
+    const own = splitBullets(c.text).bullets;
+    c.text = joinBullets([...(own.length ? own : [c.text]), compose("LOC_LSHUF_BUILD_GOES_WITH_TIP", c.goesWithName || "")]
+      .filter(Boolean));
+    if (!target) c.blocked = "goeswith";
+  }
 }
 
 // --- slots ---
 
 // The builder's slots: what its leader gave up. ability: bullet count in the mapping (0 -> 1 whole slot);
 // attributes: its own attribute count; behavior 1; terrain 1; civAbility: the civ's own movable bonus count (0 -> 1
-// whole slot), civCivics 1 (a civ with a civics tree) and civTerrain 1 when the civ is picked by hand.
-export function slotCounts(builder, civ, cards) {
+// whole slot), civUniques: its own unique count (0 -> 1), civCivics: one slot for a whole tree, or with single civic
+// cards shown (wholeCivics false) the civ's own civic count (0 -> 1, so a civ with no tree of its own still takes
+// civics); civTerrain 1. The civ groups need a civ picked by hand.
+export function slotCounts(builder, civ, cards, wholeCivics = true) {
   const bullets = cards.filter((c) => c.kind === BUILD_KIND.Bullet && c.leader === builder).length;
-  const civBullets = cards.filter((c) => c.kind === BUILD_KIND.CivBullet && c.civ === civ).length;
+  const civBullets = cards.filter((c) => c.kind === BUILD_KIND.CivBullet && c.civ === civ && !c.goesWith).length;
   const quoted = String(builder).replace(/'/g, "''");
   const attrs = query(`SELECT count(*) AS n FROM LShufSetup_LeaderTraits WHERE LeaderType = '${quoted}'
     AND TraitType IN (SELECT TraitType FROM LShufAttributeTraits)`);
-  const ownUniques = civ
-    ? cards.filter((c) => c.kind === BUILD_KIND.CivUnique && c.civ === civ).length
-    : 0;
-  const ownCivics = civ ? cards.filter((c) => c.kind === BUILD_KIND.CivCivics && c.civ === civ).length : 0;
+  // A card that brings others along counts for each of them, so a civ's own counts stay what it had.
+  const weigh = (kind) => (civ
+    ? cards.filter((c) => c.kind === kind && c.civ === civ).reduce((n, c) => n + slotWeight(c.id), 0)
+    : 0);
+  const ownUniques = weigh(BUILD_KIND.CivUnique);
+  const ownCivics = weigh(BUILD_KIND.CivCivic);
   return {
     ability: Math.max(1, bullets),
     attributes: attrs.length ? Number(attrs[0].n) : 2,
@@ -610,10 +604,18 @@ export function slotCounts(builder, civ, cards) {
     terrain: 1,
     civAbility: civ ? Math.max(1, civBullets) : 0,
     civUniques: civ ? Math.max(1, ownUniques) : 0,
-    civCivics: Math.min(1, ownCivics),
+    civCivics: civ ? civicSlotCount(ownCivics, wholeCivics) : 0,
     civTerrain: civ ? 1 : 0
   };
 }
+
+// Whether a civilization builder keeps its own uniques next to the ones it takes (CONTRACTS 14 and 25). Under
+// Civilization uniques Split up the builder's own uniques go into the shuffle and it holds only its picks; under Off
+// entirely nobody keeps theirs; on every other setting the game keeps the civ's own and adds what it took.
+export const uniquesStayOwn = (cuMode) => cuMode !== CU_MODE.Split && cuMode !== CU_MODE.Off;
+
+// How many civics slots a builder civ has: one for a whole tree, else one per civic of its own tree (at least one).
+export const civicSlotCount = (ownCivics, wholeCivics) => (wholeCivics ? 1 : Math.max(1, ownCivics));
 
 const SLOT_OF_KIND = {
   [BUILD_KIND.Bullet]: "ability",
@@ -625,14 +627,23 @@ const SLOT_OF_KIND = {
   [BUILD_KIND.CivBullet]: "civAbility",
   [BUILD_KIND.CivUnique]: "civUniques",
   [BUILD_KIND.CivCivics]: "civCivics",
+  [BUILD_KIND.CivCivic]: "civCivics",
   [BUILD_KIND.CivBias]: "civTerrain"
 };
 export const slotOfKind = (kind) => SLOT_OF_KIND[kind];
 
-// Whole cards: a whole leader ability or a whole civilization ability fills every slot of its group.
-export const isWholeCard = (kind) => kind === BUILD_KIND.Whole || kind === BUILD_KIND.CivAbility;
+// Whole cards: a whole leader ability, a whole civilization ability or a whole civics tree fills every slot of its
+// group; the group's single cards (bonuses, civics) are the other way to fill it.
+const WHOLE_KINDS = [BUILD_KIND.Whole, BUILD_KIND.CivAbility, BUILD_KIND.CivCivics];
+export const isWholeCard = (kind) => WHOLE_KINDS.includes(kind);
 
-// Slots used by the current picks, per slot group. A whole ability fills every slot of its group.
+// The whole card the picks hold in this card's group, when the card is a single one that would take its place.
+export const wholePickInGroup = (card, picks) => (isWholeCard(card.kind)
+  ? null
+  : picks.find((id) => isWholeCard(buildKindOf(id)) && slotOfKind(buildKindOf(id)) === slotOfKind(card.kind)) || null);
+
+// Slots used by the current picks, per slot group. A whole ability fills every slot of its group; a card that brings
+// others along uses a slot for each.
 export function slotsUsed(picks, counts) {
   const used = {
     ability: 0, attributes: 0, behavior: 0, terrain: 0, civAbility: 0, civUniques: 0, civCivics: 0, civTerrain: 0
@@ -640,18 +651,23 @@ export function slotsUsed(picks, counts) {
   for (const id of picks) {
     const kind = buildKindOf(id);
     if (isWholeCard(kind)) used[slotOfKind(kind)] = counts[slotOfKind(kind)];
-    else used[slotOfKind(kind)] += 1;
+    else used[slotOfKind(kind)] += slotWeight(id);
   }
   return used;
 }
 
-// Whether a card can go into a slot now, and why not: "taken", "full", "unreviewed" or null.
+// Whether a card can go into a slot now, and why not: "taken", "full", "bundle" (free slots, but fewer than the card
+// and what comes with it need), "unreviewed" or null.
 // The card an id belongs to: the id's own card, or for an attribute's second copy the attribute's card.
 export function cardFor(byId, id) {
   if (byId.has(id)) return byId.get(id);
   if (buildKindOf(id) === BUILD_KIND.Attribute) return byId.get(BUILD.attribute(BUILD.attributeTrait(id))) || null;
   return null;
 }
+
+// The picks that belong to the other page: ids no card on this page answers for. An attribute's second copy
+// (`ATTR2_`) answers to its card, so a removal or Clear on this page takes it out too.
+export const otherPagePicks = (ids, byId) => ids.filter((id) => !cardFor(byId, id));
 
 // An attribute can be taken twice (the second copy is BUILD.attribute(trait, 2)); the ids a card's picks use.
 export function attributeIdsOf(card, picks) {
@@ -670,8 +686,12 @@ export function nextIdFor(card, picks) {
 export function cantTake(card, picks, counts) {
   if (nextIdFor(card, picks) == null) return "taken";
   if (!card.reviewed) return "unreviewed";
+  if (card.ageOnly) return "otherage";
+  if (card.blocked) return card.blocked;
   const used = slotsUsed(picks, counts);
   const group = slotOfKind(card.kind);
   if (isWholeCard(card.kind)) return used[group] > 0 ? "full" : null;
-  return used[group] >= counts[group] ? "full" : null;
+  if (used[group] >= counts[group]) return "full";
+  // A card that brings others along needs a slot for each (CONTRACTS 23).
+  return used[group] + slotWeight(card.id) > counts[group] ? "bundle" : null;
 }

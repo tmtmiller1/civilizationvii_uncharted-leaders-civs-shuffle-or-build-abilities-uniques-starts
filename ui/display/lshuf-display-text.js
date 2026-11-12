@@ -100,6 +100,15 @@ export function assembleDescription(pieces, lookups) {
   return lines.join(LINE_BREAK);
 }
 
+// A readable name from the type when the game's name isn't loaded (the setup screens hold no terrain or resource
+// text): TERRAIN_MOUNTAIN -> Mountain, FEATURE_CLASS_VEGETATED -> Vegetated, RESOURCE_HORSES -> Horses.
+export function plainTypeName(type) {
+  const words = String(type || "").replace(/^(TERRAIN|BIOME|FEATURE_CLASS|FEATURE|RESOURCE|RIVER)_/, "")
+    .toLowerCase().split("_").filter(Boolean);
+  const text = words.join(" ");
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : String(type || "");
+}
+
 function targetLabel(row, lookups) {
   const word = BIAS_WORDS[row.TableName];
   if (word) return composed(lookups, word);
@@ -107,7 +116,7 @@ function targetLabel(row, lookups) {
   const own = lookups.targetName ? lookups.targetName(row.TableName, row.TargetType) : null;
   const key = own || nameKeyOfType(row.TargetType);
   const name = composed(lookups, key);
-  const label = missing(name, key) ? row.TargetType : name;
+  const label = missing(name, key) ? plainTypeName(row.TargetType) : name;
   return row.TableName === "StartBiasResources" ? `[icon:${row.TargetType}] ${label}` : label;
 }
 

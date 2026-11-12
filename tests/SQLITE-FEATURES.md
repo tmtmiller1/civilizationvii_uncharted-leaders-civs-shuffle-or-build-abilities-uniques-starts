@@ -50,25 +50,25 @@ The table below was written on 2026-11-06 from 513 SQL files, workstream B's fir
 | --- | --- | --- |
 | Common table expressions (WITH ... AS) | 3.8.3 | `data/text-generated/lshuf-civ-piece-text.sql`, `data/text-generated/lshuf-piece-text.sql` |
 | WITH RECURSIVE | 3.8.3 | `data/text-generated/lshuf-civ-piece-text.sql`, `data/text-generated/lshuf-piece-text.sql` |
-| INSERT OR IGNORE / OR REPLACE | 3.0.0 | `data/frontend/parameters.sql`, `data/generated/build/build-LEADER_ADA_LOVELACE.sql`, `data/generated/build/build-LEADER_ALEXANDER.sql` and 3886 more |
-| REPLACE INTO | 3.0.0 | `data/generated/options/opt-Abilities-LSHUF_A_NORMAL.sql`, `data/generated/options/opt-Abilities-LSHUF_A_SPLIT.sql`, `data/generated/options/opt-Abilities-LSHUF_A_WHOLE.sql` and 41 more |
-| INSERT ... SELECT | 3.0.0 | `data/frontend/parameters.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_CULTURAL.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_ECONOMIC.sql` and 3359 more |
-| Multi-row VALUES | 3.7.11 | `data/frontend/parameters.sql`, `data/generated/known-leaders.sql`, `data/mapping/lshuf-civ-mapping.sql` and 4 more |
+| INSERT OR IGNORE / OR REPLACE | 3.0.0 | `data/frontend/parameters.sql`, `data/generated/build/build-LEADER_ADA_LOVELACE.sql`, `data/generated/build/build-LEADER_ALEXANDER.sql` and 4510 more |
+| REPLACE INTO | 3.0.0 | `data/generated/options/age-AGE_ANTIQUITY.sql`, `data/generated/options/age-AGE_EXPLORATION.sql`, `data/generated/options/age-AGE_MODERN.sql` and 48 more |
+| INSERT ... SELECT | 3.0.0 | `data/frontend/civ-items-copy.sql`, `data/frontend/parameters.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_CULTURAL.sql` and 3976 more |
+| Multi-row VALUES | 3.7.11 | `data/frontend/parameters.sql`, `data/generated/deal/deal-6-apply.sql`, `data/generated/known-leaders.sql` and 7 more |
 | Correlated subqueries (COUNT(*) rank) | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql` and 3 more |
-| EXISTS / NOT EXISTS | 3.0.0 | `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_CULTURAL.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_ECONOMIC.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_EXPANSIONIST.sql` and 3356 more |
+| EXISTS / NOT EXISTS | 3.0.0 | `data/frontend/civ-items-copy.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_CULTURAL.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_ECONOMIC.sql` and 3973 more |
 | UNION / UNION ALL / INTERSECT / EXCEPT | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-4-biases.sql`, `data/generated/deal/deal-6-apply.sql` and 2 more |
 | CASE expressions | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql` and 6 more |
 | group_concat() | 3.5.4 | `data/text-generated/lshuf-civ-piece-text.sql`, `data/text-generated/lshuf-piece-text.sql` |
 | instr() | 3.7.15 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-4-biases.sql` and 2 more |
 | substr / replace / trim / upper / lower / length | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-4-biases.sql` and 4 more |
-| LIKE / GLOB (with ESCAPE) | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-5b-civ.sql`, `data/generated/deal/deal-6-apply.sql` |
+| LIKE / GLOB (with ESCAPE) | 3.0.0 | `data/frontend/civ-items-copy.sql`, `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-5b-civ.sql` and 1 more |
 | % (modulo) and integer arithmetic | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql` and 2 more |
 | Multi-argument min() / max() | 3.0.0 | `data/generated/deal/deal-4-biases.sql` |
 | coalesce / ifnull / nullif | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql` and 4 more |
 | CREATE INDEX | 3.0.0 | `data/generated/deal/deal-2-ability.sql` |
 | CREATE VIEW | 3.0.0 | `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql`, `data/generated/deal/deal-5b-civ.sql` |
 | DROP TABLE / VIEW / INDEX / TRIGGER | 3.0.0 | `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql`, `data/generated/deal/deal-5b-civ.sql` |
-| LIMIT / OFFSET | 3.0.0 | `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql`, `data/generated/deal/deal-4-biases.sql` and 2 more |
+| LIMIT / OFFSET | 3.0.0 | `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql`, `data/generated/deal/deal-4-biases.sql` and 3 more |
 <!-- @FOUND-END -->
 
 ## Lab checks owed

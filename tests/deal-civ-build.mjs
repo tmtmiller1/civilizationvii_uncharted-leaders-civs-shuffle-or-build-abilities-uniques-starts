@@ -1,13 +1,14 @@
 // Civilization builds (CONTRACTS 14): a builder's civ swaps abilities with the civ whose ability card it took and
 // takes the uniques it ticked (unit families and improvements; buildings and quarters move with the civics tree,
-// CONTRACTS 18), within its own age, the same in JS and SQL, and the apply moves the rows and the tree unlocks. On
-// the base fixture: Amina with Rome building from Greece (Antiquity); Spain's cards are Exploration and don't apply.
+// CONTRACTS 18), the same in JS and SQL, and the apply moves the rows and the tree unlocks. Abilities and their
+// bonuses come from any age (Every age); uniques and civics only from the builder's own. On the base fixture: Amina
+// with Rome building from Greece (Antiquity) and Spain (Exploration).
 import assert from "node:assert/strict";
 import test from "node:test";
 
 import { assertSameResult, fixtureForeignKeys, newForeignKeyRows, rows } from "./_harness.mjs";
 import { label, runBoth } from "./_deal.mjs";
-import { BUILD, BUILD_WHY, MODE } from "../shared/lshuf-constants.js";
+import { BUILD, BUILD_WHY, MODE, STATUS } from "../shared/lshuf-constants.js";
 
 const AMINA = "LEADER_AMINA";
 const ROME = "CIVILIZATION_ROME";
@@ -27,7 +28,11 @@ async function both(spec, hooks = []) {
   const r = await runBoth({ spec, hooks });
   try {
     assertSameResult(r.js, r.sql, `${label("base", spec)}: computeDeal vs SQL`);
-    return { res: r.objects("sql"), run: r.run, close: () => r.run.close() };
+    // Attribute tag rows follow every ability row (CONTRACTS 30); tests/deal-civ-tags.mjs covers them, so the
+    // counts here leave them out.
+    const res = r.objects("sql");
+    res.civPieces = res.civPieces.filter((p) => p.Kind !== "tags");
+    return { res, run: r.run, close: () => r.run.close() };
   } catch (e) {
     r.run.close();
     throw e;
@@ -56,7 +61,7 @@ test("an ability swap and a unique move, the same in JS and SQL and applied, wit
         [BUILD.civUnique(unit), GREECE, "unique", 1]
       ], `${Mode}: Rome's rows`);
       assert.deepEqual(civRows(r.res, GREECE), [[BUILD.civAbility(ROME), ROME, "ability", 0]], `${Mode}: Greece gets Rome's ability`);
-      assert.deepEqual(civRows(r.res, SPAIN), [], `${Mode}: Spain is another age`);
+      assert.deepEqual(civRows(r.res, SPAIN), [], `${Mode}: only the first ability card swaps`);
       const db = r.run.db;
       const romeTraits = traitsOf(db, ROME);
       assert.ok(romeTraits.includes("TRAIT_GREECE_ABILITY") && !romeTraits.includes("TRAIT_ROME_ABILITY"), `${Mode}: Rome holds Greece's ability`);
@@ -118,6 +123,55 @@ test("two builders: the second can't swap with the first's civ, and a card the f
   }
 });
 
+test("Leader shuffle on Base game: civ cards still build, the leader cards on the same builder don't", async () => {
+  const probe = await runBoth({ spec: { seed: 3, options: { Mode: MODE.None } } });
+  const { unit } = sources(probe.run.pre);
+  probe.run.close();
+  const hand = [BUILD.civAbility(GREECE), BUILD.civUnique(unit), `${AMINA}__WHOLE`];
+  const r = await both({ seed: 3, options: { Mode: MODE.None }, builder: { leader: AMINA, civ: ROME, pieces: hand } });
+  try {
+    assert.equal(meta(r.res, "CivBuilder"), "ok");
+    assert.equal(civRows(r.res, ROME).length, 2, "Rome takes Greece's ability and the unit");
+    assert.ok(r.res.leaders.every((l) => l.Status === STATUS.AsShipped), "no leader is dealt");
+  } finally {
+    r.close();
+  }
+  const leaderOnly = await both({ seed: 3, options: { Mode: MODE.None }, builder: { leader: AMINA, civ: ROME, pieces: [`${AMINA}__WHOLE`] } });
+  try {
+    assert.equal(meta(leaderOnly.res, "Builder"), BUILD_WHY.ModeOff);
+    assert.deepEqual(civRows(leaderOnly.res, ROME), []);
+  } finally {
+    leaderOnly.close();
+  }
+});
+
+test("Human players keep their own leader: the kept leader's civ cards still build, unless Keep my built civilization is off", async () => {
+  const probe = await runBoth({ spec: { seed: 3, options: { Mode: MODE.SplitMatched } } });
+  const { unit } = sources(probe.run.pre);
+  probe.run.close();
+  const hand = [BUILD.civAbility(GREECE), BUILD.civUnique(unit), `${AMINA}__WHOLE`];
+  const spec = (keep) => ({ seed: 3, options: { Mode: MODE.SplitMatched, KeepMine: "1", KeepBuiltCiv: keep },
+    kept: [AMINA], builder: { leader: AMINA, civ: ROME, pieces: hand } });
+  const on = await both(spec("1"));
+  try {
+    assert.equal(meta(on.res, "Builder"), "ok");
+    assert.equal(civRows(on.res, ROME).length, 2, "Rome takes Greece's ability and the unit");
+    const amina = on.res.leaders.find((l) => l.LeaderType === AMINA);
+    assert.equal(amina.Status, STATUS.AsShipped, "Amina keeps her own leader");
+    const aminaPieces = on.res.pieces.filter((p) => p.LeaderType === AMINA);
+    assert.deepEqual(aminaPieces.map((p) => p.FromLeaderType), aminaPieces.map(() => AMINA), "her ability is her own");
+  } finally {
+    on.close();
+  }
+  const off = await both(spec("0"));
+  try {
+    assert.equal(meta(off.res, "Builder"), BUILD_WHY.NotInGame);
+    assert.deepEqual(civRows(off.res, ROME), [], "Rome plays as normal");
+  } finally {
+    off.close();
+  }
+});
+
 test("no civ, or a civ the data doesn't know: the civ build says so and writes nothing", async () => {
   const builder = { leader: AMINA, civ: null, pieces: [BUILD.civAbility(GREECE)] };
   const spec = { seed: 7, options: { Mode: MODE.SplitMatched }, builder };
@@ -132,7 +186,7 @@ test("no civ, or a civ the data doesn't know: the civ build says so and writes n
 
 // --- CONTRACTS 16: the shuffle over the civs no builder built
 
-import { CA_MODE, CU_MODE } from "../shared/lshuf-constants.js";
+import { CA_MODE, CIV_OWN_AGE_PIECES, CU_MODE } from "../shared/lshuf-constants.js";
 
 const ageOf = (pre) => {
   const map = new Map();
@@ -149,7 +203,7 @@ test("civ shuffle: JS equals SQL for every value of the two rows, over two prese
   const values = [
     [CA_MODE.Swapped, CU_MODE.Normal], [CA_MODE.Swapped, CU_MODE.Paired], [CA_MODE.Normal, CU_MODE.Shuffled],
     [CA_MODE.Swapped, CU_MODE.Shuffled], [CA_MODE.Off, CU_MODE.Off], [CA_MODE.Normal, CU_MODE.Paired],
-    [CA_MODE.Normal, CU_MODE.Normal]
+    [CA_MODE.Normal, CU_MODE.Normal], [CA_MODE.Split, CU_MODE.Split], [CA_MODE.Swapped, CU_MODE.Split]
   ];
   for (const Mode of [MODE.SwapAbilities, MODE.SplitMatched, MODE.None]) {
     for (const [CivAbilities, CivUniques] of values) {
@@ -272,8 +326,12 @@ test("civ shuffle Off for everyone: the flags are set and the apply clears abili
     assert.deepEqual(abilityHolders, [GREECE, ROME], "only the swapped pair keeps an ability");
     const unitTraits = rows(db, "SELECT UnitType, TraitType FROM Units WHERE TraitType LIKE 'TRAIT\\_%' ESCAPE '\\' "
       + "AND TraitType NOT LIKE 'TRAIT_LSHUF_%' AND TraitType IN (SELECT TraitType FROM CivilizationTraits)");
-    assert.deepEqual(unitTraits, [{ UnitType: "UNIT_WATONATHI", TraitType: "TRAIT_MISSISSIPPIAN" }],
-      "no civ-held unique unit is left on a civ trait, except the one that belongs to its civics (CONTRACTS 18)");
+    // The civics families stay: the Watonathi (CONTRACTS 18) and the great people a quarter earns (CONTRACTS 23 R1).
+    const civicUnits = new Set(rows(db, "SELECT UnitType FROM LShufWork_CivicUnit").map((x) => x.UnitType));
+    assert.ok(unitTraits.some((u) => u.UnitType === "UNIT_WATONATHI"), "the Watonathi stays with Mississippi's civics");
+    assert.ok(unitTraits.some((u) => u.UnitType === "UNIT_LOGIOS"), "the Logios stays with Greece's civics");
+    assert.deepEqual(unitTraits.filter((u) => !civicUnits.has(u.UnitType)), [],
+      "no civ-held unique unit is left on a civ trait, except the ones that belong to its civics");
     assert.equal(rows(db, "SELECT TraitType FROM Units WHERE UnitType = ?", unit)[0].TraitType, `TRAIT_LSHUF_CIV_${ROME}`, "the taken unit stays Rome's");
     assert.ok(rows(db, "SELECT COUNT(*) AS n FROM Units WHERE TraitType = 'TRAIT_LSHUF_NONE'")[0].n > 0, "the rest went to the trait nobody holds");
     const fk = newForeignKeyRows(db, fixtureForeignKeys("base"));
@@ -283,24 +341,25 @@ test("civ shuffle Off for everyone: the flags are set and the apply clears abili
   }
 });
 
-test("unit families: Greece's cards are its base units, and taking Logios moves every UNIT_LOGIOS_ row", async () => {
+test("unit families: Greece's cards are its base units, and taking the Hoplite moves every UNIT_HOPLITE_ row", async () => {
   const probe = await runBoth({ spec: { seed: 34, options: { Mode: MODE.SwapAbilities } } });
   const pre = probe.run.pre;
   const greek = rows(pre, "SELECT UnitType FROM Units WHERE TraitType = 'TRAIT_GREECE' ORDER BY 1").map((r) => r.UnitType);
   probe.run.close();
   const { KNOWN_CIV_ITEMS } = await import("../shared/lshuf-known-civ-items.js");
   const cards = KNOWN_CIV_ITEMS.filter((i) => i.civ === GREECE && i.kind === "unit").map((i) => i.type).sort();
-  assert.deepEqual(cards, ["UNIT_HOPLITE", "UNIT_LOGIOS"], "one card per family");
-  assert.ok(greek.some((u) => u.startsWith("UNIT_LOGIOS_")), "the fixture has named Logios units");
-  const builder = { leader: AMINA, civ: ROME, pieces: [BUILD.civUnique("UNIT_LOGIOS")] };
+  // The Logios is a great person only a city with the Acropolis earns, so it goes with the civics (CONTRACTS 23 R1).
+  assert.deepEqual(cards, ["UNIT_HOPLITE"], "one card per family, the Logios with the civics");
+  assert.ok(greek.some((u) => u.startsWith("UNIT_HOPLITE_")), "the fixture has more than one Hoplite");
+  const builder = { leader: AMINA, civ: ROME, pieces: [BUILD.civUnique("UNIT_HOPLITE"), BUILD.civUnique("UNIT_LOGIOS")] };
   const r = await both({ seed: 34, options: { Mode: MODE.SwapAbilities }, builder });
   try {
-    assert.deepEqual(civRows(r.res, ROME), [[BUILD.civUnique("UNIT_LOGIOS"), GREECE, "unique", 1]]);
+    assert.deepEqual(civRows(r.res, ROME), [[BUILD.civUnique("UNIT_HOPLITE"), GREECE, "unique", 1]], "the Logios pick does nothing");
     const own = `TRAIT_LSHUF_CIV_${ROME}`;
     const moved = rows(r.run.db, "SELECT UnitType FROM Units WHERE TraitType = ? ORDER BY 1", own).map((x) => x.UnitType);
-    assert.deepEqual(moved, greek.filter((u) => u === "UNIT_LOGIOS" || u.startsWith("UNIT_LOGIOS_")), "the whole family moved");
-    const hoplites = rows(r.run.db, "SELECT DISTINCT TraitType FROM Units WHERE UnitType LIKE 'UNIT_HOPLITE%'").map((x) => x.TraitType);
-    assert.deepEqual(hoplites, ["TRAIT_GREECE"], "the other family stayed");
+    assert.deepEqual(moved, greek.filter((u) => u === "UNIT_HOPLITE" || u.startsWith("UNIT_HOPLITE_")), "the whole family moved");
+    const logios = rows(r.run.db, "SELECT DISTINCT TraitType FROM Units WHERE UnitType LIKE 'UNIT_LOGIOS%'").map((x) => x.TraitType);
+    assert.deepEqual(logios, ["TRAIT_GREECE"], "the Logios stayed with Greece's civics");
   } finally {
     r.close();
   }
@@ -321,13 +380,17 @@ const traitOf = (db, table, col, type) => rows(db, `SELECT TraitType FROM ${tabl
 test("civics cards: one per civ with a civics tree in every age, and nothing the civ's own civics unlock is a card", async () => {
   const { KNOWN_CIV_ITEMS } = await import("../shared/lshuf-known-civ-items.js");
   const kinds = new Set(KNOWN_CIV_ITEMS.map((i) => i.kind));
-  assert.deepEqual([...kinds].sort(), ["ability", "civics", "improvement", "unit"], "the kinds on the cards");
+  // Nepal's Highland Power Station, the one main-tree improvement, rides with the Sherpa (CONTRACTS 23 R3).
+  assert.deepEqual([...kinds].sort(), ["ability", "civics", "unit"], "the kinds on the cards");
   const civics = KNOWN_CIV_ITEMS.filter((i) => i.kind === "civics");
   assert.deepEqual(civics.filter((i) => i.civ === ROME).map((i) => i.type), ["TREE_CIVICS_AQ_ROME"]);
   assert.deepEqual(civics.filter((i) => i.civ === SPAIN).map((i) => i.type), ["TREE_CIVICS_EX_SPAIN"], "Exploration civs have theirs");
   assert.equal(civics.length, 50, `every civ has a civics card (${civics.length})`);
   const types = new Set(KNOWN_CIV_ITEMS.map((i) => i.type));
-  for (const t of ["UNIT_WATONATHI", "BUILDING_BASILICA", "QUARTER_FORUM"]) assert.ok(!types.has(t), `${t} rides with the civics`);
+  for (const t of ["UNIT_WATONATHI", "BUILDING_BASILICA", "QUARTER_FORUM", "UNIT_LOGIOS", "UNIT_CONQUISTADOR"]) {
+    assert.ok(!types.has(t), `${t} rides with the civics`);
+  }
+  assert.ok(!types.has("IMPROVEMENT_HIGHLAND_POWER_STATION"), "the Highland Power Station rides with the Sherpa");
   assert.ok(types.has("UNIT_VAISHYA"), "a unit the main tree also unlocks is still a card");
 });
 
@@ -439,8 +502,8 @@ test("civics Off for everyone: no civ holds a base trait (tree, traditions, unlo
     assert.deepEqual(held, ["TRAIT_GREECE", "TRAIT_ROME"], "only the swapped pair's base traits are held");
     assert.ok(traitsOf(db, GREECE).includes("TRAIT_ROME") && traitsOf(db, ROME).includes("TRAIT_GREECE"), "the swap still stands");
     assert.ok(!traitsOf(db, EGYPT).includes("TRAIT_EGYPT"), "Egypt lost its civics");
-    const egyptUnits = rows(db, "SELECT DISTINCT TraitType FROM Units WHERE TraitType = 'TRAIT_EGYPT'");
-    assert.deepEqual(egyptUnits, [], "Egypt's units went onto its own trait first");
+    const egyptUnits = rows(db, "SELECT UnitType FROM Units WHERE TraitType = 'TRAIT_EGYPT' AND UnitType NOT IN (SELECT UnitType FROM LShufWork_CivicUnit)");
+    assert.deepEqual(egyptUnits, [], "Egypt's units went onto its own trait first, all but the Tjaty, which goes with the civics");
     assert.ok(traitsOf(db, EGYPT).includes(`TRAIT_LSHUF_CIV_${EGYPT}`), "which Egypt holds");
     const fk = newForeignKeyRows(db, fixtureForeignKeys("base"));
     assert.deepEqual([fk.fresh, fk.newErrors], [[], []], "no new foreign-key rows");
@@ -460,7 +523,11 @@ const pieceRows = (res) => res.civPieces.filter((p) => p.Kind === "bullet" || p.
 function piecesInPlay(run) {
   const civs = civsWithAbility(run.pre);
   const ages = ageOf(run.pre);
-  return rows(run.db, "SELECT PieceId, CivilizationType, Age FROM LShufCivMapping WHERE Kind = 'bullet' AND Movable = 1 ORDER BY 1")
+  return rows(run.db, "SELECT PieceId, CivilizationType, Age FROM LShufCivMapping WHERE Kind = 'bullet' AND Movable = 1 "
+    // A bound piece goes with its unique and isn't dealt (CONTRACTS 29); nor is one the game's age drops
+    // (LShufCivPieceDead: another age's civ here, Test of Time).
+    + "AND PieceId NOT IN (SELECT PieceId FROM LShufBoundPieces) "
+    + "AND PieceId NOT IN (SELECT PieceId FROM LShufCivPieceDead WHERE Age = (SELECT Value FROM LShufOptions WHERE Name = 'Age')) ORDER BY 1")
     .filter((m) => civs.includes(m.CivilizationType) && ages.get(m.CivilizationType) === m.Age);
 }
 
@@ -530,8 +597,9 @@ test("civ Split builder: bonus cards give exactly those pieces and no remainder;
     assert.equal(meta(b.res, "CivBuilder"), "ok");
     assert.deepEqual(civRows(b.res, ROME), [
       [GREECE_B(1), GREECE, "bullet", 0],
-      [GREECE_B(3), GREECE, "bullet", 1]
-    ], "Rome holds exactly the two movable picks; the home-only bonus can't be taken");
+      [GREECE_B(3), GREECE, "bullet", 1],
+      [GREECE_B(4), GREECE, "bullet", 2]
+    ], "Rome holds exactly its three picks, Greece's wonder bonus among them (CONTRACTS 31)");
     const inPlay = piecesInPlay(b.run);
     const bullets = b.res.civPieces.filter((p) => p.Kind === "bullet");
     assert.deepEqual(bullets.map((p) => p.PieceId).sort(), inPlay.map((p) => p.PieceId), "still every piece held once");
@@ -572,17 +640,230 @@ test("civ Split apply: held pieces' modifiers copied onto TRAIT_LSHUF_CIVA_<C>, 
     assert.ok(!traitsOf(db, ROME).includes("TRAIT_ROME_ABILITY") && traitsOf(db, ROME).includes(CIVA(ROME)), "Rome's ability row is replaced");
     assert.deepEqual(rows(db, "SELECT Name, Description FROM Traits WHERE TraitType = ?", CIVA(ROME)),
       [{ Name: "LOC_TRAIT_ROME_ABILITY_NAME", Description: "LOC_LSHUF_TRAIT_CIV_DEALT_DESCRIPTION" }]);
-    // A receiver: its remainder brings the unlisted and home-only modifiers along with the dealt pieces.
+    // A receiver: its remainder brings the unlisted modifiers along with the dealt pieces. Greece's wonder bonus is
+    // dealt like any other (CONTRACTS 31): whoever holds it carries the named-wonder modifier, never the game's own.
     const greekHeld = civRows(r.res, GREECE);
     assert.equal(greekHeld[greekHeld.length - 1][2], "remainder");
     const onGreece = rows(db, "SELECT ModifierId FROM TraitModifiers WHERE TraitType = ? ORDER BY 1", CIVA(GREECE)).map((m) => m.ModifierId);
-    const homeOnly = rows(db, "SELECT ModifierId FROM LShufCivMappingModifiers WHERE PieceId = ?", GREECE_B(4)).map((m) => m.ModifierId);
-    for (const m of homeOnly) assert.ok(onGreece.includes(`LSHUF_${GREECE}__${m}`), `${m}: Greece keeps its home-only bonus`);
+    const wonderHolder = rows(db, "SELECT CivilizationType c FROM LShufResultCivPieces WHERE PieceId = ?", GREECE_B(4)).map((x) => x.c);
+    assert.equal(wonderHolder.length, 1, "Greece's wonder bonus is dealt to one civ");
+    const holderTraits = traitsOf(db, wonderHolder[0]);
+    const withWonder = rows(db, "SELECT TraitType FROM TraitModifiers WHERE ModifierId = ?", `LSHUF_WONDER__${GREECE}`).map((x) => x.TraitType);
+    assert.ok(withWonder.some((t) => holderTraits.includes(t)), `${wonderHolder[0]} carries Greece's named-wonder bonus`);
+    assert.ok(!onGreece.some((m) => m.endsWith("__MOD_CIV_WONDER_PRODUCTION_GREECE")), "nobody keeps the game's own copy");
     for (const m of greekMods) assert.ok(!onGreece.includes(`LSHUF_${GREECE}__${m}`), `${m}: a dealt-away bonus isn't in the remainder`);
-    // A requirement that asked for the ability trait asks for the new one, so the home-only bonus still fires.
+    // A requirement that asked for the ability trait asks for the new one.
     const asks = rows(db, "SELECT DISTINCT Value FROM RequirementArguments WHERE Name = 'TraitType' AND Value IN (?, ?)",
       "TRAIT_GREECE_ABILITY", CIVA(GREECE)).map((x) => x.Value);
     assert.ok(!asks.includes("TRAIT_GREECE_ABILITY"), "no requirement still asks for the old ability trait");
+    const fk = newForeignKeyRows(db, fixtureForeignKeys("base"));
+    assert.deepEqual([fk.fresh, fk.newErrors], [[], []], "no new foreign-key rows");
+  } finally {
+    r.close();
+  }
+});
+
+test("Every age: an ability swaps with another age's civ, and its uniques stay put", async () => {
+  const pieces = [BUILD.civAbility(SPAIN), BUILD.civUnique("UNIT_CONQUISTADOR")];
+  const builder = { leader: AMINA, civ: ROME, pieces };
+  const r = await both({ seed: 3, options: { Mode: MODE.SwapAbilities }, builder });
+  try {
+    assert.equal(meta(r.res, "CivBuilder"), "ok");
+    assert.deepEqual(civRows(r.res, ROME), [[BUILD.civAbility(SPAIN), SPAIN, "ability", 0]], "Spain's ability only");
+    assert.deepEqual(civRows(r.res, SPAIN), [[BUILD.civAbility(ROME), ROME, "ability", 0]], "Spain gets Rome's");
+    const romeTraits = traitsOf(r.run.db, ROME);
+    assert.ok(romeTraits.includes("TRAIT_SPAIN_ABILITY") && !romeTraits.includes("TRAIT_ROME_ABILITY"), "Rome holds Spain's ability");
+    const fk = newForeignKeyRows(r.run.db, fixtureForeignKeys("base"));
+    assert.deepEqual([fk.fresh, fk.newErrors], [[], []], "no new foreign-key rows");
+  } finally {
+    r.close();
+  }
+});
+
+// Spain's second bonus (cheaper town conversion) isn't on Spain's ability in Antiquity, so it's out of an Antiquity
+// game (LShufCivPieceDead); tests/deal-civ-age-variants.mjs covers what the first one carries there.
+test("Every age, Split: another age's bonuses can be taken, the own-age ones and the ones this age drops can't", async () => {
+  const split = { Mode: MODE.SwapAbilities, CivAbilities: CA_MODE.Split };
+  const spainB = (n) => BUILD.civBullet(SPAIN, n);
+  const liberte = "CIVILIZATION_FRENCH_EMPIRE__B01";
+  assert.ok(CIV_OWN_AGE_PIECES.includes(liberte));
+  const builder = { leader: AMINA, civ: ROME, pieces: [spainB(1), spainB(2), liberte] };
+  const r = await both({ seed: 44, options: split, builder });
+  try {
+    assert.equal(meta(r.res, "CivBuilder"), "ok");
+    assert.deepEqual(civRows(r.res, ROME), [
+      [spainB(1), SPAIN, "bullet", 0]
+    ], "Rome holds Spain's coastal bonus, and not the town conversion (dropped in Antiquity) or Liberté");
+    assert.ok(!r.res.civPieces.some((p) => p.PieceId === liberte && p.CivilizationType === ROME), "Liberté stays");
+  } finally {
+    r.close();
+  }
+});
+
+test("Iceland's Missionaries bonus does nothing in Antiquity: neither the player nor an AI builder takes it there", async () => {
+  const split = { Mode: MODE.SwapAbilities, CivAbilities: CA_MODE.Split };
+  const missionaries = "CIVILIZATION_ICELAND__B04";
+  const spain1 = BUILD.civBullet(SPAIN, 1);
+  const r = await both({
+    seed: 44,
+    options: split,
+    builders: [
+      { slot: 1, leader: AMINA, civ: ROME, pieces: [missionaries] },
+      { slot: 2, leader: "LEADER_XERXES", civ: EGYPT, pieces: [missionaries, spain1] }
+    ]
+  });
+  try {
+    const held = (civ) => r.res.civPieces.filter((p) => p.CivilizationType === civ).map((p) => p.PieceId);
+    assert.ok(!held(ROME).includes(missionaries), "the player's Rome can't take a bonus Antiquity drops");
+    const ai = await both({
+      seed: 44,
+      options: split,
+      builders: [{ slot: 2, leader: "LEADER_XERXES", civ: EGYPT, pieces: [missionaries, spain1] }]
+    });
+    try {
+      const egypt = ai.res.civPieces.filter((p) => p.CivilizationType === EGYPT).map((p) => p.PieceId);
+      assert.ok(!egypt.includes(missionaries), `the AI's Egypt skips it: ${egypt}`);
+      assert.ok(egypt.includes(spain1), "the AI's Egypt still takes Spain's coast bonus");
+    } finally {
+      ai.close();
+    }
+  } finally {
+    r.close();
+  }
+});
+
+test("Test of Time: Spain started in Antiquity builds as an Antiquity civ and takes Greece's unique", async () => {
+  const probe = await runBoth({ spec: { seed: 3, options: { Mode: MODE.None } } });
+  const { unit } = sources(probe.run.pre);
+  probe.run.close();
+  const builder = { leader: AMINA, civ: SPAIN, pieces: [BUILD.civUnique(unit)] };
+  const tot = await both({ seed: 3, options: { Mode: MODE.None }, builder, age: "AGE_ANTIQUITY" });
+  try {
+    assert.deepEqual(civRows(tot.res, SPAIN), [[BUILD.civUnique(unit), GREECE, "unique", 1]], "Spain takes the unit");
+  } finally {
+    tot.close();
+  }
+  const unknown = await both({ seed: 3, options: { Mode: MODE.None }, builder, age: "" });
+  try {
+    assert.deepEqual(civRows(unknown.res, SPAIN), [], "with no age known Spain stays an Exploration civ");
+  } finally {
+    unknown.close();
+  }
+});
+
+// --- CONTRACTS 21: civics in pieces
+
+
+const AGOGE = "NODE_CIVIC_AQ_GREECE_AGOGE";
+const nodeTree = (db, node) => rows(db, "SELECT ProgressionTree FROM ProgressionTreeNodes WHERE ProgressionTreeNodeType = ?", node)[0].ProgressionTree;
+
+test("a civic card: Agoge moves into Rome's tree with Ekklesia, the whole Acropolis and the Logios, the same in JS and SQL", async () => {
+  const builder = { leader: AMINA, civ: ROME, pieces: [BUILD.civCivic(AGOGE)] };
+  const r = await both({ seed: 36, options: { Mode: MODE.SwapAbilities }, builder });
+  try {
+    assert.equal(meta(r.res, "CivBuilder"), "ok");
+    const EKKLESIA = "NODE_CIVIC_AQ_GREECE_EKKLESIA";
+    assert.deepEqual(civRows(r.res, ROME), [[BUILD.civCivic(AGOGE), GREECE, "civic", 1], [BUILD.civCivic(EKKLESIA), GREECE, "civic", 1]],
+      "the Acropolis's other civic comes along");
+    const db = r.run.db;
+    assert.equal(nodeTree(db, AGOGE), "TREE_CIVICS_AQ_ROME", "the node sits in Rome's tree");
+    assert.equal(nodeTree(db, EKKLESIA), "TREE_CIVICS_AQ_ROME", "and its partner");
+    assert.deepEqual(rows(db, "SELECT Node FROM ProgressionTreePrereqs WHERE PrereqNode = ?", AGOGE), [], "Symmachia no longer needs it");
+    const own = `TRAIT_LSHUF_CIV_${ROME}`;
+    assert.deepEqual(traitOf(db, "Buildings", "ConstructibleType", "BUILDING_PARTHENON"), [own], "the Parthenon is Rome's");
+    assert.deepEqual(traitOf(db, "Buildings", "ConstructibleType", "BUILDING_ODEON"), [own], "and the Odeon");
+    assert.deepEqual(traitOf(db, "UniqueQuarters", "UniqueQuarterType", "QUARTER_ACROPOLIS"), [own], "so the Acropolis is Rome's");
+    assert.deepEqual(rows(db, "SELECT DISTINCT TraitType FROM Units WHERE UnitType LIKE 'UNIT_LOGIOS%'").map((x) => x.TraitType), [own],
+      "the Logios, earned only with an Acropolis, went with it");
+    assert.ok(traitsOf(db, ROME).includes(`TRAIT_LSHUF_CIV_${ROME}`), "Rome holds its own trait");
+    const fk = newForeignKeyRows(db, fixtureForeignKeys("base"));
+    assert.deepEqual([fk.fresh, fk.newErrors], [[], []], "no new foreign-key rows");
+  } finally {
+    r.close();
+  }
+});
+
+test("civics Split up: JS equals SQL, every civic of the age is held once and each civ gets back as many as it had", async () => {
+  for (const seed of [7, 44]) {
+    const r = await both({ seed, options: { Mode: MODE.SwapAbilities, CivCivics: CC_MODE.Split } });
+    try {
+      const all = r.res.civPieces.filter((p) => p.Kind === "civic");
+      const riders = new Map(rows(r.run.db, "SELECT Rider, Lead FROM LShufWork_CivRider WHERE Kind = 'civic'").map((x) => [x.Rider, x.Lead]));
+      assert.ok(riders.size >= 8, `seed ${seed}: the quarter civics ride together (${riders.size})`);
+      for (const p of all.filter((x) => riders.has(x.PieceId))) {
+        const lead = all.find((x) => x.PieceId === riders.get(p.PieceId));
+        assert.equal(lead && lead.CivilizationType, p.CivilizationType, `seed ${seed}: ${p.PieceId} is held with ${riders.get(p.PieceId)}`);
+      }
+      // Conservation counts bundles: a lead and its riders are one card.
+      const civic = all.filter((p) => !riders.has(p.PieceId));
+      assert.ok(civic.length > 30, `seed ${seed}: ${civic.length} civics dealt`);
+      const ids = civic.map((p) => p.PieceId);
+      assert.equal(new Set(ids).size, ids.length, "each civic held once");
+      const pre = r.run.pre;
+      const nodes = rows(pre, `SELECT n.ProgressionTreeNodeType node, n.ProgressionTree tree FROM ProgressionTreeNodes n
+        WHERE n.ProgressionTree LIKE 'TREE\\_CIVICS\\_AQ\\_%' ESCAPE '\\' AND n.ProgressionTree NOT IN ('TREE_CIVICS_AQ_MAIN', 'TREE_CIVICS_AQ_TEST_OF_TIME')`);
+      assert.equal(all.length, nodes.length, `seed ${seed}: every civic in the pool is dealt`);
+      const gave = new Map();
+      const got = new Map();
+      for (const p of civic) {
+        gave.set(p.FromCivilization, (gave.get(p.FromCivilization) || 0) + 1);
+        got.set(p.CivilizationType, (got.get(p.CivilizationType) || 0) + 1);
+      }
+      for (const [civ, n] of gave) assert.equal(got.get(civ), n, `seed ${seed}: ${civ} gets back ${n}`);
+      const db = r.run.db;
+      for (const p of all) {
+        const tree = nodeTree(db, p.PieceId.slice("CIVNODE_".length));
+        const own = rows(db, "SELECT Tree FROM LShufWork_CivFinalTree WHERE Civ = ?", p.CivilizationType)[0];
+        assert.equal(tree, own.Tree, `${p.PieceId} sits in ${p.CivilizationType}'s tree`);
+      }
+      const cross = rows(db, `SELECT count(*) n FROM ProgressionTreePrereqs p JOIN ProgressionTreeNodes a ON a.ProgressionTreeNodeType = p.Node
+        JOIN ProgressionTreeNodes b ON b.ProgressionTreeNodeType = p.PrereqNode WHERE a.ProgressionTree <> b.ProgressionTree`)[0].n;
+      assert.equal(cross, 0, "no prerequisite crosses trees");
+    } finally {
+      r.close();
+    }
+  }
+});
+
+test("uniques Split up: JS equals SQL, every unique held once, each civ gets back as many as it had, a builder's take stays", async () => {
+  const probe = await runBoth({ spec: { seed: 9, options: { Mode: MODE.None } } });
+  const { unit } = sources(probe.run.pre);
+  probe.run.close();
+  const builder = { leader: AMINA, civ: ROME, pieces: [BUILD.civUnique(unit)] };
+  const r = await both({ seed: 9, options: { Mode: MODE.None, CivUniques: CU_MODE.Split }, builder });
+  try {
+    const uniq = r.res.civPieces.filter((p) => p.Kind === "unique");
+    const ids = uniq.map((p) => p.PieceId);
+    assert.equal(new Set(ids).size, ids.length, "each unique held once");
+    assert.ok(uniq.find((p) => p.PieceId === BUILD.civUnique(unit) && p.CivilizationType === ROME), "Rome keeps its take");
+    assert.equal(uniq.filter((p) => p.CivilizationType === ROME).length, 1, "a taker gets nothing from the pool");
+    const gave = new Map();
+    const got = new Map();
+    for (const p of uniq) {
+      if (p.CivilizationType === ROME) continue;
+      gave.set(p.FromCivilization, (gave.get(p.FromCivilization) || 0) + 1);
+      got.set(p.CivilizationType, (got.get(p.CivilizationType) || 0) + 1);
+    }
+    for (const [civ, n] of got) assert.ok(n >= 1, `${civ} got ${n}`);
+    assert.equal(traitOf(r.run.db, "Units", "UnitType", unit)[0], `TRAIT_LSHUF_CIV_${ROME}`, "the taken unit moved");
+  } finally {
+    r.close();
+  }
+});
+
+test("Test of Time: America started in Antiquity takes Agoge into the age's Test of Time tree, gated on its own trait", async () => {
+  const AMERICA = "CIVILIZATION_AMERICA";
+  const builder = { leader: AMINA, civ: AMERICA, pieces: [BUILD.civCivic(AGOGE)] };
+  const r = await both({ seed: 36, options: { Mode: MODE.None }, builder, age: "AGE_ANTIQUITY" });
+  try {
+    assert.deepEqual(civRows(r.res, AMERICA), [[BUILD.civCivic(AGOGE), GREECE, "civic", 1],
+      [BUILD.civCivic("NODE_CIVIC_AQ_GREECE_EKKLESIA"), GREECE, "civic", 1]]);
+    const db = r.run.db;
+    assert.equal(nodeTree(db, AGOGE), "TREE_CIVICS_AQ_TEST_OF_TIME");
+    const own = `TRAIT_LSHUF_CIV_${AMERICA}`;
+    assert.deepEqual(rows(db, "SELECT RequiredTraitType t FROM ProgressionTreeNodeTraits WHERE ProgressionTreeNodeType = ?", AGOGE).map((x) => x.t), [own]);
+    assert.ok(traitsOf(db, AMERICA).includes(own), "America holds its own trait");
+    assert.deepEqual(traitOf(db, "Buildings", "ConstructibleType", "BUILDING_PARTHENON"), [own], "the Parthenon is America's");
     const fk = newForeignKeyRows(db, fixtureForeignKeys("base"));
     assert.deepEqual([fk.fresh, fk.newErrors], [[], []], "no new foreign-key rows");
   } finally {

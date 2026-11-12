@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Workshop / identity emblem for Re-dealable Leader Abilities, Attributes, and Start Biases. The Tower-mods family
+     look (dark ground, gold frame, parchment art, serif wordmark) and the shared hex tile of Canals, Dams, National
+     Parks and Partisans. Motif: three cards dealt in a fan under a night sky, one for each part the mod shuffles: a
+     crown for leaders, a banner for civilizations, a mountain for start terrain. A gold arc over the fan is the
+     shuffle. Built to PNG by scripts/build-preview.sh. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#243042"/>
+      <stop offset="100%" stop-color="#121821"/>
+    </linearGradient>
+    <linearGradient id="parchment" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7eed1"/>
+      <stop offset="100%" stop-color="#e7d4a3"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1b3a50"/>
+      <stop offset="100%" stop-color="#2f5d7a"/>
+    </linearGradient>
+    <linearGradient id="table" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e7d4a3"/>
+      <stop offset="100%" stop-color="#c9a878"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e7d4a3" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#e7d4a3" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="hexclip">
+      <polygon points="812,430 662,689.8 362,689.8 212,430 362,170.2 662,170.2"/>
+    </clipPath>
+    <!-- One card, centred on its origin -->
+    <g id="card">
+      <rect x="-82" y="-118" width="164" height="236" rx="16" fill="url(#parchment)" stroke="#c9a24c" stroke-width="6"/>
+      <rect x="-66" y="-102" width="132" height="204" rx="9" fill="none" stroke="#c9a24c" stroke-width="2.5"
+            opacity="0.75"/>
+    </g>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <rect x="26" y="26" width="972" height="972" rx="30" fill="none" stroke="#c9a24c" stroke-width="4" opacity="0.5"/>
+
+  <!-- Light over the tile -->
+  <circle cx="512" cy="430" r="340" fill="url(#glow)"/>
+
+  <g clip-path="url(#hexclip)">
+    <!-- Night sky and a few stars -->
+    <rect x="200" y="150" width="624" height="560" fill="url(#sky)"/>
+    <g fill="#f7eed1">
+      <circle cx="300" cy="300" r="2.5" opacity="0.8"/>
+      <circle cx="704" cy="296" r="3" opacity="0.8"/>
+      <circle cx="262" cy="420" r="2" opacity="0.6"/>
+      <circle cx="756" cy="410" r="2" opacity="0.6"/>
+      <circle cx="420" cy="196" r="2" opacity="0.7"/>
+      <circle cx="610" cy="200" r="2.5" opacity="0.7"/>
+    </g>
+    <!-- The table the cards are dealt onto -->
+    <path d="M200,610 C340,588 684,588 824,610 L824,710 L200,710 Z" fill="url(#table)"/>
+    <path d="M200,610 C340,588 684,588 824,610" fill="none" stroke="#c9a24c" stroke-width="4"/>
+
+    <!-- The shuffle: an arc over the fan, an arrowhead at each end -->
+    <path d="M318,356 A214,214 0 0 1 706,356" fill="none" stroke="#c9a24c" stroke-width="9" stroke-linecap="round"/>
+    <path d="M690,338 L716,374 L728,330 Z" fill="#c9a24c" stroke="#c9a24c" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M334,338 L308,374 L296,330 Z" fill="#c9a24c" stroke="#c9a24c" stroke-width="4" stroke-linejoin="round"/>
+
+    <!-- Shadows of the fan on the table -->
+    <ellipse cx="512" cy="618" rx="190" ry="14" fill="#7a5a3a" opacity="0.3"/>
+
+    <!-- Left card: start terrain, a mountain -->
+    <g transform="rotate(-25 512 820) translate(512 476) scale(0.9)">
+      <use href="#card"/>
+      <g transform="translate(0 -4) scale(0.84)">
+      <path d="M-58,52 L-16,-40 L8,6 L24,-18 L58,52 Z" fill="#2f5d7a" stroke="#1b3a50" stroke-width="4"
+            stroke-linejoin="round"/>
+      <path d="M-16,-40 L-29,-12 L-19,-17 L-12,-8 L-4,-16 Z" fill="#f7eed1" stroke="#1b3a50" stroke-width="2.5"
+            stroke-linejoin="round"/>
+      <path d="M-62,58 L62,58" stroke="#7a5a3a" stroke-width="5" stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <!-- Right card: civilizations, a banner -->
+    <g transform="rotate(25 512 820) translate(512 476) scale(0.9)">
+      <use href="#card"/>
+      <g transform="translate(-7 2) scale(0.84)">
+      <path d="M-34,62 L-34,-62" stroke="#7a5a3a" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="-34" cy="-66" r="7" fill="#c9a24c"/>
+      <path d="M-30,-56 C-4,-64 18,-46 48,-54 L36,-24 L50,4 C20,12 -2,-6 -30,2 Z"
+            fill="#A8201A" stroke="#7a1712" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M-20,-38 C0,-42 14,-32 34,-36" stroke="#FFF3E3" stroke-width="3" fill="none" opacity="0.5"
+            stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <!-- Middle card, on top: leaders, a crown -->
+    <g transform="translate(512 450)">
+      <use href="#card"/>
+      <g transform="translate(0 -2) scale(0.9)">
+      <path d="M-52,30 L-56,-24 L-26,4 L0,-44 L26,4 L56,-24 L52,30 Z" fill="#c9a24c" stroke="#7a5a3a"
+            stroke-width="4" stroke-linejoin="round"/>
+      <rect x="-54" y="30" width="108" height="18" rx="4" fill="#c9a24c" stroke="#7a5a3a" stroke-width="4"/>
+      <circle cx="-56" cy="-28" r="7" fill="#f7eed1" stroke="#7a5a3a" stroke-width="3"/>
+      <circle cx="0" cy="-49" r="8" fill="#f7eed1" stroke="#7a5a3a" stroke-width="3"/>
+      <circle cx="56" cy="-28" r="7" fill="#f7eed1" stroke="#7a5a3a" stroke-width="3"/>
+      <circle cx="0" cy="39" r="5" fill="#A8201A"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- The tile's edge, over the art -->
+  <polygon points="812,430 662,689.8 362,689.8 212,430 362,170.2 662,170.2"
+           fill="none" stroke="#c9a24c" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- Wordmark, on two lines -->
+  <text x="512" y="788" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif" font-size="80"
+        font-weight="bold" fill="#e7d4a3" letter-spacing="3">RE-DEALABLE</text>
+  <text x="512" y="874" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif" font-size="80"
+        font-weight="bold" fill="#e7d4a3" letter-spacing="3">LEADERS</text>
+  <!-- Tagline -->
+  <text x="512" y="936" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif" font-size="38"
+        fill="#c9a24c" opacity="0.92">Shuffle leaders and civilizations</text>
+</svg>

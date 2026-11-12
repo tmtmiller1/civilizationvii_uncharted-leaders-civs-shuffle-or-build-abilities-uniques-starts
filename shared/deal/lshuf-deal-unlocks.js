@@ -47,26 +47,42 @@ function holderTrait(ctx, axes, ability, holder) {
   return ctx.byType.get(holder).ability;
 }
 
+const takenFromAbsent = (ctx, ability, owner) => (ctx.f.isWhole
+  ? ability.wholeHolder[owner] != null
+  : ability.largestReceiver[owner] != null);
+
+// An absent leader's ability a builder took (CONTRACTS 24): its unlocks go where its pieces went; one pinned to a
+// piece nobody took stays with the absent leader, so nobody gets it.
+function absentRow(ctx, axes, ability, u, owner) {
+  const override = ctx.input.unlockPiece[`${u.node}|${u.target}`];
+  let holder = ability.wholeHolder[owner];
+  if (!ctx.f.isWhole) holder = override ? ability.receiverOf[override] : ability.largestReceiver[owner];
+  if (holder == null) return { ToLeaderType: owner, ToTraitType: u.trait };
+  return { ToLeaderType: holder, ToTraitType: holderTrait(ctx, axes, ability, holder) || u.trait };
+}
+
+function unlockRow(ctx, { axes, ability, attrs }, owner, u) {
+  const row = { ProgressionTreeNodeType: u.node, TargetType: u.target, FromTraitType: u.trait };
+  if (!axes.A.dealtSet.has(owner) && takenFromAbsent(ctx, ability, owner)) {
+    return { ...row, ...absentRow(ctx, axes, ability, u, owner) };
+  }
+  if (axes.A.dealtSet.has(owner)) {
+    const holder = ctx.f.isWhole ? ability.wholeHolder[owner] : splitHolder(ctx, { axes, ability, attrs }, u, owner);
+    // An ability nobody holds (a whole-mode builder's own, CONTRACTS 13) takes its legend nodes with it.
+    row.ToLeaderType = holder == null ? null : holder;
+    row.ToTraitType = holder == null ? null : holderTrait(ctx, axes, ability, holder) || u.trait;
+  } else if (isOffFor(axes.A, owner)) {
+    row.ToLeaderType = null;
+    row.ToTraitType = null;
+  } else {
+    row.ToLeaderType = owner;
+    row.ToTraitType = u.trait;
+  }
+  return row;
+}
+
 export function dealUnlocks(ctx, axes, ability, attrs) {
   const owners = {};
   for (const l of ctx.input.leaders) if (l.ability && !(l.ability in owners)) owners[l.ability] = l.type;
-  const rows = [];
-  for (const u of ctx.input.unlocks) {
-    const owner = owners[u.trait];
-    const row = { ProgressionTreeNodeType: u.node, TargetType: u.target, FromTraitType: u.trait };
-    if (axes.A.dealtSet.has(owner)) {
-      const holder = ctx.f.isWhole ? ability.wholeHolder[owner] : splitHolder(ctx, { axes, ability, attrs }, u, owner);
-      // An ability nobody holds (a whole-mode builder's own, CONTRACTS 13) takes its legend nodes with it.
-      row.ToLeaderType = holder == null ? null : holder;
-      row.ToTraitType = holder == null ? null : holderTrait(ctx, axes, ability, holder) || u.trait;
-    } else if (isOffFor(axes.A, owner)) {
-      row.ToLeaderType = null;
-      row.ToTraitType = null;
-    } else {
-      row.ToLeaderType = owner;
-      row.ToTraitType = u.trait;
-    }
-    rows.push(row);
-  }
-  return rows;
+  return ctx.input.unlocks.map((u) => unlockRow(ctx, { axes, ability, attrs }, owners[u.trait], u));
 }

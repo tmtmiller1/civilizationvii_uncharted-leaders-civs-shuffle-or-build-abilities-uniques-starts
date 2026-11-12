@@ -64,8 +64,7 @@ INSERT OR IGNORE INTO Modifiers (ModifierId, ModifierType, NewOnly, OwnerRequire
   SELECT 'LSHUF_' || c.Receiver || '__' || m.ModifierId, m.ModifierType, m.NewOnly, m.OwnerRequirementSetId, m.OwnerStackLimit, m.Permanent, m.RunOnce,
     m.SubjectRequirementSetId, m.SubjectStackLimit FROM LShufWork_Copy c JOIN Modifiers m ON m.ModifierId = c.ModifierId;
 INSERT OR IGNORE INTO ModifierArguments (ModifierId, Name, Extra, SecondExtra, Type, Value)
-  SELECT 'LSHUF_' || c.Receiver || '__' || a.ModifierId, a.Name, a.Extra, a.SecondExtra, a.Type,
-    CASE WHEN a.Name = 'Tooltip' AND (SELECT l.AbilityName FROM LShufWork_L l WHERE l.LeaderType = c.Receiver) IS NOT NULL THEN (SELECT l.AbilityName FROM LShufWork_L l WHERE l.LeaderType = c.Receiver) ELSE a.Value END
+  SELECT 'LSHUF_' || c.Receiver || '__' || a.ModifierId, a.Name, a.Extra, a.SecondExtra, a.Type, a.Value
   FROM LShufWork_Copy c JOIN ModifierArguments a ON a.ModifierId = c.ModifierId
   WHERE 'LSHUF_' || c.Receiver || '__' || a.ModifierId IN (SELECT ModifierId FROM Modifiers);
 INSERT OR IGNORE INTO ModifierStrings (Context, ModifierId, Text)
@@ -126,6 +125,32 @@ UPDATE ProgressionTreeNodeUnlocks SET RequiredTraitType = (SELECT r.ToTraitType 
     AND EXISTS (SELECT 1 FROM LShufResultUnlocks r WHERE r.ProgressionTreeNodeType = ProgressionTreeNodeUnlocks.ProgressionTreeNodeType
     AND r.TargetType = ProgressionTreeNodeUnlocks.TargetType AND r.FromTraitType = ProgressionTreeNodeUnlocks.RequiredTraitType AND r.ToTraitType IS NOT NULL
       AND r.ToTraitType <> r.FromTraitType AND r.ToTraitType IN (SELECT TraitType FROM Traits));
+
+CREATE TABLE IF NOT EXISTS LShufWork_UnitTrait (Owner TEXT, TraitType TEXT, ToLeader TEXT, PRIMARY KEY (Owner, TraitType));
+DELETE FROM LShufWork_UnitTrait;
+INSERT OR IGNORE INTO LShufWork_UnitTrait (Owner, TraitType, ToLeader)
+  SELECT l.LeaderType, u.TraitType, r.ToLeaderType FROM LShufResultUnlocks r
+  JOIN LShufWork_L l ON l.Ability = r.FromTraitType
+  JOIN Units u ON u.UnitType = r.TargetType
+  JOIN LeaderTraits lt ON lt.LeaderType = l.LeaderType AND lt.TraitType = u.TraitType
+  WHERE u.TraitType <> l.Ability AND (r.ToLeaderType IS NULL OR r.ToLeaderType <> l.LeaderType);
+DELETE FROM LeaderTraits WHERE EXISTS (SELECT 1 FROM LShufWork_UnitTrait w
+  WHERE w.Owner = LeaderTraits.LeaderType AND w.TraitType = LeaderTraits.TraitType);
+INSERT OR IGNORE INTO LeaderTraits (LeaderType, TraitType) SELECT ToLeader, TraitType FROM LShufWork_UnitTrait
+  WHERE ToLeader IN (SELECT LeaderType FROM Leaders) AND TraitType IN (SELECT TraitType FROM Traits);
+
+INSERT OR IGNORE INTO Types (Type, Kind) SELECT 'TRAIT_LSHUF_IBN_WILDCARD', 'KIND_TRAIT' WHERE EXISTS (SELECT 1 FROM LShufResultUnlocks r WHERE r.FromTraitType = 'TRAIT_LEADER_IBN_BATTUTA_ABILITY' AND r.ProgressionTreeNodeType = 'NODE_ATTRIBUTE_EXPANSIONIST_LEGEND_IBN_BATTUTA_L2' AND (r.ToLeaderType IS NULL OR r.ToLeaderType <> 'LEADER_IBN_BATTUTA'))
+  AND EXISTS (SELECT 1 FROM RequirementSetRequirements WHERE RequirementId = 'REQ_STORY_LEADER_IBN_BATTUTA' AND RequirementSetId IN ('REQSET_ATTRIBUTE_79A_NARRATIVE', 'REQSET_ATTRIBUTE_79A_NARRATIVE_REQUISITE'));
+INSERT OR IGNORE INTO Traits (TraitType, InternalOnly) SELECT 'TRAIT_LSHUF_IBN_WILDCARD', 1 WHERE 'TRAIT_LSHUF_IBN_WILDCARD' IN (SELECT Type FROM Types);
+INSERT OR IGNORE INTO Requirements (RequirementId, RequirementType)
+  SELECT 'REQ_LSHUF_IBN_WILDCARD', 'REQUIREMENT_PLAYER_HAS_CIVILIZATION_OR_LEADER_TRAIT' WHERE 'TRAIT_LSHUF_IBN_WILDCARD' IN (SELECT TraitType FROM Traits);
+INSERT OR IGNORE INTO RequirementArguments (RequirementId, Name, Value)
+  SELECT 'REQ_LSHUF_IBN_WILDCARD', 'TraitType', 'TRAIT_LSHUF_IBN_WILDCARD' WHERE 'REQ_LSHUF_IBN_WILDCARD' IN (SELECT RequirementId FROM Requirements);
+UPDATE RequirementSetRequirements SET RequirementId = 'REQ_LSHUF_IBN_WILDCARD'
+  WHERE RequirementId = 'REQ_STORY_LEADER_IBN_BATTUTA' AND RequirementSetId IN ('REQSET_ATTRIBUTE_79A_NARRATIVE', 'REQSET_ATTRIBUTE_79A_NARRATIVE_REQUISITE')
+    AND 'REQ_LSHUF_IBN_WILDCARD' IN (SELECT RequirementId FROM Requirements);
+INSERT OR IGNORE INTO LeaderTraits (LeaderType, TraitType) SELECT (SELECT r.ToLeaderType FROM LShufResultUnlocks r WHERE r.FromTraitType = 'TRAIT_LEADER_IBN_BATTUTA_ABILITY' AND r.ProgressionTreeNodeType = 'NODE_ATTRIBUTE_EXPANSIONIST_LEGEND_IBN_BATTUTA_L2' LIMIT 1), 'TRAIT_LSHUF_IBN_WILDCARD'
+  WHERE EXISTS (SELECT 1 FROM LShufResultUnlocks r WHERE r.FromTraitType = 'TRAIT_LEADER_IBN_BATTUTA_ABILITY' AND r.ProgressionTreeNodeType = 'NODE_ATTRIBUTE_EXPANSIONIST_LEGEND_IBN_BATTUTA_L2' AND (r.ToLeaderType IS NULL OR r.ToLeaderType <> 'LEADER_IBN_BATTUTA')) AND (SELECT r.ToLeaderType FROM LShufResultUnlocks r WHERE r.FromTraitType = 'TRAIT_LEADER_IBN_BATTUTA_ABILITY' AND r.ProgressionTreeNodeType = 'NODE_ATTRIBUTE_EXPANSIONIST_LEGEND_IBN_BATTUTA_L2' LIMIT 1) IN (SELECT LeaderType FROM Leaders) AND 'TRAIT_LSHUF_IBN_WILDCARD' IN (SELECT TraitType FROM Traits);
 
 DELETE FROM StartBiasBiomes WHERE LeaderType IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'B'
     UNION SELECT LeaderType FROM LShufWork_L WHERE (SELECT OffB FROM LShufWork_Cfg) = 1 AND RB IS NULL);
@@ -220,11 +245,11 @@ UPDATE CivilizationTraits SET TraitType = (SELECT w.NewTrait FROM LShufWork_CivT
   WHERE EXISTS (SELECT 1 FROM LShufWork_CivTraitSwap w WHERE w.Civ = CivilizationTraits.CivilizationType
     AND w.OldTrait = CivilizationTraits.TraitType AND w.NewTrait IN (SELECT TraitType FROM Traits));
 INSERT OR IGNORE INTO Types (Type, Kind) SELECT DISTINCT 'TRAIT_LSHUF_CIV_' || CivilizationType, 'KIND_TRAIT' FROM LShufResultCivPieces
-  WHERE Kind IN ('unique', 'civics') AND CivilizationType IN (SELECT CivilizationType FROM Civilizations);
+  WHERE Kind IN ('unique', 'civics', 'civic') AND CivilizationType IN (SELECT CivilizationType FROM Civilizations);
 INSERT OR IGNORE INTO Traits (TraitType, InternalOnly) SELECT DISTINCT 'TRAIT_LSHUF_CIV_' || CivilizationType, 1 FROM LShufResultCivPieces
-  WHERE Kind IN ('unique', 'civics') AND 'TRAIT_LSHUF_CIV_' || CivilizationType IN (SELECT Type FROM Types);
+  WHERE Kind IN ('unique', 'civics', 'civic') AND 'TRAIT_LSHUF_CIV_' || CivilizationType IN (SELECT Type FROM Types);
 INSERT OR IGNORE INTO CivilizationTraits (CivilizationType, TraitType) SELECT DISTINCT CivilizationType, 'TRAIT_LSHUF_CIV_' || CivilizationType
-  FROM LShufResultCivPieces WHERE Kind IN ('unique', 'civics') AND CivilizationType IN (SELECT CivilizationType FROM Civilizations)
+  FROM LShufResultCivPieces WHERE Kind IN ('unique', 'civics', 'civic') AND CivilizationType IN (SELECT CivilizationType FROM Civilizations)
     AND 'TRAIT_LSHUF_CIV_' || CivilizationType IN (SELECT TraitType FROM Traits);
 UPDATE Units SET TraitType = (SELECT 'TRAIT_LSHUF_CIV_' || r.CivilizationType FROM LShufResultCivPieces r WHERE r.Kind = 'unique'
     AND (r.PieceId = 'CIVUNQ_' || Units.UnitType OR Units.UnitType LIKE substr(r.PieceId, 8) || '\_%' ESCAPE '\'))
@@ -289,6 +314,79 @@ UPDATE CivilizationTraits SET CivilizationType = (SELECT r.CivilizationType FROM
 DELETE FROM CivilizationTraits WHERE (SELECT CC FROM LShufWork_Cfg) = 'LSHUF_OFF' AND TraitType IN (SELECT d.Base FROM LShufWork_CivInfo d WHERE d.Civ IN (SELECT d.Civ FROM LShufWork_CivInfo d WHERE d.Civ IN (SELECT FromCivilization FROM LShufResultCivPieces WHERE Kind = 'civics')
     OR ((SELECT CC FROM LShufWork_Cfg) = 'LSHUF_OFF' AND d.Tree IS NOT NULL)))
   AND TraitType NOT IN (SELECT d.Base FROM LShufWork_CivInfo d WHERE d.Civ IN (SELECT FromCivilization FROM LShufResultCivPieces WHERE Kind = 'civics'));
+-- Civics in pieces (CONTRACTS 21): a moved civic goes into its new civ's tree as the tree stands after the whole
+-- swaps; a civ with no tree of its own (another age's civ, which holds TRAIT_ANACHRONISTIC_CIV) gets it in the age's
+-- Test of Time tree, gated on the civ's own trait. Prerequisites that would cross trees go. What the civic unlocks
+-- (buildings, improvements, units) goes onto the new civ's own trait, as a taken unique does.
+CREATE TABLE IF NOT EXISTS LShufWork_CivFinalTree (Civ TEXT PRIMARY KEY, Tree TEXT);
+DELETE FROM LShufWork_CivFinalTree;
+INSERT OR IGNORE INTO LShufWork_CivFinalTree (Civ, Tree) SELECT i.Civ, COALESCE(
+    (SELECT d.Tree FROM LShufResultCivPieces r JOIN LShufWork_CivInfo d ON d.Civ = r.FromCivilization
+      WHERE r.Kind = 'civics' AND r.CivilizationType = i.Civ),
+    i.Tree,
+    CASE WHEN EXISTS (SELECT 1 FROM CivilizationTraits ct WHERE ct.CivilizationType = i.Civ AND ct.TraitType = 'TRAIT_ANACHRONISTIC_CIV')
+      THEN (SELECT MIN(ProgressionTreeType) FROM ProgressionTrees WHERE ProgressionTreeType LIKE 'TREE\_CIVICS\_%\_TEST\_OF\_TIME' ESCAPE '\') END)
+  FROM LShufWork_CivInfo i;
+CREATE TABLE IF NOT EXISTS LShufWork_CivMoved (Node TEXT PRIMARY KEY, Civ TEXT, Tree TEXT, OwnTrait TEXT);
+DELETE FROM LShufWork_CivMoved;
+INSERT OR IGNORE INTO LShufWork_CivMoved (Node, Civ, Tree, OwnTrait)
+  SELECT substr(r.PieceId, 9), r.CivilizationType, f.Tree, 'TRAIT_LSHUF_CIV_' || r.CivilizationType FROM LShufResultCivPieces r
+  JOIN LShufWork_CivFinalTree f ON f.Civ = r.CivilizationType
+  WHERE r.Kind = 'civic' AND f.Tree IN (SELECT ProgressionTreeType FROM ProgressionTrees)
+    AND substr(r.PieceId, 9) IN (SELECT ProgressionTreeNodeType FROM ProgressionTreeNodes);
+UPDATE ProgressionTreeNodes SET ProgressionTree = (SELECT m.Tree FROM LShufWork_CivMoved m WHERE m.Node = ProgressionTreeNodes.ProgressionTreeNodeType)
+  WHERE ProgressionTreeNodeType IN (SELECT Node FROM LShufWork_CivMoved);
+DELETE FROM ProgressionTreePrereqs WHERE (Node IN (SELECT Node FROM LShufWork_CivMoved) OR PrereqNode IN (SELECT Node FROM LShufWork_CivMoved))
+  AND (SELECT a.ProgressionTree FROM ProgressionTreeNodes a WHERE a.ProgressionTreeNodeType = ProgressionTreePrereqs.Node)
+    <> (SELECT b.ProgressionTree FROM ProgressionTreeNodes b WHERE b.ProgressionTreeNodeType = ProgressionTreePrereqs.PrereqNode);
+INSERT OR IGNORE INTO ProgressionTreeNodeTraits (ProgressionTreeNodeType, RequiredTraitType)
+  SELECT m.Node, m.OwnTrait FROM LShufWork_CivMoved m JOIN LShufWork_CivInfo i ON i.Civ = m.Civ
+  WHERE i.Tree IS NULL AND m.OwnTrait IN (SELECT TraitType FROM Traits);
+UPDATE ProgressionTreeNodeUnlocks SET RequiredTraitType = (SELECT m.OwnTrait FROM LShufWork_CivMoved m WHERE m.Node = ProgressionTreeNodeUnlocks.ProgressionTreeNodeType)
+  WHERE ProgressionTreeNodeType IN (SELECT Node FROM LShufWork_CivMoved) AND RequiredTraitType IN (SELECT Base FROM LShufWork_CivInfo)
+    AND (SELECT m.OwnTrait FROM LShufWork_CivMoved m WHERE m.Node = ProgressionTreeNodeUnlocks.ProgressionTreeNodeType) IN (SELECT TraitType FROM Traits);
+UPDATE Buildings SET TraitType = (SELECT MIN(m.OwnTrait) FROM LShufWork_CivMoved m JOIN ProgressionTreeNodeUnlocks u ON u.ProgressionTreeNodeType = m.Node
+    WHERE u.TargetType = Buildings.ConstructibleType)
+  WHERE TraitType IN (SELECT Base FROM LShufWork_CivInfo) AND ConstructibleType IN (SELECT u.TargetType FROM ProgressionTreeNodeUnlocks u
+    JOIN LShufWork_CivMoved m ON m.Node = u.ProgressionTreeNodeType WHERE m.OwnTrait IN (SELECT TraitType FROM Traits));
+UPDATE Improvements SET TraitType = (SELECT MIN(m.OwnTrait) FROM LShufWork_CivMoved m JOIN ProgressionTreeNodeUnlocks u ON u.ProgressionTreeNodeType = m.Node
+    WHERE u.TargetType = Improvements.ConstructibleType)
+  WHERE TraitType IN (SELECT Base FROM LShufWork_CivInfo) AND ConstructibleType IN (SELECT u.TargetType FROM ProgressionTreeNodeUnlocks u
+    JOIN LShufWork_CivMoved m ON m.Node = u.ProgressionTreeNodeType WHERE m.OwnTrait IN (SELECT TraitType FROM Traits));
+UPDATE Units SET TraitType = (SELECT MIN(m.OwnTrait) FROM LShufWork_CivMoved m JOIN ProgressionTreeNodeUnlocks u ON u.ProgressionTreeNodeType = m.Node
+    WHERE (Units.UnitType = u.TargetType OR Units.UnitType LIKE u.TargetType || '\_%' ESCAPE '\'))
+  WHERE TraitType IN (SELECT Base FROM LShufWork_CivInfo) AND EXISTS (SELECT 1 FROM ProgressionTreeNodeUnlocks u
+    JOIN LShufWork_CivMoved m ON m.Node = u.ProgressionTreeNodeType WHERE (Units.UnitType = u.TargetType OR Units.UnitType LIKE u.TargetType || '\_%' ESCAPE '\') AND m.OwnTrait IN (SELECT TraitType FROM Traits));
+-- A great person tied to a quarter or constructible (CONTRACTS 23 R1) goes onto the trait that now carries it.
+UPDATE Units SET TraitType = (SELECT COALESCE((SELECT b.TraitType FROM Buildings b WHERE b.ConstructibleType = g.Anchor),
+    (SELECT m.TraitType FROM Improvements m WHERE m.ConstructibleType = g.Anchor),
+    (SELECT v.OwnTrait FROM LShufWork_CivMoved v WHERE v.Node = g.Anchor))
+  FROM LShufWork_CivicGP g WHERE g.UnitType = Units.UnitType)
+  WHERE UnitType IN (SELECT UnitType FROM LShufWork_CivicGP) AND TraitType IN (SELECT Base FROM LShufWork_CivInfo)
+    AND (SELECT COALESCE((SELECT b.TraitType FROM Buildings b WHERE b.ConstructibleType = g.Anchor),
+    (SELECT m.TraitType FROM Improvements m WHERE m.ConstructibleType = g.Anchor),
+    (SELECT v.OwnTrait FROM LShufWork_CivMoved v WHERE v.Node = g.Anchor))
+  FROM LShufWork_CivicGP g WHERE g.UnitType = Units.UnitType) LIKE 'TRAIT\_LSHUF\_CIV\_%' ESCAPE '\' AND (SELECT COALESCE((SELECT b.TraitType FROM Buildings b WHERE b.ConstructibleType = g.Anchor),
+    (SELECT m.TraitType FROM Improvements m WHERE m.ConstructibleType = g.Anchor),
+    (SELECT v.OwnTrait FROM LShufWork_CivMoved v WHERE v.Node = g.Anchor))
+  FROM LShufWork_CivicGP g WHERE g.UnitType = Units.UnitType) IN (SELECT TraitType FROM Traits);
+UPDATE UniqueQuarters SET TraitType = (SELECT b.TraitType FROM Buildings b WHERE b.ConstructibleType = UniqueQuarters.BuildingType1)
+  WHERE (SELECT b.TraitType FROM Buildings b WHERE b.ConstructibleType = UniqueQuarters.BuildingType1) LIKE 'TRAIT\_LSHUF\_CIV\_%' ESCAPE '\'
+    AND (SELECT b.TraitType FROM Buildings b WHERE b.ConstructibleType = UniqueQuarters.BuildingType1)
+      = (SELECT b.TraitType FROM Buildings b WHERE b.ConstructibleType = UniqueQuarters.BuildingType2);
+-- The civics-tree reveal of Exploration and Modern (MOD_REVEAL_CIV_CULTURE_TREE_<CIV>) sits on the ability but asks
+-- for the base trait. It moves onto the base trait, which carries the civics (CONTRACTS 18), so the tree opens for
+-- whoever holds them: a builder holding only other civs' bonus cards, or a civ whose ability went elsewhere.
+CREATE TABLE IF NOT EXISTS LShufWork_CivReveal (ModifierId TEXT PRIMARY KEY, Ability TEXT, Base TEXT);
+DELETE FROM LShufWork_CivReveal;
+INSERT OR IGNORE INTO LShufWork_CivReveal (ModifierId, Ability, Base)
+  SELECT tm.ModifierId, i.Ability, i.Base FROM TraitModifiers tm JOIN LShufWork_CivInfo i ON i.Ability = tm.TraitType
+  JOIN Modifiers m ON m.ModifierId = tm.ModifierId JOIN DynamicModifiers dm ON dm.ModifierType = m.ModifierType
+  WHERE dm.EffectType = 'EFFECT_PLAYER_REVEAL_CULTURE_TREE' AND i.Base IN (SELECT TraitType FROM Traits) AND (EXISTS (SELECT 1 FROM LShufResultCivPieces) OR (SELECT CA FROM LShufWork_Cfg) = 'LSHUF_OFF'
+      OR (SELECT CU FROM LShufWork_Cfg) = 'LSHUF_OFF' OR (SELECT CC FROM LShufWork_Cfg) = 'LSHUF_OFF');
+INSERT OR IGNORE INTO TraitModifiers (TraitType, ModifierId) SELECT Base, ModifierId FROM LShufWork_CivReveal;
+DELETE FROM TraitModifiers WHERE EXISTS (SELECT 1 FROM LShufWork_CivReveal v
+  WHERE v.Ability = TraitModifiers.TraitType AND v.ModifierId = TraitModifiers.ModifierId);
 -- An ability's own modifiers that ask for the civ's base trait (MOD_CIV_WONDER_PRODUCTION_<CIV>) ask for the ability
 -- trait instead, so they follow the ability wherever it goes (CONTRACTS 14).
 UPDATE RequirementArguments SET Value = Value || '_ABILITY'
@@ -300,14 +398,17 @@ UPDATE RequirementArguments SET Value = Value || '_ABILITY'
 CREATE TABLE IF NOT EXISTS LShufWork_CivCopy (Receiver TEXT, ModifierId TEXT, PRIMARY KEY (Receiver, ModifierId));
 DELETE FROM LShufWork_CivCopy;
 INSERT OR IGNORE INTO LShufWork_CivCopy (Receiver, ModifierId)
-  SELECT r.CivilizationType, mm.ModifierId FROM LShufResultCivPieces r JOIN LShufCivMappingModifiers mm ON mm.PieceId = r.PieceId
+  SELECT r.CivilizationType, mm.ModifierId FROM LShufResultCivPieces r JOIN (SELECT PieceId, ModifierId, Role FROM LShufCivMappingModifiers
+      UNION SELECT PieceId, ModifierId, Role FROM LShufCivMappingAgeModifiers) mm ON mm.PieceId = r.PieceId
   WHERE r.Kind = 'bullet' AND mm.Role IN ('effect', 'hidden')
     AND mm.ModifierId IN (SELECT tm.ModifierId FROM TraitModifiers tm WHERE tm.TraitType = (SELECT i.Ability FROM LShufWork_CivInfo i WHERE i.Civ = r.FromCivilization));
 INSERT OR IGNORE INTO LShufWork_CivCopy (Receiver, ModifierId)
   SELECT r.CivilizationType, tm.ModifierId FROM LShufResultCivPieces r JOIN LShufWork_CivInfo i ON i.Civ = r.CivilizationType
   JOIN TraitModifiers tm ON tm.TraitType = i.Ability
-  WHERE r.Kind = 'remainder' AND tm.ModifierId NOT IN (SELECT mm.ModifierId FROM LShufCivMappingModifiers mm JOIN LShufCivMapping m ON m.PieceId = mm.PieceId
-      WHERE m.CivilizationType = r.CivilizationType AND m.Kind = 'bullet' AND m.Movable = 1 AND m.Age = i.Age);
+  WHERE r.Kind = 'remainder' AND tm.ModifierId NOT IN (SELECT mm.ModifierId FROM (SELECT PieceId, ModifierId, Role FROM LShufCivMappingModifiers
+      UNION SELECT PieceId, ModifierId, Role FROM LShufCivMappingAgeModifiers) mm JOIN LShufCivMapping m ON m.PieceId = mm.PieceId
+      WHERE m.CivilizationType = r.CivilizationType AND m.Kind = 'bullet' AND m.Movable = 1 AND m.Age = i.Age
+    AND m.PieceId NOT IN (SELECT d.PieceId FROM LShufCivPieceDead d WHERE d.Age = (SELECT Value FROM LShufOptions WHERE Name = 'Age')));
 DELETE FROM LShufWork_CivCopy WHERE ModifierId NOT IN (SELECT ModifierId FROM Modifiers);
 INSERT OR IGNORE INTO Types (Type, Kind) SELECT 'TRAIT_LSHUF_CIVA_' || Civ, 'KIND_TRAIT' FROM LShufWork_CivInfo WHERE Civ IN (SELECT DISTINCT CivilizationType FROM LShufResultCivPieces WHERE Kind IN ('bullet', 'remainder'));
 INSERT OR IGNORE INTO Traits (TraitType, Name, Description, InternalOnly)
@@ -321,8 +422,7 @@ INSERT OR IGNORE INTO Modifiers (ModifierId, ModifierType, NewOnly, OwnerRequire
   SELECT 'LSHUF_' || c.Receiver || '__' || m.ModifierId, m.ModifierType, m.NewOnly, m.OwnerRequirementSetId, m.OwnerStackLimit, m.Permanent, m.RunOnce,
     m.SubjectRequirementSetId, m.SubjectStackLimit FROM LShufWork_CivCopy c JOIN Modifiers m ON m.ModifierId = c.ModifierId;
 INSERT OR IGNORE INTO ModifierArguments (ModifierId, Name, Extra, SecondExtra, Type, Value)
-  SELECT 'LSHUF_' || c.Receiver || '__' || a.ModifierId, a.Name, a.Extra, a.SecondExtra, a.Type,
-    CASE WHEN a.Name = 'Tooltip' AND (SELECT i.AbilityName FROM LShufWork_CivInfo i WHERE i.Civ = c.Receiver) IS NOT NULL THEN (SELECT i.AbilityName FROM LShufWork_CivInfo i WHERE i.Civ = c.Receiver) ELSE a.Value END
+  SELECT 'LSHUF_' || c.Receiver || '__' || a.ModifierId, a.Name, a.Extra, a.SecondExtra, a.Type, a.Value
   FROM LShufWork_CivCopy c JOIN ModifierArguments a ON a.ModifierId = c.ModifierId
   WHERE 'LSHUF_' || c.Receiver || '__' || a.ModifierId IN (SELECT ModifierId FROM Modifiers);
 INSERT OR IGNORE INTO ModifierStrings (Context, ModifierId, Text)
@@ -336,3 +436,120 @@ UPDATE RequirementArguments SET Value = 'TRAIT_LSHUF_CIVA_' || (SELECT i.Civ FRO
     AND RequirementId IN (SELECT rsr.RequirementId FROM RequirementSetRequirements rsr JOIN Modifiers m
       ON m.SubjectRequirementSetId = rsr.RequirementSetId OR m.OwnerRequirementSetId = rsr.RequirementSetId
       JOIN TraitModifiers tm ON tm.ModifierId = m.ModifierId WHERE tm.TraitType = RequirementArguments.Value);
+
+-- Bound modifiers (CONTRACTS 23 R4): a unique's own rules go wherever the unique went.
+CREATE TABLE IF NOT EXISTS LShufWork_Bound (ModifierId TEXT PRIMARY KEY, Trait TEXT);
+DELETE FROM LShufWork_Bound;
+INSERT OR IGNORE INTO LShufWork_Bound (ModifierId, Trait) SELECT b.ModifierId, COALESCE(
+    (SELECT u.TraitType FROM Units u WHERE u.UnitType = b.AnchorType),
+    (SELECT x.TraitType FROM Buildings x WHERE x.ConstructibleType = b.AnchorType),
+    (SELECT q.TraitType FROM UniqueQuarters q WHERE q.UniqueQuarterType = b.AnchorType))
+  FROM LShufBoundModifiers b WHERE b.ModifierId IN (SELECT ModifierId FROM Modifiers)
+    AND (b.ByPiece IS NULL OR b.ByPiece NOT IN (SELECT PieceId FROM LShufResultCivPieces WHERE Kind = 'bullet'))
+    AND (EXISTS (SELECT 1 FROM LShufResultCivPieces) OR (SELECT CA FROM LShufWork_Cfg) = 'LSHUF_OFF' OR (SELECT CU FROM LShufWork_Cfg) = 'LSHUF_OFF'
+      OR (SELECT CC FROM LShufWork_Cfg) = 'LSHUF_OFF');
+DELETE FROM LShufWork_Bound WHERE Trait IS NULL OR Trait NOT IN (SELECT TraitType FROM Traits);
+DELETE FROM TraitModifiers WHERE ModifierId IN (SELECT ModifierId FROM LShufWork_Bound)
+  OR (ModifierId LIKE 'LSHUF\_%' ESCAPE '\' AND EXISTS (SELECT 1 FROM LShufWork_Bound b
+    WHERE substr(TraitModifiers.ModifierId, -(length(b.ModifierId) + 2)) = '__' || b.ModifierId));
+INSERT OR IGNORE INTO TraitModifiers (ModifierId, TraitType) SELECT ModifierId, Trait FROM LShufWork_Bound;
+
+-- Favored-wonder pieces (CONTRACTS 31).
+CREATE TABLE IF NOT EXISTS LShufWork_Wonder (ModifierId TEXT PRIMARY KEY, Civ TEXT, Wonder TEXT, Pct TEXT, NewId TEXT);
+DELETE FROM LShufWork_Wonder;
+INSERT OR IGNORE INTO LShufWork_Wonder (ModifierId, Civ, Wonder, Pct, NewId)
+  SELECT mm.ModifierId, m.CivilizationType, fw.FavoredWonderType, a.Value, 'LSHUF_WONDER__' || m.CivilizationType
+  FROM LShufCivMappingModifiers mm JOIN LShufCivMapping m ON m.PieceId = mm.PieceId
+  JOIN Modifiers mo ON mo.ModifierId = mm.ModifierId
+  JOIN DynamicModifiers d ON d.ModifierType = mo.ModifierType AND d.EffectType = 'EFFECT_CITY_ADJUST_FAVORED_WONDER_PRODUCTION'
+  JOIN CivilizationFavoredWonders fw ON fw.CivilizationType = m.CivilizationType
+  JOIN ModifierArguments a ON a.ModifierId = mm.ModifierId AND a.Name = 'Percent'
+  WHERE fw.FavoredWonderType IN (SELECT ConstructibleType FROM Constructibles) AND (EXISTS (SELECT 1 FROM LShufResultCivPieces) OR (SELECT CA FROM LShufWork_Cfg) = 'LSHUF_OFF'
+      OR (SELECT CU FROM LShufWork_Cfg) = 'LSHUF_OFF' OR (SELECT CC FROM LShufWork_Cfg) = 'LSHUF_OFF');
+INSERT OR IGNORE INTO Types (Type, Kind) SELECT 'LSHUF_WONDER_PRODUCTION_TYPE', 'KIND_MODIFIER' WHERE EXISTS (SELECT 1 FROM LShufWork_Wonder);
+INSERT OR IGNORE INTO DynamicModifiers (ModifierType, CollectionType, EffectType)
+  SELECT 'LSHUF_WONDER_PRODUCTION_TYPE', 'COLLECTION_PLAYER_CITIES', 'EFFECT_CITY_ADJUST_CONSTRUCTIBLE_PRODUCTION' WHERE 'LSHUF_WONDER_PRODUCTION_TYPE' IN (SELECT Type FROM Types);
+INSERT OR IGNORE INTO Modifiers (ModifierId, ModifierType)
+  SELECT NewId, 'LSHUF_WONDER_PRODUCTION_TYPE' FROM LShufWork_Wonder WHERE 'LSHUF_WONDER_PRODUCTION_TYPE' IN (SELECT ModifierType FROM DynamicModifiers);
+INSERT OR IGNORE INTO ModifierArguments (ModifierId, Name, Value)
+  SELECT NewId, 'ConstructibleType', Wonder FROM LShufWork_Wonder WHERE NewId IN (SELECT ModifierId FROM Modifiers);
+INSERT OR IGNORE INTO ModifierArguments (ModifierId, Name, Value)
+  SELECT NewId, 'Percent', Pct FROM LShufWork_Wonder WHERE NewId IN (SELECT ModifierId FROM Modifiers);
+INSERT OR IGNORE INTO TraitModifiers (TraitType, ModifierId)
+  SELECT tm.TraitType, w.NewId FROM TraitModifiers tm JOIN LShufWork_Wonder w ON (tm.ModifierId = w.ModifierId OR (tm.ModifierId LIKE 'LSHUF\_%' ESCAPE '\'
+      AND substr(tm.ModifierId, -(length(w.ModifierId) + 2)) = '__' || w.ModifierId))
+  WHERE w.NewId IN (SELECT ModifierId FROM Modifiers);
+DELETE FROM TraitModifiers WHERE EXISTS (SELECT 1 FROM LShufWork_Wonder w WHERE w.NewId IN (SELECT ModifierId FROM Modifiers)
+  AND (TraitModifiers.ModifierId = w.ModifierId OR (TraitModifiers.ModifierId LIKE 'LSHUF\_%' ESCAPE '\'
+      AND substr(TraitModifiers.ModifierId, -(length(w.ModifierId) + 2)) = '__' || w.ModifierId)));
+
+-- Rule pieces (CONTRACTS 31).
+CREATE TABLE IF NOT EXISTS LShufWork_Rule (PieceId TEXT PRIMARY KEY, Marker TEXT, Holder TEXT);
+DELETE FROM LShufWork_Rule;
+INSERT OR IGNORE INTO LShufWork_Rule (PieceId, Marker, Holder)
+  SELECT DISTINCT p.PieceId, 'TRAIT_LSHUF_RULE_' || p.PieceId,
+    CASE WHEN (SELECT CA FROM LShufWork_Cfg) = 'LSHUF_OFF' THEN NULL ELSE COALESCE(
+      (SELECT r.CivilizationType FROM LShufResultCivPieces r WHERE r.PieceId = p.PieceId AND r.Kind = 'bullet'),
+      (SELECT r.CivilizationType FROM LShufResultCivPieces r WHERE r.Kind = 'ability' AND r.FromCivilization = m.CivilizationType),
+      m.CivilizationType) END
+  FROM LShufCivRulePieces p JOIN LShufCivMapping m ON m.PieceId = p.PieceId
+  WHERE p.HomeTrait IN (SELECT TraitType FROM Traits) AND (EXISTS (SELECT 1 FROM LShufResultCivPieces) OR (SELECT CA FROM LShufWork_Cfg) = 'LSHUF_OFF'
+      OR (SELECT CU FROM LShufWork_Cfg) = 'LSHUF_OFF' OR (SELECT CC FROM LShufWork_Cfg) = 'LSHUF_OFF');
+INSERT OR IGNORE INTO Types (Type, Kind) SELECT Marker, 'KIND_TRAIT' FROM LShufWork_Rule;
+INSERT OR IGNORE INTO Traits (TraitType, InternalOnly) SELECT Marker, 1 FROM LShufWork_Rule WHERE Marker IN (SELECT Type FROM Types);
+INSERT OR IGNORE INTO CivilizationTraits (CivilizationType, TraitType) SELECT Holder, Marker FROM LShufWork_Rule
+  WHERE Holder IN (SELECT CivilizationType FROM Civilizations) AND Marker IN (SELECT TraitType FROM Traits);
+UPDATE ProgressionTreeNodeUnlocks SET NotTraitType = (SELECT w.Marker FROM LShufWork_Rule w JOIN LShufCivRulePieces p ON p.PieceId = w.PieceId
+    WHERE p.TargetModifier = ProgressionTreeNodeUnlocks.TargetType AND p.HomeTrait = ProgressionTreeNodeUnlocks.NotTraitType AND w.Marker IN (SELECT TraitType FROM Traits))
+  WHERE (SELECT w.Marker FROM LShufWork_Rule w JOIN LShufCivRulePieces p ON p.PieceId = w.PieceId
+    WHERE p.TargetModifier = ProgressionTreeNodeUnlocks.TargetType AND p.HomeTrait = ProgressionTreeNodeUnlocks.NotTraitType AND w.Marker IN (SELECT TraitType FROM Traits)) IS NOT NULL;
+UPDATE RequirementArguments SET Value = (SELECT w.Marker FROM LShufWork_Rule w JOIN LShufCivRulePieces p ON p.PieceId = w.PieceId
+    JOIN Modifiers mo ON mo.ModifierId = p.TargetModifier
+    JOIN RequirementSetRequirements rsr ON rsr.RequirementSetId IN (mo.SubjectRequirementSetId, mo.OwnerRequirementSetId)
+    WHERE rsr.RequirementId = RequirementArguments.RequirementId AND p.HomeTrait = RequirementArguments.Value
+      AND w.Marker IN (SELECT TraitType FROM Traits) LIMIT 1)
+  WHERE Name = 'TraitType' AND EXISTS (SELECT 1 FROM LShufWork_Rule w JOIN LShufCivRulePieces p ON p.PieceId = w.PieceId
+    JOIN Modifiers mo ON mo.ModifierId = p.TargetModifier
+    JOIN RequirementSetRequirements rsr ON rsr.RequirementSetId IN (mo.SubjectRequirementSetId, mo.OwnerRequirementSetId)
+    WHERE rsr.RequirementId = RequirementArguments.RequirementId AND p.HomeTrait = RequirementArguments.Value
+      AND w.Marker IN (SELECT TraitType FROM Traits));
+
+-- Attribute tags (CONTRACTS 30).
+CREATE TABLE IF NOT EXISTS LShufWork_CivTagOwn (Civ TEXT, Trait TEXT, PRIMARY KEY (Civ, Trait));
+DELETE FROM LShufWork_CivTagOwn;
+INSERT OR IGNORE INTO LShufWork_CivTagOwn (Civ, Trait) SELECT CivilizationType, TraitType FROM CivilizationTraits
+  WHERE TraitType LIKE 'TRAIT\_ATTRIBUTE\_%' ESCAPE '\' AND CivilizationType IN (SELECT FromCivilization FROM LShufResultCivPieces WHERE Kind = 'tags'
+    UNION SELECT CivilizationType FROM LShufResultCivPieces WHERE Kind = 'tags');
+CREATE TABLE IF NOT EXISTS LShufWork_CivTagKind (Kind TEXT PRIMARY KEY);
+DELETE FROM LShufWork_CivTagKind;
+INSERT OR IGNORE INTO LShufWork_CivTagKind (Kind) VALUES ('CULTURAL'), ('ECONOMIC'), ('EXPANSIONIST'), ('MILITARISTIC'), ('POLITICAL'), ('SCIENTIFIC');
+CREATE TABLE IF NOT EXISTS LShufWork_CivTagVar (Kind TEXT, Variant TEXT, PRIMARY KEY (Kind, Variant));
+DELETE FROM LShufWork_CivTagVar;
+INSERT OR IGNORE INTO LShufWork_CivTagVar (Kind, Variant) VALUES ('EXPANSIONIST', 'TALL'), ('EXPANSIONIST', 'WIDE'), ('POLITICAL', 'HAPPINESS'), ('POLITICAL', 'INFLUENCE');
+-- The ages each receiver has Test of Time tags for, read before its rows go.
+CREATE TABLE IF NOT EXISTS LShufWork_CivTagAge (Civ TEXT, Age TEXT, PRIMARY KEY (Civ, Age));
+DELETE FROM LShufWork_CivTagAge;
+INSERT OR IGNORE INTO LShufWork_CivTagAge (Civ, Age) SELECT DISTINCT o.Civ, substr(o.Trait, length('TRAIT_ATTRIBUTE_' || k.Kind || '_TOT_') + 1, 2)
+  FROM LShufWork_CivTagOwn o JOIN LShufWork_CivTagKind k ON o.Trait LIKE 'TRAIT\_ATTRIBUTE\_' || k.Kind || '\_TOT\_%' ESCAPE '\'
+  WHERE o.Civ IN (SELECT CivilizationType FROM LShufResultCivPieces WHERE Kind = 'tags');
+DELETE FROM CivilizationTraits WHERE TraitType LIKE 'TRAIT\_ATTRIBUTE\_%' ESCAPE '\'
+  AND CivilizationType IN (SELECT CivilizationType FROM LShufResultCivPieces WHERE Kind = 'tags');
+-- The giver's plain tags.
+INSERT OR IGNORE INTO CivilizationTraits (CivilizationType, TraitType)
+  SELECT r.CivilizationType, o.Trait FROM LShufResultCivPieces r JOIN LShufWork_CivTagOwn o ON o.Civ = r.FromCivilization
+  WHERE r.Kind = 'tags' AND o.Trait NOT LIKE '%\_TOT\_%' ESCAPE '\' AND r.CivilizationType IN (SELECT CivilizationType FROM Civilizations);
+-- Test of Time tags for the receiver's ages, by the giver's kinds.
+INSERT OR IGNORE INTO CivilizationTraits (CivilizationType, TraitType)
+  SELECT r.CivilizationType, 'TRAIT_ATTRIBUTE_' || k.Kind || '_TOT_' || a.Age FROM LShufResultCivPieces r
+  JOIN LShufWork_CivTagOwn o ON o.Civ = r.FromCivilization JOIN LShufWork_CivTagKind k ON o.Trait = 'TRAIT_ATTRIBUTE_' || k.Kind
+  JOIN LShufWork_CivTagAge a ON a.Civ = r.CivilizationType
+  WHERE r.Kind = 'tags' AND r.CivilizationType IN (SELECT CivilizationType FROM Civilizations)
+    AND 'TRAIT_ATTRIBUTE_' || k.Kind || '_TOT_' || a.Age IN (SELECT TraitType FROM Traits);
+INSERT OR IGNORE INTO CivilizationTraits (CivilizationType, TraitType)
+  SELECT r.CivilizationType, 'TRAIT_ATTRIBUTE_' || v.Kind || '_TOT_' || a.Age || '_' || v.Variant FROM LShufResultCivPieces r
+  JOIN LShufWork_CivTagVar v ON EXISTS (SELECT 1 FROM LShufWork_CivTagOwn o WHERE o.Civ = r.FromCivilization
+      AND (o.Trait = 'TRAIT_ATTRIBUTE_' || v.Kind || '_' || v.Variant
+        OR o.Trait LIKE 'TRAIT\_ATTRIBUTE\_' || v.Kind || '\_TOT\_%\_' || v.Variant ESCAPE '\'))
+  JOIN LShufWork_CivTagAge a ON a.Civ = r.CivilizationType
+  WHERE r.Kind = 'tags' AND r.CivilizationType IN (SELECT CivilizationType FROM Civilizations)
+    AND 'TRAIT_ATTRIBUTE_' || v.Kind || '_TOT_' || a.Age || '_' || v.Variant IN (SELECT TraitType FROM Traits);

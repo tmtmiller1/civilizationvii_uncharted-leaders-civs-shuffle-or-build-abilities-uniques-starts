@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import {
   dealConfig,
   dealModule,
+  fixtureAge,
   gameConfig,
   jsResult,
   loadGame,
@@ -61,10 +62,14 @@ export const reviewAll = (leaders = null) => ({
       : db.exec("UPDATE LShufMapping SET Reviewed = 1")
 });
 
+// A game on a later age's fixture loads for that age unless the spec names one.
+const withAge = (fixture, spec) => (spec.age === undefined ? { ...spec, age: fixtureAge(fixture) } : spec);
+
 // For the JS runner alone: every group before the deal (DEAL_LOAD_ORDER), so the deal SQL's own state doesn't matter.
 // Until B's generated groups exist, the schema and the mapping only, with LShufKnownLeaders filled from
 // shared/lshuf-known-leaders.js the way B's generator is to fill it (CONTRACTS 4.1); `run.jsOnly` says so.
-export async function loadForJs({ fixture = "base", spec = {}, hooks = [] } = {}) {
+export async function loadForJs({ fixture = "base", spec: given = {}, hooks = [] } = {}) {
+  const spec = withAge(fixture, given);
   try {
     need("data/generated/modinfo-groups.xml");
     const config = gameConfig(spec);
@@ -87,7 +92,8 @@ export async function loadForJs({ fixture = "base", spec = {}, hooks = [] } = {}
 }
 
 // Loads `fixture` for `spec` (see gameConfig) and returns the run plus both runners' normalized results.
-export async function runBoth({ fixture = "base", spec = {}, hooks = [], js = true } = {}) {
+export async function runBoth({ fixture = "base", spec: given = {}, hooks = [], js = true } = {}) {
+  const spec = withAge(fixture, given);
   const deal = js ? await dealModule() : null;
   const run = await loadGame({ fixture, config: gameConfig(spec), hooks });
   const out = { run, sql: sqlResult(run.db) };

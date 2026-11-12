@@ -1,4 +1,5 @@
-// The Leader pools..., Civilization pool..., Build your own leader... and Advanced settings... buttons, right after
+// The Leader pool..., Civilization pool..., AI players..., Build your own leader..., Build your own
+// civilization... and Advanced settings... buttons, right after
 // the main options in the mod's own "Re-dealable Leaders Settings" section of Advanced Settings (ordinary rows,
 // data/frontend/parameters.sql).
 // The game draws a section's rows only while it's open, so the buttons go in after our last row whenever that row is
@@ -6,7 +7,6 @@
 
 import { openSetupWindow } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-window.js";
 import { openBuildWindow } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-window.js";
-import { openAiWindow } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-ai-window.js";
 import {
   pageButtons, SECTION_BUTTONS
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-section.js";
@@ -47,11 +47,11 @@ function rowOf(label, other) {
   return row.parentElement ? row : null;
 }
 
-// "build" is the Build your own leader screen, a window of its own; the rest are setup-window pages.
+// "build" and "buildciv" are the build window's two pages; the rest are setup-window pages.
 function openPage(page) {
   try {
-    if (page === "build") openBuildWindow();
-    else if (page === "ai") openAiWindow();
+    if (page === "build") openBuildWindow("leader");
+    else if (page === "buildciv") openBuildWindow("civ");
     else openSetupWindow(page);
   } catch (e) {
     log(`open ${page} failed: ${e}`);

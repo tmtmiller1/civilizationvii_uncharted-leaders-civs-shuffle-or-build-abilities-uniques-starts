@@ -57,6 +57,7 @@ export function readGameDeal() {
     pieces: readGameplay("LShufResultPieces"),
     attributes: readGameplay("LShufResultAttributes"),
     biases: readGameplay("LShufResultBiases"),
+    civPieces: readGameplay("LShufResultCivPieces"),
     unlocks: [],
     meta: readGameplay("LShufResultMeta")
   };
@@ -71,6 +72,7 @@ export function readGameDeal() {
     mode: metaValue(deal.meta, "Mode") || option("Mode"),
     abilities: option("Abilities"),
     seed: metaValue(deal.meta, "Seed"),
+    dealVersion: metaValue(deal.meta, "DealVersion"),
     reveal: option("Reveal"),
     tooFew: (deal.meta || []).filter((r) => String(r.Name).startsWith("Fallback_")).map((r) => r.Name)
   };

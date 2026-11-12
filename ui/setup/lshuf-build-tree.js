@@ -5,14 +5,14 @@
 // copy's LShufSetup_CivicNodes and LShufSetup_CivCivics, the shell's Traditions and CivilizationItems.
 
 import { el } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
-import {
-  civicsTreeData, compose
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-cards.js";
+import { compose } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-query.js";
+import { civicsTreeData } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-civics.js";
 
 const stylize = (text) => (Locale.stylize ? Locale.stylize(text) : text);
 
-function nodeBox(node) {
+function nodeBox(node, picked) {
   const box = el("div", "lshuf-tree__node flex flex-col");
+  if (picked) box.classList.add("lshuf-tree__node--picked");
   box.setAttribute("data-node", node.node);
   const title = el("div", "lshuf-tree__node-name font-title text-sm uppercase text-secondary");
   title.textContent = node.name;
@@ -50,8 +50,9 @@ function connector(canvas, from, to) {
   seg(xm, y2, x2 - xm, 2);
 }
 
-// The tree for one civilization, or null when the setup copy has no nodes for it.
-export function renderCivicsTree(civ, treeName) {
+// The tree for one civilization, or null when the setup copy has no nodes for it. pickedNode: the civic a single
+// civic card stands for, drawn with a highlight.
+export function renderCivicsTree(civ, treeName, pickedNode = null) {
   const data = civicsTreeData(civ);
   if (!data.length) return null;
   const root = el("div", "lshuf-tree flex flex-col");
@@ -64,7 +65,7 @@ export function renderCivicsTree(civ, treeName) {
   for (const d of depths) {
     const col = el("div", "lshuf-tree__column flex flex-col");
     for (const node of data.filter((n) => n.depth === d)) {
-      const box = nodeBox(node);
+      const box = nodeBox(node, node.node === pickedNode);
       boxes.set(node.node, box);
       col.appendChild(box);
     }

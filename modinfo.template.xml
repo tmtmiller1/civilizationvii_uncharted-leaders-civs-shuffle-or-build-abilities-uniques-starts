@@ -32,11 +32,14 @@
 					<Item>data/schema/gameplay-tables.sql</Item>
 					<Item>data/schema/frontend-tables.sql</Item>
 					<Item>data/frontend/parameters.sql</Item>
+					<Item>data/frontend/civ-items-copy.sql</Item>
 					<Item>data/mapping/lshuf-mapping.sql</Item>
 					<Item>data/mapping/lshuf-civ-mapping.sql</Item>
+					<Item>data/mapping/lshuf-civ-links.sql</Item>
 					<Item>data/generated/known-leaders.sql</Item>
 					<Item>data/setup-copy/setup-copy.sql</Item>
 					<Item>data/setup-copy/setup-copy-civ.sql</Item>
+					<Item>data/setup-copy/setup-copy-quarters.sql</Item>
 				</UpdateDatabase>
 				<UpdateText>
 					<Item>text/en_us/lshuf-text.xml</Item>
@@ -64,6 +67,7 @@
 					<Item>data/schema/gameplay-tables.sql</Item>
 					<Item>data/mapping/lshuf-mapping.sql</Item>
 					<Item>data/mapping/lshuf-civ-mapping.sql</Item>
+					<Item>data/mapping/lshuf-civ-links.sql</Item>
 				</UpdateDatabase>
 			</Actions>
 		</ActionGroup>

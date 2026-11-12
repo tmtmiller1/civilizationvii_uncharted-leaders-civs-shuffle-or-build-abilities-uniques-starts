@@ -1,0 +1,9 @@
+Re-dealable Leader Abilities, Attributes, and Start Biases shuffles what leaders and civilizations bring to a game of Civilization VII.
+
+- Leaders swap whole abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random, with attributes and start terrain on their own rows.
+- Civilizations trade their abilities, attribute tags, unique units and civics the same way, within each age.
+- Take any part out for everyone with Off entirely.
+- Build your own leader and civilization from cards, and choose the AI players' leaders and civilizations or the pools Random picks from.
+- Things that need each other stay together, so you can use the units and buildings you're dealt.
+- The game's own screens show who got what, and a shuffle number lets you share a setup.
+- English only for now.

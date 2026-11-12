@@ -27,7 +27,10 @@ export const SALT = {
   CivAbilities: 13,
   CivUniques: 14,
   CivCivics: 15,
-  CivPieces: 16
+  CivPieces: 16,
+  CivNodes: 17,
+  CivUniquePieces: 18,
+  CivTags: 19
 };
 
 export function lshufKey(seed, salt, rank) {

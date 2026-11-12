@@ -1,0 +1,76 @@
+[h1]Re-dealable Leader Abilities, Attributes, and Start Biases[/h1]
+
+Shuffle what leaders and civilizations bring to a game. Leaders can swap whole abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random. Civilizations can do the same with their abilities, unique units and civics, within each age. You can also take any part out of the game for everyone. The game's own screens show what each leader and civilization ended up with.
+
+[h2]Where to find it[/h2]
+In New Game, open Advanced Settings and expand [b]Re-dealable Leaders Settings[/b]. The settings save with the game like any other setup option.
+
+[h2]Leader mode and Civilization mode[/h2]
+Each mode sets its rows at once, with the same choices for leaders and civilizations:
+[list]
+[*][b]No shuffle:[/b] everyone plays as normal.
+[*][b]Swap whole:[/b] each leader gets another leader’s ability, attributes and start terrain, and each civilization gets another civilization’s ability, uniques and civics, all from the same one.
+[*][b]Swap partial:[/b] each leader gets another leader’s ability, with attributes dealt out separately and a random start. Each civilization’s ability, uniques and civics are each swapped whole, from different civilizations: Rome might take Greece’s ability, Egypt’s uniques and Persia’s civics.
+[*][b]Mix bonuses:[/b] abilities are split into bonuses and dealt out at random, along with attributes, uniques and civics. Leaders start on terrain that suits the bonuses they got.
+[*][b]Mix bonuses, random start:[/b] leaders only; the same, with random start terrain.
+[/list]
+Change a row by hand and its mode reads Custom.
+
+[h2]A row for each part[/h2]
+Each row picks from the same settings: Base game, Swap whole, Split up, Follows ability, Logical with bonuses, Random roll and Off entirely. With Split up, everyone gets back as many pieces as they gave.
+[list]
+[*][b]Leader abilities:[/b] Base game, Swap whole, Split up or Off entirely.
+[*][b]Leader attributes:[/b] Base game, Split up, Follows ability or Off entirely.
+[*][b]Leader start terrain:[/b] Base game, Logical with bonuses, Follows ability, Random roll or Off entirely. Civilizations' start terrain is shuffled within each age to match.
+[*][b]Civilization abilities:[/b] Base game, Swap whole, Split up or Off entirely. A civilization's attribute tags (Cultural, Economic and the rest) go with its ability. When abilities are split up, the tags are shuffled. The age's attribute quests and Test of Time traditions follow the tags.
+[*][b]Civilization uniques:[/b] Base game, Follows ability, Swap whole, Split up or Off entirely.
+[*][b]Civilization civics:[/b] Base game, Follows ability, Swap whole, Split up or Off entirely. Civics bring their traditions and the buildings, quarters and improvements they unlock.
+[/list]
+Civilizations only trade within their age.
+
+[h2]What travels together[/h2]
+Things that need each other stay together: a quarter's two buildings, the great people a quarter brings (the Logios with the Acropolis, the Conquistador with the Plaza and five more), the Sherpa and the Highland Power Station, and Sengoku's Samurai and the Kinsei civic. When the game keeps a unique's rule on its civilization's ability, such as the Conquistador crossing Ocean, the rule goes with the unique. Carthage's second Merchant or Colonist goes with the Colonist, and the Pirate Republic's “no Settlers” goes with the Buccaneer and its settling charge. Yi Sun-sin's Fleet Commander bonuses stay together, and whoever holds Ibn Battuta's Wildcard bonus gets his Wildcard points. Every civilization bonus can be dealt. A “+30% Production towards <wonder>” bonus names its wonder for whoever holds it, and Assyria’s “Codices are not awarded from Technologies” goes to whoever holds it. The Inca’s and Songhai’s treasure convoys come with their civics, and their cards say so.
+
+[h2]Off entirely[/h2]
+Off entirely takes that part out of the game for everyone. With leader abilities off, the AI keeps its agendas. With attributes off, everyone gets the twelve diplomatic actions instead. With start terrain off, the map alone decides where everyone starts. Leaders and civilizations built by hand keep their picks.
+
+[h2]The other rows[/h2]
+[list]
+[*][b]AI agendas:[/b] Base game, Logical with bonuses (each AI plays like the leader its bonuses came from) or Swap whole.
+[*][b]Human players keep their own leader:[/b] only the AI leaders are shuffled.
+[*][b]Keep my built civilization:[/b] your built civilization still applies when you keep your own leader.
+[*][b]Reveal who got what:[/b] from the start, or once you've met a leader.
+[/list]
+
+[h2]Pools and AI players[/h2]
+[list]
+[*][b]Leader pool[/b] and [b]Civilization pool:[/b] tick the leaders and civilizations Random can pick. Each also has a button beside Random on its select screen.
+[*][b]AI players:[/b] a Leader and a Civilization dropdown for each AI player, left on Random or set by hand.
+[*][b]Choose which leaders are shuffled:[/b] unticked leaders play as normal.
+[/list]
+
+[h2]Build your own[/h2]
+Build your own leader and Build your own civilization are card screens. Fill your slots from another leader's bonuses or whole ability, attributes, AI behavior and start terrain, or another civilization's ability or bonuses, uniques, civics and start terrain. Tick Every age to take a civilization's ability or start terrain from another age. The cards you leave are shuffled among the AI players. When a card goes with another, a button adds the other one. Each screen shows its mode, with Advanced for the other rows, and the civilization select between ages has the same Build your own civilization button.
+
+[h2]Advanced settings[/h2]
+[list]
+[*][b]Split fairness:[/b] Fair shares gives everyone about the same strength. With Pure luck some leaders end up stronger.
+[*][b]Shuffle number:[/b] the same number with the same settings and leaders gives the same shuffle. It shows on the loading screen so you can share it.
+[/list]
+
+[h2]What you see[/h2]
+A leader's shuffled ability, attributes and start terrain show on the leader select, the loading screen, the diplomacy leader panel and the Civilopedia, with a “Starts near:” line for start terrain. A civilization's dealt ability, uniques, civics and tags show on the civilization select and the loading screen. The leader panel's Who got what says which leader each bonus came from. City Details names the percentage bonuses the game lists as “Other”.
+
+[h2]Single-player only[/h2]
+This release is for single-player games. Multiplayer hasn't been tested, so play it on your own for now.
+
+[h2]Other mods and maps[/h2]
+[list]
+[*]When another mod changes a base-game leader or civilization, the shuffle carries that change.
+[*]25 leader mods (27 leaders) built the way the base game's leaders are can join the shuffle through Leaders from other mods, after a check of the mod's files at setup. Other modded leaders play as their mod made them.
+[*]With Drongo's Syncretism Revealer on, its start terrain panel is hidden while start terrain is shuffled.
+[*]Maps that place starts themselves (the Earth maps, YnAMP and other true-start-location maps) ignore start terrain. Abilities and attributes still shuffle.
+[/list]
+
+[h2]Limits[/h2]
+English only for now. The Civilization pool only applies at the start of the game. When this mod updates, a campaign keeps the shuffle it started with; if a fix has to change it, a notice on the next turn says so.

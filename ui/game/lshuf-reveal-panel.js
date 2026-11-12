@@ -1,32 +1,39 @@
-// The reveal panel: what each leader in this game got, the deal number, and why any listed modded leader was left
-// out. Opened from a button on the sub-system dock (the way Economics and Emigration add theirs), and on the first
-// turn of a new game when the game's deal came out different from the setup screen's, or a part fell back to as
-// shipped. With "Show what everyone got: As you meet them" a leader the local player hasn't met shows as unmet.
-import Panel from "/core/ui/panel-support.js";
-import ContextManager from "/core/ui/context-manager/context-manager.js";
-import { REVEAL, REASON } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { isModdedLeader } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-known-leaders.js";
-import { guarded, reasonKey, whyKey } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+// "Who got what" inside the game's own leader screen: the diplomacy leader panel that opens from a leader's ribbon in
+// the top right (base-standard/ui/diplomacy-actions/panel-diplomacy-actions.js). Its populatePlayerCivInfo() rebuilds
+// #panel-diplomacy-actions__info-container with a Leader abilities header and the ability item (portrait, name and
+// the description our config rows hold); this file adds one section right after that item, with the lines
+// lshuf-reveal-lines.js builds: where each bonus came from, the attributes and their origins, the start terrain's
+// origin, and the shuffle number on the local player's leader. With "Show what everyone got: As you meet them" a
+// leader the local player hasn't met gets no section.
+//
+// Hook: a decorator on panel-diplomacy-actions (Controls.decorate, the way lshuf-city-details-names.js wraps a model
+// and Cultural Diffusion decorates panel-city-details) that watches the panel's root with a throttled
+// MutationObserver, since the panel rebuilds the container every time the shown player changes.
+import DiplomacyManager from "/base-standard/ui/diplomacy/diplomacy-manager.js";
+import { REVEAL } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { guarded } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+import { revealLines } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-reveal-lines.js";
 
-const TAG = "lshuf-reveal-panel";
-const DOCK_CLASS = "lshuf-reveal";
-const STYLE_ID = "lshuf-reveal-style";
-// The game's own unknown-leader portrait, so the button needs no art of its own.
-const DOCK_ICON = "fs://game/base-standard/leader_portrait_unknown.png";
-const CSS = `.ssb__button-icon.${DOCK_CLASS} { background-image: url("${DOCK_ICON}"); background-size: contain; }`
-  + ` .${TAG} { display: flex; align-items: center; justify-content: center; }`
-  + " .lshuf-reveal__frame { width: 60rem; max-width: 90%; height: 46rem; max-height: 90%; }"
-  + " .lshuf-reveal__note { margin-bottom: 0.4rem; }"
-  + " .lshuf-reveal__leader { margin-top: 0.9rem; padding-bottom: 0.6rem; }"
-  + " .lshuf-reveal__name { font-weight: bold; }"
-  + " .lshuf-reveal__ability { margin-top: 0.2rem; color: #e5d2ac; }";
+const LOG = "[lshuf-reveal]";
+// The panel comes as two elements, the player's own and another player's (both extend panel-diplomacy-actions, which
+// is never an element of its own; watched 2026-11-07).
+const PANEL_TAGS = ["panel-player-diplomacy-actions", "panel-other-player-diplomacy-actions"];
+const CONTAINER_ID = "panel-diplomacy-actions__info-container";
+const ABILITIES_TITLE = "LOC_DIPLOMACY_ACTIONS_LEADER_ABILITIES_TITLE";
+const SECTION_CLASS = "lshuf-diplo";
+const STYLE_ID = "lshuf-diplo-style";
+const THROTTLE_MS = 100;
+const CSS = ` .${SECTION_CLASS}__body { margin-left: 0.25rem; }`
+  + ` .${SECTION_CLASS}__line { margin-top: 0.3rem; }`
+  + ` .${SECTION_CLASS}__from { opacity: 0.75; font-style: italic; margin-left: 0.4rem; display: inline; }`;
 
-// Set by lshuf-game.js once the deal is read: () => the panel's content, or null when there's no deal.
+// Set by lshuf-game.js once the deal is read: () => the content (see revealContent there), or null without a deal.
 let contentSource = null;
-let dockCondition = () => true;
 export const setRevealSource = (fn) => {
   contentSource = fn;
 };
+
+export const isMetMode = (reveal) => reveal === REVEAL.Met;
 
 function el(tag, className, html) {
   const node = document.createElement(tag);
@@ -35,7 +42,7 @@ function el(tag, className, html) {
   return node;
 }
 
-const stylize = (key, ...args) => guarded("stylize", () => Locale.stylize(key, ...args), String(key));
+const stylize = (text) => guarded("stylize", () => Locale.stylize(text), String(text));
 
 function leaderName(leaderType) {
   return guarded("leader name", () => {
@@ -44,116 +51,18 @@ function leaderName(leaderType) {
   }, leaderType);
 }
 
-function attributeNames(leaderType, content) {
-  const names = [];
-  for (const row of content.deal.attributes || []) {
-    if (row.LeaderType !== leaderType) continue;
-    const attribute = content.attributeOf.get(row.TraitType);
-    const info = attribute ? guarded("attribute", () => GameInfo.Attributes.lookup(attribute), null) : null;
-    if (info && info.Name) names.push(Locale.compose(info.Name));
-  }
-  return names;
-}
-
-// "Leader: reason" lines for each leader the deal left out: every one in this game, and the listed modded leaders
-// wherever they are. With the mode on Not re-dealt every leader has that reason, so one line says it instead.
-// inGame: Set of the leader types in this game.
-export function leftOutLines(leaders, whyOf, inGame) {
-  const lines = [];
-  const rows = (leaders || []).filter((row) => row.Reason
-    && ((inGame && inGame.has(row.LeaderType)) || isModdedLeader(row.LeaderType)));
-  if (rows.some((row) => row.Reason === REASON.ModeNone)) {
-    return [{ leaderType: null, reasonKey: reasonKey(REASON.ModeNone) }];
-  }
-  for (const row of rows) {
-    const why = row.Reason === REASON.ModdedNotOK ? whyOf(row.LeaderType) : null;
-    lines.push({ leaderType: row.LeaderType, reasonKey: why ? whyKey(why) : reasonKey(row.Reason) });
-  }
-  return lines;
-}
-
-function notes(content) {
-  const out = [];
-  if (content.seed != null) out.push(stylize("LOC_LSHUF_DEAL_NUMBER", String(content.seed)));
-  if (content.mode) out.push(stylize(`LOC_${content.mode}`));
-  if (content.tooFew.length) out.push(stylize("LOC_LSHUF_REVEAL_TOO_FEW"));
-  if (content.differs.length) out.push(stylize("LOC_LSHUF_REVEAL_DIFFERS"));
-  const inGame = new Set(content.players().map((p) => p.leaderType).filter(Boolean));
-  for (const line of leftOutLines(content.deal.leaders, content.whyOf, inGame)) {
-    if (!line.leaderType) out.push(stylize(line.reasonKey));
-    else out.push(stylize("LOC_LSHUF_REVEAL_LEFT_OUT", leaderName(line.leaderType), Locale.compose(line.reasonKey)));
-  }
-  return out;
-}
-
-function leaderBlock(entry, content) {
-  const block = el("div", "lshuf-reveal__leader");
-  if (!entry.shown) {
-    block.appendChild(el("div", "lshuf-reveal__name", stylize("LOC_LSHUF_REVEAL_UNMET")));
-    return block;
-  }
-  block.appendChild(el("div", "lshuf-reveal__name", Locale.stylize(leaderName(entry.leaderType))));
-  const view = content.viewOf(entry.leaderType);
-  if (view) {
-    block.appendChild(el("div", "lshuf-reveal__ability", stylize(view.name)));
-    block.appendChild(el("div", "", Locale.stylize(view.description)));
-  }
-  const attributes = attributeNames(entry.leaderType, content);
-  if (attributes.length) block.appendChild(el("div", "", Locale.stylize(attributes.join(" · "))));
-  return block;
-}
-
-class LShufRevealPanel extends Panel {
-  onAttach() {
-    super.onAttach();
-    guarded("reveal panel", () => this.render());
-    this.onInput = (event) => {
-      const name = event.detail && event.detail.name;
-      if (event.detail && event.detail.status !== InputActionStatuses.FINISH) return;
-      if (name !== "cancel" && name !== "keyboard-escape") return;
-      this.close();
-      event.stopPropagation();
-      event.preventDefault();
-    };
-    this.Root.addEventListener("engine-input", this.onInput);
-  }
-
-  onDetach() {
-    if (this.onInput) this.Root.removeEventListener("engine-input", this.onInput);
-    super.onDetach();
-  }
-
-  render() {
-    const content = contentSource ? contentSource() : null;
-    const frame = el("fxs-frame", "lshuf-reveal__frame");
-    const header = el("fxs-header", "font-title text-xl uppercase");
-    header.setAttribute("title", "LOC_LSHUF_REVEAL_TITLE");
-    header.setAttribute("filigree-style", "h3");
-    frame.appendChild(header);
-    const close = el("fxs-close-button", "top-1 right-1");
-    close.addEventListener("action-activate", () => this.close());
-    frame.appendChild(close);
-    const scroll = el("fxs-scrollable", "flex-auto");
-    const body = el("div", "font-body text-base px-6");
-    if (content) {
-      for (const line of notes(content)) body.appendChild(el("div", "lshuf-reveal__note", line));
-      for (const entry of content.players()) body.appendChild(leaderBlock(entry, content));
+function lookupsOf(content) {
+  return {
+    compose: (key, ...args) => Locale.compose(key, ...args),
+    abilityOf: content.abilityOf,
+    leaderName,
+    whyOf: content.whyOf,
+    attributeName: (traitType) => {
+      const attribute = content.attributeOf.get(traitType);
+      const info = attribute ? guarded("attribute", () => GameInfo.Attributes.lookup(attribute), null) : null;
+      return info && info.Name ? Locale.compose(info.Name) : null;
     }
-    scroll.appendChild(body);
-    frame.appendChild(scroll);
-    this.Root.appendChild(frame);
-  }
-}
-
-guarded("define reveal panel", () => Controls.define(TAG, {
-  createInstance: LShufRevealPanel,
-  description: "Re-dealable Leaders: what everyone got",
-  classNames: [TAG, "w-full", "h-full"],
-  initializeImmediately: true
-}));
-
-export function openRevealPanel() {
-  guarded("open reveal", () => ContextManager.push(TAG, { singleton: true, createMouseGuard: true }));
+  };
 }
 
 function injectStyle() {
@@ -164,35 +73,120 @@ function injectStyle() {
   document.head.appendChild(style);
 }
 
-class LShufDockDecorator {
+// The section, styled like the panel's own sub-sections (the Agenda and Mementos headers).
+// The game's own bullets of the ability text get their origin at the end, " (from Amina)", one per bullet line in
+// order; a bullet of the leader's own is left as it is. The bullet is a GameFace inline paragraph: an element added
+// to it gets no size and rewriting its markup doubles its icons (watched 2026-11-07), so the origin goes in as plain
+// text. Returns how many bullets were marked.
+function markBullets(item, lines) {
+  const bullets = lines.filter((line) => line.kind === "bullet");
+  const paras = [...item.querySelectorAll(".list-begin > p")];
+  if (!bullets.length || paras.length < bullets.length) return 0;
+  bullets.forEach((line, i) => {
+    if (line.own) return;
+    const text = String(guarded("origin text", () => Locale.compose(line.from), line.from) || "").replace(/\[.*?\]/g, "");
+    paras[i].appendChild(document.createTextNode(` (${text.trim()})`));
+  });
+  return bullets.length;
+}
+
+function renderSection(lines) {
+  const section = el("div", `${SECTION_CLASS} flex flex-col w-full`);
+  const header = el("fxs-header", "uppercase mt-8 mb-2 text-secondary font-title text-base");
+  header.setAttribute("title", "LOC_LSHUF_REVEAL_TITLE");
+  header.setAttribute("filigree-style", "h4");
+  section.appendChild(header);
+  const body = el("div", `${SECTION_CLASS}__body font-body text-sm pointer-events-auto`);
+  for (const line of lines) body.appendChild(el("div", `${SECTION_CLASS}__line`, stylize(line.text)));
+  section.appendChild(body);
+  return section;
+}
+
+// The leader the panel shows (DiplomacyManager.selectedPlayerID), as a LeaderType, with whether it's the local player.
+function shownLeader() {
+  const playerId = DiplomacyManager.selectedPlayerID;
+  const player = Players.get(playerId);
+  if (!player || !player.isMajor) return null;
+  const row = GameInfo.Leaders.lookup(player.leaderType);
+  return row ? { leaderType: row.LeaderType, isLocal: playerId === GameContext.localPlayerID } : null;
+}
+
+// The ability item: the element right after the Leader abilities header in the info container.
+function abilityItem(container) {
+  const children = container.children || [];
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (child.tagName && child.tagName.toLowerCase() === "fxs-header" && child.getAttribute("title") === ABILITIES_TITLE) {
+      return child.nextElementSibling;
+    }
+  }
+  return null;
+}
+
+function sweep(root) {
+  const container = root.querySelector(`#${CONTAINER_ID}`);
+  if (!container || container.querySelector(`.${SECTION_CLASS}`)) return;
+  const item = abilityItem(container);
+  const content = contentSource ? contentSource() : null;
+  if (!item || !content) return;
+  const shown = shownLeader();
+  if (!shown || !content.shown(shown.leaderType)) return;
+  const lines = revealLines(shown.leaderType, content.deal, lookupsOf(content),
+    { seed: content.seed, isLocal: shown.isLocal });
+  if (!lines.length) return;
+  injectStyle();
+  // The bullets' origins go onto the game's own bullets; what's left (attributes, start terrain, behavior, the
+  // deal number) gets its own section. A bullet that couldn't be placed stays a line here.
+  const marked = markBullets(item, lines);
+  const rest = marked ? lines.filter((line) => line.kind !== "bullet") : lines.map((line) => (line.kind === "bullet"
+    ? { kind: "line", text: `${line.text} ${line.from}` } : line));
+  if (rest.length) container.insertBefore(renderSection(rest), item.nextSibling);
+  else container.insertBefore(el("div", SECTION_CLASS), item.nextSibling);
+}
+
+class LShufDiplomacyDecorator {
   constructor(panel) {
     this.panel = panel;
+    this.pending = null;
+    this.observer = null;
   }
 
   beforeAttach() {}
 
   afterAttach() {
-    guarded("dock button", () => {
-      injectStyle();
-      if (!this.panel || typeof this.panel.addButton !== "function" || !dockCondition()) return;
-      this.panel.addButton({ tooltip: "LOC_LSHUF_REVEAL_OPEN", modifierClass: DOCK_CLASS,
-        callback: () => openRevealPanel(), class: ["lshuf-reveal-dock-button"], audio: "data-audio-tab-selected",
-        focusedAudio: "data-audio-focus-small" });
+    const root = this.panel && this.panel.Root;
+    if (!root) return;
+    const run = () => {
+      this.pending = null;
+      guarded("diplomacy section", () => sweep(root));
+    };
+    guarded("diplomacy observer", () => {
+      this.observer = new MutationObserver(() => {
+        if (!this.pending) this.pending = setTimeout(run, THROTTLE_MS);
+      });
+      this.observer.observe(root, { childList: true, subtree: true });
     });
+    run();
   }
 
-  beforeDetach() {}
+  beforeDetach() {
+    if (this.observer) this.observer.disconnect();
+    if (this.pending) clearTimeout(this.pending);
+    this.observer = null;
+    this.pending = null;
+  }
 
   afterDetach() {}
 }
 
-/**
- * Adds the dock button. Call at load, before the dock attaches; `hasDeal` decides, when the dock draws, whether this
- * game has a deal to show.
- */
-export function installRevealDock(hasDeal) {
-  dockCondition = hasDeal;
-  guarded("dock decorator", () => Controls.decorate("panel-sub-system-dock", (panel) => new LShufDockDecorator(panel)));
+/** Adds the section to the diplomacy leader panel. Call at load, before the panel first attaches. */
+export function installRevealSection() {
+  if (typeof Controls === "undefined" || typeof Controls.decorate !== "function") {
+    console.warn(`${LOG} Controls.decorate unavailable; no section in the diplomacy panel`);
+    return false;
+  }
+  for (const tag of PANEL_TAGS) {
+    guarded(`diplomacy decorator ${tag}`, () => Controls.decorate(tag, (panel) => new LShufDiplomacyDecorator(panel)));
+  }
+  return true;
 }
-
-export const isMetMode = (reveal) => reveal === REVEAL.Met;

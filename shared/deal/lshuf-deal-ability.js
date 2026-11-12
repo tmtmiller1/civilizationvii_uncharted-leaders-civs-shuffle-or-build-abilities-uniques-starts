@@ -1,5 +1,5 @@
 // The ability axis: whole abilities (modes 1 and 2) or pieces (modes 3 and 4), SPEC section 3.
-import { PIECE_KIND, pieceId } from "../lshuf-constants.js";
+import { PIECE_KIND, REASON, pieceId } from "../lshuf-constants.js";
 import { SALT } from "../lshuf-key.js";
 import {
   BALANCE_SCALE,
@@ -118,39 +118,93 @@ function recordHolders(deck, holder, out) {
   return { held, donors, receivers };
 }
 
+// A leader no player is playing, whose ability a builder's card can still take (CONTRACTS 24): nobody else holds
+// it, so the builder's copy costs no one anything.
+export const isAbsent = (ctx, A, leader) =>
+  A.reason[leader] === REASON.NotInGame && !!(ctx.byType.get(leader) || {}).ability;
+
 // The builder's ability picks in the split modes (CONTRACTS 13): a whole card takes every piece of that leader out
 // of the deck as one whole piece; a bullet card takes that piece when it's in the deck (its leader is dealt in
 // pieces). The taken pieces are the builder's hand, the builder keeps no slot and gets no remainder, and the rest
 // of the deck is dealt among the others. Returns { pieces, taken, holder, receivers } for the deal.
-function takeBuild(ctx, pool, shapes, deckPieces) {
-  const taken = [];
-  const holder = {};
-  const takers = new Set();
-  let pieces = deckPieces;
-  for (const build of buildsFor(ctx, { dealtSet: new Set(pool) })) {
-    const mine = [];
-    for (const y of build.wholes) {
-      if (!shapes[y] || !pieces.find((p) => p.from === y)) continue;
+// An absent leader's pieces (CONTRACTS 24) aren't in the deck: a card takes them straight into the builder's hand,
+// a whole card taking every one still left, and the deck's keys stay as they were.
+function absentShapes(ctx, A) {
+  const shapes = {};
+  return (y) => {
+    if (!isAbsent(ctx, A, y)) return null;
+    if (!shapes[y]) shapes[y] = { ...splitShape(ctx.input, ctx.byType.get(y)), left: null };
+    if (shapes[y].left == null) shapes[y].left = shapes[y].pieces.slice();
+    return shapes[y];
+  };
+}
+
+// A whole card takes an absent leader's ability only while none of it has been taken; a bullet card takes its piece
+// while it's left and the ability isn't dealt whole.
+function takeAbsentWhole(away, y) {
+  if (away.left.length !== away.pieces.length) return [];
+  away.left = [];
+  return [{ id: pieceId.whole(y), from: y, kind: "whole", index: 0, value: away.wholeValue, absent: true }];
+}
+
+function takeAbsentBullet(away, id) {
+  const p = away.whole ? null : away.left.find((c) => c.id === id);
+  if (!p) return [];
+  away.left = away.left.filter((c) => c.id !== id);
+  return [{ ...p, absent: true }];
+}
+
+// One builder's cards against the deck as it stands: returns its hand and the deck left.
+function takeOne(build, shapes, absent, deck) {
+  const mine = [];
+  let pieces = deck;
+  for (const y of build.wholes) {
+    const away = !shapes[y] && absent(y);
+    if (away) mine.push(...takeAbsentWhole(away, y));
+    else if (shapes[y] && pieces.find((p) => p.from === y)) {
       pieces = pieces.filter((p) => p.from !== y);
       mine.push({ id: pieceId.whole(y), from: y, kind: "whole", index: 0, value: shapes[y].wholeValue });
       shapes[y].hasRest = false;
     }
-    for (const id of build.bullets) {
-      const p = pieces.find((c) => c.id === id);
-      if (!p) continue;
+  }
+  for (const id of build.bullets) {
+    const away = !shapes[id.replace(BULLET_OWNER, "")] && absent(id.replace(BULLET_OWNER, ""));
+    const p = away ? null : pieces.find((c) => c.id === id);
+    if (away) mine.push(...takeAbsentBullet(away, id));
+    else if (p) {
       pieces = pieces.filter((c) => c.id !== id);
       mine.push(p);
     }
-    if (!mine.length) continue;
-    for (const p of mine) holder[p.id] = build.leader;
+  }
+  return { mine, pieces };
+}
+
+function takeBuild(ctx, A, pool, shapes, deckPieces) {
+  const taken = [];
+  const holder = {};
+  const takers = new Set();
+  const absent = absentShapes(ctx, A);
+  let pieces = deckPieces;
+  for (const build of buildsFor(ctx, { dealtSet: new Set(pool) })) {
+    const one = takeOne(build, shapes, absent, pieces);
+    pieces = one.pieces;
+    if (!one.mine.length) continue;
+    for (const p of one.mine) holder[p.id] = build.leader;
     shapes[build.leader].hasRest = false;
     takers.add(build.leader);
-    taken.push(...mine);
+    taken.push(...one.mine);
   }
   return { pieces, taken, holder, receivers: pool.filter((x) => !takers.has(x)) };
 }
 
-function dealSplit(ctx, pool, out) {
+// Who took most of each absent leader's pieces, for its unlocks (lshuf-deal-unlocks.js).
+function absentReceivers(taken, receivers, out) {
+  for (const y of new Set(taken.filter((p) => p.absent).map((p) => p.from))) {
+    out.largestReceiver[y] = largest(receivers[y] || {}) || y;
+  }
+}
+
+function dealSplit(ctx, A, pool, out) {
   const deckPieces = [];
   const shapes = {};
   for (const x of pool) {
@@ -158,12 +212,15 @@ function dealSplit(ctx, pool, out) {
     deckPieces.push(...shapes[x].pieces);
     if (shapes[x].changed) out.changed[x] = true;
   }
-  const build = takeBuild(ctx, pool, shapes, deckPieces);
+  const build = takeBuild(ctx, A, pool, shapes, deckPieces);
   const takenIds = new Set(build.taken.map((p) => p.id));
-  // Keys are ranked over every piece, taken ones included, so the deck order matches the SQL's.
-  const deck = deckOrder(ctx, [...build.pieces, ...build.taken]).filter((p) => !takenIds.has(p.id));
+  // Keys are ranked over every piece, taken ones included, so the deck order matches the SQL's; an absent leader's
+  // pieces were never in the deck and stay out of the ranking.
+  const ranked = [...build.pieces, ...build.taken.filter((p) => !p.absent)];
+  const deck = deckOrder(ctx, ranked).filter((p) => !takenIds.has(p.id));
   const holder = { ...build.holder, ...dealCards(ctx, pool, deck, shapes, build.receivers) };
   const { held, donors, receivers } = recordHolders([...deck, ...build.taken], holder, out);
+  absentReceivers(build.taken, receivers, out);
   for (const x of pool) {
     const list = (held[x] || []).map((p) => ({ ...p, rest: 0 }));
     if (shapes[x].hasRest) {
@@ -183,15 +240,17 @@ function dealSplit(ctx, pool, out) {
 // the behavior can differ from the ability's (CONTRACTS 13). A builder with bullet cards and no whole card gets
 // exactly those bullets (copied; their leaders keep them), leaves the cycle, and the ability it was to take goes
 // to whoever was to take its own; its own ability goes to nobody.
-function wholeBuild(ctx, pool, donors) {
+function wholeBuild(ctx, A, pool, donors) {
   const copy = new Set();
   const bullets = new Map();
   const majors = new Set(ctx.majors);
   for (const build of buildsFor(ctx, { dealtSet: new Set(pool) })) {
-    const y = build.wholes.find((w) => pool.includes(w));
+    // An absent leader's whole ability (CONTRACTS 24) goes to the builder alone: nobody else's draw changes, and the
+    // ability the builder was to take goes to nobody.
+    const y = build.wholes.find((w) => pool.includes(w) || isAbsent(ctx, A, w));
     if (y != null && donors[build.leader] !== y) {
       const r = pool.find((x) => donors[x] === y);
-      donors[r] = donors[build.leader];
+      if (r != null) donors[r] = donors[build.leader];
       donors[build.leader] = y;
     }
     const mine = y == null ? build.bullets.filter((id) => majors.has(id.replace(BULLET_OWNER, ""))) : [];
@@ -221,9 +280,9 @@ function bulletHand(x, ids, out) {
   out.path[x] = "copy";
 }
 
-function dealWhole(ctx, pool, out) {
+function dealWhole(ctx, A, pool, out) {
   const donors = cyclicDonors(ctx.seed, SALT.Leaders, pool);
-  const { copy: copyBuilders, bullets } = wholeBuild(ctx, pool, donors);
+  const { copy: copyBuilders, bullets } = wholeBuild(ctx, A, pool, donors);
   for (const x of pool) {
     if (bullets.has(x)) {
       bulletHand(x, bullets.get(x), out);
@@ -250,8 +309,8 @@ export function dealAbility(ctx, axes) {
     changed: {}
   };
   const A = axes.A;
-  if (A.dealt.length && ctx.f.isWhole) dealWhole(ctx, A.dealt, out);
-  else if (A.dealt.length && ctx.f.isSplit) dealSplit(ctx, A.dealt, out);
+  if (A.dealt.length && ctx.f.isWhole) dealWhole(ctx, A, A.dealt, out);
+  else if (A.dealt.length && ctx.f.isSplit) dealSplit(ctx, A, A.dealt, out);
   for (const l of ctx.input.leaders) {
     if (A.dealtSet.has(l.type)) continue;
     if (isOffFor(A, l.type)) {

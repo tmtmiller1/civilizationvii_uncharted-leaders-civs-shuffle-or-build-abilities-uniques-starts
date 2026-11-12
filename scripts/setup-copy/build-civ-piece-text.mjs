@@ -2,6 +2,8 @@
 // bullet piece (data/mapping/lshuf-civ-mapping.sql) in every language the localization database holds, cut from
 // each ability's live description with the splitBullets() rule (shared/lshuf-text.js), BulletCount-aware. The
 // description key per piece is the mapping's own (the civilization's age key where the game keeps one per age).
+// A piece whose text differs in another age (LShufCivMappingAgeText: the game scales an ability's numbers by age)
+// also gets LOC_LSHUF_CIVPIECE_<PieceId>__AQ, __EX or __MO, cut from that age's description.
 //
 //   node scripts/setup-copy/build-civ-piece-text.mjs [--loc PATH] [--no-check]
 //
@@ -29,11 +31,14 @@ const BODY = `CASE WHEN instr(${AFTER}, '[/BLIST]') > 0 THEN substr(${AFTER}, 1,
   + `ELSE ${AFTER} END`;
 const SEG = `substr(rest, 1, instr(rest, ${LI}) - 1)`;
 
+const AGE_SUFFIX = { AGE_ANTIQUITY: "AQ", AGE_EXPLORATION: "EX", AGE_MODERN: "MO" };
+const tagOf = (piece) => `LOC_LSHUF_CIVPIECE_${piece.PieceId}${piece.Age ? `__${AGE_SUFFIX[piece.Age]}` : ""}`;
+
 function pieceStatement(piece) {
   const first = Number(piece.BulletIndex);
   const last = first + Math.max(1, Number(piece.BulletCount || 1)) - 1;
   return [
-    `-- ${piece.PieceId}: bullet${last > first ? `s ${first}-${last}` : ` ${first}`} of ${piece.DescriptionKey}`,
+    `-- ${piece.PieceId}${piece.Age ? ` in ${piece.Age}` : ""}: bullet${last > first ? `s ${first}-${last}` : ` ${first}`} of ${piece.DescriptionKey}`,
     "WITH RECURSIVE seg(Language, rest, piece, n) AS (",
     `  SELECT Language, (${BODY}) || ${LI}, NULL, 0 FROM LocalizedText`,
     `  WHERE Tag = ${quote(piece.DescriptionKey)} AND instr(Text, ${LI}) > 0`,
@@ -43,7 +48,7 @@ function pieceStatement(piece) {
     `  FROM seg WHERE instr(rest, ${LI}) > 0`,
     ")",
     "INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)",
-    `SELECT Language, ${quote(`LOC_LSHUF_CIVPIECE_${piece.PieceId}`)}, group_concat(piece, '[N]') FROM`,
+    `SELECT Language, ${quote(tagOf(piece))}, group_concat(piece, '[N]') FROM`,
     `  (SELECT Language, piece, n FROM seg WHERE n BETWEEN ${first} AND ${last} AND piece <> '' ORDER BY Language, n)`,
     "GROUP BY Language;"
   ].join("\n");
@@ -54,8 +59,10 @@ function pieces() {
   db.exec(fs.readFileSync(MAPPING, "utf8"));
   const rows = db.prepare("SELECT PieceId, BulletIndex, BulletCount, DescriptionKey FROM LShufCivMapping "
     + "WHERE Kind = 'bullet' AND BulletIndex IS NOT NULL AND DescriptionKey IS NOT NULL ORDER BY PieceId").all();
+  const aged = db.prepare("SELECT PieceId, Age, BulletIndex, BulletCount, DescriptionKey FROM LShufCivMappingAgeText "
+    + "ORDER BY PieceId, Age").all();
   db.close();
-  return rows;
+  return [...rows, ...aged];
 }
 
 function check(sqlText, list) {
@@ -75,9 +82,9 @@ function check(sqlText, list) {
       const parts = [];
       for (let i = 0; i < count; i++) parts.push(bulletAt(source, Number(p.BulletIndex) + i));
       const want = parts.filter(Boolean).join("[N]");
-      const got = get.get("en_US", `LOC_LSHUF_CIVPIECE_${p.PieceId}`)?.Text || "";
+      const got = get.get("en_US", tagOf(p))?.Text || "";
       if (want === got) same++;
-      else wrong.push(`${p.PieceId}: SQL ${JSON.stringify(got.slice(0, 60))} vs JS ${JSON.stringify(want.slice(0, 60))}`);
+      else wrong.push(`${tagOf(p)}: SQL ${JSON.stringify(got.slice(0, 60))} vs JS ${JSON.stringify(want.slice(0, 60))}`);
     }
     return { same, wrong, rows };
   } finally {

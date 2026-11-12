@@ -2579,7 +2579,7 @@ SELECT Language, 'LOC_LSHUF_PIECE_LEADER_XERXES__B04', group_concat(piece, '[N]'
   (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
 GROUP BY Language;
 
--- LEADER_YI_SUN_SIN__B01: bullet 1 of LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION
+-- LEADER_YI_SUN_SIN__B01: bullets 1, 3, 4 of LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION
 WITH RECURSIVE seg(Language, rest, piece, n) AS (
   SELECT Language, (CASE WHEN instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') > 0 THEN substr(substr(Text, instr(Text, '[LI]') + 4), 1, instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') - 1) ELSE substr(Text, instr(Text, '[LI]') + 4) END) || '[LI]', NULL, 0 FROM LocalizedText
   WHERE Tag = 'LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION' AND instr(Text, '[LI]') > 0
@@ -2590,7 +2590,7 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
 )
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
 SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B01', group_concat(piece, '[N]') FROM
-  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 1 AND 1 AND piece <> '' ORDER BY Language, n)
+  (SELECT Language, piece, n FROM seg WHERE n IN (1, 3, 4) AND piece <> '' ORDER BY Language, n)
 GROUP BY Language;
 
 -- LEADER_YI_SUN_SIN__B02: bullet 2 of LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION
@@ -2605,34 +2605,6 @@ WITH RECURSIVE seg(Language, rest, piece, n) AS (
 INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
 SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B02', group_concat(piece, '[N]') FROM
   (SELECT Language, piece, n FROM seg WHERE n BETWEEN 2 AND 2 AND piece <> '' ORDER BY Language, n)
-GROUP BY Language;
-
--- LEADER_YI_SUN_SIN__B03: bullet 3 of LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION
-WITH RECURSIVE seg(Language, rest, piece, n) AS (
-  SELECT Language, (CASE WHEN instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') > 0 THEN substr(substr(Text, instr(Text, '[LI]') + 4), 1, instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') - 1) ELSE substr(Text, instr(Text, '[LI]') + 4) END) || '[LI]', NULL, 0 FROM LocalizedText
-  WHERE Tag = 'LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION' AND instr(Text, '[LI]') > 0
-  UNION ALL
-  SELECT Language, substr(rest, instr(rest, '[LI]') + 4), trim(substr(rest, 1, instr(rest, '[LI]') - 1), ' ' || char(9) || char(10) || char(13)),
-    n + (trim(substr(rest, 1, instr(rest, '[LI]') - 1), ' ' || char(9) || char(10) || char(13)) <> '')
-  FROM seg WHERE instr(rest, '[LI]') > 0
-)
-INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B03', group_concat(piece, '[N]') FROM
-  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 3 AND 3 AND piece <> '' ORDER BY Language, n)
-GROUP BY Language;
-
--- LEADER_YI_SUN_SIN__B04: bullet 4 of LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION
-WITH RECURSIVE seg(Language, rest, piece, n) AS (
-  SELECT Language, (CASE WHEN instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') > 0 THEN substr(substr(Text, instr(Text, '[LI]') + 4), 1, instr(substr(Text, instr(Text, '[LI]') + 4), '[/BLIST]') - 1) ELSE substr(Text, instr(Text, '[LI]') + 4) END) || '[LI]', NULL, 0 FROM LocalizedText
-  WHERE Tag = 'LOC_TRAIT_LEADER_YI_SUN_SIN_ABILITY_DESCRIPTION' AND instr(Text, '[LI]') > 0
-  UNION ALL
-  SELECT Language, substr(rest, instr(rest, '[LI]') + 4), trim(substr(rest, 1, instr(rest, '[LI]') - 1), ' ' || char(9) || char(10) || char(13)),
-    n + (trim(substr(rest, 1, instr(rest, '[LI]') - 1), ' ' || char(9) || char(10) || char(13)) <> '')
-  FROM seg WHERE instr(rest, '[LI]') > 0
-)
-INSERT OR REPLACE INTO LocalizedText (Language, Tag, Text)
-SELECT Language, 'LOC_LSHUF_PIECE_LEADER_YI_SUN_SIN__B04', group_concat(piece, '[N]') FROM
-  (SELECT Language, piece, n FROM seg WHERE n BETWEEN 4 AND 4 AND piece <> '' ORDER BY Language, n)
 GROUP BY Language;
 
 -- LEADER_Yamada__B01: bullet 1 of LOC_TRAIT_LEADER_Yamada_ABILITY_DESCRIPTION

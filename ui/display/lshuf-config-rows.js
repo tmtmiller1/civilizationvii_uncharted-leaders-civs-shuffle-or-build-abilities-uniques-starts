@@ -91,19 +91,56 @@ export function writeLeaderRows(leaderType, view, current, tagTypes) {
 const UNIQUE_KINDS = ["KIND_UNIT", "KIND_BUILDING", "KIND_QUARTER", "KIND_IMPROVEMENT"];
 
 /**
- * The civ select's rows as they stand: CivilizationType -> { rows: [every CivilizationItems row of that civ, as the
- * table holds it] }. The civ cards read the KIND_TRAIT row (the ability) and the unique rows per age domain.
+ * The civ select's rows: CivilizationType -> { rows: [every row of that civ, as the table holds it] }. The civ cards
+ * read the KIND_TRAIT row (the ability) and the unique rows per age domain. The live table has been rewritten once
+ * the mod has shown a deal, so a civ's shipped rows come from the copy in SHIPPED_CIV_ITEMS
+ * (data/frontend/civ-items-copy.sql).
  * @returns {Map<string, { rows: object[] }>}
  */
-export function readCivItemRows() {
+export const SHIPPED_CIV_ITEMS = "LShufSetup_CivilizationItems";
+const SHIPPED_CIV_TAGS = "LShufSetup_CivilizationTags";
+const TAG_LIKE = "TagType LIKE 'TAG\\_TRAIT\\_%' ESCAPE '\\'";
+
+// Each civ's rows, and its attribute tags (TAG_TRAIT_*, CONTRACTS 30) by domain: the shipped copy's when reading the
+// shipped rows, the live ones otherwise. A database without the tags copy leaves `tagRows` out.
+export function readCivItemRows(table = "CivilizationItems") {
   const out = new Map();
   const sql = "SELECT CivilizationDomain, CivilizationType, AgeType, Type, Kind, Name, Description, Icon, SortIndex, "
-    + "CanSyncretize FROM CivilizationItems ORDER BY CivilizationType, CivilizationDomain, SortIndex";
+    + `CanSyncretize FROM ${table} ORDER BY CivilizationType, CivilizationDomain, SortIndex`;
   for (const row of configQuery(sql) || []) {
     if (!out.has(row.CivilizationType)) out.set(row.CivilizationType, { rows: [] });
     out.get(row.CivilizationType).rows.push({ ...row });
   }
+  const tagTable = table === SHIPPED_CIV_ITEMS ? SHIPPED_CIV_TAGS : "CivilizationTags";
+  const tags = configQuery(`SELECT CivilizationDomain, CivilizationType, TagType FROM ${tagTable} WHERE ${TAG_LIKE} `
+    + "ORDER BY CivilizationType, CivilizationDomain, TagType");
+  for (const t of tags || []) {
+    const civ = out.get(t.CivilizationType);
+    if (civ) (civ.tagRows || (civ.tagRows = [])).push({ ...t });
+  }
   return out;
+}
+
+// A civ's attribute tags, in its first domain's order; null when its rows carry none.
+const tagsOfRows = (tagRows) => {
+  if (!tagRows || !tagRows.length) return null;
+  const first = tagRows[0].CivilizationDomain;
+  return tagRows.filter((t) => t.CivilizationDomain === first).map((t) => t.TagType);
+};
+
+// The civ's attribute tags in every domain its shipped tags sit in (CONTRACTS 30).
+function writeCivTags(civType, tags, shipped) {
+  const domains = [...new Set(((shipped && shipped.tagRows) || []).map((t) => t.CivilizationDomain))];
+  if (!tags || !domains.length) return [];
+  const where = `CivilizationType = ${sqlText(civType)}`;
+  const ok = [configQuery(`DELETE FROM CivilizationTags WHERE ${where} AND ${TAG_LIKE}`)];
+  for (const domain of domains) {
+    for (const tag of tags) {
+      ok.push(configQuery("INSERT OR IGNORE INTO CivilizationTags (CivilizationDomain, CivilizationType, TagType) VALUES ("
+        + `${sqlText(domain)}, ${sqlText(civType)}, ${sqlText(tag)})`));
+    }
+  }
+  return ok;
 }
 
 /**
@@ -122,8 +159,11 @@ export function writeCivItemRows(civType, view, shipped) {
   }
   const kinds = UNIQUE_KINDS.map(sqlText).join(", ");
   ok.push(configQuery(`DELETE FROM CivilizationItems WHERE ${where} AND Kind IN (${kinds})`));
-  // The civ's own age domains, so a unique shows wherever the civ's cards show.
-  const domains = [...new Set((shipped ? shipped.rows : []).map((r) => `${r.CivilizationDomain}|${r.AgeType || ""}`))];
+  // The domains the civ's own unique rows sit in (as shipped, the home age's, with no age on the row), so a unique
+  // shows where the civ's uniques show and once only.
+  const rows = shipped ? shipped.rows : [];
+  const uniqueRows = rows.filter((r) => UNIQUE_KINDS.includes(r.Kind));
+  const domains = [...new Set((uniqueRows.length ? uniqueRows : rows).map((r) => `${r.CivilizationDomain}|${r.AgeType || ""}`))];
   for (const key of domains) {
     const [domain, age] = key.split("|");
     for (const u of view.uniques) {
@@ -133,6 +173,7 @@ export function writeCivItemRows(civType, view, shipped) {
           .map((v) => (typeof v === "number" ? String(v) : sqlText(v))).join(", ") + ")"));
     }
   }
+  ok.push(...writeCivTags(civType, view.tags, shipped));
   return ok.every((result) => result !== null);
 }
 
@@ -144,7 +185,8 @@ export function shippedCivView(shipped) {
   const trait = rows.find((r) => r.Kind === "KIND_TRAIT") || null;
   const firstDomain = rows.length ? rows[0].CivilizationDomain : null;
   const uniques = rows.filter((r) => UNIQUE_KINDS.includes(r.Kind) && r.CivilizationDomain === firstDomain);
-  return { ability: trait ? { Name: trait.Name, Description: trait.Description } : null, uniques };
+  return { ability: trait ? { Name: trait.Name, Description: trait.Description } : null, uniques,
+    tags: tagsOfRows(shipped && shipped.tagRows) };
 }
 
 // Abilities split into bonuses: the ctx's Abilities part (CONTRACTS 15), with the old mode names as a fallback.

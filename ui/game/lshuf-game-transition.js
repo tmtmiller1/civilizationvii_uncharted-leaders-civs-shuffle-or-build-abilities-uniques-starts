@@ -6,6 +6,11 @@
 // with the transition.
 
 import { injectBuildButton } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-entry.js";
+import { writeBuildKeys } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-keys.js";
+import { BUILD_SLOTS } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import {
+  buildForLeader, buildPicks, isLocalHost, readSlots
+} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
 
 const THROTTLE_MS = 150;
 const log = (msg) => console.warn(`[lshuf-game] ${msg}`);
@@ -15,6 +20,9 @@ let lastCivs = "";
 
 // What the game configuration says each player's civilization is, logged whenever it changes while a transition
 // screen is up: this says when the engine's picks for the AI leaders become readable (CONTRACTS 20, open point 2).
+const onTransitionScreen = () => !!(document.querySelector(".civ-age-select-body")
+  || document.querySelector(".civ-details-continue-button"));
+
 function logConfigCivs() {
   const screen = document.querySelector(".civ-age-select-body") ? "civ select"
     : document.querySelector(".civ-details-continue-button") ? "civ details" : "";
@@ -30,11 +38,29 @@ function logConfigCivs() {
   log(`${screen} at turn ${Game.turn}: config civs ${line}`);
 }
 
+// Every builder slot's cards and leader as the setup parameters hold them now.
+function picksNow() {
+  const out = [];
+  for (let n = 1; n <= BUILD_SLOTS; n++) out.push(`${buildForLeader(n) || ""}:${buildPicks(n).join("|")}`);
+  return out.join(",");
+}
+
+// The picks as the game loaded; a build made on a transition screen changes them, and only then are the deal's
+// builder keys rewritten (with the civilization each player is taking into the next age), so the next age's data
+// load applies them. A player who doesn't build at the transition keeps what setup wrote.
+let loadedPicks = null;
+function writeTransitionBuilds() {
+  if (loadedPicks == null) loadedPicks = picksNow();
+  if (!isLocalHost() || picksNow() === loadedPicks) return;
+  writeBuildKeys(readSlots());
+}
+
 function sweep() {
   pending = null;
   try {
     injectBuildButton();
     logConfigCivs();
+    if (onTransitionScreen()) writeTransitionBuilds();
   } catch (e) {
     log(`transition sweep failed: ${e}`);
   }
@@ -45,6 +71,11 @@ function onMutations() {
 }
 
 export function installTransitionButtons() {
+  try {
+    loadedPicks = picksNow();
+  } catch (e) {
+    log(`reading the build picks failed: ${e}`);
+  }
   try {
     new MutationObserver(onMutations).observe(document.body, { childList: true, subtree: true });
   } catch (e) {

@@ -55,6 +55,12 @@ CREATE TABLE IF NOT EXISTS LShufSetup_StartBiasResources (CivilizationType TEXT,
 -- Each civilization's ability and uniques for the civ build screen (CONTRACTS 14): from the gameplay data, so the
 -- card list matches what the deal can move. Kind: 'ability', 'unit', 'building', 'quarter', 'improvement'.
 -- Each civilization's unique civics tree: its nodes and what they unlock (CONTRACTS 18), for the civics card text.
+-- Each unique quarter's two buildings (CONTRACTS 21), filled by data/setup-copy/setup-copy-quarters.sql.
+CREATE TABLE IF NOT EXISTS LShufSetup_UniqueQuarters (
+  QuarterType TEXT NOT NULL PRIMARY KEY,
+  BuildingType1 TEXT NOT NULL,
+  BuildingType2 TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS LShufSetup_CivCivics (
   CivilizationType TEXT NOT NULL,
   NodeType TEXT NOT NULL,
@@ -72,6 +78,14 @@ CREATE TABLE IF NOT EXISTS LShufSetup_CivicNodes (
   Cost INTEGER,
   Depth INTEGER NOT NULL DEFAULT 0,
   Prereqs TEXT
+);
+-- Cards that travel with another card (CONTRACTS 23): Kind 'civic' (CIVNODE_ ids, civics that need each other) or
+-- 'unique' (CIVUNQ_ ids, an improvement only one unit card builds). A rider isn't a card of its own.
+CREATE TABLE IF NOT EXISTS LShufSetup_CivRiders (
+  Kind TEXT NOT NULL,
+  CivilizationType TEXT NOT NULL,
+  LeadId TEXT NOT NULL,
+  RiderId TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS LShufSetup_CivItems (
   CivilizationType TEXT NOT NULL,

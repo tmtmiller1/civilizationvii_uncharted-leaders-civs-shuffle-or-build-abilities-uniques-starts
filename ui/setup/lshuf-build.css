@@ -36,6 +36,28 @@
   cursor: pointer;
 }
 
+.lshuf-build__slot--kept {
+  cursor: default;
+  opacity: 0.7;
+}
+
+/* A slot a bundle's rider takes (CONTRACTS 23): the lead's art, dimmed, so the row shows how many slots are free. */
+.lshuf-build__slot--rider {
+  opacity: 0.55;
+}
+
+/* The help mark beside the title; its tooltip carries what the screen is for. */
+.lshuf-build__help {
+  width: 1.4rem;
+  height: 1.4rem;
+  line-height: 1.4rem;
+  text-align: center;
+  border-radius: 50%;
+  border: 0.0625rem solid rgba(230, 193, 120, 0.8);
+  color: rgba(230, 193, 120, 1);
+  cursor: default;
+}
+
 .lshuf-build__slot--wide {
   width: 19rem;
 }
@@ -59,8 +81,15 @@
   text-overflow: ellipsis;
 }
 
+/* An empty slot's label sits in the middle of the frame, clear of its bottom edge. */
 .lshuf-build__slot-name--empty {
-  color: rgba(197, 176, 128, 0.55);
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  white-space: normal;
+  line-height: 1.1;
+  font-size: 0.7rem;
+  color: rgba(197, 176, 128, 0.7);
   text-shadow: none;
 }
 
@@ -158,12 +187,18 @@
   background-color: rgba(8, 10, 16, 0.78);
 }
 
+/* Up to two lines, so a long ability name reads whole. */
 .lshuf-build__card-name {
   color: #f1e4c5;
   width: 100%;
+  max-height: 2.3em;
+  line-height: 1.15;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.lshuf-build__details-empty {
+  color: rgba(197, 176, 128, 0.7);
 }
 
 .lshuf-build__pips {
@@ -178,17 +213,23 @@
   background-repeat: no-repeat;
 }
 
+/* On a dark band, so it reads over the bright civilization art too. */
 .lshuf-build__own {
   position: absolute;
   top: 0.25rem;
   right: 0.35rem;
-  color: #c5b080;
-  text-shadow: 0 0 0.2rem #000;
+  padding: 0 0.3rem;
+  color: #f0e2c0;
+  background-color: rgba(10, 8, 6, 0.8);
+  border-radius: 0.15rem;
 }
 
 .lshuf-build__card--taken,
 .lshuf-build__card--unreviewed,
+.lshuf-build__card--otherage,
+.lshuf-build__card--terrainoff,
 .lshuf-build__card--full,
+.lshuf-build__card--bundle,
 .lshuf-build__card--off,
 .lshuf-build__grid--off .lshuf-build__card {
   opacity: 0.45;
@@ -196,6 +237,12 @@
 
 .lshuf-build__card--taken {
   opacity: 0.7;
+}
+
+/* What comes with a card (CONTRACTS 23). */
+.lshuf-build__card-with {
+  color: #e8d9b0;
+  font-style: italic;
 }
 
 /* The details pane. */
@@ -330,31 +377,39 @@
   text-shadow: 0 0 0.2rem #000;
 }
 
-/* The AI leaders window. */
-.lshuf-ai__frame {
-  width: 60rem;
-  max-width: 90vw;
-  max-height: 88vh;
+/* The link row across the top of the build window: its two pages, the one on screen marked. */
+.lshuf-build__pages {
+  border-bottom: 0.0555rem solid rgba(197, 176, 128, 0.35);
 }
 
-.lshuf-ai__scroll {
-  max-height: 60vh;
+.lshuf-build__page {
+  padding: 0.3rem 0.9rem;
+  margin-right: 0.4rem;
+  opacity: 0.6;
+  cursor: pointer;
+  border-bottom: 0.15rem solid transparent;
 }
 
-.lshuf-ai__row {
-  padding: 0.5rem 0;
-  border-bottom: 0.0555rem solid rgba(197, 176, 128, 0.25);
+.lshuf-build__page:hover {
+  opacity: 0.9;
 }
 
-.lshuf-ai__portrait {
-  width: 3.4rem;
-  height: 3.4rem;
+.lshuf-build__page--on {
+  opacity: 1;
+  cursor: default;
+  border-bottom-color: rgba(230, 193, 120, 0.95);
 }
 
-.lshuf-ai__civ {
-  width: 6rem;
-  height: 3.4rem;
-  margin-left: 0.5rem;
+/* The settings on a build page, boxed and titled: the shuffle for the whole game, which needs no build. */
+.lshuf-build__shuffle-box {
+  padding: 0.4rem 0.7rem 0.2rem;
+  border: 0.0555rem solid rgba(197, 176, 128, 0.45);
+  border-radius: 0.2rem;
+  background-color: rgba(18, 21, 31, 0.45);
+}
+
+.lshuf-build__shuffle-note {
+  margin-bottom: 0.3rem;
 }
 
 /* Generic start terrain cards: a tile in the terrain's own colours, since the game has no card art for a terrain. */
@@ -388,26 +443,29 @@
   background-position: center;
 }
 
-/* The civics look (lshuf-build-tree.js): one narrow column of cards, the tree in the rest. */
-.lshuf-build__body--tree .lshuf-build__scroll {
-  flex: none;
-  width: 15.2rem;
+/* The civics tree layer (lshuf-build-window.js openTree): covers the cards and the details, fixed size. */
+.lshuf-build__body {
+  position: relative;
 }
 
-.lshuf-build__body--tree .lshuf-build__details {
-  flex: 1 1 auto;
-  width: auto;
-  min-width: 0;
+.lshuf-build__tree-layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   padding: 0.4rem 0.6rem;
+  background-color: #0e1016;
+  border: 0.0555rem solid rgba(197, 176, 128, 0.45);
+}
+
+.lshuf-build__tree-bar {
+  flex: none;
+  margin-bottom: 0.4rem;
 }
 
 .lshuf-build__tree-scroll {
-  position: absolute;
-  inset: 0;
-}
-
-.lshuf-build__body--tree .lshuf-build__details {
-  position: relative;
+  min-height: 0;
 }
 
 .lshuf-tree__canvas {
@@ -426,6 +484,12 @@
   background-color: rgba(10, 12, 18, 0.85);
   position: relative;
   z-index: 1;
+}
+
+/* The civic a single civic card stands for, when the tree is opened from that card. */
+.lshuf-tree__node--picked {
+  border-color: #f0e2c0;
+  background-color: rgba(60, 48, 24, 0.9);
 }
 
 .lshuf-tree__node-name {
@@ -448,4 +512,50 @@
   position: absolute;
   background-color: rgba(197, 176, 128, 0.7);
   z-index: 0;
+}
+
+/* Locale.stylize draws a bullet as span.indent-1 right against its text; the game's own panels space it out. */
+.lshuf-build__details-text .indent-1,
+.lshuf-build-tip .indent-1 {
+  margin-right: 0.35rem;
+}
+
+.lshuf-build__pick-dropdown {
+  width: 18rem;
+}
+
+/* A civics card's Tree button (lshuf-build-parts.js treeButton), top right; below the "your own" mark on your own
+   civilization's cards. */
+.lshuf-build__treebtn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.35rem;
+  padding: 0.05rem 0.4rem;
+  color: #f0e2c0;
+  background-color: rgba(10, 8, 6, 0.85);
+  border: 0.0555rem solid rgba(197, 176, 128, 0.7);
+  border-radius: 0.15rem;
+  cursor: pointer;
+}
+
+.lshuf-build__treebtn:hover {
+  background-color: rgba(60, 48, 24, 0.95);
+}
+
+.lshuf-build__treebtn--low {
+  top: 1.6rem;
+}
+
+.lshuf-build__tree-civ {
+  width: 18rem;
+}
+
+/* Picked cards that name a unique you don't hold (lshuf-build-window.js drawNeeds). */
+.lshuf-build__needs {
+  color: #e2a46b;
+  margin-bottom: 0.3rem;
+}
+
+.lshuf-build__need {
+  margin-top: 0.2rem;
 }

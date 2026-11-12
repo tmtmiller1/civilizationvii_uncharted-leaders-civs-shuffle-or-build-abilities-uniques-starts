@@ -66,7 +66,9 @@ class BuildCardTooltip {
     const kind = el("div", "font-body text-xs uppercase text-accent-2");
     const showFrom = card.from && card.kind !== BUILD_KIND.Persona && card.kind !== BUILD_KIND.Bias;
     const kindText = card.kindLine || compose(kindKey(card.kind));
-    kind.textContent = showFrom ? `${kindText} · ${compose("LOC_LSHUF_BUILD_CARD_FROM", card.from)}` : kindText;
+    kind.textContent = showFrom
+      ? [kindText, compose("LOC_LSHUF_BUILD_CARD_FROM", card.from), card.otherAge].filter(Boolean).join(" · ")
+      : kindText;
     titles.append(name, kind);
     head.append(this.art(card), titles);
     return head;
@@ -77,8 +79,8 @@ class BuildCardTooltip {
     const value = el("div");
     if (card.value != null) value.textContent = `${compose("LOC_LSHUF_DEALING_NAME")}: ${card.value}`;
     const state = el("div", "lshuf-build-tip__state");
-    if (this.state) state.textContent = compose(this.state);
-    else if (card.own) state.textContent = compose("LOC_LSHUF_BUILD_CARD_OWN");
+    if (this.state) state.textContent = this.state.startsWith("LOC_") ? compose(this.state) : this.state;
+    else if (card.own) state.textContent = compose(card.leader ? "LOC_LSHUF_BUILD_CARD_OWN" : "LOC_LSHUF_BUILD_CARD_OWN_CIV");
     foot.append(value, state);
     return foot;
   }

@@ -23,6 +23,7 @@ import { pathToFileURL } from "node:url";
 import {
   DLC_LEADER,
   ensureFixtures,
+  fixtureAge,
   fixturePaths,
   foreignKeyCheck,
   openDb,
@@ -33,7 +34,7 @@ import {
 } from "../shared/lshuf-constants.js";
 import { KNOWN_LEADERS, MODDED_LEADER_TYPES, VANILLA_LEADERS } from "../shared/lshuf-known-leaders.js";
 
-export { DLC_LEADER, foreignKeyCheck, openDb, PROJECT_ROOT, fixturePaths, ensureFixtures };
+export { DLC_LEADER, foreignKeyCheck, openDb, PROJECT_ROOT, fixtureAge, fixturePaths, ensureFixtures };
 export const DEAL_LOAD_ORDER = 20100;
 export const RESULT_TABLES = {
   leaders: "LShufResultLeaders",
@@ -44,7 +45,7 @@ export const RESULT_TABLES = {
   civPieces: "LShufResultCivPieces",
   meta: "LShufResultMeta"
 };
-export const BOOL_OPTIONS = ["KeepMine", "ModdedAbilities", "ModdedAttributes", "ModdedBiases"];
+export const BOOL_OPTIONS = ["KeepMine", "KeepBuiltCiv", "ModdedAbilities", "ModdedAttributes", "ModdedBiases"];
 
 // ---------------------------------------------------------------------------------------------------------------
 // Files that other workstreams haven't written yet.
@@ -100,7 +101,11 @@ const tagText = (text, name) => {
   return m ? m[1].trim() : undefined;
 };
 
-const CONDITION_TYPES = ["AlwaysMet", "ConfigurationValueMatches", "ConfigurationValueContains"];
+const CONDITION_TYPES = ["AlwaysMet", "ConfigurationValueMatches", "ConfigurationValueContains", "AgeInUse"];
+// The age a test game's database loads for (AgeInUse criteria) when the spec names none: the Antiquity database.
+// The "exploration" and "modern" fixtures get their own age from tests/_deal.mjs (fixtureAge).
+const AGE_KEY = "__AgeInUse";
+const FIXTURE_AGE = "AGE_ANTIQUITY";
 
 export function parseModinfo(xml) {
   const text = stripComments(xml);
@@ -115,7 +120,7 @@ export function parseModinfo(xml) {
         type,
         group: tagText(c[2], "Group"),
         key: tagText(c[2], "ConfigurationId"),
-        value: tagText(c[2], "Value")
+        value: type === "AgeInUse" ? c[2].trim() : tagText(c[2], "Value")
       });
     }
     criteria.set(id, { id, any: attr(m[1], "any") === "true", conditions });
@@ -174,6 +179,7 @@ function containsEntries(value) {
 
 export function conditionMet(cond, config) {
   if (cond.type === "AlwaysMet") return true;
+  if (cond.type === "AgeInUse") return config[AGE_KEY] === cond.value;
   if (cond.group && cond.group !== "Game") throw new Error(`harness: config group ${cond.group} not handled`);
   const value = config[cond.key];
   if (cond.type === "ConfigurationValueMatches") {
@@ -222,9 +228,10 @@ export function gameConfig(spec = {}) {
     config[configKeyOf(PARAM[name])] = BOOL_OPTIONS.includes(name) ? value === "1" : value;
   }
   config[PARAM.Seed] = String(spec.seed ?? 1);
+  config[AGE_KEY] = spec.age === undefined ? FIXTURE_AGE : spec.age;
   config[CONFIG_KEY[PARAM.LeadersOut]] = (spec.excluded || []).map(listValue);
   config[CONFIG_KEY[PARAM.ModdedOut]] = (spec.moddedExcluded || []).map(listValue);
-  config[PARAM.Pool1] = [];
+  config[PARAM.LeaderPoolOut] = [];
   const kept = options.KeepMine === "1" ? spec.kept || [] : [];
   for (const leader of KNOWN_LEADERS) config[KEY.keep(leader)] = kept.includes(leader) ? "1" : "0";
   if (anyModdedBox(options)) {
@@ -270,7 +277,8 @@ export function dealConfig(spec = {}) {
     kept: options.KeepMine === "1" ? [...(spec.kept || [])].sort() : [],
     out: sortOut(out),
     modOK: anyModdedBox(options) ? [...(spec.modOK || [])].sort() : [],
-    builders: specBuilders(spec)
+    builders: specBuilders(spec),
+    age: spec.age === undefined ? FIXTURE_AGE : spec.age
   };
 }
 
@@ -284,6 +292,8 @@ export function configFromTables(db) {
   // A part with no row follows the preset (CONTRACTS 15); the deal's normalizeConfig does that for an absent value.
   for (const part of ["Abilities", "Attributes", "Biases"]) delete options[part];
   for (const r of db.prepare("SELECT Name, Value FROM LShufOptions").all()) options[r.Name] = String(r.Value);
+  const age = options.Age || "";
+  delete options.Age;
   const col = (sql) => db.prepare(sql).all().map((r) => r.LeaderType).sort();
   return {
     seed: seedRow.length ? Number(seedRow[0].Seed) : 1,
@@ -292,7 +302,8 @@ export function configFromTables(db) {
     kept: col("SELECT LeaderType FROM LShufKept"),
     out: sortOut(db.prepare("SELECT LeaderType, Reason FROM LShufOut").all().map((r) => ({ ...r }))),
     modOK: col("SELECT LeaderType FROM LShufModOK"),
-    builders: buildersFromTables(db)
+    builders: buildersFromTables(db),
+    age
   };
 }
 

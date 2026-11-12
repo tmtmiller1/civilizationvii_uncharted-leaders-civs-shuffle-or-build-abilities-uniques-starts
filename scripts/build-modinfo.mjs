@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MOD_ID = "re-dealable-leader-abilities-attributes-and-start-biases";
 const OUT = path.join(root, `${MOD_ID}.modinfo`);
-const IMPORT_ROOTS = ["ui", "shared"];
+const IMPORT_ROOTS = ["ui", "shared", "base-standard"];
 const IMPORT_EXT = /\.(js|css|html|png)$/;
 
 function readFragment(rel) {

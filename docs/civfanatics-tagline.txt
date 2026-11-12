@@ -1,0 +1,1 @@
+Shuffle leader and civilization abilities, attributes, uniques, civics and start terrain.

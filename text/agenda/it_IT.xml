@@ -34,7 +34,7 @@
     <Replace Tag="LOC_DIPLOMACY_AGENDA_DUSHA_DESC" Language="it_IT"><Text>Apprezza il leader con il minor numero di [icon:NAR_REW_GREATWORK] Capolavori. Disprezza il leader con il maggior numero di [icon:NAR_REW_GREATWORK] Capolavori. </Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_DUSHA_DESC_DISLIKES" Language="it_IT"><Text>Caterina apprezza il leader con il minor numero di [icon:NAR_REW_GREATWORK] Capolavori. </Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_DUSHA_DESC_LIKES" Language="it_IT"><Text>Caterina apprezza il leader con il minor numero di [icon:NAR_REW_GREATWORK] Capolavori.</Text></Replace>
-    <Replace Tag="LOC_DIPLOMACY_AGENDA_DUSHA_NAME" Language="it_IT"><Text>Dusha</Text></Replace>
+    <Replace Tag="LOC_DIPLOMACY_AGENDA_DUSHA_NAME" Language="it_IT"><Text>Duša</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_EDWARD_TEACH_DESC" Language="it_IT"><Text>Apprezza i leader che costruiscono unità navali. Disprezza i leader che trascurano le unità navali.</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_EDWARD_TEACH_DESC_DISLIKES" Language="it_IT"><Text>Edward Teach disprezza i leader che trascurano le unità navali.</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_EDWARD_TEACH_DESC_LIKES" Language="it_IT"><Text>Edward Teach apprezza i leader che costruiscono unità navali.</Text></Replace>

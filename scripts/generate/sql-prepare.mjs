@@ -148,18 +148,30 @@ function build() {
   const kind = `CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\\_\\_B__' ESCAPE '\\' THEN 'civbullet'
     WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END`;
   const arg = `CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' THEN substr(PieceId, 6) WHEN substr(PieceId, 1, 6) = 'ATTR2_' THEN substr(PieceId, 7) WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN substr(PieceId, 9)
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN substr(PieceId, 9) WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN substr(PieceId, 9)
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN substr(PieceId, 8) WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN substr(PieceId, 9) WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN substr(PieceId, 7) WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN substr(PieceId, 6)
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN substr(PieceId, 9)
     WHEN substr(PieceId, -7) = '__WHOLE' THEN substr(PieceId, 1, length(PieceId) - 7) ELSE PieceId END`;
   const pick = (k, extra = "") =>
     `(SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = ${q(k)} AND p.Slot = LShufWork_Build.Slot${extra})`;
   const major = " AND p.Arg IN (SELECT LeaderType FROM LShufWork_L)";
+  // With Leader shuffle on Base game only the civilization cards build (lshuf-deal-build.js CIV_ONLY_KINDS).
+  const civOnly = `(${kind}) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')`;
+  // A human keeping their own leader still builds their civilization's cards while Keep my built civilization is on
+  // (lshuf-deal-build.js keptCiv); that slot then takes the civilization cards only.
+  const keptCiv = (leader) => `(${opt("KeepBuiltCiv")} = '1' AND EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = ${leader} AND l.Base = ${q(REASON.Kept)}))`;
+  const pieceSlotLeader = "(SELECT w.Leader FROM LShufWork_Build w WHERE w.Slot = LShufBuildPieces.Slot)";
+  const civOnlyOK = `((${CFG("Active")} = 1 AND NOT ${keptCiv(pieceSlotLeader)}) OR ${civOnly})`;
   // Slot by slot, so a lower slot's verdict is known when a higher one checks for the same leader.
-  const why = SLOTS.map((n) => `UPDATE LShufWork_Build SET Why = CASE WHEN ${CFG("Active")} = 0 THEN ${q(BUILD_WHY.ModeOff)}
-  WHEN NOT EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base IS NULL) THEN ${q(BUILD_WHY.NotInGame)}
+  const why = SLOTS.map((n) => `UPDATE LShufWork_Build SET Why = CASE WHEN ${CFG("Active")} = 0
+    AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = ${n} AND ${civOnly}) THEN ${q(BUILD_WHY.ModeOff)}
+  WHEN NOT EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base IS NULL)
+    AND NOT (${keptCiv("LShufWork_Build.Leader")} AND EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = ${n} AND ${civOnly}))
+    THEN ${q(BUILD_WHY.NotInGame)}
   WHEN EXISTS (SELECT 1 FROM LShufWork_Build b2 WHERE b2.Slot < ${n} AND b2.Leader = LShufWork_Build.Leader AND b2.Why IS NULL)
     THEN ${q(BUILD_WHY.NotInGame)} END WHERE Slot = ${n};`).join("\n");
   return `${work("LShufWork_Build", "Slot INTEGER PRIMARY KEY, Leader TEXT, Civ TEXT, OK INTEGER, Why TEXT, PersonaPick TEXT, BiasPick TEXT, GenericBiasPick TEXT, CivBiasPick TEXT, WholePick TEXT, OldDonor TEXT, HasT INTEGER, BulletBuild INTEGER NOT NULL DEFAULT 0")}
@@ -169,7 +181,7 @@ ${why}
 ${work("LShufWork_BuildPiece", "PieceId TEXT PRIMARY KEY, Slot INTEGER, Kind TEXT, Arg TEXT, Copy INTEGER NOT NULL DEFAULT 1")}
 INSERT OR IGNORE INTO LShufWork_BuildPiece (PieceId, Slot, Kind, Arg, Copy)
   SELECT PieceId, Slot, ${kind}, ${arg}, CASE WHEN substr(PieceId, 1, 6) = 'ATTR2_' THEN 2 ELSE 1 END FROM LShufBuildPieces
-  WHERE Slot IN (SELECT Slot FROM LShufWork_Build WHERE Why IS NULL) ORDER BY Slot, PieceId;
+  WHERE Slot IN (SELECT Slot FROM LShufWork_Build WHERE Why IS NULL) AND ${civOnlyOK} ORDER BY Slot, PieceId;
 UPDATE LShufWork_Build SET Why = ${q(BUILD_WHY.NoPieces)}
   WHERE Why IS NULL AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p WHERE p.Slot = LShufWork_Build.Slot);
 UPDATE LShufWork_Build SET OK = (Why IS NULL), PersonaPick = ${pick("persona", major)}, BiasPick = ${pick("bias", major)},
@@ -183,12 +195,15 @@ UPDATE LShufWork_Build SET GenericBiasPick = NULL WHERE BiasPick IS NOT NULL;
 // takes what the builder was to get (lshuf-deal-ability.js wholeBuild).
 function wholeSwap() {
   const inA = "(SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'A')";
+  // A leader no player is playing (CONTRACTS 24): its whole card goes to the builder alone.
+  const absent = `(SELECT LeaderType FROM LShufWork_L WHERE RA = ${q(REASON.NotInGame)} AND Ability IS NOT NULL)`;
   const donorOf = (leader) => `(SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'A' AND d.LeaderType = ${leader})`;
   return SLOTS.map((n) => {
     const old = BUILD_SLOT("OldDonor", n);
     const pick = BUILD_SLOT("WholePick", n);
     const leader = BUILD_SLOT("Leader", n);
-    return `UPDATE LShufWork_Build SET WholePick = (SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = 'whole' AND p.Slot = ${n} AND p.Arg IN ${inA})
+    return `UPDATE LShufWork_Build SET WholePick = (SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = 'whole' AND p.Slot = ${n}
+    AND (p.Arg IN ${inA} OR p.Arg IN ${absent}))
   WHERE Slot = ${n} AND OK = 1 AND ${CFG("IsWhole")} = 1 AND Leader IN ${inA};
 UPDATE LShufWork_Build SET OldDonor = ${donorOf("LShufWork_Build.Leader")}
   WHERE Slot = ${n} AND WholePick IS NOT NULL AND WholePick <> ${donorOf("LShufWork_Build.Leader")};

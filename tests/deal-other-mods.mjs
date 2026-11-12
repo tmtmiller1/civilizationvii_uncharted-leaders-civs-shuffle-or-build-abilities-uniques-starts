@@ -1,12 +1,12 @@
 // Other mods' data changes win (SPEC "Living with other mods", workspace rules): a leader another mod adds plays as
 // shipped unless it's keyed in, a modifier another mod adds to a vanilla ability travels with that ability (as a
-// remainder piece in the split modes, copied under LSHUF_<RECEIVER>__ with the receiver's Tooltip), and a bias row
+// remainder piece in the split modes, copied under LSHUF_<RECEIVER>__ with every argument as it is), and a bias row
 // another mod removed stays removed. Waits on B and A.
 import assert from "node:assert/strict";
 import test from "node:test";
 
 import { gameConfig, loadGame, resultObjects, rows, snapshot, sqlResult } from "./_harness.mjs";
-import { DEAL_MODES, effectiveAbilityModifiers, label, reviewAll, SAMPLE_SEEDS, shippedAbilities, SPLIT_MODES, WHOLE_MODES } from "./_deal.mjs";
+import { DEAL_MODES, effectiveAbilityModifiers, label, reviewAll, SAMPLE_SEEDS, SPLIT_MODES, WHOLE_MODES } from "./_deal.mjs";
 import {
   ADDED_ABILITY,
   ADDED_LEADER,
@@ -110,11 +110,9 @@ test("split modes, mapping reviewed: the extra modifier travels in Amina's remai
         assert.ok(effectiveAbilityModifiers(run.db, holder).has(EXTRA_MODIFIER), `${where}: ${holder} has the extra modifier`);
         if (holder !== "LEADER_AMINA") {
           const copy = copiedModifierId(holder, EXTRA_MODIFIER);
-          const tooltip = rows(run.db, "SELECT Value FROM ModifierArguments WHERE ModifierId = ? AND Name = 'Tooltip'", copy);
-          const ownName = rows(run.pre, "SELECT Name FROM Traits WHERE TraitType = ?", shippedAbilities(run.pre)[holder][0])[0].Name;
-          assert.deepEqual(tooltip.map((t) => t.Value), [ownName], `${where}: ${copy} Tooltip is ${holder}'s own ability name`);
-          const args = (db, id) => rows(db, "SELECT Name, Extra, SecondExtra, Type, Value FROM ModifierArguments WHERE ModifierId = ? AND Name <> 'Tooltip'", id).map((a) => JSON.stringify(a)).sort();
-          assert.deepEqual(args(run.db, copy), args(run.pre, EXTRA_MODIFIER), `${where}: every other argument copied`);
+          // The Tooltip too: a yield line names the ability the bonus came from, not the holder's.
+          const args = (db, id) => rows(db, "SELECT Name, Extra, SecondExtra, Type, Value FROM ModifierArguments WHERE ModifierId = ?", id).map((a) => JSON.stringify(a)).sort();
+          assert.deepEqual(args(run.db, copy), args(run.pre, EXTRA_MODIFIER), `${where}: every argument copied as it is`);
         }
       } finally {
         run.close();

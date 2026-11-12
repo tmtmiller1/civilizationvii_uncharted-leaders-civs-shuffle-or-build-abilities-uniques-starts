@@ -5,7 +5,7 @@ import {
 } from "../lshuf-constants.js";
 import { LEADER_TYPE_REQUIREMENT, cmp, groupBy, sortIds } from "./lshuf-deal-util.js";
 
-const BOOL_OPTIONS = ["KeepMine", "ModdedAbilities", "ModdedAttributes", "ModdedBiases"];
+const BOOL_OPTIONS = ["KeepMine", "KeepBuiltCiv", "ModdedAbilities", "ModdedAttributes", "ModdedBiases"];
 
 function safeRows(readTable, name) {
   try {
@@ -74,7 +74,9 @@ export function normalizeConfig(config) {
     kept: sortIds((c.kept || []).map(String)),
     out: out.map((r) => ({ LeaderType: String(r.LeaderType), Reason: String(r.Reason) })),
     modOK: sortIds((c.modOK || []).map(String)),
-    builders: normalizeBuilders(c)
+    builders: normalizeBuilders(c),
+    // The age the game is in (the setup's start age, or the age the database was loaded for); "" when unknown.
+    age: c.age == null ? "" : String(c.age)
   };
 }
 
@@ -173,7 +175,20 @@ function readCivMapping(read) {
       .map((r) => ({ ModifierId: r.ModifierId, Role: r.Role }))
       .sort((a, b) => cmp(a.ModifierId, b.ModifierId));
   }
-  return { civMapping, civMapMods };
+  let boundPieces = new Set();
+  try {
+    boundPieces = new Set(read("LShufBoundPieces").map((r) => String(r.PieceId)));
+  } catch (_) {
+    boundPieces = new Set();
+  }
+  // The pieces an age leaves with nothing to do (LShufCivPieceDead), as "piece|age".
+  let civDead = new Set();
+  try {
+    civDead = new Set(read("LShufCivPieceDead").map((r) => `${r.PieceId}|${r.Age}`));
+  } catch (_) {
+    civDead = new Set();
+  }
+  return { civMapping, civMapMods, boundPieces, civDead };
 }
 
 function readUnlocks(read, leaders) {
@@ -266,10 +281,40 @@ function unlockedTypes(read) {
 
 // A unit family (its base and every base_<x> unit) only the civ's own civics unlock belongs to the civics
 // (CONTRACTS 18): it isn't a unique card and stays on the base trait.
-function civicOnlyFamily(base, units, unlocked) {
+// A great person whose class asks for a quarter or constructible that a civ civics tree unlocks (CONTRACTS 23 R1) is
+// part of the civics too: only a civ holding that quarter can earn one.
+function civicOnlyFamily(base, units, unlocked, gpUnits = new Set()) {
   const family = units.filter((u) => u.TraitType === base.TraitType
     && (u.UnitType === base.UnitType || String(u.UnitType).startsWith(`${base.UnitType}_`)));
+  if (family.some((u) => gpUnits.has(u.UnitType))) return true;
   return family.some((u) => unlocked.civic.has(u.UnitType)) && !family.some((u) => unlocked.main.has(u.UnitType));
+}
+
+// The static unit-to-civic links; a database without the table (an older setup copy) has none.
+function unitLinks(read) {
+  try {
+    return read("LShufCivUnitLinks") || [];
+  } catch {
+    return [];
+  }
+}
+
+// Great person class units tied to a civics-unlocked quarter (its BuildingType1) or constructible (CONTRACTS 23 R1),
+// with the type that ties them: Map UnitType -> anchor type.
+function civicGreatPeople(read, unlocked) {
+  const quarters = new Map(read("UniqueQuarters").map((q) => [q.UniqueQuarterType, q.BuildingType1]));
+  const out = new Map();
+  for (const g of read("GreatPersonClasses")) {
+    const b1 = g.UniqueQuarterType == null ? null : quarters.get(g.UniqueQuarterType);
+    if (b1 != null && unlocked.civic.has(b1)) out.set(String(g.UnitType), String(b1));
+    else if (g.ConstructibleType != null && unlocked.civic.has(g.ConstructibleType)) {
+      out.set(String(g.UnitType), String(g.ConstructibleType));
+    }
+  }
+  // A unit family a civic of the civ's own tree names in a modifier (LShufCivUnitLinks: the Samurai and Kinsei).
+  const nodes = new Set(read("ProgressionTreeNodes").map((n) => String(n.ProgressionTreeNodeType)));
+  for (const l of unitLinks(read)) if (nodes.has(String(l.NodeType))) out.set(String(l.UnitType), String(l.NodeType));
+  return out;
 }
 
 // requirement set -> the TraitType arguments of its requirements.
@@ -302,6 +347,16 @@ function civTrees(read) {
   return out;
 }
 
+// The unit families that are unique cards: each family's base, less a great person the game only grants (since 1.5.1
+// a civ's great person can't be trained; the ability's grant modifiers carry it) and a family the civics carry.
+function unitCardRows(read, units, unlocked) {
+  const gpUnits = new Set(civicGreatPeople(read, unlocked).keys());
+  const isBase = (r) => !units.some((p) => p.TraitType === r.TraitType && String(r.UnitType).startsWith(`${p.UnitType}_`));
+  const grantedGp = new Set(read("GreatPersonClasses").map((g) => String(g.UnitType)));
+  const granted = (r) => Number(r.CanTrain) === 0 && grantedGp.has(String(r.UnitType));
+  return units.filter((r) => isBase(r) && !granted(r) && !civicOnlyFamily(r, units, unlocked, gpUnits));
+}
+
 function civItemsFromTables(read) {
   const { ages, abilities } = civAgesAndAbilities(read);
   const byBase = new Map();
@@ -317,10 +372,8 @@ function civItemsFromTables(read) {
   const owned = (list) => list.filter((r) => byBase.has(r.TraitType));
   // One card per unit family: a base is a unit no shorter unit of the same trait prefixes (UNIT_LOGIOS, not
   // UNIT_LOGIOS_PLATO); the family moves with its base.
-  const units = owned(read("Units"));
   const unlocked = unlockedTypes(read);
-  const isBase = (r) => !units.some((p) => p.TraitType === r.TraitType && String(r.UnitType).startsWith(`${p.UnitType}_`));
-  for (const r of units) if (isBase(r) && !civicOnlyFamily(r, units, unlocked)) item("unit", r.UnitType, r.TraitType);
+  for (const r of unitCardRows(read, owned(read("Units")), unlocked)) item("unit", r.UnitType, r.TraitType);
   // An improvement the civ's own civics tree unlocks moves with the civics (CONTRACTS 18), as do buildings and
   // quarters; the civics card is the tree the trait's reveal modifier names.
   for (const r of owned(read("Improvements"))) {
@@ -345,13 +398,121 @@ function readCivItems(read) {
   return rows.sort((a, b) => cmp(a.civ, b.civ) || cmp(a.kind, b.kind) || cmp(a.type, b.type));
 }
 
+// Each civilization's own civics, one row per node of its civics tree (CONTRACTS 21): the setup copy's
+// LShufSetup_CivicNodes where it exists (read as "CivicNodes"), else ProgressionTreeNodes through the civics cards'
+// trees. Rows: { civ, node, cost }.
+function readCivNodes(read, civItems) {
+  const copy = read("CivicNodes");
+  let out;
+  if (copy.length) {
+    out = copy.map((r) => ({ civ: String(r.CivilizationType), node: String(r.NodeType), cost: Number(r.Cost || 0) }));
+  } else {
+    const civOfTree = new Map(civItems.filter((i) => i.kind === "civics").map((i) => [i.type, i.civ]));
+    out = [];
+    for (const n of read("ProgressionTreeNodes")) {
+      const civ = civOfTree.get(String(n.ProgressionTree));
+      if (civ) out.push({ civ, node: String(n.ProgressionTreeNodeType), cost: Number(n.Cost || 0) });
+    }
+  }
+  return out.sort((a, b) => cmp(a.civ, b.civ) || cmp(a.node, b.node));
+}
+
+// Items that ride with another (CONTRACTS 23 R2, R3): [{ kind, civ, lead, rider }], ids CIVNODE_ / CIVUNQ_. The setup
+// copy's LShufSetup_CivRiders (read as "CivRiders") wherever the copy's civ items are read; else from the gameplay
+// tables. Civic bundles: the nodes unlocking a unique quarter's two buildings, and LShufCivLinks pairs, unioned per
+// civ, lead the lowest node. Unique bundles: an item only one builder unit builds rides with that unit's card.
+function deriveCivRiders(read, civItems, civNodes) {
+  return [...civicRiders(read, civNodes), ...uniqueRiders(read, civItems)];
+}
+
+// The lowest civ-tree node unlocking each type.
+function nodesUnlocking(read, civOfNode) {
+  const nodesOf = new Map();
+  for (const u of read("ProgressionTreeNodeUnlocks")) {
+    if (!civOfNode.has(u.ProgressionTreeNodeType)) continue;
+    const have = nodesOf.get(u.TargetType);
+    if (have == null || cmp(u.ProgressionTreeNodeType, have) < 0) nodesOf.set(u.TargetType, u.ProgressionTreeNodeType);
+  }
+  return nodesOf;
+}
+
+// Pairs of one civ's nodes that go together: a quarter's two buildings, and the LShufCivLinks rows.
+function civicEdges(read, civOfNode) {
+  const nodesOf = nodesUnlocking(read, civOfNode);
+  const edges = [];
+  const pair = (a, b) => {
+    if (a != null && b != null && a !== b && civOfNode.get(a) === civOfNode.get(b)) edges.push([a, b]);
+  };
+  for (const q of read("UniqueQuarters")) pair(nodesOf.get(q.BuildingType1), nodesOf.get(q.BuildingType2));
+  for (const l of read("LShufCivLinks")) {
+    if (civOfNode.has(l.NodeType) && civOfNode.has(l.NeedsNodeType)) pair(String(l.NodeType), String(l.NeedsNodeType));
+  }
+  return edges;
+}
+
+// Each node labelled with the lowest node of its bundle, as the SQL's lowest-label pass does.
+function lowestLabels(nodes, edges) {
+  const lead = new Map(nodes.map((n) => [n, n]));
+  const lower = (a, b) => (cmp(a, b) <= 0 ? a : b);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const [a, b] of edges) {
+      const m = lower(lead.get(a), lead.get(b));
+      changed = changed || lead.get(a) !== m || lead.get(b) !== m;
+      lead.set(a, m);
+      lead.set(b, m);
+    }
+  }
+  return lead;
+}
+
+function civicRiders(read, civNodes) {
+  const civOfNode = new Map(civNodes.map((n) => [n.node, n.civ]));
+  const lead = lowestLabels([...civOfNode.keys()], civicEdges(read, civOfNode));
+  const out = [];
+  for (const [node, l] of lead) {
+    if (l !== node) out.push({ kind: "civic", civ: civOfNode.get(node), lead: `CIVNODE_${l}`, rider: `CIVNODE_${node}` });
+  }
+  return out;
+}
+
+// An item only one builder unit builds rides with the card of that unit's family, same civ.
+function uniqueRiders(read, civItems) {
+  const cards = civItems.filter((i) => i.kind === "unit" || i.kind === "improvement");
+  const builds = read("Unit_BuildConstructibles");
+  const count = new Map();
+  for (const b of builds) count.set(b.ConstructibleType, (count.get(b.ConstructibleType) || 0) + 1);
+  const out = [];
+  for (const b of builds.filter((x) => count.get(x.ConstructibleType) === 1)) {
+    const rider = cards.find((c) => c.type === b.ConstructibleType);
+    const unit = String(b.UnitType);
+    const leadCard = rider && cards.find((c) => c.kind === "unit" && c.civ === rider.civ && c.type !== rider.type
+      && (unit === c.type || unit.startsWith(`${c.type}_`)));
+    if (leadCard) out.push({ kind: "unique", civ: rider.civ, lead: `CIVUNQ_${leadCard.type}`, rider: `CIVUNQ_${rider.type}` });
+  }
+  return out;
+}
+
+function readCivRiders(read, civItems, civNodes) {
+  const rows = read("CivItems").length
+    ? read("CivRiders").map((r) => ({
+      kind: String(r.Kind), civ: String(r.CivilizationType), lead: String(r.LeadId), rider: String(r.RiderId)
+    }))
+    : deriveCivRiders(read, civItems, civNodes);
+  return rows.sort((a, b) => cmp(a.rider, b.rider));
+}
+
 export function buildDealInput(readTable, config) {
   const cfg = normalizeConfig(config);
   const read = (name) => safeRows(readTable, name);
   const leaders = readLeaders(read, cfg);
+  const civItems = readCivItems(read);
+  const civNodes = readCivNodes(read, civItems);
   return {
     seed: cfg.seed,
     options: cfg.options,
+    age: cfg.age,
     leaders,
     ...readMapping(read),
     unlocks: readUnlocks(read, leaders),
@@ -359,7 +520,9 @@ export function buildDealInput(readTable, config) {
     attrTraits: sortIds(read("LShufAttributeTraits").map((r) => r.TraitType)),
     civs: readCivs(read),
     biasRows: readBiasRows(read),
-    civItems: readCivItems(read),
+    civItems,
+    civNodes,
+    civRiders: readCivRiders(read, civItems, civNodes),
     builders: cfg.builders
   };
 }

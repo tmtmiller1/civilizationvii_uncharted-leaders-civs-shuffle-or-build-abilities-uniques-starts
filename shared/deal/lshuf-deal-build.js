@@ -2,7 +2,7 @@
 // and whether each build applies. The deal modules read `ctx.builds` (slot order); each axis uses only the picks it
 // owns, and an axis with no pick of its own deals that builder as usual. A piece ticked for two builders goes to the
 // lower slot.
-import { BUILD, BUILD_KIND, BUILD_WHY, GENERIC_BIASES, buildKindOf } from "../lshuf-constants.js";
+import { BUILD, BUILD_KIND, BUILD_WHY, GENERIC_BIASES, REASON, buildKindOf } from "../lshuf-constants.js";
 import { baseReason } from "./lshuf-deal-axes.js";
 import { cmp } from "./lshuf-deal-util.js";
 
@@ -43,6 +43,10 @@ function sortCiv(picks, id, kind) {
     picks.civBullets.push(id);
     return true;
   }
+  if (kind === BUILD_KIND.CivCivic) {
+    picks.civCivicNodes.push(id);
+    return true;
+  }
   return false;
 }
 
@@ -66,7 +70,7 @@ function sortOne(picks, id, attrTraits, majors) {
 function sortPicks(ids, attrTraits, majors) {
   const picks = {
     wholes: [], bullets: [], attrs: [], persona: null, bias: null, genericBias: null, civBias: null, civAbility: null,
-    civUniques: [], civCivics: null, civBullets: []
+    civUniques: [], civCivics: null, civBullets: [], civCivicNodes: []
   };
   for (const id of ids) sortOne(picks, id, attrTraits, majors);
   picks.wholes.sort(cmp);
@@ -76,20 +80,43 @@ function sortPicks(ids, attrTraits, majors) {
   return picks;
 }
 
+// The civilization cards that build with Leader shuffle on Base game (CONTRACTS 14): everything on the civ screen
+// but its start terrain, which belongs to the start terrain part.
+const CIV_ONLY_KINDS = new Set([
+  BUILD_KIND.CivAbility, BUILD_KIND.CivBullet, BUILD_KIND.CivUnique, BUILD_KIND.CivCivics, BUILD_KIND.CivCivic
+]);
+export const isCivOnlyPiece = (id) => CIV_ONLY_KINDS.has(buildKindOf(id));
+
 // ctx.builds: one per builder slot, in slot order: { slot, leader, civ, ok, why, wholes, bullets, attrs, persona,
-// bias, civBias }. ok needs Leader shuffle on, the builder a major in the game with no base reason against it and
-// no lower slot building the same leader, and at least one pick left after lower slots took theirs.
+// bias, civBias }. ok needs the builder a major in the game with no base reason against it and no lower slot
+// building the same leader, and at least one pick left after lower slots took theirs. With Leader shuffle on Base
+// game only the civilization cards count, and a builder with none of them is ModeOff.
+// A human keeping their own leader still builds their civilization while Keep my built civilization is on: that
+// builder takes its civilization cards only. A kept builder with no civilization card stays Not in game.
+function keptCivBuild(ctx, b) {
+  const l = ctx.byType.get(b.leader);
+  return ctx.input.options.KeepBuiltCiv === "1" && !!l && baseReason(l) === REASON.Kept && b.pieces.some(isCivOnlyPiece);
+}
+
+function builderWhy(ctx, b, civOnly, keptCiv, leaders) {
+  const l = ctx.byType.get(b.leader);
+  if (civOnly && !b.pieces.some(isCivOnlyPiece)) return BUILD_WHY.ModeOff;
+  if (!l || (baseReason(l) != null && !keptCiv) || leaders.has(b.leader)) return BUILD_WHY.NotInGame;
+  return null;
+}
+
 export function buildStates(ctx) {
   const majors = new Set(ctx.majors);
   const leaders = new Set();
   const claimed = new Set();
   const out = [];
+  const civOnly = !ctx.f.active;
   for (const b of ctx.input.builders) {
-    const l = ctx.byType.get(b.leader);
-    let why = null;
-    if (!ctx.f.active) why = BUILD_WHY.ModeOff;
-    else if (!l || baseReason(l) != null || leaders.has(b.leader)) why = BUILD_WHY.NotInGame;
-    const pieces = why == null ? b.pieces.filter((id) => !claimed.has(id)) : [];
+    const keptCiv = keptCivBuild(ctx, b);
+    const civPiecesOnly = civOnly || keptCiv;
+    let why = builderWhy(ctx, b, civOnly, keptCiv, leaders);
+    const counts = (id) => !claimed.has(id) && (!civPiecesOnly || isCivOnlyPiece(id));
+    const pieces = why == null ? b.pieces.filter(counts) : [];
     if (why == null && !pieces.length) why = BUILD_WHY.NoPieces;
     if (why == null) {
       leaders.add(b.leader);

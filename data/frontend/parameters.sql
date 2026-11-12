@@ -21,21 +21,23 @@ INSERT OR IGNORE INTO Parameters (ParameterID, Name, Description, Domain, Array,
 VALUES
   ('LShufMode', 'LOC_LSHUF_MODE_NAME', 'LOC_LSHUF_MODE_DESC', 'LShufModeValues', 0, 'LSHUF_MODE_NONE', 'Game', 'LShufMode', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2300),
   ('LShufBiases', 'LOC_LSHUF_BIASES_NAME', 'LOC_LSHUF_BIASES_DESC', 'LShufBValues', 0, 'LSHUF_B_NORMAL', 'Game', 'LShufBiases', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2303),
-  ('LShufCivAbilities', 'LOC_LSHUF_CIV_ABILITIES_NAME', 'LOC_LSHUF_CIV_ABILITIES_DESC', 'LShufCAValues', 0, 'LSHUF_CA_NORMAL', 'Game', 'LShufCivAbilities', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2304),
-  ('LShufCivUniques', 'LOC_LSHUF_CIV_UNIQUES_NAME', 'LOC_LSHUF_CIV_UNIQUES_DESC', 'LShufCUValues', 0, 'LSHUF_CU_NORMAL', 'Game', 'LShufCivUniques', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2305),
-  ('LShufCivCivics', 'LOC_LSHUF_CIV_CIVICS_NAME', 'LOC_LSHUF_CIV_CIVICS_DESC', 'LShufCCValues', 0, 'LSHUF_CC_NORMAL', 'Game', 'LShufCivCivics', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2306),
+  ('LShufCivMode', 'LOC_LSHUF_CIV_MODE_NAME', 'LOC_LSHUF_CIV_MODE_DESC', 'LShufCivModeValues', 0, 'LSHUF_CM_NORMAL', 'Game', 'LShufCivMode', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2304),
+  ('LShufCivAbilities', 'LOC_LSHUF_CIV_ABILITIES_NAME', 'LOC_LSHUF_CIV_ABILITIES_DESC', 'LShufCAValues', 0, 'LSHUF_CA_NORMAL', 'Game', 'LShufCivAbilities', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2305),
+  ('LShufCivUniques', 'LOC_LSHUF_CIV_UNIQUES_NAME', 'LOC_LSHUF_CIV_UNIQUES_DESC', 'LShufCUValues', 0, 'LSHUF_CU_NORMAL', 'Game', 'LShufCivUniques', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2306),
+  ('LShufCivCivics', 'LOC_LSHUF_CIV_CIVICS_NAME', 'LOC_LSHUF_CIV_CIVICS_DESC', 'LShufCCValues', 0, 'LSHUF_CC_NORMAL', 'Game', 'LShufCivCivics', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2307),
   ('LShufAbilities', 'LOC_LSHUF_ABILITIES_NAME', 'LOC_LSHUF_ABILITIES_DESC', 'LShufAValues', 0, 'LSHUF_A_NORMAL', 'Game', 'LShufAbilities', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2301),
   ('LShufAttributes', 'LOC_LSHUF_ATTRIBUTES_NAME', 'LOC_LSHUF_ATTRIBUTES_DESC', 'LShufTValues', 0, 'LSHUF_T_NORMAL', 'Game', 'LShufAttributes', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2302),
-  ('LShufKeepMine', 'LOC_LSHUF_KEEP_MINE_NAME', 'LOC_LSHUF_KEEP_MINE_DESC', 'bool', 0, 0, 'Game', 'LShufKeepMine', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2308),
+  ('LShufKeepMine', 'LOC_LSHUF_KEEP_MINE_NAME', 'LOC_LSHUF_KEEP_MINE_DESC', 'bool', 0, 0, 'Game', 'LShufKeepMine', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2309),
+  ('LShufKeepBuiltCiv', 'LOC_LSHUF_KEEP_BUILT_CIV_NAME', 'LOC_LSHUF_KEEP_BUILT_CIV_DESC', 'bool', 0, 1, 'Game', 'LShufKeepBuiltCiv', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2310),
   ('LShufLeadersOut', 'LOC_LSHUF_LEADERS_OUT_NAME', 'LOC_LSHUF_LEADERS_OUT_DESC', 'LShufLeaderValues', 1, NULL, 'Game', 'LShufExcludedLeaders', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, 'InvertSelection', 2305),
   ('LShufModdedAbilities', 'LOC_LSHUF_MODDED_ABILITIES_NAME', 'LOC_LSHUF_MODDED_ABILITIES_DESC', 'bool', 0, 0, 'Game', 'LShufModdedAbilities', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2306),
   ('LShufModdedAttributes', 'LOC_LSHUF_MODDED_ATTRIBUTES_NAME', 'LOC_LSHUF_MODDED_ATTRIBUTES_DESC', 'bool', 0, 0, 'Game', 'LShufModdedAttributes', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2307),
   ('LShufModdedBiases', 'LOC_LSHUF_MODDED_BIASES_NAME', 'LOC_LSHUF_MODDED_BIASES_DESC', 'bool', 0, 0, 'Game', 'LShufModdedBiases', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2308),
   ('LShufModdedOut', 'LOC_LSHUF_MODDED_OUT_NAME', 'LOC_LSHUF_MODDED_OUT_DESC', 'LShufModdedLeaderValues', 1, NULL, 'Game', 'LShufExcludedModdedLeaders', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, 'InvertSelection', 2309),
-  ('LShufPool1', 'LOC_LSHUF_POOL_NAME', 'LOC_LSHUF_POOL_DESC', 'LShufPoolLeaderValues', 1, NULL, 'Game', 'LShufPool1', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2310),
-  ('LShufPersonality', 'LOC_LSHUF_PERSONALITY_NAME', 'LOC_LSHUF_PERSONALITY_DESC', 'LShufPersonalityValues', 0, 'LSHUF_PERSONA_FOLLOWS', 'Game', 'LShufPersonality', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2307),
+  ('LShufLeaderPoolOut', 'LOC_LSHUF_POOL_NAME', 'LOC_LSHUF_POOL_DESC', 'LShufPoolLeaderValues', 1, NULL, 'Game', 'LShufLeaderPoolOut', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, 'InvertSelection', 2310),
+  ('LShufPersonality', 'LOC_LSHUF_PERSONALITY_NAME', 'LOC_LSHUF_PERSONALITY_DESC', 'LShufPersonalityValues', 0, 'LSHUF_PERSONA_FOLLOWS', 'Game', 'LShufPersonality', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2308),
   ('LShufDealing', 'LOC_LSHUF_DEALING_NAME', 'LOC_LSHUF_DEALING_DESC', 'LShufDealingValues', 0, 'LSHUF_DEAL_BALANCED', 'Game', 'LShufDealing', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2312),
-  ('LShufReveal', 'LOC_LSHUF_REVEAL_NAME', 'LOC_LSHUF_REVEAL_DESC', 'LShufRevealValues', 0, 'LSHUF_REVEAL_START', 'Game', 'LShufReveal', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2309),
+  ('LShufReveal', 'LOC_LSHUF_REVEAL_NAME', 'LOC_LSHUF_REVEAL_DESC', 'LShufRevealValues', 0, 'LSHUF_REVEAL_START', 'Game', 'LShufReveal', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2311),
   ('LShufSeed', 'LOC_LSHUF_SEED_NAME', 'LOC_LSHUF_SEED_DESC', 'text', 0, '1', 'Game', 'LShufSeed', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2314),
   ('LShufCivsOut', 'LOC_LSHUF_CIVS_OUT_NAME', 'LOC_LSHUF_CIVS_OUT_DESC', 'LShufCivValues', 1, NULL, 'Game', 'LShufExcludedCivs', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, 'InvertSelection', 2315),
   ('LShufBuildPicks', 'LOC_LSHUF_BUILD_TITLE', 'LOC_LSHUF_BUILD_INTRO', 'text', 0, NULL, 'Game', 'LShufBuildPicks', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2316),
@@ -49,11 +51,16 @@ VALUES
 -- Values of the select options, in the order the window lists them.
 INSERT OR IGNORE INTO DomainValues (Domain, Value, Name, Description, SortIndex) VALUES
   ('LShufModeValues', 'LSHUF_MODE_NONE', 'LOC_LSHUF_MODE_NONE', 'LOC_LSHUF_MODE_NONE_DESC', 10),
-  ('LShufModeValues', 'LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES_DESC', 20),
-  ('LShufModeValues', 'LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS_DESC', 30),
+  ('LShufModeValues', 'LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES_DESC', 30),
+  ('LShufModeValues', 'LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS_DESC', 20),
   ('LShufModeValues', 'LSHUF_MODE_SPLIT_MATCHED', 'LOC_LSHUF_MODE_SPLIT_MATCHED', 'LOC_LSHUF_MODE_SPLIT_MATCHED_DESC', 40),
   ('LShufModeValues', 'LSHUF_MODE_SPLIT_RANDOM', 'LOC_LSHUF_MODE_SPLIT_RANDOM', 'LOC_LSHUF_MODE_SPLIT_RANDOM_DESC', 50),
   ('LShufModeValues', 'LSHUF_MODE_CUSTOM', 'LOC_LSHUF_MODE_CUSTOM', 'LOC_LSHUF_MODE_CUSTOM_DESC', 60),
+  ('LShufCivModeValues', 'LSHUF_CM_NORMAL', 'LOC_LSHUF_CM_NORMAL', 'LOC_LSHUF_CM_NORMAL_DESC', 10),
+  ('LShufCivModeValues', 'LSHUF_CM_WHOLE', 'LOC_LSHUF_CM_WHOLE', 'LOC_LSHUF_CM_WHOLE_DESC', 20),
+  ('LShufCivModeValues', 'LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL_DESC', 30),
+  ('LShufCivModeValues', 'LSHUF_CM_SPLIT', 'LOC_LSHUF_CM_SPLIT', 'LOC_LSHUF_CM_SPLIT_DESC', 40),
+  ('LShufCivModeValues', 'LSHUF_CM_CUSTOM', 'LOC_LSHUF_CM_CUSTOM', 'LOC_LSHUF_CM_CUSTOM_DESC', 50),
   ('LShufAValues', 'LSHUF_A_NORMAL', 'LOC_LSHUF_A_NORMAL', 'LOC_LSHUF_A_NORMAL_DESC', 10),
   ('LShufAValues', 'LSHUF_A_WHOLE', 'LOC_LSHUF_A_WHOLE', 'LOC_LSHUF_A_WHOLE_DESC', 20),
   ('LShufAValues', 'LSHUF_A_SPLIT', 'LOC_LSHUF_A_SPLIT', 'LOC_LSHUF_A_SPLIT_DESC', 30),
@@ -74,10 +81,12 @@ INSERT OR IGNORE INTO DomainValues (Domain, Value, Name, Description, SortIndex)
   ('LShufCUValues', 'LSHUF_CU_NORMAL', 'LOC_LSHUF_CU_NORMAL', 'LOC_LSHUF_CU_NORMAL_DESC', 10),
   ('LShufCUValues', 'LSHUF_CU_PAIRED', 'LOC_LSHUF_CU_PAIRED', 'LOC_LSHUF_CU_PAIRED_DESC', 20),
   ('LShufCUValues', 'LSHUF_CU_SHUFFLED', 'LOC_LSHUF_CU_SHUFFLED', 'LOC_LSHUF_CU_SHUFFLED_DESC', 30),
+  ('LShufCUValues', 'LSHUF_CU_SPLIT', 'LOC_LSHUF_CU_SPLIT', 'LOC_LSHUF_CU_SPLIT_DESC', 35),
   ('LShufCUValues', 'LSHUF_OFF', 'LOC_LSHUF_OFF', 'LOC_LSHUF_OFF_DESC', 40),
   ('LShufCCValues', 'LSHUF_CC_NORMAL', 'LOC_LSHUF_CC_NORMAL', 'LOC_LSHUF_CC_NORMAL_DESC', 10),
   ('LShufCCValues', 'LSHUF_CC_PAIRED', 'LOC_LSHUF_CC_PAIRED', 'LOC_LSHUF_CC_PAIRED_DESC', 20),
   ('LShufCCValues', 'LSHUF_CC_SHUFFLED', 'LOC_LSHUF_CC_SHUFFLED', 'LOC_LSHUF_CC_SHUFFLED_DESC', 30),
+  ('LShufCCValues', 'LSHUF_CC_SPLIT', 'LOC_LSHUF_CC_SPLIT', 'LOC_LSHUF_CC_SPLIT_DESC', 35),
   ('LShufCCValues', 'LSHUF_OFF', 'LOC_LSHUF_OFF', 'LOC_LSHUF_OFF_DESC', 40),
   ('LShufPersonalityValues', 'LSHUF_PERSONA_STAYS', 'LOC_LSHUF_PERSONA_STAYS', 'LOC_LSHUF_PERSONA_STAYS_DESC', 10),
   ('LShufPersonalityValues', 'LSHUF_PERSONA_FOLLOWS', 'LOC_LSHUF_PERSONA_FOLLOWS', 'LOC_LSHUF_PERSONA_FOLLOWS_DESC', 20),
@@ -114,15 +123,12 @@ WHERE Domain = 'StandardLeaders' AND LeaderType IN (
     'LEADER_Akyuu', 'LEADER_Koishi', 'LEADER_WUZETIAN', 'LEADER_Aya'
 );
 
--- Leader pools: every leader the player can pick, base, DLC and modded, stored as plain LEADER_X.
+-- The Leader pool: every leader the player can pick, base, DLC and modded, stored as plain LEADER_X. Random slots
+-- only draw ticked leaders (the parameter stores the unticked ones).
 INSERT OR IGNORE INTO DomainValues (Domain, Value, Name, Description, SortIndex)
 SELECT 'LShufPoolLeaderValues', LeaderType, LeaderName, LeaderName, 100
 FROM Leaders
 WHERE Domain = 'StandardLeaders';
-
--- "Random from pool 1/2" in each slot's leader choice, right after the game's own Random (-1000).
-INSERT OR IGNORE INTO DomainValues (Domain, Value, Name, Description, Icon, SortIndex) VALUES
-  ('StandardLeaders', 'LSHUF_RANDOM_POOL_1', 'LOC_LSHUF_RANDOM_POOL', 'LOC_LSHUF_RANDOM_POOL_DESC', 'LEADER_RANDOM', -999);
 
 -- Civilizations in the game: every age's civilizations the player has, one value each, stored as |CIVILIZATION_X|.
 -- Selected through the frontend Civilizations table, so a DLC or modded civ is listed only when it's there.

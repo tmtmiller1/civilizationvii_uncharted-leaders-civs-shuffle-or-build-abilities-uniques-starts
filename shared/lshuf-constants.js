@@ -1,5 +1,6 @@
 // Names shared by every part of the mod. CONTRACTS.md is the source; this file mirrors it so code imports
 // the spelling instead of retyping it. Owned by the lead: workstreams import it and don't edit it.
+import { CIV_WONDER_PIECES } from "./lshuf-civ-wonder-pieces.js";
 
 export const MOD_ID = "re-dealable-leader-abilities-attributes-and-start-biases";
 export const MOD_PATH = `/${MOD_ID}`;
@@ -11,13 +12,16 @@ export const PARAM = {
   Abilities: "LShufAbilities",
   Attributes: "LShufAttributes",
   KeepMine: "LShufKeepMine",
+  KeepBuiltCiv: "LShufKeepBuiltCiv",
   LeadersOut: "LShufLeadersOut",
   ModdedAbilities: "LShufModdedAbilities",
   ModdedAttributes: "LShufModdedAttributes",
   ModdedBiases: "LShufModdedBiases",
   ModdedOut: "LShufModdedOut",
-  Pool1: "LShufPool1",
+  // The Leader pool: the leaders Random slots may draw (a ticked list; the unticked ones are stored).
+  LeaderPoolOut: "LShufLeaderPoolOut",
   CivsOut: "LShufCivsOut",
+  CivMode: "LShufCivMode",
   CivAbilities: "LShufCivAbilities",
   CivUniques: "LShufCivUniques",
   CivCivics: "LShufCivCivics",
@@ -59,9 +63,14 @@ export const MODE_CUSTOM = "LSHUF_MODE_CUSTOM";
 // Civilizations (CONTRACTS 16): their abilities swap within their age; their uniques go with the ability, shuffle on
 // their own, or stay.
 export const CA_MODE = { Normal: "LSHUF_CA_NORMAL", Swapped: "LSHUF_CA_SWAPPED", Split: "LSHUF_CA_SPLIT", Off: ONOFF.Off };
-export const CU_MODE = { Normal: "LSHUF_CU_NORMAL", Paired: "LSHUF_CU_PAIRED", Shuffled: "LSHUF_CU_SHUFFLED", Off: ONOFF.Off };
+export const CU_MODE = {
+  Normal: "LSHUF_CU_NORMAL", Paired: "LSHUF_CU_PAIRED", Shuffled: "LSHUF_CU_SHUFFLED", Split: "LSHUF_CU_SPLIT", Off: ONOFF.Off
+};
 // Unique civics (CONTRACTS 18): the civ's civics tree with its traditions and the uniques its nodes unlock.
-export const CC_MODE = { Normal: "LSHUF_CC_NORMAL", Paired: "LSHUF_CC_PAIRED", Shuffled: "LSHUF_CC_SHUFFLED", Off: ONOFF.Off };
+// Split: each civic dealt on its own (CONTRACTS 21).
+export const CC_MODE = {
+  Normal: "LSHUF_CC_NORMAL", Paired: "LSHUF_CC_PAIRED", Shuffled: "LSHUF_CC_SHUFFLED", Split: "LSHUF_CC_SPLIT", Off: ONOFF.Off
+};
 // What each preset sets: [Abilities, Attributes, Biases].
 export const PRESETS = {
   LSHUF_MODE_NONE: [A_MODE.Normal, T_MODE.Normal, B_MODE.Normal],
@@ -73,6 +82,21 @@ export const PRESETS = {
 export function presetOf(abilities, attributes, biases) {
   const hit = Object.entries(PRESETS).find(([, v]) => v[0] === abilities && v[1] === attributes && v[2] === biases);
   return hit ? hit[0] : MODE_CUSTOM;
+}
+
+// The civilization mode (CONTRACTS 32): a preset over the three civilization rows, like Mode over the leader rows.
+// Swap whole moves a civilization's ability, uniques and civics together; Swap partial swaps each as a whole set,
+// with a different civilization each.
+export const CIV_MODE_CUSTOM = "LSHUF_CM_CUSTOM";
+export const CIV_PRESETS = {
+  LSHUF_CM_NORMAL: [CA_MODE.Normal, CU_MODE.Normal, CC_MODE.Normal],
+  LSHUF_CM_WHOLE: [CA_MODE.Swapped, CU_MODE.Paired, CC_MODE.Paired],
+  LSHUF_CM_PARTIAL: [CA_MODE.Swapped, CU_MODE.Shuffled, CC_MODE.Shuffled],
+  LSHUF_CM_SPLIT: [CA_MODE.Split, CU_MODE.Split, CC_MODE.Split]
+};
+export function civPresetOf(abilities, uniques, civics) {
+  const hit = Object.entries(CIV_PRESETS).find(([, v]) => v[0] === abilities && v[1] === uniques && v[2] === civics);
+  return hit ? hit[0] : CIV_MODE_CUSTOM;
 }
 
 export const PERSONA = {
@@ -97,6 +121,8 @@ export const OPTION_DEFAULTS = {
   Abilities: A_MODE.Normal,
   Attributes: T_MODE.Normal,
   KeepMine: "0",
+  // On by default: a human keeping their own leader still plays their built civilization.
+  KeepBuiltCiv: "1",
   ModdedAbilities: "0",
   ModdedAttributes: "0",
   ModdedBiases: "0",
@@ -108,9 +134,6 @@ export const OPTION_DEFAULTS = {
   Reveal: REVEAL.Start
 };
 
-// The "Random from the pool" entry in each player slot's leader choice (DomainValues on StandardLeaders), right
-// after Random (SortIndex -999). One pool: a slot picks one leader, so one list is all a slot needs.
-export const RANDOM_POOL = { 1: "LSHUF_RANDOM_POOL_1" };
 
 // Game config keys written by script (Configuration.editGame().setValue), not setup parameters.
 export const KEY = {
@@ -119,6 +142,10 @@ export const KEY = {
   modWhy: (leaderType) => `LShufModWhy_${leaderType}`,
   NotInGame: "LShufNotInGame",
   Preview: "LShufPreview",
+  // The shuffle version the game was set up with (DEAL_VERSION), written once by the host at setup and never again.
+  // The game recomputes the shuffle at every load, so a later version that changes results gates the change on this
+  // key (ConfigurationValueMatches), and a campaign keeps the shuffle it started with (CONTRACTS 26).
+  DealVersion: "LShufDealVersion",
   // Build your own leader (CONTRACTS section 13): the builder's leader (|LEADER_X|), its civilization (|CIV_X|, when
   // picked by hand) and the cards it took (a list of build piece ids). One builder in this version (slot 1).
   Builder: "LShufBuilder",
@@ -151,6 +178,9 @@ export const BUILD = {
   civUnique: (type) => `CIVUNQ_${type}`,
   // A civilization's unique civics: its civics tree, its traditions, and every unique the tree's nodes unlock.
   civCivics: (civilizationType) => `CIVCIVC_${civilizationType}`,
+  civTags: (civilizationType) => `CIVTAGS_${civilizationType}`,
+  // One civic of a civilization's tree (CONTRACTS 21): the node with its traditions and what it unlocks.
+  civCivic: (nodeType) => `CIVNODE_${nodeType}`,
   // One bonus of a civilization's ability (LShufCivMapping piece ids are <CIV>__B<nn>, like leaders' pieces).
   civBullet: (civilizationType, index) => `${civilizationType}__B${String(index).padStart(2, "0")}`
 };
@@ -164,23 +194,70 @@ export const GENERIC_BIASES = [
 ];
 export const BUILD_KIND = {
   Bullet: "bullet", Whole: "whole", Attribute: "attribute", Persona: "persona", Bias: "bias", CivBias: "civbias",
-  CivAbility: "civability", CivUnique: "civunique", CivCivics: "civcivics", CivBullet: "civbullet"
+  CivAbility: "civability", CivUnique: "civunique", CivCivics: "civcivics", CivBullet: "civbullet", CivCivic: "civcivic"
 };
+const KIND_BY_PREFIX = [
+  ["PERSONA_", BUILD_KIND.Persona], ["CIVBIAS_", BUILD_KIND.CivBias], ["CIVABIL_", BUILD_KIND.CivAbility],
+  ["CIVUNQ_", BUILD_KIND.CivUnique], ["CIVCIVC_", BUILD_KIND.CivCivics], ["CIVNODE_", BUILD_KIND.CivCivic]
+];
 export function buildKindOf(id) {
   if (/^ATTR\d*_/.test(id)) return BUILD_KIND.Attribute;
-  if (id.startsWith("PERSONA_")) return BUILD_KIND.Persona;
-  if (id.startsWith("CIVBIAS_")) return BUILD_KIND.CivBias;
-  if (id.startsWith("CIVABIL_")) return BUILD_KIND.CivAbility;
-  if (id.startsWith("CIVUNQ_")) return BUILD_KIND.CivUnique;
-  if (id.startsWith("CIVCIVC_")) return BUILD_KIND.CivCivics;
+  const byPrefix = KIND_BY_PREFIX.find(([prefix]) => id.startsWith(prefix));
+  if (byPrefix) return byPrefix[1];
   if (id.startsWith("CIVILIZATION_") && /__B\d+$/.test(id)) return BUILD_KIND.CivBullet;
   if (id.startsWith("BIAS_") || id.startsWith("GBIAS_")) return BUILD_KIND.Bias;
   return id.endsWith("__WHOLE") ? BUILD_KIND.Whole : BUILD_KIND.Bullet;
 }
+// The kinds that make up a leader (the rest make up a civilization). A host's picks holding any of them means a leader
+// has been built.
+const LEADER_BUILD_KINDS = new Set([BUILD_KIND.Bullet, BUILD_KIND.Whole, BUILD_KIND.Attribute, BUILD_KIND.Persona,
+  BUILD_KIND.Bias]);
+export const hasLeaderBuild = (ids) => ids.some((id) => LEADER_BUILD_KINDS.has(buildKindOf(id)));
 // Every bullet is its own card: the mapping ships reviewed, with bullets one effect serves together merged into one
 // piece (scripts/mapping/merge-pieces.mjs). Set false to grey the bullet cards of any leader whose rows are
 // Reviewed = 0 again.
 export const BUILD_UNREVIEWED_BULLETS = true;
+// Bonuses whose effects only work in some ages, read from each one's modifiers on 2026-11-07: they act on a unit,
+// improvement, government or game system the other ages don't have. A bonus that keeps a part working in any age
+// (Spain's coast yields, Carthage's extra Merchant, the Pirate Republic's naval units) isn't listed. An AI build
+// skips a listed piece outside its ages: a civ bonus outside the civ's age, a leader bonus that only works in ages
+// before the game's start. The player's own build screens still offer every card.
+export const PIECE_AGES = {
+  CIVILIZATION_BUGANDA__B01: ["AGE_MODERN"], // River Raids, a Modern unit ability
+  CIVILIZATION_BUGANDA__B03: ["AGE_MODERN"], // Buganda's lakes and their Tourism
+  CIVILIZATION_HAWAII__B01: ["AGE_EXPLORATION"], // the Hawaiian fishing boat that works Ocean
+  CIVILIZATION_ICELAND__B02: ["AGE_EXPLORATION", "AGE_MODERN"], // Natural Wonders found in Distant Lands
+  CIVILIZATION_ICELAND__B04: ["AGE_EXPLORATION"], // Missionaries
+  CIVILIZATION_INCA__B01: ["AGE_EXPLORATION"], // the Inca improvement that works Mountains
+  CIVILIZATION_MEXICO__B01: ["AGE_MODERN"], // the Revolución government
+  CIVILIZATION_OTTOMANS__B01: ["AGE_MODERN"], // Artifacts
+  CIVILIZATION_PERSIA__B01: ["AGE_ANTIQUITY"], // the Hamarana Council unit ability
+  LEADER_YI_SUN_SIN__B01: ["AGE_ANTIQUITY"] // Fleet Commanders from Discipline in the Antiquity civics tree
+};
+
+export const AGE_ORDER = ["AGE_ANTIQUITY", "AGE_EXPLORATION", "AGE_MODERN"];
+
+// Whether a piece works in that age (true for anything unlisted or an unknown age).
+export function pieceWorksIn(id, age) {
+  const ages = PIECE_AGES[id];
+  return !ages || !age || ages.includes(age);
+}
+
+// Whether a leader piece works in a game starting in that age: in it or an age after it.
+export function pieceWorksFrom(id, startAge) {
+  const ages = PIECE_AGES[id];
+  const from = AGE_ORDER.indexOf(startAge);
+  return !ages || from < 0 || ages.some((a) => AGE_ORDER.indexOf(a) >= from);
+}
+
+// A builder can take a civilization's ability or one of its bonuses from any age (CONTRACTS 14, Every age); uniques
+// and civics trees stay with their own age, whose data a game of another age doesn't load. These bonuses stay too:
+// their modifiers aren't in the Antiquity database (devtools/probes/RESULTS-2026-11-07.md); and so does each
+// favored-wonder bonus, since another age's wonder can't be built (CONTRACTS 31).
+export const CIV_OWN_AGE_PIECES = [
+  "CIVILIZATION_FRENCH_EMPIRE__B01", "CIVILIZATION_JOSEON__B02", "CIVILIZATION_MEXICO__B02", "CIVILIZATION_NEPAL__B02",
+  ...CIV_WONDER_PIECES
+];
 // Why a built pick didn't apply (LShufResultMeta Name "Builder": "ok" or one of these).
 export const BUILD_WHY = { ModeOff: "mode-off", NotInGame: "builder-not-in-game", NoPieces: "no-pieces" };
 
@@ -286,3 +363,15 @@ export function biasTableOfTag(tag) {
 // "|A|B|" <-> ["A", "B"]
 export const splitTags = (value) => (value ? String(value).split("|").filter(Boolean) : []);
 export const joinTags = (list) => (list.length ? `|${list.join("|")}|` : null);
+
+// Whole civilization bonuses that travel with a unique unit (data/mapping/lshuf-civ-links.sql LShufBoundPieces,
+// CONTRACTS 23 R4 and 29): unit type -> piece ids. The screens show the bonuses' text with the unit.
+// tests/civ-links.mjs keeps this in step with the table.
+export const BOUND_PIECE_OF = {
+  UNIT_BUCCANEER: ["CIVILIZATION_PIRATE_REPUBLIC__B02", "CIVILIZATION_PIRATE_REPUBLIC__B03"],
+  UNIT_COLONIST: ["CIVILIZATION_CARTHAGE__B02"]
+};
+
+// A bonus card that needs another bonus card (CONTRACTS 29): the Pirate Republic's "no Settlers" needs the settle
+// charge. The build screen offers the second card when the first is taken alone.
+export const PIECE_NEEDS = { CIVILIZATION_PIRATE_REPUBLIC__B03: "CIVILIZATION_PIRATE_REPUBLIC__B02" };

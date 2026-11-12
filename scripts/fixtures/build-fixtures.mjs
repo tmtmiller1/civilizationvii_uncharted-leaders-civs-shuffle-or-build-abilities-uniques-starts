@@ -47,7 +47,20 @@ export const EXTRA_COPIED_FROM = "AMINA_MOD_RESOURCE_CAPACITY";
 // The bias row the added-leader fixture removes, as another mod might.
 export const REMOVED_BIAS = { table: "StartBiasBiomes", LeaderType: "LEADER_AMINA", BiomeType: "BIOME_DESERT" };
 
-export const FIXTURES = ["base", "dlc-removed", "added-leader", "extra-modifier"];
+export const FIXTURES = ["base", "dlc-removed", "added-leader", "extra-modifier", "exploration", "modern"];
+
+// The later ages' fixtures: the game loads another database for each age (other civilizations, units, civics), so
+// each has its own saved copies, tests/fixtures/source-db/<folder>/, from a mods-off lab game started in that age
+// (2026-11-10, 1.5.0). The four fixtures above are the Antiquity database.
+const AGE_FIXTURES = { exploration: "AGE_EXPLORATION", modern: "AGE_MODERN" };
+// The age each fixture's database was loaded for (the harness's AgeInUse default).
+export const fixtureAge = (name) => AGE_FIXTURES[name] || "AGE_ANTIQUITY";
+
+export function sourcesOf(name) {
+  if (!AGE_FIXTURES[name] || process.env.LSHUF_DEBUG_DIR) return SOURCES;
+  const dir = path.join(SAVED_DIR, name);
+  return { gameplay: path.join(dir, "gameplay-copy.sqlite"), frontend: path.join(dir, "frontend-copy.sqlite") };
+}
 
 export function makeHashStandIn(value) {
   const digest = crypto.createHash("sha1").update(String(value)).digest();
@@ -258,6 +271,8 @@ function copySource(src, dest) {
 
 const EDITS = {
   base: { gameplay: () => ({}), frontend: () => ({}) },
+  exploration: { gameplay: () => ({}), frontend: () => ({}) },
+  modern: { gameplay: () => ({}), frontend: () => ({}) },
   "dlc-removed": {
     gameplay: (db) => removeByMark(db, DLC_MARK),
     frontend: (db) => removeByMark(db, DLC_MARK)
@@ -280,12 +295,14 @@ function isFresh(name) {
   const p = fixturePaths(name);
   if (!fs.existsSync(p.manifest)) return false;
   const manifest = JSON.parse(fs.readFileSync(p.manifest, "utf8"));
-  return Object.entries(SOURCES).every(([k, src]) => manifest.sources?.[k]?.mtimeMs === fs.statSync(src).mtimeMs);
+  return Object.entries(sourcesOf(name)).every(
+    ([k, src]) => fs.existsSync(src) && manifest.sources?.[k]?.mtimeMs === fs.statSync(src).mtimeMs
+  );
 }
 
 export function buildFixture(name) {
   if (!EDITS[name]) throw new Error(`unknown fixture ${name}`);
-  for (const src of Object.values(SOURCES)) {
+  for (const src of Object.values(sourcesOf(name))) {
     if (!fs.existsSync(src)) throw new Error(`missing source ${src} (a game run writes the Debug copies)`);
   }
   fs.mkdirSync(FIXTURE_ROOT, { recursive: true });
@@ -300,7 +317,7 @@ export function buildFixture(name) {
 function finishFixture(name, tmp) {
   const manifest = { name, built: new Date().toISOString(), sources: {}, edits: {}, counts: {}, makeHash: "stand-in" };
   for (const kind of ["gameplay", "frontend"]) {
-    const src = SOURCES[kind];
+    const src = sourcesOf(name)[kind];
     const stat = fs.statSync(src);
     manifest.sources[kind] = { path: src, mtimeMs: stat.mtimeMs, size: stat.size };
     const dest = path.join(tmp, `${kind}.sqlite`);

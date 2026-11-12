@@ -63,9 +63,23 @@ export function paramReadOnly(paramId) {
   return !!(p && p.readOnly);
 }
 
+// The game's own start age row (Advanced Settings "Age").
+export const START_AGE_PARAM = "Age";
+
+// The age the game starts in ("" when it can't be read). A civilization picked from another age plays in this one
+// (Test of Time), so the build screens and the deal take a builder's civ as a civ of this age.
+export function startAge() {
+  return paramValue(START_AGE_PARAM);
+}
+
+const REFUSED_ONCE = 5;
+
 export function setParam(paramId, value) {
   try {
-    const r = GameSetup.setGameParameterValue(paramId, value);
+    let r = GameSetup.setGameParameterValue(paramId, value);
+    // The game turns down every second write to the mod's options that comes in a later task than the one before
+    // (result 5, value unchanged); the same write sent again goes through. Watched 2026-11-07 on LShufBiases.
+    if (r === REFUSED_ONCE) r = GameSetup.setGameParameterValue(paramId, value);
     window.dispatchEvent(new CustomEvent(EVENT.SetupChanged, { detail: { paramId } }));
     return r;
   } catch (e) {

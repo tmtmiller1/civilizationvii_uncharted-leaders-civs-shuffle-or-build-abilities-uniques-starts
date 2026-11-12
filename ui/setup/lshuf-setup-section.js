@@ -16,8 +16,9 @@ export const PAGE_BUTTONS = [
 export const SECTION_BUTTONS = [
   ["pools", "LOC_LSHUF_BTN_POOLS"],
   ["civs", "LOC_LSHUF_BTN_CIVS"],
+  ["aiplayers", "LOC_LSHUF_BTN_AI_PLAYERS"],
   ["build", "LOC_LSHUF_BTN_BUILD"],
-  ["ai", "LOC_LSHUF_BTN_AI"],
+  ["buildciv", "LOC_LSHUF_BTN_BUILD_CIV"],
   ["advanced", "LOC_LSHUF_BTN_ADVANCED"]
 ];
 

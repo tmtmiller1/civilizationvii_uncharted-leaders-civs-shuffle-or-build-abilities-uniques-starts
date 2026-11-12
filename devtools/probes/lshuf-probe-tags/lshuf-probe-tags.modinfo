@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mod id="lshuf-probe-tags" version="1" xmlns="ModInfo">
+	<Properties>
+		<Name>Re-dealable probe: civilization tags</Name>
+		<Description>Moves Rome's Militaristic tag to Expansionist. Not for release.</Description>
+		<Authors>tower</Authors>
+		<Package>Mod</Package>
+		<AffectsSavedGames>1</AffectsSavedGames>
+		<ShowInBrowser>1</ShowInBrowser>
+	</Properties>
+	<Dependencies>
+		<Mod id="base-standard" title="LOC_MODULE_BASE_STANDARD_NAME"/>
+	</Dependencies>
+	<ActionCriteria>
+		<Criteria id="antiquity"><AgeInUse>AGE_ANTIQUITY</AgeInUse></Criteria>
+	</ActionCriteria>
+	<ActionGroups>
+		<ActionGroup id="tags-game" scope="game" criteria="antiquity">
+			<Actions>
+				<UpdateDatabase><Item>data/tags.sql</Item></UpdateDatabase>
+			</Actions>
+		</ActionGroup>
+	</ActionGroups>
+</Mod>

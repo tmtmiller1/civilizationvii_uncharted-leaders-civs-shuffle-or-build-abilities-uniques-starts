@@ -1,9 +1,9 @@
 // The mod's setup windows. The advanced window opens from the button after the mod's rows in its settings section and
 // holds the fairness of mixed bonuses and the shuffle number, then buttons for leaders that are shuffled and leaders
-// from other mods. The Leader pools and Civilization pool windows open from the section itself. Every option here is a
-// hidden setup parameter read and written through GameSetup, so it saves with the game and reaches every player
-// through the lobby. In a network game only the host can change values; everyone else sees them locked. Escape and
-// Close shut only the window on top.
+// from other mods. The Leader pool, Civilization pool and AI players windows open from the section itself. Every
+// option here is a hidden setup parameter read and written through GameSetup, so it saves with the game and reaches
+// every player through the lobby. In a network game only the host can change values; everyone else sees them locked.
+// Escape and Close shut only the window on top.
 
 import Panel from "/core/ui/panel-support.js";
 import ContextManager from "/core/ui/context-manager/context-manager.js";
@@ -19,6 +19,8 @@ import {
   opt, pageButtons, readRevision
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-section.js";
 
+import { buildAiPlayers } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-ai-players.js";
+
 const SYNC_MS = 500;
 const tagOf = (page) => `lshuf-setup-window-${page}`;
 export const WINDOW_TAG = tagOf("advanced");
@@ -33,6 +35,10 @@ const PAGES = {
     build: (win, list, ctx) => [win.add(list, leaderList(PARAM.LeadersOut, ...opt("LEADERS_OUT"), ctx, { inverted: true }))]
   },
   pools: { title: "LOC_LSHUF_HEADING_POOLS", build: (win, list, ctx) => buildPools(win, list, ctx) },
+  aiplayers: {
+    title: "LOC_LSHUF_AI_PLAYERS_TITLE",
+    build: (win, list, ctx) => buildAiPlayers(win, list, ctx, (page) => openSetupWindow(page))
+  },
   modded: { title: "LOC_LSHUF_HEADING_MODDED", build: (win, list, ctx) => buildModded(win, list, ctx) },
   civs: {
     title: "LOC_LSHUF_CIVS_OUT_NAME",
@@ -52,7 +58,7 @@ const PAGES = {
 
 // The one leader pool: a list with All and None (a slot picks one leader, so one list is all it needs).
 function buildPools(win, list, ctx) {
-  const pool = leaderList(PARAM.Pool1, ...opt("POOL"), ctx, { emptyKey: "LOC_LSHUF_POOL_EMPTY" });
+  const pool = leaderList(PARAM.LeaderPoolOut, ...opt("POOL"), ctx, { inverted: true });
   win.add(list, pool);
   return [pool];
 }
@@ -141,6 +147,8 @@ class LShufSetupWindow extends Panel {
     this.Root.classList.add("fullscreen", "flex", "items-center", "justify-center");
     const frame = el("fxs-frame", `lshuf-setup__frame lshuf-setup__frame--${this.page}`);
     frame.setAttribute("title", PAGES[this.page].title);
+    // The frame doesn't draw its title attribute, so the heading is our own.
+    const heading = el("div", "font-title text-xl uppercase text-secondary px-6 pt-4 pb-2", PAGES[this.page].title);
     this.hostNote = el("div", "lshuf-setup__host-only font-body text-sm px-6", "LOC_LSHUF_HOST_ONLY");
     const scroll = el("fxs-scrollable", "lshuf-setup__scroll");
     scroll.setAttribute("handle-gamepad-pan", "true");
@@ -153,7 +161,7 @@ class LShufSetupWindow extends Panel {
     footer.appendChild(done);
     const closeX = el("fxs-close-button");
     closeX.addEventListener("action-activate", () => this.close());
-    frame.append(this.hostNote, scroll, footer, closeX);
+    frame.append(heading, this.hostNote, scroll, footer, closeX);
     this.Root.appendChild(frame);
     const ctx = {
       locked: () => !isLocalHost(),

@@ -117,7 +117,7 @@
     <Replace Tag="LOC_DIPLOMACY_AGENDA_THE_SPIDER_NAME" Language="de_DE"><Text>Die Spinne</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_TITLE" Language="de_DE"><Text>Agenda</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_TOYOTOMI_HIDEYOSHI_DESC" Language="de_DE"><Text>Mag die Anführer mit den meisten [TIP:LOC_PEDIA_CONCEPTS_LAND_UNITS_TOOLTIP]Landeinheiten[/TIP] und der höchsten [icon:YIELD_CULTURE] Kultur. Mag die Anführer mit den wenigsten Landeinheiten oder der niedrigsten [icon:YIELD_CULTURE] Kultur nicht.</Text></Replace>
-    <Replace Tag="LOC_DIPLOMACY_AGENDA_TOYOTOMI_HIDEYOSHI_DESC_DISLIKES" Language="de_DE"><Text>Toyotomi Hideyoshi mag die Anführer mit den wenigsten [TIP:LOC_PEDIA_CONCEPTS_LAND_UNITS_TOOLTIP]Landeinheiten[/TIP] oder der niedrigsten [icon:YIELD_CULTURE] Kultur nicht.</Text></Replace>
+    <Replace Tag="LOC_DIPLOMACY_AGENDA_TOYOTOMI_HIDEYOSHI_DESC_DISLIKES" Language="de_DE"><Text>Toyotomi Hideyoshi mag die Anführer mit den wenigsten Landeinheiten oder der niedrigsten [icon:YIELD_CULTURE] Kultur nicht.</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_TOYOTOMI_HIDEYOSHI_DESC_LIKES" Language="de_DE"><Text>Toyotomi Hideyoshi mag die Anführer mit den meisten [TIP:LOC_PEDIA_CONCEPTS_LAND_UNITS_TOOLTIP]Landeinheiten[/TIP] und der höchsten [icon:YIELD_CULTURE] Kultur.</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_TOYOTOMI_HIDEYOSHI_NAME" Language="de_DE"><Text>Kampaku</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_TO_ARMS_DESC" Language="de_DE"><Text>Mag den Anführer mit der größten Anzahl an Militäreinheiten. Mag den Anführer mit der geringsten Anzahl an Militäreinheiten nicht.</Text></Replace>

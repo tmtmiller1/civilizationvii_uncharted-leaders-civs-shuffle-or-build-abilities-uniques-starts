@@ -7,34 +7,21 @@
 // between. After the host has written the keys once, each PlayerInfoChanged rewrites the keep keys and the
 // not-in-game list from the slots as they are then, until setup closes.
 
-import { BUILD_SLOTS, EVENT, KEY, listValue } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { EVENT, KEY, listValue } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
 import {
   KNOWN_LEADERS, MODDED_LEADER_TYPES
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-known-leaders.js";
 import { currentSeed } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
 import {
-  isLocalHost, readSlots, readOptions, readPools, planPoolSlots, planRandomSlots, randomChoices, keptLeaders,
+  isLocalHost, readSlots, readOptions, leadersSwitchedOff, planRandomSlots, randomChoices, keptLeaders,
   notInGame, anyModdedBoxOn, buildOut, readDealConfigFromSetup, slotsAfterPools, PLAIN_RANDOM, civChoices,
-  civsSwitchedOff, planRandomCivSlots, builderFromSetup
+  civsSwitchedOff, planRandomCivSlots
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
 import { moddedCheckResult } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-mod-check.js";
+import { DEAL_VERSION } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/deal/lshuf-deal-util.js";
+import { clearWritten, setKey, writeBuildKeys } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-keys.js";
 
 const log = (msg) => console.warn(`[lshuf-setup] ${msg}`);
-
-// Values this session has written, so a rewrite only touches keys that changed (a write raises PlayerInfoChanged
-// on some screens, and an unchanged write mustn't feed it).
-const written = new Map();
-
-function setKey(key, value) {
-  const text = Array.isArray(value) ? value.join(",") : String(value);
-  if (written.get(key) === text) return;
-  try {
-    Configuration.editGame().setValue(key, value);
-    written.set(key, text);
-  } catch (e) {
-    log(`setValue(${key}) failed: ${e}`);
-  }
-}
 
 // Gives each slot in the plan its value of the player parameter (PlayerLeader or PlayerCivilization). Returns what
 // each planned slot ended up with; a pick the engine refused counts as plain Random, and the slot is set back to
@@ -74,24 +61,58 @@ function hostMayPick(slot) {
   }
 }
 
-// Step 1: "Random from pool N" slots get a leader from their pool, then plain Random slots get one of the leaders
-// their own list offers. A slot either step can't fill stays plain Random, and the not-in-game list is left empty.
-function resolveSlots(seed) {
+// Step 1: each plain Random slot gets one of the leaders its own list offers, never one unticked in the Leader pool.
+// A slot that can't be filled stays plain Random, and the not-in-game list is left empty.
+function resolveSlots() {
   const raw = readSlots();
-  // The slots come from the plans, not from a fresh read: leaderTypeName may not show a pick at once, and the
-  // preview (readDealConfigFromSetup) works from the same pool plan, so the keys and the preview agree.
-  const afterPools = slotsAfterPools(raw, applyPicks(planPoolSlots(raw, readPools(), seed), "pool"));
-  const randomPlan = planRandomSlots(afterPools, randomChoices, randomIndex, hostMayPick);
-  const slots = slotsAfterPools(afterPools, applyPicks(randomPlan, "random"));
+  // The slots come from the plan, not from a fresh read: leaderTypeName may not show a pick at once.
+  const randomPlan = planRandomSlots(raw, randomChoices, randomIndex, hostMayPick, leadersSwitchedOff());
+  const slots = slotsAfterPools(raw, applyPicks(randomPlan, "random"));
   pickRandomCivs(slots);
   return slots;
 }
 
 // Step 1b: each plain Random civilization slot gets a civ that's switched on in "Civilizations in the game".
+// The game can refuse a civilization for a slot (seen 2026-11-09: code 5 for a planned pick). A refused slot tries
+// its other allowed civilizations, in a random order, before it falls back to plain Random, so the Civilization
+// pool still holds.
+function retryRefusedCivs(slots, plan, result) {
+  const off = civsSwitchedOff();
+  const taken = new Set([...result.values()].filter((c) => c !== PLAIN_RANDOM));
+  for (const s of slots) if (s.civ && s.civ !== PLAIN_RANDOM) taken.add(s.civ);
+  for (const [slot, wanted] of plan) {
+    if (result.get(slot) !== PLAIN_RANDOM || wanted === PLAIN_RANDOM) continue;
+    const open = civChoices(slot).filter((c) => c !== wanted && !taken.has(c) && !off.has(c));
+    while (open.length) {
+      const civ = open.splice(randomIndex(open.length), 1)[0];
+      let r;
+      try {
+        r = GameSetup.setPlayerParameterValue(slot, "PlayerCivilization", civ);
+      } catch (e) {
+        r = String(e);
+      }
+      log(`random civ slot ${slot} retry -> ${civ} (${r})`);
+      if (r === 0) {
+        taken.add(civ);
+        result.set(slot, civ);
+        break;
+      }
+    }
+    if (result.get(slot) === PLAIN_RANDOM) {
+      try {
+        GameSetup.setPlayerParameterValue(slot, "PlayerCivilization", PLAIN_RANDOM);
+      } catch (_) {
+        /* left as it is */
+      }
+    }
+  }
+}
+
 function pickRandomCivs(slots) {
   try {
     const plan = planRandomCivSlots(slots, civChoices, civsSwitchedOff(), randomIndex, hostMayPick);
-    applyPicks(plan, "random civ", "PlayerCivilization");
+    const result = applyPicks(plan, "random civ", "PlayerCivilization");
+    retryRefusedCivs(slots, plan, result);
   } catch (e) {
     log(`random civilization picks failed: ${e}`);
   }
@@ -119,18 +140,6 @@ function writeModKeys(options) {
 
 // Step 4: Build your own leader (CONTRACTS 13, builder slots): per slot n, LShufBuilder<n>, LShufBuilderCiv<n> and
 // LShufBuilt<n> from the slot's leader and stored picks; all three empty when the slot doesn't resolve.
-function writeBuildKeys(slots) {
-  const builders = [];
-  for (let n = 1; n <= BUILD_SLOTS; n++) {
-    const b = builderFromSetup(slots, n);
-    setKey(KEY.builderN(n), b ? [listValue(b.leader)] : []);
-    setKey(KEY.builderCivN(n), b && b.civ ? [listValue(b.civ)] : []);
-    setKey(KEY.builtN(n), b ? b.pieces.map(listValue) : []);
-    if (b) builders.push(b);
-  }
-  return builders;
-}
-
 let hostWrote = false;
 
 // Host: resolve the slots and write every key, then send the config it wrote. Every other machine sends the config
@@ -139,10 +148,11 @@ let hostWrote = false;
 function writeHostKeys() {
   const seed = currentSeed();
   const options = readOptions();
-  const slots = resolveSlots(seed);
+  const slots = resolveSlots();
   const kept = writeKeepKeys(slots, options);
   const modOK = writeModKeys(options);
   setKey(KEY.NotInGame, notInGame(slots).map(listValue));
+  setKey(KEY.DealVersion, String(DEAL_VERSION));
   const builders = writeBuildKeys(slots);
   hostWrote = true;
   return { seed, options, kept, out: buildOut(slots), modOK, builders };
@@ -183,7 +193,7 @@ export function onStartCampaign() {
 // Setup closed or a game started from it: the next setup writes from scratch.
 export function endStartSession() {
   hostWrote = false;
-  written.clear();
+  clearWritten();
 }
 
 export function installStartHandler() {

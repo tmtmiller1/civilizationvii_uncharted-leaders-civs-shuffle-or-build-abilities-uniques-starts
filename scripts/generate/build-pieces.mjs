@@ -32,6 +32,15 @@ export function mappingBulletIds(file = "data/mapping/lshuf-mapping.sql") {
 }
 export const civMappingBulletIds = () => mappingBulletIds("data/mapping/lshuf-civ-mapping.sql");
 
+// Every civic node of the setup copy (data/setup-copy/setup-copy-civ.sql, LShufSetup_CivicNodes), one card each
+// (CONTRACTS 21).
+export function civicNodeTypes() {
+  const sql = fs.readFileSync(path.join(root, "data/setup-copy/setup-copy-civ.sql"), "utf8");
+  const ids = new Set();
+  for (const m of sql.matchAll(/'(NODE_CIVIC_[A-Z0-9_]+)'/g)) ids.add(m[1]);
+  return [...ids].sort();
+}
+
 export function buildPieceIds() {
   const ids = new Set(mappingBulletIds());
   for (const l of KNOWN_LEADERS) {
@@ -52,5 +61,6 @@ export function buildPieceIds() {
     else ids.add(BUILD.civUnique(i.type));
   }
   for (const id of civMappingBulletIds()) ids.add(id);
+  for (const node of civicNodeTypes()) ids.add(BUILD.civCivic(node));
   return [...ids].sort();
 }

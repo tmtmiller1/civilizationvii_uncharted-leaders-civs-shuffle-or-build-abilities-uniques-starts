@@ -95,7 +95,10 @@ test("rows other mods and the base game keep on a leader stay put", async () => 
     try {
       const lt = `SELECT LeaderType, TraitType FROM LeaderTraits WHERE ${PROTECTED}`;
       assert.ok(snapshot(run.pre, lt).length >= 38 * 2 + 114, `${where}: the fixture has the protected rows`);
-      assert.deepEqual(snapshot(run.db, lt), snapshot(run.pre, lt), `${where}: protected LeaderTraits rows`);
+      // Yi Sun-sin's Fleet Commander trait follows his Fleet Commander piece (CONTRACTS 23 R5); tests/civ-links.mjs
+      // checks where it goes.
+      const kept = `SELECT LeaderType, TraitType FROM LeaderTraits WHERE (${PROTECTED}) AND TraitType <> 'TRAIT_UNLOCK_FLEET_COMMANDER'`;
+      assert.deepEqual(snapshot(run.db, kept), snapshot(run.pre, kept), `${where}: protected LeaderTraits rows`);
       const tm = `SELECT TraitType, ModifierId FROM TraitModifiers WHERE ${PROTECTED}`;
       assert.deepEqual(snapshot(run.db, tm), snapshot(run.pre, tm), `${where}: their TraitModifiers`);
       const ai = "SELECT * FROM AiLists WHERE LeaderType IS NULL OR LeaderType = 'TRAIT_LEADER_MAJOR_CIV'";

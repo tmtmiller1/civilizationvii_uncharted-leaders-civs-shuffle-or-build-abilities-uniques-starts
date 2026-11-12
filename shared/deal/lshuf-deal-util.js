@@ -2,10 +2,12 @@
 // baked into the generated SQL too, so changing one means regenerating data/generated/ and bumping DEAL_VERSION.
 import { lshufKey } from "../lshuf-key.js";
 
-export const DEAL_VERSION = 10;
+export const DEAL_VERSION = 15;
 
 // The SQL unrolls each sequential deal to a fixed number of steps; the JS stops at the same count.
 export const PIECE_STEP_CAP = 768;
+// Cards a civics or uniques pool deals at most (CONTRACTS 21): about 80 civics and 60 uniques in an age.
+export const POOL_STEP_CAP = 160;
 export const ATTR_STEP_CAP = 512;
 // Swap attempts after the attribute pass, one per undealt card.
 export const ATTR_REPAIR_CAP = 64;

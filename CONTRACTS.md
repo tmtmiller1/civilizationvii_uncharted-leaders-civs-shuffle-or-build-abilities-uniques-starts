@@ -21,7 +21,7 @@ Write only inside your own paths. Everyone may read everything.
 | C. Setup window and setup scripts | `ui/setup/`, `data/frontend/` |
 | D. In-game display | `ui/game/`, `ui/display/`, `data/text-generated/`, `data/setup-copy/`, `scripts/setup-copy/` |
 | E. Tests and fixtures | `tests/` (apart from the three lead files), `scripts/fixtures/` |
-| F. Player-facing text and docs | `text/`, `docs/WORKSHOP.md`, `README.md`, `CHANGELOG.md` |
+| F. Player-facing text and docs | `text/`, `docs/steam-workshop-description.txt` and the descriptions built from it, `README.md`, `CHANGELOG.md` |
 
 Tests belong to E. Other workstreams check their own work with scripts inside their own `scripts/` folder (for
 example `scripts/generate/selfcheck.mjs`) and say in their report what ran.
@@ -43,12 +43,13 @@ stays on the advanced screen, so the mod adds **no `ParameterGroups` row**.
 | `LShufAbilities` | `LShufOnOffValues` | 0 | `LSHUF_REDEALT` | | `LOC_LSHUF_ABILITIES_NAME` / `_DESC` |
 | `LShufAttributes` | `LShufOnOffValues` | 0 | `LSHUF_REDEALT` | | `LOC_LSHUF_ATTRIBUTES_NAME` / `_DESC` |
 | `LShufKeepMine` | `bool` | 0 | `0` | | `LOC_LSHUF_KEEP_MINE_NAME` / `_DESC` |
+| `LShufKeepBuiltCiv` | `bool` | 0 | `1` | | `LOC_LSHUF_KEEP_BUILT_CIV_NAME` / `_DESC` |
 | `LShufLeadersOut` | `LShufLeaderValues` | 1 | NULL | `LShufExcludedLeaders` | `LOC_LSHUF_LEADERS_OUT_NAME` / `_DESC` |
 | `LShufModdedAbilities` | `bool` | 0 | `0` | | `LOC_LSHUF_MODDED_ABILITIES_NAME` / `_DESC` |
 | `LShufModdedAttributes` | `bool` | 0 | `0` | | `LOC_LSHUF_MODDED_ATTRIBUTES_NAME` / `_DESC` |
 | `LShufModdedBiases` | `bool` | 0 | `0` | | `LOC_LSHUF_MODDED_BIASES_NAME` / `_DESC` |
 | `LShufModdedOut` | `LShufModdedLeaderValues` | 1 | NULL | `LShufExcludedModdedLeaders` | `LOC_LSHUF_MODDED_OUT_NAME` / `_DESC` |
-| `LShufPool1` | `LShufPoolLeaderValues` | 1 | NULL | | `LOC_LSHUF_POOL_NAME` / `_DESC` (the one leader pool; `LShufPool2` dropped 2026-11-07) |
+| `LShufLeaderPoolOut` | `LShufPoolLeaderValues` | 1 | NULL | `InvertSelection` | `LOC_LSHUF_POOL_NAME` / `_DESC` (the Leader pool: a ticked list, the unticked leaders are stored; section 27) |
 | `LShufPersonality` | `LShufPersonalityValues` | 0 | `LSHUF_PERSONA_FOLLOWS` | | `LOC_LSHUF_PERSONALITY_NAME` / `_DESC` |
 | `LShufDealing` | `LShufDealingValues` | 0 | `LSHUF_DEAL_BALANCED` | | `LOC_LSHUF_DEALING_NAME` / `_DESC` |
 | `LShufReveal` | `LShufRevealValues` | 0 | `LSHUF_REVEAL_START` | | `LOC_LSHUF_REVEAL_NAME` / `_DESC` |
@@ -59,8 +60,8 @@ In the table, "`LOC_LSHUF_MODE_NAME` / `_DESC`" means `Name = 'LOC_LSHUF_MODE_NA
 (next table) `_DESC` is appended to the value's key: `LOC_LSHUF_MODE_NONE_DESC`.
 
 `LOC_LSHUF_BIAS_NONE` and `LOC_LSHUF_BIAS_MAP_SETS` are whole lines shown instead of `LOC_LSHUF_BIAS_LINE`, not
-values for its `{1_List}`. In the reveal panel, `LOC_LSHUF_REVEAL_LEFT_OUT`'s `{2_Reason}` takes one reason key, or
-for a failed modded check one `LOC_LSHUF_WHY_*` key in place of `LOC_LSHUF_REASON_MODDED_NOTOK`.
+values for its `{1_List}`. A leader's reason line takes one reason key, or for a failed modded check one `LOC_LSHUF_WHY_*` key in place of
+`LOC_LSHUF_REASON_MODDED_NOTOK`.
 
 Array parameters carry `UxHint = 'InvertSelection'` for the two "left out" lists (the stored list holds the leaders
 switched off) and no `UxHint` for the pools (the stored list holds the leaders in the pool).
@@ -77,7 +78,7 @@ switched off) and no `UxHint` for the pools (the stored list holds the leaders i
 | `LShufLeaderValues` | `'|' \|\| LeaderType \|\| '|'` for each frontend `Leaders` row (Domain `StandardLeaders`) whose type is in `VANILLA_LEADERS`; Name/Description = `LeaderName` |
 | `LShufModdedLeaderValues` | the same for types in `MODDED_LEADER_TYPES` (only installed mods have a `Leaders` row) |
 | `LShufPoolLeaderValues` | plain `LeaderType` for every `Leaders` row (Domain `StandardLeaders`), vanilla and modded; Name = `LeaderName` |
-| `StandardLeaders` (added rows) | `LSHUF_RANDOM_POOL_1` (`LOC_LSHUF_RANDOM_POOL`, Icon `LEADER_RANDOM`, SortIndex -999: right after Random, grouped at the top of the leader grid; the shell script adds a "pool" badge to its corner) |
+| `StandardLeaders` (added rows) | none (section 27: the pool entry is gone) |
 
 The leader domains are selected through the frontend `Leaders` table, so a DLC or a mod the player doesn't have
 isn't listed (`INSERT ... SELECT ... FROM Leaders WHERE LeaderType IN (...)`).
@@ -90,17 +91,14 @@ isn't listed (`INSERT ... SELECT ... FROM Leaders WHERE LeaderType IN (...)`).
 - Selects hold their value string. `bool` parameters are matched with `<Value>1</Value>` (probe 13: `1` and `true`
   both matched).
 - `LShufExcludedLeaders` and `LShufExcludedModdedLeaders` hold arrays of `|LEADER_X|` strings (probe 13).
-  `LShufPool1` holds an array of plain `LEADER_X` strings.
+  `LShufLeaderPoolOut` holds an array of plain `LEADER_X` strings (the leaders unticked in the Leader pool).
 
 ## 3. Game config keys written by script
 
 Written with `Configuration.editGame().setValue(key, value)`, always as strings. All by C, in the `startCampaign`
 handler (section 7), on the host only in multiplayer (`Network.isHost()` or no network game), in this order:
 
-1. **Pool slots.** Each slot whose leader is `LSHUF_RANDOM_POOL_1`/`_2` gets a leader from that pool through
-   `GameSetup.setPlayerParameterValue(slot, "PlayerLeader", leader)`. Picks use `lshufKey(seed, SALT.Pools, rank)`
-   over the pool's leaders sorted by id, skip leaders already in a slot, and never give two slots the same leader. An
-   empty or used-up pool leaves the slot as plain `RANDOM`.
+1. **Random slots.**
    Then each plain `RANDOM` slot gets one of the leaders its own `PlayerLeader` list offers as valid
    (`invalidReason == Valid`, so owned and unlocked), skipping leaders already in a slot, picked with `Math.random`
    (the engine's own pick isn't tied to the deal number either). In a network game the host picks only for AI slots
@@ -299,8 +297,8 @@ SPEC section 3, "Living with other mods" and "Data safety", are binding. In shor
   - `TRAIT_LSHUF_EQUAL_ACTIONS`: attributes Off; carries the twelve `MOD_TRAIT_LEADER_ATTRIBUTE_UNLOCK_*` modifiers.
     `Name` NULL, `InternalOnly = 1`.
   - Copied modifiers: `LSHUF_<RECEIVER_LEADER>__<ORIGINAL_MODIFIER_ID>` (`copiedModifierId`), every column and
-    argument copied, with the `Tooltip` argument set to the receiving leader's own ability `Name` key (probe 1
-    follow-up). An original with no `Tooltip` argument is copied without adding one.
+    argument copied as it is. The `Tooltip` stays the giver's, so a yield line names the ability the bonus came
+    from (the swap to the receiving leader's ability name came out 2026-11-11 at the owner's ask).
   - Copied AI lists for `TRAIT_LSHUF_<LEADER>`: `ListType` = `LSHUF_<LEADER>__<ORIGINAL_LIST_TYPE>`.
 - In whole modes, leader X's ability row becomes leader Y's ability trait (X's own row removed). Text and AI lists
   come with the trait; legend unlocks need no rewrite.
@@ -354,13 +352,13 @@ Keys (F writes the English; C, D and B use them). `_DESC` keys are tooltips.
 | Group | Keys |
 | --- | --- |
 | Mod | `LOC_LSHUF_MOD_NAME` ("Re-dealable Leader Abilities, Attributes, and Start Biases"), `LOC_LSHUF_MOD_DESCRIPTION` |
-| Window | `LOC_LSHUF_WINDOW_TITLE`, `LOC_LSHUF_CLOSE`, `LOC_LSHUF_HOST_ONLY`, `LOC_LSHUF_LIST_ALL`, `LOC_LSHUF_LIST_NONE`, `LOC_LSHUF_LIST_COUNT` (`{1_On}`, `{2_Total}`), `LOC_LSHUF_SEED_NEW`, `LOC_LSHUF_SEED_RANGE` (`{1_Min}`, `{2_Max}`), `LOC_LSHUF_POOL_EMPTY`, `LOC_LSHUF_MODDED_NONE_INSTALLED` |
+| Window | `LOC_LSHUF_WINDOW_TITLE`, `LOC_LSHUF_CLOSE`, `LOC_LSHUF_HOST_ONLY`, `LOC_LSHUF_LIST_ALL`, `LOC_LSHUF_LIST_NONE`, `LOC_LSHUF_LIST_COUNT` (`{1_On}`, `{2_Total}`), `LOC_LSHUF_SEED_NEW`, `LOC_LSHUF_SEED_RANGE` (`{1_Min}`, `{2_Max}`), `LOC_LSHUF_MODDED_NONE_INSTALLED` |
 | Window headings | `LOC_LSHUF_HEADING_POOLS`, `LOC_LSHUF_HEADING_MODDED`, `LOC_LSHUF_SECTION_TITLE`, `LOC_LSHUF_ADVANCED_TITLE` |
 | Window buttons | `LOC_LSHUF_BTN_LEADERS`, `LOC_LSHUF_BTN_POOLS`, `LOC_LSHUF_BTN_MODDED`, `LOC_LSHUF_BTN_CIVS`, `LOC_LSHUF_BTN_ADVANCED`; list buttons `LOC_LSHUF_LIST_ALL`, `LOC_LSHUF_LIST_NONE` |
 | Options | the `Name`/`_DESC` keys in section 2 |
-| Option values | `LOC_LSHUF_MODE_NONE`, `LOC_LSHUF_MODE_SWAP_ABILITIES`, `LOC_LSHUF_MODE_SWAP_LEADERS`, `LOC_LSHUF_MODE_SPLIT_MATCHED`, `LOC_LSHUF_MODE_SPLIT_RANDOM`, `LOC_LSHUF_REDEALT`, `LOC_LSHUF_OFF`, `LOC_LSHUF_PERSONA_STAYS`, `LOC_LSHUF_PERSONA_FOLLOWS`, `LOC_LSHUF_PERSONA_REDEALT`, `LOC_LSHUF_DEAL_BALANCED`, `LOC_LSHUF_DEAL_CHANCE`, `LOC_LSHUF_REVEAL_START`, `LOC_LSHUF_REVEAL_MET`, `LOC_LSHUF_RANDOM_POOL`; each with `_DESC` |
+| Option values | `LOC_LSHUF_MODE_NONE`, `LOC_LSHUF_MODE_SWAP_ABILITIES`, `LOC_LSHUF_MODE_SWAP_LEADERS`, `LOC_LSHUF_MODE_SPLIT_MATCHED`, `LOC_LSHUF_MODE_SPLIT_RANDOM`, `LOC_LSHUF_REDEALT`, `LOC_LSHUF_OFF`, `LOC_LSHUF_PERSONA_STAYS`, `LOC_LSHUF_PERSONA_FOLLOWS`, `LOC_LSHUF_PERSONA_REDEALT`, `LOC_LSHUF_DEAL_BALANCED`, `LOC_LSHUF_DEAL_CHANCE`, `LOC_LSHUF_REVEAL_START`, `LOC_LSHUF_REVEAL_MET`; each with `_DESC` |
 | Leader screens | `LOC_LSHUF_BIAS_LINE` (`{1_List}`: "Starts near: {1_List}"), `LOC_LSHUF_BIAS_NONE`, `LOC_LSHUF_BIAS_MAP_SETS`, `LOC_LSHUF_BIAS_COAST`, `LOC_LSHUF_BIAS_RIVER`, `LOC_LSHUF_BIAS_LAKE`, `LOC_LSHUF_BIAS_NATURAL_WONDER`, `LOC_LSHUF_BIAS_ISLAND`, `LOC_LSHUF_ABILITY_OFF`, `LOC_LSHUF_PIECE_REST` (`{1_Ability}`), `LOC_LSHUF_DEAL_NUMBER` (`{1_Seed}`) |
-| Reveal panel | `LOC_LSHUF_REVEAL_TITLE`, `LOC_LSHUF_REVEAL_OPEN`, `LOC_LSHUF_REVEAL_UNMET`, `LOC_LSHUF_REVEAL_TOO_FEW`, `LOC_LSHUF_REVEAL_DIFFERS`, `LOC_LSHUF_REVEAL_LEFT_OUT` (`{1_Leader}`, `{2_Reason}`) |
+| Reveal panel | `LOC_LSHUF_REVEAL_TITLE`, `LOC_LSHUF_REVEAL_OPEN`, `LOC_LSHUF_REVEAL_UNMET` |
 | Reasons | `LOC_LSHUF_REASON_` + the `REASON` value upper-cased with `-` as `_`: `..._KEPT`, `..._LIST`, `..._NOTINGAME`, `..._MODDEDLIST`, `..._UNKNOWN`, `..._OBSERVER`, `..._MODDED_OFF`, `..._MODDED_NOTOK`, `..._MODDED_LEADERTYPE`, `..._MODDED_CHANGED`, `..._TOO_FEW`, `..._MODE_NONE`; and the check-1 details `LOC_LSHUF_WHY_SCRIPT`, `LOC_LSHUF_WHY_UISCRIPT`, `LOC_LSHUF_WHY_IMPORTJS`, `LOC_LSHUF_WHY_MISSING` |
 | Gameplay traits | `LOC_LSHUF_TRAIT_DEALT_DESCRIPTION`, `LOC_LSHUF_TRAIT_EQUAL_ACTIONS_NAME`, `LOC_LSHUF_TRAIT_EQUAL_ACTIONS_DESCRIPTION` |
 
@@ -433,7 +431,8 @@ equals any entry of `Value` split on commas.
 3. **Dealt descriptions are assembled at runtime, not in SQL.** `UpdateText` runs against the localization database,
    which can't see the gameplay deal. The per-piece keys are generated in SQL from the live text in every language;
    D joins them per leader at runtime in the player's language.
-4. **Yi Sun-sin's `TRAIT_UNLOCK_FLEET_COMMANDER` stays with Yi Sun-sin.** SPEC section 3 lists it among the rows that
+4. Replaced by section 23 R5 (2026-11-09): the trait now follows the bonus that promises Fleet Commanders.
+   **Yi Sun-sin's `TRAIT_UNLOCK_FLEET_COMMANDER` stays with Yi Sun-sin.** SPEC section 3 lists it among the rows that
    stay put; COMPATIBILITY.md calls it part of his ability. Owner decision 2026-11-06: it stays with him. It's the
    only leader trait in the base game and DLC besides abilities, attributes, victory and AI traits; in Antiquity it's
    what lets him build Fleet Commanders (`age-antiquity/data/units.xml` sets `UNIT_FLEET_COMMANDER`'s TraitType to
@@ -497,8 +496,9 @@ in the mapping, the 7 attribute traits, PERSONA_ and BIAS_ per known leader, CIV
 
 **The deal (B, JS and SQL alike; `buildDealInput` config gains `builder: { leader, civ, pieces: [] } | null`, read
 from the keys on the setup side and from the tables in the game):**
-- Applies only when `f.active` (Leader shuffle on) and the builder leader is a major in the game and eligible; else
-  `LShufResultMeta` row `Builder` = `BUILD_WHY.*` and the picks are ignored. When it applies, `Builder` = `ok` and the
+- Applies when the builder leader is a major in the game and eligible. Leader cards also need `f.active` (Leader
+  shuffle on); on Base game only the civilization cards (ability, bonus, unique, civics; not civ start terrain) apply,
+  and a builder holding none of them is `ModeOff` (2026-11-07). When it doesn't apply, `LShufResultMeta` row `Builder` = `BUILD_WHY.*` and the picks are ignored. When it applies, `Builder` = `ok` and the
   builder's `LShufResultLeaders.Reason` = `built` (new `REASON.Built = "built"`), `Status` dealt.
 - Ability axis: the builder's own pieces enter the deck as usual. The builder receives exactly its ticked ability
   pieces (a bullet, or a whole ability; with `BUILD_UNREVIEWED_BULLETS` false an unreviewed leader's bullet id is
@@ -614,6 +614,46 @@ CivUnique; cards from `LShufSetup_CivItems` filtered to the builder civ's age, w
 unique's icon by name (`UI.getIconCSS(type)`); "From <civ>"; slot groups civAbility (1), civUniques (the builder
 civ's unique count), civTerrain (1). An ability or unique of the builder's own civ is marked as its own.
 
+**Every age (owner, 2026-11-07).** The civ screen's Every age box lists every civilization, not only the builder's
+age. An ability card (swap) and a bonus card (Split) from any age apply; unique and civics cards stay same-age, and so
+do `CIV_OWN_AGE_PIECES` (France's B01, Joseon's B02, Mexico's B02, Nepal's B02), whose modifiers the Antiquity
+database doesn't have. A civ's start terrain comes from any age. Another age's ability modifier was watched working
+on an Antiquity civ (devtools/probes/RESULTS-2026-11-07.md). Cards carry `otherAge` (the age's name) and `ageOnly`;
+`cantTake` gives `otherage` for an `ageOnly` card.
+
+**Start age and Test of Time (owner, 2026-11-07).** A builder's civ plays in the game's age, whatever its own:
+picking a civ from another age turns on Test of Time and the game loads it in the start age. The setup side reads the
+game's `Age` parameter (`startAge()`, and an Age row on the civ build screen); the game side gets
+`LShufOptions ('Age', <age>)` from one `AgeInUse` group per age. The deal config carries it as `age`; each applying
+builder's civ gets `play` (SQL `LShufWork_CivInfo.Play`) and the same-age checks (civics, uniques, own-age bonuses,
+PIECE_AGES) compare play ages. With no age known everything falls back to the civ's own age.
+
+**AI builds and age-bound bonuses (owner, 2026-11-07).** `PIECE_AGES` lists the bonuses whose modifiers only act in
+some ages, read card by card. An AI builder (slot 2 up) skips one outside its civ's play age in the deal; the AI build
+screens hide those civ cards, and leader cards that only work before the start age. The player's own screens and the
+random deal are unchanged; the random civ deal already stays within each age.
+
+**Loading screen (owner, 2026-11-07 night).** The game's loading screen reads once GameCore is initialized
+(`Loading.runWhenInitialized`), before any mod UI script loads (those come at `whenLoaded`), so the mod ships its own
+copy of `base-standard/ui-next/screens/load-screen/load-screen-bootstrap.js` (a mod's files mount at the root as
+well as under the mod's folder, so the copy stands in for the shipped one) with one addition: `prepareLoadScreen()`
+from `ui/game/lshuf-load-screen.js`, which registers its work with `Loading.runWhenInitialized` ahead of the
+screen's own read. The work: the local leader's and civ's config rows (`writeLocalRows`, with the deal number line),
+then `installLoadScreenTraits`: an own `filter` on `GameInfo.Units/Buildings/Improvements/Routes/UniqueQuarters/
+Traditions` (`heldFilter`) that answers a `TraitType == <base trait>` test with every trait the civ holds in
+`CivilizationTraits`, so taken uniques and a received civics tree show and given-away ones don't; the wrappers come
+off at `load-curtain-closed-event`. Shipped civ rows come from `LShufSetup_CivilizationItems`
+(`data/frontend/civ-items-copy.sql`, copied once at shell load), never from the live, rewritten table. A unique row
+is written once per domain the civ's own uniques sit in. The civ view keeps a builder's own uniques alongside the
+ones it took (the game does). Watched 2026-11-07 (devtools/probes/RESULTS-2026-11-07.md), new game and quicksave.
+
+**Civ builds on Base game (owner, 2026-11-07).** A civilization build doesn't need Leader shuffle on: on Base game the
+civ screen stays live and `buildStates` keeps only `isCivOnlyPiece` ids (the SQL twin filters `LShufWork_BuildPiece`
+the same way). A civ start terrain card counts only while the start terrain part deals, so with Leader start terrain
+on Base game or Off it's greyed with `terrainoff`. Both build screens carry a picker for the host's own leader or
+civilization (`ui/setup/lshuf-build-pick.js`), writing `PlayerLeader` / `PlayerCivilization` as the game's lists do
+and offering only the values those lists mark valid.
+
 **As built (2026-11-06 night):** 162 cards (50 abilities, 94 units, 10 quarters, 8 improvements; every unique
 building belongs to a quarter, so there are no building cards). An ability already swapped (as builder or source)
 can't be swapped again. `CivBuilder<n>` carries the leader build's why when that isn't ok, `builder-not-in-game`
@@ -700,13 +740,16 @@ terrain card beats the terrain cycle. `ui/setup/lshuf-presets.js` keeps the pres
 
 ## 17. The AI leaders have their own place (owner, 2026-11-06 night)
 
+Parked 2026-11-09 (section 28): the AI players aren't hand-built any more. This section is the record of what the
+AI leaders window was; the files are in `mod_ideas_tested/re-dealable-ai-leader-builds/`.
+
 The player's own build screens (from the leader select, the civ select and the lobby) build slot 1 only; the
 "Building for" dropdown is gone. "AI leaders..." in Re-dealable Leaders Settings opens the AI leaders window
 (`ui/setup/lshuf-ai-window.js`): one row per AI player slot with its leader portrait, civ art, names, what it has
 picked, and Build leader..., Build civilization... and Clear; a row on Random says to give it a leader in the player
 rows. Build leader/civilization gives the leader a builder slot (2..`BUILD_SLOTS`, `slotForLeader`) and opens the
 build screen for that slot (`openBuildWindow(scope, slot)`); Clear empties its picks and frees the slot. The build
-screens carry a link each way (`LOC_LSHUF_BUILD_LINK_AI`, `LOC_LSHUF_BUILD_LINK_BACK`). The civ build screen's
+screens carried a link each way (text keys since removed). The civ build screen's
 settings strip shows Civilization abilities and Civilization uniques (section 16) with Start terrain. Generic start
 terrain cards sit together at the front of the start terrain cards and draw as a tile in the terrain's colours with
 its initial (`lshuf-build__terrain--<family>`).
@@ -778,6 +821,19 @@ whose ability a builder took; the civ select preview is deal-driven for every ci
 Rows: Mode 2300, Abilities 2301, Attributes 2302, Biases 2303, CivAbilities 2304, CivUniques 2305, CivCivics 2306,
 Personality 2307, KeepMine 2308, Reveal 2309.
 
+**Keep my built civilization (2026-11-08):** `LShufKeepBuiltCiv`, a bool on by default, row 2309 (Reveal moves to
+2310). While a builder's leader is kept (Human players keep their own leader), the build still applies with its
+civilization cards only; the leader cards on it don't count, and the leader stays as shipped. Off, or with no
+civilization card on the build, a kept leader's build is Not in game as before. Being on by default, it has groups
+for both `1` and `0`; a missing `LShufOptions` row reads as `1`. `lshuf-deal-build.js` keptCivBuild, `sql-prepare.mjs`
+build().
+
+**Section 18, Exploration and Modern (2026-11-10):** there the reveal (`EFFECT_PLAYER_REVEAL_CULTURE_TREE`) is a
+modifier on the ability trait whose subject requirement asks for the base trait. When the civ deal runs it moves onto
+the base trait (`LShufWork_CivReveal` in `sql-civ.mjs`), so the tree follows the civics, not the ability; before that a
+builder holding only other civs' bonuses, or a civ whose ability was swapped or switched off, lost its own tree
+(`tests/deal-civ-tree-reveal.mjs`).
+
 **Section 18 as built (2026-11-07):** the lever isn't `Civilizations.UniqueCultureProgressionTree` (NULL for every
 civ). The tree is revealed by `MOD_*REVEAL_CIV_CULTURE_TREE_<CIV>` at `NODE_CIVIC_AQ_MAIN_CHIEFDOM`, gated by a
 `REQUIREMENT_PLAYER_HAS_CIVILIZATION_OR_LEADER_TRAIT` whose `TraitType` argument is the civ's base trait
@@ -812,9 +868,13 @@ that took no bonus card; each gets as many slots as pieces it put in and a remai
 and any unlisted modifiers ride there); a bullet builder holds exactly its picks and no remainder, like a leader
 builder. `SortIndex` runs dealt pieces by giver, bullet index and id, remainder last. Meta `CivPiecesActive` 1 under
 Split. Apply: `TRAIT_LSHUF_CIVA_<C>` with the civ ability's Name and `LOC_LSHUF_TRAIT_CIV_DEALT_DESCRIPTION` (a civ
-wording of the leader key); copies `LSHUF_<C>__<ModifierId>` with the Tooltip argument swapped to the receiver's
-ability name; the remainder copies the civ's ability modifiers not listed under its movable pieces of its own age
-(unmovable pieces' modifiers included); then any requirement that asked for `TRAIT_<C>_ABILITY` asks for
+wording of the leader key); copies `LSHUF_<C>__<ModifierId>` with every argument as it is (the Tooltip stays the
+giver's, so a yield line names the ability the bonus came from; the swap to the receiver's name came out 2026-11-11
+at the owner's ask); a piece's modifiers are its own (`LShufCivMappingModifiers`) and the ones another age attaches
+in their place (`LShufCivMappingAgeModifiers`, Test of Time), whichever the loaded database has on the giver's
+ability; the remainder copies the civ's ability modifiers not listed under its movable pieces of its own age
+(unmovable pieces' modifiers included); a piece the game's age leaves with nothing (`LShufCivPieceDead`) is out of
+that age's deal and build cards; then any requirement that asked for `TRAIT_<C>_ABILITY` asks for
 `TRAIT_LSHUF_CIVA_<C>` for copy-path civs, so a home-only bonus still fires after the section 18 retarget. No AI
 lists hang on civ ability traits, so none are copied. `LShufWork_BuildPiece.Kind` 'civbullet'. Cards: 116 CivBullet
 cards (one per movable piece of the civ's own age) with the civ's background and symbol; `slotCounts.civAbility` =
@@ -919,3 +979,452 @@ had (518px or 551px), and its own 0.94rem paddings leave 28rem of usable width. 
 `lshuf-build.css`), 0 of 222 cards reached the border. The same CSS was injected into that session, so the fix was
 seen with the shipped values, not only reasoned.
 
+
+## 21. Civics in pieces, and Split up for civics and uniques (owner, 2026-11-07 night)
+
+**What the player sees.** The Build your own civilization screen offers each civic of each same-age civilization as
+its own card (Agoge: 150 culture, the tradition Strategoi, the Parthenon), the way a leader's bonuses are cards; the
+whole-tree card stays behind the Whole toggle. A civic card taken moves that civic into the builder's tree with its
+traditions and whatever it unlocks; the giver keeps the rest of its tree. A civilization from another age playing
+this age (Test of Time) can take civics too: they go into the age's Test of Time tree and only that civilization sees
+them. The Civilization civics and Civilization uniques rows gain **Split up**: each civic (or each unique) is dealt on
+its own among the age's civilizations, every civilization getting back as many as it gave.
+
+**Probe (2026-11-07, devtools/probes/RESULTS-2026-11-07.md).** Greece's Agoge re-parented into the main Antiquity
+civics tree with no prerequisites: Heian Japan could set it as research (the Greek omega showed as the research
+icon), researched it in 40 turns, and `Culture.isTraditionUnlocked(TRADITION_STRATEGOI)` was true for Heian although
+the tradition's `TraitType` is `TRAIT_GREECE`. So a civic moves between trees and its traditions follow the node, not
+the trait. Buildings and units the node unlocks hang on the giver's base trait and need re-pointing (below).
+
+**Cards and ids.** `BUILD.civCivic(node)` = `CIVNODE_<node>`, `BUILD_KIND.CivCivic`; one input group per node of
+`data/setup-copy/setup-copy-civ.sql` (`LShufSetup_CivicNodes`). The shell reads node data from that copy; the game and
+the tests read `ProgressionTreeNodes` through each civ's tree (`civItems` kind `civics`). Deal input: `civNodes`
+`{ civ, node, cost }`.
+
+**Deal (JS `lshuf-deal-civ.js`, SQL `sql-civ.mjs`, the same steps):**
+- A builder's civic cards apply in every mode, after its ability, civics-tree, unique and bonus cards: the civic
+  moves when its civ plays the same age, nobody took it, and neither its tree nor the builder's was swapped whole.
+  Rows `Kind = 'civic'`, `PieceId CIVNODE_<node>`, `FromCivilization` the giver, `SortIndex` 1.. by node.
+- `CC_MODE.Split`: one pool per age of every civic of every civ whose tree nobody swapped whole (`dealPool`, keyed
+  with `SALT.CivNodes`, Balanced by cost, `POOL_STEP_CAP` cards); each civ that took no civic card is a receiver
+  with as many slots as civics it had. `CU_MODE.Split`: the same over every unique (`SALT.CivUniquePieces`, value
+  1), receivers the civs that took no unique card. Pool rows are numbered per civ by giver and id.
+- With civics or uniques on Split up the whole-set shuffles of those rows don't run.
+
+**Apply.** `LShufWork_CivFinalTree`: each civ's tree after the whole swaps (the tree of the civ whose civics it got,
+else its own, else for a `TRAIT_ANACHRONISTIC_CIV` holder the age's `TREE_CIVICS_*_TEST_OF_TIME`). Each moved node's
+`ProgressionTree` becomes that tree; prerequisite rows that would cross trees are deleted; a receiver with no tree of
+its own gets a `ProgressionTreeNodeTraits` row gating the node on `TRAIT_LSHUF_CIV_<C>`, which every civ with a
+`civic` row holds. What the node unlocks follows it onto that trait: `Buildings`, `Improvements` and `Units` (the
+whole family) whose `TraitType` is a base trait, `ProgressionTreeNodeUnlocks.RequiredTraitType` naming a base trait,
+and a `UniqueQuarters` row once both its buildings carry the same `TRAIT_LSHUF_CIV_*`.
+
+**Tests.** `tests/deal-civ-build.mjs`: the Agoge take (tree, prerequisite, Parthenon, foreign keys), civics Split
+(every civic held once, conservation per civ, no prerequisite crosses trees, each node in its holder's final tree),
+uniques Split with a builder's take, Test of Time America taking Agoge, and the every-value pairs with Split.
+
+**Loading screen pages and civics in pieces (2026-11-07 night).** With civics moving between trees, "what the civ
+holds" is no longer only its traits: `lshuf-load-screen.js` `civicUnlockJudge` decides a row some civic unlocks by
+where that civic sits now (a tree whose reveal asks for a trait the civ holds; a trait-gated node, the Test of Time
+tree's, only when the civ holds one of its traits); a unique quarter goes by its two buildings; rows no civic unlocks
+still go by trait. Watched: under civics Split up with Agoge taken, the Traditions page listed Strategoi alone.
+
+## 22. Who got what, in the leader screen (owner, 2026-11-07 night)
+
+The dock button and the separate reveal panel are gone. `ui/game/lshuf-reveal-panel.js` decorates
+`panel-player-diplomacy-actions` and `panel-other-player-diplomacy-actions` (both extend the game's
+`panel-diplomacy-actions`, which is never an element itself) with `Controls.decorate`; a MutationObserver on the
+panel re-applies when the shown player changes. Under the Leader abilities header the game's own bullet paragraphs
+(`.list-begin > p`) get an italic "from <Leader>" at the end of each dealt bonus that isn't the leader's own, in
+SortIndex order (`markBullets`; as plain text " (from Amina)": an element added to one of the game's inline
+paragraphs gets no size and rewriting its markup doubles its icons, watched 2026-11-07); a short "Who got what"
+section follows with attributes and their origins, where the
+start terrain came from (another leader, matched to the bonuses, or rolled), the AI behavior's origin, and for the
+local player the shuffle number. `ui/game/lshuf-reveal-lines.js` builds the lines (pure, tested in
+tests/reveal-lines.mjs). With As you meet them, unmet leaders get nothing. The turn-1 dialog (`showRevealNotice`)
+opens once, only when a part fell back or the preview differs. Watched 2026-11-07: the bullets' origins on the local leader's ability text, the section under it, and the section
+for an unmet AI leader with At the start.
+
+## 23. Pieces that need each other travel together (owner, 2026-11-09)
+
+**What the player sees.** Nobody ends up with a unit, building, improvement or tradition they can't build or use
+because what it needs went to another civilization. Two items that need each other are one card: in every mode (Swap
+whole, Shuffled, With the ability, Split up), for the AI and on the build screens, where taking one half takes the
+other. The breakdown, with the data behind each link, is `docs/DEPENDENCIES.md`.
+
+**R1. Great people tied to a quarter belong to the civics.** A unit family that a `GreatPersonClasses` row names
+(`UnitType`, the family base) is a civics family, like the Watonathi (section 18, `LShufWork_CivicUnit` /
+`civicOnlyFamily`), when the row's `UniqueQuarterType` is a quarter whose `BuildingType1` the civ's own civics tree
+unlocks, or its `ConstructibleType` is something the civ's own civics tree unlocks. Read live from the game's tables.
+It's not a unique card, it stays on the base trait and goes wherever the civics go. Under civics in pieces
+(Kind 'civic') the family follows the node that unlocks the quarter's `BuildingType1` (or the constructible): the
+apply moves its `Units.TraitType` with that node's unlocks. In 1.5.0: Logios, Tjaty, Alim, Conquistador, Saga Hero,
+Jacobin, Revolucionario.
+
+A unit family that a civic of the civ's own tree names in a modifier's `UnitType` argument is a civics family the
+same way (`LShufCivUnitLinks (UnitType, NodeType, Why)`, static, generated by `build-deps.mjs`; its anchor is the
+civic, and under civics in pieces its `Units.TraitType` follows that node through `LShufWork_CivMoved`). In 1.5.0:
+Sengoku's Samurai with Kinsei, which lets its holder train the tier 2 Samurai and switches Man-at-Arms off for good
+(`MOD_CIV_SENGOKU_NO_MAN`). Before, three shuffles out of three on the Exploration fixture put Kinsei and the Samurai
+on different civilizations. `tests/deal-later-ages.mjs`.
+
+**R2. Civic bundles.** Civics of one civ's tree that have to stay together, unioned per civ:
+- the nodes unlocking the two buildings of one `UniqueQuarters` row (live: `UniqueQuarters` + `ProgressionTreeNodeUnlocks`
+  over civ civics trees);
+- the pairs in `LShufCivLinks (NodeType, NeedsNodeType, Why)` (static, generated by `scripts/mapping/build-deps.mjs`
+  from the modifier scan: a tradition that needs another civic's unique). Rows whose nodes aren't in the database
+  are skipped.
+The bundle's lead is its lowest `NodeType`; the others are riders. In the civics Split pool and on builder civic
+cards one card stands for the bundle: id `CIVNODE_<lead>`, value the sum of the members' costs, and a receiver's
+slot count is the number of bundles it had (a lone node is a bundle of one). A builder pick of any member counts as a
+pick of the lead. After the deal, every result row for a lead gets one more row per rider with the same
+CivilizationType, FromCivilization, Kind and SortIndex. Whole-tree swaps and Off are unchanged (the tree moves whole).
+
+**R3. Unique bundles.** An improvement or unit card that only one other unique card's unit can build
+(`Unit_BuildConstructibles` with exactly one builder unit, both of the same civ, both unique cards) rides with that
+unit card: the lead is the unit card. Live. Same pool, builder and rider-row rules as R2, in the uniques Split pool
+and builder unique takes. The whole-set shuffles already move both. In 1.5.0: Nepal's Highland Power Station rides
+with the Sherpa.
+
+**R4. Bound modifiers.** `LShufBoundModifiers (ModifierId, AnchorType, Why)` (static, generated): a modifier on a
+civ's ability trait that acts only on one of the civ's uniques (city founded by that unit, that unit's tag, city has
+that building or quarter). `AnchorType` is a unit family base, a building or a quarter. Last step of the civ apply,
+after the Split copies: for each row whose modifier and anchor exist, delete every `TraitModifiers` row for the
+modifier and for its copies (`LSHUF_<civ>__<ModifierId>`), then add `TraitModifiers (<anchor's TraitType now>,
+ModifierId)` when that trait is in `Traits`. The anchor's trait now: `Units.TraitType` of the base,
+`Buildings.TraitType`, or `UniqueQuarters.TraitType`. It runs whatever the settings, since moving a modifier between
+two traits of the same civ changes nothing. A piece made only of bound modifiers is `Movable 0` (Joseon B02); Carthage
+B02 keeps its two effect modifiers and loses the hidden one.
+
+**R5. Yi Sun-sin.** His B01, B03 and B04 merge into one piece (`merge-pieces.mjs`; B03 and B04 work on Fleet
+Commanders, which only B01 gives in Antiquity). `TRAIT_UNLOCK_FLEET_COMMANDER` follows that piece: the apply moves
+the `LeaderTraits` row to the leader holding it (whole mode: the ability's holder), and an `LShufMappingUnlocks` row
+pins `NODE_CIVIC_AQ_MAIN_DISCIPLINE | UNIT_FLEET_COMMANDER` to the piece. This replaces section 12.4 (owner,
+2026-11-09: nobody is stranded with a unit they can't build).
+
+**Build screens.** A rider isn't a card of its own; the lead's card names what comes with it ("With: Ekklesia",
+"With: Highland Power Station") and its details list them. The civics card and the civ details list R1 units with
+the civics, as they do the Watonathi. A bundle takes as many civic slots as it has members when the screen counts
+civic slots; a card that doesn't fit is greyed with the reason.
+
+**Unique quarters (owner, 2026-11-09).** A quarter's two buildings always stay together (R2), so a civilization can
+hold quarters from several civilizations but never half of one. Mixed quarters (two lone buildings from two
+civilizations making a new quarter) are ruled out.
+
+**After the 1.5.1 update (owner, 2026-11-09: the great-people rules are expected to change).** R1 reads
+`GreatPersonClasses` at game load, so the game side follows the new data. The setup copy (`build-civ-items.mjs`) and
+the static links (`build-deps.mjs`) were made from 1.5.0 and get rebuilt from the 1.5.1 files, with the scan's
+report diffed against 1.5.0. If the quarter requirement moves out of `GreatPersonClasses`, R1 changes with it.
+
+**Tests.** Conservation by bundle; no result where a rider and its lead are held by different civs; no R1 unit held
+apart from its quarter's nodes; JS equals SQL across every value of the three civ rows; builder picks of a rider; the
+bound modifiers on the anchor's trait after the apply, with a foreign-key check.
+
+**Section 23 data, as laid down (2026-11-09).** `data/mapping/lshuf-civ-links.sql` holds `LShufCivLinks` and
+`LShufBoundModifiers` (schema in the file, like the civ mapping), loaded in the shell group and the game schema
+group. The setup side has no `GreatPersonClasses`, `Unit_BuildConstructibles` or tree unlocks, so
+`scripts/setup-copy/build-civ-items.mjs` writes `LShufSetup_CivRiders (Kind TEXT NOT NULL, CivilizationType TEXT NOT
+NULL, LeadId TEXT NOT NULL, RiderId TEXT NOT NULL)` (Kind 'civic' with `CIVNODE_` ids, 'unique' with `CIVUNQ_` ids;
+R2 and R3 by the same rules) into `setup-copy-civ.sql`, leaves R1 units and R3 riders out of the unique cards
+(`LShufSetup_CivItems`), and lists R1 units in `LShufSetup_CivCivics` as a `KIND_UNIT` unlock of the node that
+unlocks their quarter's `BuildingType1` (or constructible). `lshuf-deal-input.js` reads `CivRiders` from the copy
+when it exists (as it reads `CivItems`), else derives the same rows from the gameplay tables; the deal input carries
+`civRiders: [{ kind, civ, lead, rider }]`.
+
+**Section 23 deal, as built (2026-11-09).** JS `lshuf-deal-input.js` (`civicGreatPeople`, `civicOnlyFamily`,
+`deriveCivRiders`) and `lshuf-deal-civ.js` (`riderMaps`, `toLead`, `takeWith`, `riderRows`); SQL `sql-civ.mjs`
+(`LShufWork_CivicGP`, `riders()` with `LShufWork_CivNodeEdge`, `LShufWork_CivNodeLead`, `LShufWork_CivRider`,
+`boundApply()` with `LShufWork_Bound`). Civic bundles are unioned by a lowest-label pass, 8 rounds in SQL
+(`BUNDLE_ROUNDS`), so a bundle can't be longer than that; the JS loops until stable. Riders are left out of every
+pool, builder take and whole-set shuffle, and added after the deal as copies of their lead's row, so `SortIndex`
+numbering only counts cards. A builder pick reaches the SQL through its card's action group, so a unique rider (no
+card, no group) can't be picked; every civic node has a group and a civic rider pick counts as its lead. R4 runs only
+when the civ deal wrote a row or a civ part is Off, so a game it doesn't touch stays as shipped (deal-data-safety). In the Antiquity fixture: 8 civic riders (the eight two-civic quarters), the Tjaty and Logios with their
+quarters, `TRAIT_MOD_COLONIST_POP` and `TRAIT_MOD_DRUID_PURCHASE_CHARGE` bound. Tests: `tests/deal-civ-deps.mjs` (the
+unique bundle uses a synthetic `Unit_BuildConstructibles` row, Aksum's Hawelt built only by the Tankwa) and the
+updated expectations in `tests/deal-civ-build.mjs` (Logios and the Highland Power Station aren't cards, Agoge brings
+Ekklesia and the Logios, conservation counts bundles, the Off rows keep civics families on the base trait).
+
+## 26. A campaign keeps the shuffle it started with (owner, 2026-11-09)
+
+**Why.** The game builds its database again at every load (each age, each saved game), and the deal runs in that
+build from the setup keys. So a version of this mod that deals differently changes the leaders and civilizations of
+a campaign already under way. A save can't carry the dealt rows themselves: only a setup value can switch data rows
+on or off (`ConfigurationValueMatches`), and the rows are far too many to key one by one.
+
+**What's built.** At setup the host writes `LShufDealVersion` (`KEY.DealVersion`) = `DEAL_VERSION`, once, alongside
+the other keys (`ui/setup/lshuf-setup-start.js` writeHostKeys). The age-transition writer doesn't touch it. A save
+from before 11 has no such key.
+
+**The rule from the first release on.** A change that alters the deal's rows bumps `DEAL_VERSION` and ships behind a
+group whose criteria read `LShufDealVersion` (the new behaviour for games set up on the new version, the old one kept
+for older keys), so a campaign plays on with the shuffle it began with. A pure fix (a deal that couldn't load, a
+broken rule nobody would want kept) may change old campaigns (the first-turn notice that said so came out
+2026-11-11 at the owner's ask; the leader panel's Who got what shows the deal as it stands). Before the first release nothing is gated: only the owner's test saves exist.
+
+## 24. Cards from a leader nobody is playing (owner, 2026-11-09)
+
+**Section 24, as built.** A Build your own leader card from a leader outside the game (axis A reason `notingame`, with
+an ability) now applies; before, takeBuild and wholeBuild only took cards whose leader was in the dealt pool, so the
+slot came out empty while the build still read "ok". Split modes: a bonus card takes that piece and a whole card
+takes the leader's whole ability (only while none of it was taken by a lower slot) straight into the builder's hand;
+those pieces never join the deck or its key ranking, so every other leader's deal is unchanged. Whole modes: the
+lowest whole card among the pool's leaders and the absent ones is the builder's; for an absent one the builder simply
+takes it, nobody else's draw changes, and the ability the builder was to take goes to nobody. The copy path copies the
+absent leader's modifiers onto `TRAIT_LSHUF_<builder>` as for any other piece. Legend-node unlocks of an absent leader
+follow its pieces: whole mode to the builder holding it; split mode to whoever took the piece an `LShufMappingUnlocks`
+row pins it to (else it stays with the absent leader, so nobody gets it), otherwise to whoever took most of its
+pieces; Yi Sun-sin's Fleet Commander trait follows with the Discipline unlock (section 23 R5). Attribute, AI behavior
+and start terrain cards from an absent leader already applied and are unchanged. JS: `isAbsent`, `takeAbsentWhole`,
+`takeAbsentBullet`, `absentReceivers` (lshuf-deal-ability.js), `absentRow` (lshuf-deal-unlocks.js). SQL:
+`LShufWork_Shape.Absent`, `LShufWork_BuildTake.BI`, the absent inserts in `buildTake`, `wholeSwap`'s pick, and the
+absent branches of `LShufWork_U.Holder` in sql-results.mjs. Tests: tests/deal-absent-picks.mjs. Not watched in a game.
+
+**Section 25, as built (2026-11-09): the game's civilization panels and the civ build screen's unique slots.** The
+game's own in-game panels that list a civilization's traditions or uniques: the diplomacy leader panel
+(`panel-diplomacy-actions.js`: uniques from config `CivilizationItems`, traditions from a gameplay `SELECT ... FROM
+Traditions` kept by `TraitType == LegacyCivilizationTraits` base trait), the Civilopedia civilization page and its
+sidebars (config `CivilizationItems` only), the loading screen (section 8, already right). The culture/policies
+screens (`model-policies.js`) and the age-progress unlocks (`model-unlocks.js`) read the player's unlocked
+traditions from the engine and are right as shipped; the next-age unlocks screen (`civ-unlocks-model.js`) lists the
+next age's civilizations, whose deal isn't made yet. Fixes: `ui/game/lshuf-game.js` now writes every civilization's
+`CivilizationItems` rows from `civDealViews` (before, only the local civ's), with As you meet them showing a playing
+civ as shipped until it's met; `ui/game/lshuf-civ-panels.js` wraps `Database.query` while the deal moved civics
+(Kind 'civic' or 'civics') and answers any gameplay query `FROM Traditions` with each tradition under the base trait
+of the civ in the game that holds it now (`traditionOwners`, using `civicUnlockJudge` from `lshuf-load-screen.js`,
+now built over `civicTables()` read once and shared by every civ), or under `TRAIT_LSHUF_NONE` when its own civ is in
+the game and gave it away to nobody playing. Build screen: `uniquesStayOwn(CivUniques)` is true except under Split up
+and Off entirely (the deal: a unique builder's own uniques go into the Split pool, and Off moves them away, so the
+builder holds only its picks; on the other settings builders are outside the shuffles and keep theirs). When true,
+the Uniques slots read "Uniques you add" and a "Yours, kept" row shows the builder civ's own uniques (not slots); the
+note under the title says which applies. Slot count stays the builder civ's own unique count; the deal doesn't cap
+takes, the screen does. Not watched in a game.
+
+**Build screens, 2026-11-09 round (owner: "too much text... more intuitive or better tool tips").** Both build
+screens open with the title, a "?" help mark (the old intro paragraph as its tooltip) and the leader/civilization
+picker; the swap and keep notes moved into the Ability and Uniques group headings' tooltips and follow the
+Civilization uniques setting. The settings strip sits behind one Settings button, closed by default and remembered
+for the session, with a one-line summary beside it (`ui/setup/lshuf-build-layout.js` settingsSummary: the preset,
+then each civilization row that isn't Base game on the civ screen, or the leader parts when the preset is Custom).
+Every slot group heading and its empty slots carry a `LOC_LSHUF_BUILD_GROUP_TIP_*` tooltip; the Whole and Every age
+boxes carry one each. A bundle draws in as many slots as it takes (slotLayout): the lead, then a dimmed linked slot
+per rider named for it, and a click on either puts the bundle back. Tooltips use the game's `data-tooltip-content`
+route (core/ui/tooltips/tooltip-controller.js). Tests: tests/build-layout.mjs.
+
+## 27. The pools only narrow the draw (owner, 2026-11-09)
+
+**What the player sees.** Leader pool... and Civilization pool... each open one ticked list, everything ticked to
+start with. A Random slot (AI players, and your own when you leave it on Random) only gets a ticked leader or
+civilization. Anything picked by hand stays as picked, ticked or not. The pools work on their own, whatever Mode
+says, and building AI leaders stays in its own window (AI leaders...).
+
+**What's gone.** The "Random from the pool" entry in the game's leader list (`LSHUF_RANDOM_POOL_1`), its badge, and
+the pool draw by seed. That entry had no 3D model: the leader select asks the engine for `<leaderID>_GAME_ASSET`
+when a leader is picked, and picking the entry crashed the game natively (owner's crash 2026-11-09, reproduced in
+the lab; with the entry's model swapped for Random's the same clicks didn't crash). No row of ours goes into
+`StandardLeaders` any more.
+
+**How.** `LShufLeaderPoolOut` (config key the same, `InvertSelection`, plain `LEADER_X` values) stores the unticked
+leaders, as `LShufCivsOut` does for civilizations. `planRandomSlots(slots, choicesOf, pickIndex, canPick, off)` skips
+them (`leadersSwitchedOff()`), the way `planRandomCivSlots` skips unticked civilizations. A slot with no ticked
+leader left stays plain Random and the engine picks for it. In a network game the host picks for AI slots and its
+own; a remote human's Random is theirs.
+
+## 28. Two build pages, the shuffle box, and no AI building (owner, 2026-11-09)
+
+**What the player sees.** The build window has two pages, **Your leader** and **Your civilization**, with a link row
+across the top that marks the one on screen; a click draws the other in place, in the same window. Under the header
+on both pages the shuffle settings sit in a box titled **Shuffle for everyone**, always shown, with one line saying
+they shuffle the whole game at random, AI players included, and need no build (leader rows on the leader page,
+civilization rows on the civilization page, and a Leader pool... or Civilization pool... button). The AI players
+are never built by hand: they get the shuffle settings and the pools.
+
+**Section buttons.** Leader pool..., Civilization pool..., AI players..., Build your own leader..., Build your own
+civilization..., Advanced settings... (`SECTION_BUTTONS`; `build` and `buildciv` open the two pages, `aiplayers` the
+AI players window).
+
+**AI players window.** Who the AI players are, for a game of any size (`openSetupWindow("aiplayers")`, a page of the
+setup window built by `ui/setup/lshuf-ai-players.js`). Under the title one line, "Random draws from the Leader pool
+and Civilization pool.", with Leader pool... and Civilization pool... buttons. Then one compact row per AI player
+in player order inside the window's scroll area (`.lshuf-ai-players__row[data-player="<id>"]`): "AI 1", "AI 2"...
+(numbered in order, not by player id, `aiRows`), the leader portrait and civilization art when set, and on the same
+line a Leader dropdown (`.lshuf-pick--leader fxs-dropdown`) and a Civilization dropdown (`.lshuf-pick--civ
+fxs-dropdown`). Each dropdown's first item is Random, a pick of its own that writes `RANDOM` back, then that slot's
+valid leaders or civilizations by name (`hostPicker(scope, onChange, { playerId, allowRandom: true })`,
+`pickerItems`). Your own build pages call `hostPicker` without options: no Random, and Select until a pick is made.
+Host only: another player sees each row's picks as text. No build buttons and no card counts. Text:
+`LOC_LSHUF_BTN_AI_PLAYERS`, `LOC_LSHUF_AI_PLAYERS_TITLE`, `LOC_LSHUF_AI_PLAYERS_NOTE`, `LOC_LSHUF_AI_PLAYER_N`
+(`{1_Num}`), `LOC_LSHUF_AI_PLAYERS_NONE`.
+
+**Pool icons.** The leader grid keeps its Leader pool icon right after Random (section 27). The civilization select
+at game setup gets the same for civilizations: the game's Random there is the round shuffle button in the left column
+(`.civ-select-leader-button-base`, not a card), and the icon (`.lshuf-civ-pool-button`) goes right after it, cloned
+from its icon, with the same badge ("Pool", or ticked/total once something is unticked, `poolBadge`), the tooltip
+`LOC_LSHUF_CIV_POOL_TIP`, and a press that opens the Civilization pool window. It stays off the between-ages
+civilization select (`UI.isInGame()`), since the pool applies when the game starts. Both icons answer the
+activatable's `action-activate` and a plain `click`, once per press.
+
+**Code.** `ui/setup/lshuf-build-window.js`: `openBuildWindow(scope)`, `setPage(scope)`, `drawLinks()`, the shuffle box
+in `render()`. `ui/setup/lshuf-build-layout.js` (pure, tested in `tests/build-layout.mjs`): `BUILD_PAGES`, `pageOf`,
+`poolBadge`. `ui/setup/lshuf-build-entry.js`: `injectPoolButton`, `injectCivPoolButton`.
+Text: `LOC_LSHUF_BUILD_PAGE_ME_LEADER`, `LOC_LSHUF_BUILD_PAGE_ME_CIV`, `LOC_LSHUF_BUILD_SHUFFLE_TITLE`,
+`LOC_LSHUF_BUILD_SHUFFLE_NOTE`, `LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV`, `LOC_LSHUF_CIV_POOL_TIP`.
+
+**AI building, parked.** The AI leaders window (section 17), its per-AI pickers and the AI pages planned for this
+window are out of the mod and kept in `mod_ideas_tested/re-dealable-ai-leader-builds/` with a README (what it was,
+why, where it hooked in, what bringing it back needs). Each builder slot costs about 560 modinfo loaders, so only
+three AI players could be built, which wasn't worth having. Gone from the UI: `lshuf-ai-window.js`,
+`buildTargets`, `slotForLeader`, `setAiWindowOpener`, `aiWorkingCards`, the "AI leaders..." button and the links between the screens, and the `LOC_LSHUF_AI_*`, `LOC_LSHUF_BUILD_LINK_*` and
+`LOC_LSHUF_BUILD_FOR_*` text. Still in place, unused by the UI: `BUILD_SLOTS` (4), the `LShufBuildFor<n>` and
+`LShufBuildPicks<n>` parameters and the deal's builder slots 2 to 4.
+
+Not watched in a game: the link row, the shuffle box, the Civilization pool icon and its press, the AI players
+window.
+
+## 29. Cards follow the settings, and a bonus that travels with its unit (owner, 2026-11-10)
+
+**No whole/single switch.** The "Whole abilities and civics" check box is gone from the build screens: it was a
+second filter on top of the settings. `cardsShown(scope, options, values)` (`ui/setup/lshuf-build-layout.js`) decides
+on every refresh: Civilization abilities on Split up shows single bonus cards, any other value whole ability cards;
+Civilization civics on Split up shows single civics, any other value whole trees; Leader abilities on Swap whole
+shows whole abilities, anything else single bonuses. Every age stays beside the Show filter (it filters cards, like
+Show).
+
+**Bound pieces.** `LShufBoundPieces (PieceId, AnchorType, Why)` in `data/mapping/lshuf-civ-links.sql`
+(`build-deps.mjs` BOUND_PIECES): a whole bonus that goes with a unique in the random deal. The piece stays out of the
+Split deck and the receivers' slot counts (`deckPieces` in `lshuf-deal-civ.js`; `NOT IN (SELECT PieceId FROM
+LShufBoundPieces)` in `sql-civ.mjs` split), and its modifiers are in `LShufBoundModifiers` with that anchor, so R4
+puts them on the trait the unique is on. Rows: Carthage's second bonus ("Receive a second Merchant or Colonist...")
+with the Colonist (owner's rule; the game's two modifiers double any unit that founds a town or makes a trade route,
+so the bonus works without the Colonist), Joseon's second bonus with the Seowon quarter (`Movable 0`, never a
+card), and the Pirate Republic's second and third bonuses with the Buccaneer (owner, 2026-11-10). The third turns
+Settlers off (`MOD_CIV_PIRATE_REPUBLIC_DISABLE_SETTLERS`, the only dealt bonus that switches something off) and the
+second is the replacement, a settle charge for a promoted Fleet Commander, so the two never part in the random deal;
+the second's text names the Buccaneer though its modifier asks for `UNIT_CLASS_FLEET_COMMANDER`.
+
+**Two cards on the build screen (owner, 2026-11-10: not joined into one).** Carthage's second bonus stays a card of
+its own (`Movable 1`) and the Colonist stays a unit card. Taking the bonus shows the line "<bonus> goes with the
+Colonist." with the button "Take the Colonist too" (`lshuf-build-needs.js`, as before), which fills the unique slot.
+A builder who takes the bonus card under Civilization abilities Split up holds it by the copy path; the two
+modifiers bound only through the piece (`LShufBoundModifiers.ByPiece`) are then left out of the R4 move, so the
+Colonist's holder doesn't get the bonus as well. The Colonist's own rule (`TRAIT_MOD_COLONIST_POP`, `ByPiece` NULL)
+always goes with the Colonist. On the civilization screens a Colonist that moved by the deal carries the bonus text
+in its row (`BOUND_PIECE_OF`, `withBonus` in `lshuf-civ-views.js`) unless someone holds the bonus as its own card.
+`tests/civ-links.mjs` and `tests/deal-civ-deps.mjs` cover the table, the random deal and both builder cases.
+
+The Pirate Republic's two bonuses are cards the same way. The second's text names the Buccaneer, so taking it shows
+the Buccaneer line and button. Taking the third without the second shows "<third> goes with <second>." with the
+button "Take <second> too" (`PIECE_NEEDS` in `lshuf-constants.js`, `bonus: true` from `uniqueNeeds`,
+`LOC_LSHUF_BUILD_NEEDS_BONUS`). `tests/deal-later-ages.mjs` runs the Pirate rows on the Exploration fixture (the
+three modifiers only on the Buccaneer's trait in the random deal, and both builder cases); `tests/civ-links.mjs`
+covers the table and `tests/build-needs.mjs` the two lines.
+
+**Later-age fixtures.** `tests/fixtures/db/exploration` and `modern` are built from
+`tests/fixtures/source-db/exploration/` and `modern/` (not committed, like the Antiquity copies): the Debug database
+copies of two mods-off lab games started in those ages on 1.5.0 (2026-11-10). `runBoth({ fixture: "exploration" })`
+loads the mod for that age (`fixtureAge` in `build-fixtures.mjs`). `tests/deal-later-ages.mjs` checks JS equal to
+SQL in each mode with the civilization rows on Split up in both ages, the Pirate rows, the Sherpa with the Highland
+Power Station, and Joseon's Seowon rule.
+
+## 30. Civilization attribute tags follow the deal (owner, 2026-11-10)
+
+**What the player sees.** A civilization plays with the attribute tags (Cultural, Economic, Expansionist,
+Militaristic, Political, Scientific) of the ability it was dealt. Rome dealt Greece's ability is Cultural and Political:
+the civilization select shows those two, the age's attribute quests pay Rome +1 Political point (an alliance or a
+suzerain in Antiquity) rather than +1 Militaristic, and in Test of Time games Rome gets the Political traditions.
+
+**The game's data.** Each civilization holds its tags as `CivilizationTraits` rows: the plain `TRAIT_ATTRIBUTE_<KIND>`
+(two per civilization in 1.5.0) that the `ATTRIBUTE_QUEST_*` stories check, and the Test of Time ones
+(`TRAIT_ATTRIBUTE_<KIND>_TOT_<AGE>` and their `_TALL`/`_WIDE`/`_HAPPINESS`/`_INFLUENCE` variants,
+`TRAIT_ATTRIBUTE_MILITARISTIC_EXPANSIONIST`) that gate the Test of Time civics tree's traditions, limits and wonders.
+The setup side shows `CivilizationTags` rows `TAG_TRAIT_<KIND>`. The tags unlock nothing outside Test of Time.
+
+**The deal.** Result rows `Kind 'tags'`, `PieceId CIVTAGS_<giver>`, `SortIndex 0`, in `LShufResultCivPieces`:
+- every `ability` row (a builder's whole-ability swap or the Swap whole shuffle) brings a `tags` row with the same
+  giver (`abilityTags` in `lshuf-deal-civ.js`; the SQL copies the ability rows in `results()`);
+- Civilization abilities on Split up: the civs of an age whose ability no builder took, and that no builder built,
+  trade tag sets round a cycle keyed by `SALT.CivTags` (`splitTags`; SQL `cycle("T", ...)` in `shuffle()`);
+- Base game and Off entirely: none.
+A builder who took bonus cards keeps its own tags.
+
+**The apply.** `tagsApply()` in `sql-civ.mjs`, last: a snapshot of every giver's and receiver's `TRAIT_ATTRIBUTE_*`
+rows, then each receiver's rows replaced. The plain tags (and `_TALL`/`_WIDE`, `MILITARISTIC_EXPANSIONIST`) are the
+giver's. Test of Time tags exist only for the ages a civ isn't native to, so they're rebuilt rather than copied: for
+each age the receiver had them in, `TRAIT_ATTRIBUTE_<KIND>_TOT_<AGE>` for each of the giver's kinds, plus the giver's
+variant of that kind where it has one. Copying them instead left Buganda, playing in Antiquity with Greece's ability,
+no Antiquity Test of Time tags (found offline 2026-11-10). Watched 2026-11-10: Buganda then unlocked Greece's
+Cultural and Political Influence traditions in the Test of Time tree, and the civilization select showed the swapped
+tags (`devtools/probes/RESULTS-2026-11-09.md`).
+
+**The screens.** `data/frontend/civ-items-copy.sql` copies the shipped `TAG_TRAIT_*` rows into
+`LShufSetup_CivilizationTags`; `readCivItemRows` carries them as `tagRows`, `shippedCivView` and `civDealViews` give
+each civ's view `tags` (the giver's for a civ with a `tags` row), and `writeCivItemRows` rewrites the civ's
+`CivilizationTags` rows in its shipped domains. `DEAL_VERSION` 14. Tests: `tests/deal-civ-tags.mjs` (Antiquity and
+Exploration fixtures: Base game, Swap whole, Split up cycle, a builder's swap, JS equal to SQL, the applied rows,
+foreign keys) and `tests/civ-views.mjs`.
+
+## 31. Every civilization bonus moves (owner, 2026-11-10)
+
+**What the player sees.** Each line of a civilization's ability is a card that can be dealt or built, or, where the
+game ties it to a civic or a unique, a card that says so and takes that civic or unique when clicked. Nothing stays
+behind silently.
+
+**Favored-wonder bonuses (50 pieces, `wonder: true` in `civ-draft.mjs`).** The game's "+30% Production towards
+constructing <wonder>" is `MOD_CIV_WONDER_PRODUCTION_<CIV>`, an `EFFECT_CITY_ADJUST_FAVORED_WONDER_PRODUCTION` that
+asks for the civilization's base trait and raises whichever wonder its holder favors. The pieces are dealt like any
+other. When the civ deal runs (`CIV_DEAL_RAN`, the guard `boundApply` uses), `wonderApply()` in `sql-civ.mjs` gives
+every trait row carrying one, or a copy, a modifier of the mod's own instead: `LSHUF_WONDER__<CIV>`, type
+`LSHUF_WONDER_PRODUCTION_TYPE` (`COLLECTION_PLAYER_CITIES`, `EFFECT_CITY_ADJUST_CONSTRUCTIBLE_PRODUCTION`), with
+`ConstructibleType` = the giver's `CivilizationFavoredWonders` row and the game's `Percent`. Read live, so another
+mod's favored wonder or percent comes along; a wonder the age's database lacks leaves the game's modifier in place.
+Another age's wonder can't be built, so the pieces are in `CIV_OWN_AGE_PIECES` (`shared/lshuf-civ-wonder-pieces.js`,
+written by `build-civ-mapping.mjs`).
+
+**Rule pieces (`LShufCivRulePieces (PieceId, HomeTrait, TargetModifier)`).** A line the game implements as an
+exception in its own rows rather than as an ability modifier. Assyria's "Codices are not awarded from Technologies"
+(`CIVILIZATION_ASSYRIA__B02`) is the nine Antiquity codex rewards' `NotTraitType TRAIT_ASSYRIA` and a requirement in
+their own sets that the player isn't `TRAIT_ASSYRIA`. `ruleApply()` points both at `TRAIT_LSHUF_RULE_<piece>`, held
+by the piece's bullet holder, else the holder of its civ's whole ability, else its own civ; nobody with Civilization
+abilities Off.
+
+**Joined lines (`joins: true`).** A line that explains the bullet before it joins that card: Majapahit's note about
+transitioning away is part of its specialist-limit card (`CIVILIZATION_MAJAPAHIT__B02`, bullets 2-3).
+
+**Goes with (`LShufCivGoesWith (PieceId, GoesWithId)`, `Movable 0`).** Lines the game builds into a civic or a unique:
+the Inca's and Songhai's Homelands convoys come from the Qhapaq Ñan and Kanta civics' own modifiers, and Joseon's
+Seowon rule is bound to the Seowon (section 23 R4, led by the Ihak civic). They move with that civic or unique. On
+the build screen each shows as a card, "Goes with <name>" on its face, with "This comes with <name>. Click to take
+<name>." in its details; a click takes that card (`takeGoesWith` in `lshuf-build-window.js`). They take no slot.
+
+**Leaders.** Every leader bonus was already movable; nothing changed there. `DEAL_VERSION` 15. Tests:
+`tests/deal-civ-unique-rules.mjs` (the mapping, Base game as shipped, the wonder swap on the Antiquity, Exploration
+and Modern fixtures in Split up and Swap whole, the rule by builder, by Split up, by whole swap and with abilities
+Off, JS equal to SQL, foreign keys).
+
+**Watched 2026-11-10** (`devtools/probes/RESULTS-2026-11-09.md`): Rome holding Egypt's wonder card had
+`LSHUF_WONDER__CIVILIZATION_EGYPT` (Pyramids, 30) live on the player; Rome holding Assyria's rule got no codex reward
+at Writing's mastery, while in the control game (the rule dealt to Gaul) Rome got `MOD_AQ_CODEX_REDUX`; the Inca's
+convoys card read "Goes with Qhapaq Ñan" and a click took the Qhapaq Ñan civic.
+
+## 32. Leader mode and Civilization mode, and Advanced on the build screens (owner, 2026-11-10)
+
+**What the player sees.** Two modes with the same words. **Leader mode** (`LShufMode`, the old Mode) and
+**Civilization mode** (`LShufCivMode`, new) each set their three rows at once: No shuffle, Swap whole, Swap partial,
+Mix bonuses (and, for leaders, Mix bonuses, random start); a row changed by hand makes its mode read Custom. On each
+build page the settings box shows that page's mode on one line with an Advanced button and the pool button; Advanced
+opens the other rows, and stays open or closed across the two pages (`advancedOpen` in `lshuf-build-window.js`).
+
+**The presets.** Leader mode is unchanged in its values and rows; only its names moved: `LSHUF_MODE_SWAP_LEADERS`
+reads Swap whole (listed second) and `LSHUF_MODE_SWAP_ABILITIES` Swap partial (third). Civilization mode
+(`CIV_PRESETS` in `lshuf-constants.js`, `[Abilities, Uniques, Civics]`):
+- `LSHUF_CM_NORMAL` No shuffle: Base game, Base game, Base game;
+- `LSHUF_CM_WHOLE` Swap whole: Swap whole, Follows ability, Follows ability (owner: everything for a civilization is
+  swapped whole);
+- `LSHUF_CM_PARTIAL` Swap partial: Swap whole, Swap whole, Swap whole, each on its own cycle;
+- `LSHUF_CM_SPLIT` Mix bonuses: Split up, Split up, Split up;
+- `LSHUF_CM_CUSTOM` Custom.
+`lshuf-presets.js` watches both groups the same way. The civilization mode is a setup-side preset only: the deal
+reads the three rows, so `LShufCivMode` isn't in `OPTION_DEFAULTS`. Main rows renumbered: Leader mode 2300, the three
+leader rows 2301-2303, Civilization mode 2304, the three civilization rows 2305-2307, AI agendas 2308, Human players
+keep their own leader 2309, Keep my built civilization 2310, Reveal who got what 2311. Tests:
+`tests/parameters-and-text.mjs`, `tests/civ-mode.mjs`.

@@ -51,7 +51,7 @@ function snapshot() {
   return `${work("LShufWork_BRow", "TableName TEXT, LeaderType TEXT, CivilizationType TEXT, TargetType TEXT, Score INTEGER")}
 INSERT INTO LShufWork_BRow (TableName, LeaderType, CivilizationType, TargetType, Score)
 ${parts.join("\nUNION ALL ")};
-${work("LShufWork_BStat", "TableName TEXT PRIMARY KEY, Ord INTEGER, HasTarget INTEGER, W INTEGER, Start INTEGER, NT INTEGER, LLo INTEGER, LHi INTEGER, CLo INTEGER, CHi INTEGER")}
+${work("LShufWork_BStat", "TableName TEXT PRIMARY KEY, Ord INTEGER, HasTarget INTEGER, W INTEGER, Start INTEGER, NT INTEGER, LW INTEGER, LStart INTEGER, LNT INTEGER, LLo INTEGER, LHi INTEGER, CLo INTEGER, CHi INTEGER")}
 INSERT INTO LShufWork_BStat (TableName, Ord, HasTarget) ${stat};
 UPDATE LShufWork_BStat SET W = (SELECT COUNT(*) ${sc("")}),
   NT = CASE WHEN HasTarget = 1 THEN (SELECT COUNT(DISTINCT r.TargetType) ${sc(" AND r.TargetType IS NOT NULL")}) ELSE 0 END,
@@ -60,12 +60,21 @@ UPDATE LShufWork_BStat SET W = (SELECT COUNT(*) ${sc("")}),
   CLo = COALESCE((SELECT MIN(r.Score) ${sc(civRow)}), (SELECT MIN(r.Score) ${sc("")})),
   CHi = COALESCE((SELECT MAX(r.Score) ${sc(civRow)}), (SELECT MAX(r.Score) ${sc("")}));
 UPDATE LShufWork_BStat SET Start = COALESCE((SELECT SUM(o.W) FROM LShufWork_BStat o WHERE o.Ord < LShufWork_BStat.Ord), 0);
+-- Leaders roll from the leader rows alone, the same in every age (lshuf-deal-bias-stats.js biasStats).
+UPDATE LShufWork_BStat SET LW = (SELECT COUNT(*) ${sc(leaderRow)}),
+  LNT = CASE WHEN HasTarget = 1 THEN (SELECT COUNT(DISTINCT r.TargetType) ${sc(`${leaderRow} AND r.TargetType IS NOT NULL`)}) ELSE 0 END;
+UPDATE LShufWork_BStat SET LStart = COALESCE((SELECT SUM(o.LW) FROM LShufWork_BStat o WHERE o.Ord < LShufWork_BStat.Ord), 0);
 ${work("LShufWork_BTarget", "TableName TEXT, TargetType TEXT, Rank INTEGER, PRIMARY KEY (TableName, TargetType)")}
 INSERT INTO LShufWork_BTarget (TableName, TargetType) SELECT DISTINCT r.TableName, r.TargetType FROM LShufWork_BRow r
   JOIN LShufWork_BStat b ON b.TableName = r.TableName AND b.HasTarget = 1 WHERE r.TargetType IS NOT NULL;
 ${rankUpdate("LShufWork_BTarget", "Rank", ["TableName"], [["TargetType"]])}
-${work("LShufWork_BShape", "Total INTEGER, LWith INTEGER, L2 INTEGER, CWith INTEGER, C2 INTEGER, CivCount INTEGER")}
+${work("LShufWork_BLTarget", "TableName TEXT, TargetType TEXT, Rank INTEGER, PRIMARY KEY (TableName, TargetType)")}
+INSERT INTO LShufWork_BLTarget (TableName, TargetType) SELECT DISTINCT r.TableName, r.TargetType FROM LShufWork_BRow r
+  JOIN LShufWork_BStat b ON b.TableName = r.TableName AND b.HasTarget = 1 WHERE r.TargetType IS NOT NULL AND r.LeaderType IS NOT NULL;
+${rankUpdate("LShufWork_BLTarget", "Rank", ["TableName"], [["TargetType"]])}
+${work("LShufWork_BShape", "Total INTEGER, LTotal INTEGER, LWith INTEGER, L2 INTEGER, CWith INTEGER, C2 INTEGER, CivCount INTEGER")}
 INSERT INTO LShufWork_BShape SELECT (SELECT COUNT(*) FROM LShufWork_BRow),
+  (SELECT COUNT(*) FROM LShufWork_BRow WHERE LeaderType IS NOT NULL),
   (SELECT COUNT(DISTINCT LeaderType) FROM LShufWork_BRow WHERE LeaderType IS NOT NULL),
   (SELECT COUNT(*) FROM (SELECT LeaderType FROM LShufWork_BRow WHERE LeaderType IS NOT NULL GROUP BY LeaderType HAVING COUNT(*) >= 2)),
   (SELECT COUNT(DISTINCT CivilizationType) FROM LShufWork_BRow WHERE LeaderType IS NULL AND CivilizationType IS NOT NULL),
@@ -97,24 +106,30 @@ function rolls() {
   const civCnt = `CASE WHEN ${shape("CivCount")} = 0 OR ${shape("CWith")} = 0 THEN 0
     WHEN ${key(SALT.CivBiases, "Base")} % ${shape("CivCount")} >= ${shape("CWith")} THEN 0
     WHEN ${key(SALT.Biases, "Base")} % ${shape("CWith")} < ${shape("C2")} THEN 2 ELSE 1 END`;
-  const pick = `${key(SALT.BiasKind, "R")} % ${shape("Total")}`;
+  const pick = `${key(SALT.BiasKind, "R")} % CASE WHEN IsCiv = 1 THEN ${shape("Total")} ELSE ${shape("LTotal")} END`;
   const st = (col) => `(SELECT b.${col} FROM LShufWork_BStat b WHERE b.TableName = LShufWork_Roll.TableName)`;
   const lo = `CASE WHEN IsCiv = 1 THEN ${st("CLo")} ELSE ${st("LLo")} END`;
   const hi = `CASE WHEN IsCiv = 1 THEN ${st("CHi")} ELSE ${st("LHi")} END`;
-  const roll = `${CFG("RollBiases")} = 1 AND ${dealtB} = 1 AND ${shape("Total")} > 0`;
+  const roll = `${CFG("RollBiases")} = 1 AND ${dealtB} = 1`;
   return `${work("LShufWork_RSub", "Subj TEXT, IsCiv INTEGER, Base INTEGER, Cnt INTEGER, PRIMARY KEY (Subj, IsCiv)")}
 INSERT INTO LShufWork_RSub (Subj, IsCiv, Base) SELECT LeaderType, 0, Rank * ${ROLL_RANK_STRIDE} FROM LShufWork_Pool
-  WHERE Axis = 'B' AND ${roll} AND ${notBiasBuilder("LeaderType")};
+  WHERE Axis = 'B' AND ${roll} AND ${shape("LTotal")} > 0 AND ${notBiasBuilder("LeaderType")};
 INSERT INTO LShufWork_RSub (Subj, IsCiv, Base) SELECT CivilizationType, 1, ${CIV_ROLL_RANK_BASE} + Rank * ${ROLL_RANK_STRIDE}
-  FROM LShufWork_Civ WHERE ${roll};
+  FROM LShufWork_Civ WHERE ${roll} AND ${shape("Total")} > 0;
 UPDATE LShufWork_RSub SET Cnt = CASE WHEN IsCiv = 1 THEN ${civCnt} ELSE ${leaderCnt} END;
 ${work("LShufWork_Roll", "Subj TEXT, IsCiv INTEGER, J INTEGER, R INTEGER, TableName TEXT, TargetType TEXT, Score INTEGER")}
 INSERT INTO LShufWork_Roll (Subj, IsCiv, J, R) SELECT Subj, IsCiv, 0, Base FROM LShufWork_RSub WHERE Cnt >= 1;
 INSERT INTO LShufWork_Roll (Subj, IsCiv, J, R) SELECT Subj, IsCiv, 1, Base + 1 FROM LShufWork_RSub WHERE Cnt >= 2;
-UPDATE LShufWork_Roll SET TableName = (SELECT b.TableName FROM LShufWork_BStat b
-  WHERE b.W > 0 AND ${pick} >= b.Start AND ${pick} < b.Start + b.W);
+UPDATE LShufWork_Roll SET TableName = (SELECT b.TableName FROM LShufWork_BStat b WHERE IsCiv = 1
+  AND b.W > 0 AND ${pick} >= b.Start AND ${pick} < b.Start + b.W) WHERE IsCiv = 1;
+UPDATE LShufWork_Roll SET TableName = (SELECT b.TableName FROM LShufWork_BStat b WHERE IsCiv = 0
+  AND b.LW > 0 AND ${pick} >= b.LStart AND ${pick} < b.LStart + b.LW) WHERE IsCiv = 0;
 UPDATE LShufWork_Roll SET TargetType = CASE WHEN ${st("NT")} > 0 THEN (SELECT t.TargetType FROM LShufWork_BTarget t
-  WHERE t.TableName = LShufWork_Roll.TableName AND t.Rank = ${key(SALT.BiasTarget, "LShufWork_Roll.R")} % ${st("NT")}) ELSE NULL END;
+  WHERE t.TableName = LShufWork_Roll.TableName AND t.Rank = ${key(SALT.BiasTarget, "LShufWork_Roll.R")} % ${st("NT")}) ELSE NULL END
+  WHERE IsCiv = 1;
+UPDATE LShufWork_Roll SET TargetType = CASE WHEN ${st("LNT")} > 0 THEN (SELECT t.TargetType FROM LShufWork_BLTarget t
+  WHERE t.TableName = LShufWork_Roll.TableName AND t.Rank = ${key(SALT.BiasTarget, "LShufWork_Roll.R")} % ${st("LNT")}) ELSE NULL END
+  WHERE IsCiv = 0;
 UPDATE LShufWork_Roll SET Score = CASE WHEN TableName = ${q(ISLAND_TABLE)} THEN ${hi}
   ELSE ${lo} + ${SCORE_STEP} * (${key(SALT.BiasScore, "R")} % (((${hi}) - (${lo})) / ${SCORE_STEP} + 1)) END;
 DELETE FROM LShufWork_Roll WHERE J = 1 AND EXISTS (SELECT 1 FROM LShufWork_Roll f WHERE f.Subj = LShufWork_Roll.Subj
@@ -166,7 +181,7 @@ function tagRows() {
   return `${work("LShufWork_TagV", "LeaderType TEXT, Tag TEXT, TableName TEXT, Value INTEGER, Rank INTEGER, Score INTEGER, PRIMARY KEY (LeaderType, Tag)")}
 INSERT INTO LShufWork_TagV (LeaderType, Tag, TableName, Value) SELECT LeaderType, Tag, ${tagTable("Tag")}, MAX(Value)
   FROM LShufWork_TTag GROUP BY LeaderType, Tag;
-DELETE FROM LShufWork_TagV WHERE TableName IS NULL OR ${st("W")} = 0;
+DELETE FROM LShufWork_TagV WHERE TableName IS NULL OR ${st("LW")} = 0;
 ${rankUpdate("LShufWork_TagV", "Rank", ["LeaderType"], [["Value", true], ["Tag"]])}
 DELETE FROM LShufWork_TagV WHERE Rank >= ${MAX_TAG_BIASES};
 UPDATE LShufWork_TagV SET Score = CASE WHEN TableName = ${q(ISLAND_TABLE)} THEN ${st("LHi")}

@@ -44,8 +44,8 @@
     <Replace Tag="LOC_DIPLOMACY_AGENDA_ELIZABETH_DESC_LIKES" Language="ja_JP"><Text>エリザベス1世は交易路の数が自分より多い指導者を好む。</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_ELIZABETH_NAME" Language="ja_JP"><Text>交易協定</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_ETERNAL_GLORY_DESC" Language="ja_JP"><Text>[icon:YIELD_DIPLOMACY] 影響力が最も高い指導者を好み、 [icon:YIELD_DIPLOMACY] 影響力が最も低い指導者を嫌う。</Text></Replace>
-    <Replace Tag="LOC_DIPLOMACY_AGENDA_ETERNAL_GLORY_DESC_DISLIKES" Language="ja_JP"><Text>ラクシュミ・バーイーは [icon:YIELD_DIPLOMACY] 影響力が最も低い指導者を嫌う。</Text></Replace>
-    <Replace Tag="LOC_DIPLOMACY_AGENDA_ETERNAL_GLORY_DESC_LIKES" Language="ja_JP"><Text>ラクシュミ・バーイーは [icon:YIELD_DIPLOMACY] 影響力が最も高い指導者を好む。</Text></Replace>
+    <Replace Tag="LOC_DIPLOMACY_AGENDA_ETERNAL_GLORY_DESC_DISLIKES" Language="ja_JP"><Text>ラクシュミー・バーイーは [icon:YIELD_DIPLOMACY] 影響力が最も低い指導者を嫌う。</Text></Replace>
+    <Replace Tag="LOC_DIPLOMACY_AGENDA_ETERNAL_GLORY_DESC_LIKES" Language="ja_JP"><Text>ラクシュミー・バーイーは [icon:YIELD_DIPLOMACY] 影響力が最も高い指導者を好む。</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_ETERNAL_GLORY_NAME" Language="ja_JP"><Text>永遠の栄光</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_FAR_AND_WIDE_DESC" Language="ja_JP"><Text>明らかにしたタイルが最も多い指導者を好み、最も少ない指導者を嫌う。</Text></Replace>
     <Replace Tag="LOC_DIPLOMACY_AGENDA_FAR_AND_WIDE_DESC_DISLIKES" Language="ja_JP"><Text>イブン・バットゥータは明らかにしたタイルが最も少ない指導者を嫌う。</Text></Replace>

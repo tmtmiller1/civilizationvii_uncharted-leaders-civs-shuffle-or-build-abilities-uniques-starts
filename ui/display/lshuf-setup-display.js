@@ -11,18 +11,19 @@ import {
   B_MODE
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
 import { biasLine, LINE_BREAK } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-text.js";
-import { bulletAt, joinBullets } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-text.js";
 import {
   attributeTags,
   leaderView,
   previewOf,
   readCivItemRows,
   readLeaderRows,
+  SHIPPED_CIV_ITEMS,
   shippedCivView,
   writeCivItemRows,
   writeLeaderRows
 } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-config-rows.js";
 import { guarded, mapSetsStarts } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+import { civDealViews } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-civ-views.js";
 
 const LOG = "[lshuf-setup-display]";
 const POLL_MS = 500;
@@ -202,11 +203,8 @@ function dealFor(config) {
 
 // --- the civ select (CONTRACTS 14): the host's civ build ---
 
-const CIV_UNIQUE = "CIVUNQ_";
-const UNIQUE_ROW_KIND = { unit: "KIND_UNIT", building: "KIND_BUILDING", quarter: "KIND_QUARTER", improvement: "KIND_IMPROVEMENT" };
-
 function civShipped() {
-  if (!state.civShipped) state.civShipped = readCivItemRows();
+  if (!state.civShipped) state.civShipped = readCivItemRows(SHIPPED_CIV_ITEMS);
   return state.civShipped;
 }
 
@@ -220,95 +218,8 @@ function writeCivView(civType, view) {
   if (writeCivItemRows(civType, view, shipped)) state.civWritten.set(civType, view);
 }
 
-// A unique's shipped row, found by its type among every civ's rows.
-function uniqueRow(type) {
-  for (const { rows } of civShipped().values()) {
-    const row = rows.find((r) => r.Type === type && UNIQUE_ROW_KIND[String(r.Kind).replace("KIND_", "").toLowerCase()]);
-    if (row) return row;
-  }
-  return null;
-}
-
-// The civ select rows a civics tree carries with it (CONTRACTS 18): its unique buildings, quarters and
-// improvements. Units stay with the uniques.
-const CIVICS_ROW_KINDS = ["KIND_BUILDING", "KIND_QUARTER", "KIND_IMPROVEMENT"];
-const CIV_CIVICS = "CIVCIVC_";
-
-// The views the deal asks for (CONTRACTS 16 and 18): every civ shows the ability it took (the source civ's keys),
-// the uniques it took in place of its own, and with its civics the buildings, quarters and improvements of the civ
-// whose civics it got; a unique or civics another civ took is gone from the giver's card. A civ nothing touched
-// shows what it ships with. The Off flags have no card text to show, so the ability row is left as shipped then.
-const isCivicsRow = (u) => CIVICS_ROW_KINDS.includes(u.Kind);
-
-// The deal's civ rows, by civ, with the uniques and civics that left their civ.
-function civMoves(deal) {
-  const byCiv = new Map();
-  const movedUniques = new Set();
-  const movedCivics = new Set();
-  for (const r of (deal && deal.civPieces) || []) {
-    if (!byCiv.has(r.CivilizationType)) byCiv.set(r.CivilizationType, []);
-    byCiv.get(r.CivilizationType).push(r);
-    if (r.Kind === "unique") movedUniques.add(String(r.PieceId).slice(CIV_UNIQUE.length));
-    if (r.Kind === "civics") movedCivics.add(r.FromCivilization);
-  }
-  return { byCiv, movedUniques, movedCivics };
-}
-
-// A held bonus's text (CONTRACTS 19): its generated key, else the bullet cut from the giver's live description.
-function civPieceText(row, shipped) {
-  const key = `LOC_LSHUF_CIVPIECE_${row.PieceId}`;
-  const text = String(Locale.compose(key) || "");
-  if (text && text !== key) return text.trim();
-  const from = shipped.get(row.FromCivilization);
-  const ability = from && shippedCivView(from).ability;
-  const match = /__B(\d+)$/.exec(String(row.PieceId));
-  return ability && match ? bulletAt(String(Locale.compose(ability.Description) || ""), Number(match[1])) : "";
-}
-
-// A civ holding bonuses shows them as one list under its own ability name, the remainder last.
-function civPiecesView(civ, rows, ownView, shipped) {
-  const held = rows.filter((r) => r.Kind === "bullet" || r.Kind === "remainder")
-    .sort((x, y) => Number(x.SortIndex) - Number(y.SortIndex));
-  if (!held.length || !ownView.ability) return null;
-  const ownName = String(Locale.compose(ownView.ability.Name) || "");
-  const lines = held.map((r) => (r.Kind === "remainder" ? Locale.compose("LOC_LSHUF_PIECE_REST", ownName) : civPieceText(r, shipped)))
-    .filter((line) => line && String(line).trim());
-  return { Name: ownView.ability.Name, Description: joinBullets(lines) };
-}
-
-function civView(civ, own, moves, shipped) {
-  const rows = moves.byCiv.get(civ) || [];
-  const ownView = shippedCivView(own);
-  const view = { ability: ownView.ability, uniques: ownView.uniques.filter((u) => !moves.movedUniques.has(u.Type)) };
-  const ability = rows.find((r) => r.Kind === "ability");
-  if (ability && shipped.has(ability.FromCivilization)) {
-    view.ability = shippedCivView(shipped.get(ability.FromCivilization)).ability;
-  }
-  view.ability = civPiecesView(civ, rows, ownView, shipped) || view.ability;
-  const uniques = rows.filter((r) => r.Kind === "unique")
-    .sort((x, y) => Number(x.SortIndex) - Number(y.SortIndex))
-    .map((r) => uniqueRow(String(r.PieceId).slice(CIV_UNIQUE.length))).filter(Boolean);
-  if (uniques.length) view.uniques = [...uniques, ...view.uniques.filter(isCivicsRow)];
-  const civics = rows.find((r) => r.Kind === "civics");
-  if (civics || moves.movedCivics.has(civ)) {
-    view.uniques = view.uniques.filter((u) => !isCivicsRow(u));
-    const from = civics && shipped.get(String(civics.PieceId).slice(CIV_CIVICS.length));
-    if (from) view.uniques.push(...shippedCivView(from).uniques.filter(isCivicsRow));
-  }
-  view.uniques = view.uniques.map((u, i) => ({ ...u, SortIndex: i }));
-  return view;
-}
-
-function civDealViews(deal) {
-  const views = new Map();
-  const shipped = civShipped();
-  const moves = civMoves(deal);
-  for (const [civ, own] of shipped) views.set(civ, civView(civ, own, moves, shipped));
-  return views;
-}
-
 function showCivBuild(deal) {
-  const views = guarded("civ deal views", () => civDealViews(deal), new Map());
+  const views = guarded("civ deal views", () => civDealViews((deal && deal.civPieces) || [], civShipped()), new Map());
   for (const civType of civShipped().keys()) {
     const view = views.get(civType) || shippedCivView(civShipped().get(civType));
     writeCivView(civType, view);
