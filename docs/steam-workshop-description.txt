@@ -1,4 +1,5 @@
 [h1]Uncharted Leaders & Civs: Shuffle or build abilities, uniques & starts[/h1]
+[b]Version 1.0.0. Compatible with Civilization VII 1.5.1. Single-player only.[/b]
 
 Shuffle what leaders and civilizations bring to a game. Leaders can swap whole abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random. Civilizations can do the same with their abilities, unique units and civics, within each age. You can also take any part out of the game for everyone. The game's own screens show what each leader and civilization ended up with.
 
@@ -6,7 +7,7 @@ Shuffle what leaders and civilizations bring to a game. Leaders can swap whole a
 In New Game, open Advanced Settings and expand [b]Uncharted Leaders & Civs Settings[/b]. The settings save with the game like any other setup option.
 
 [h2]Leader mode and Civilization mode[/h2]
-Each mode sets its rows at once, with the same choices for leaders and civilizations:
+A mode sets all the rows below in one go. Leaders and civilizations have the same modes:
 [list]
 [*][b]No shuffle:[/b] everyone plays as normal.
 [*][b]Swap whole:[/b] each leader gets another leader’s ability, attributes and start terrain, and each civilization gets another civilization’s ability, uniques and civics, all from the same one.
@@ -17,7 +18,7 @@ Each mode sets its rows at once, with the same choices for leaders and civilizat
 Change a row by hand and its mode reads Custom.
 
 [h2]A row for each part[/h2]
-Each row picks from the same settings: Base game, Swap whole, Split up, Follows ability, Logical with bonuses, Random roll and Off entirely. With Split up, everyone gets back as many pieces as they gave.
+Each part of a leader or civilization has its own row. The choices are Base game, Swap whole, Split up, Follows ability, Logical with bonuses, Random roll and Off entirely, and each row offers the ones that fit it. With Split up, everyone gets back as many pieces as they gave.
 [list]
 [*][b]Leader abilities:[/b] Base game, Swap whole, Split up or Off entirely.
 [*][b]Leader attributes:[/b] Base game, Split up, Follows ability or Off entirely.
@@ -26,7 +27,7 @@ Each row picks from the same settings: Base game, Swap whole, Split up, Follows 
 [*][b]Civilization uniques:[/b] Base game, Follows ability, Swap whole, Split up or Off entirely.
 [*][b]Civilization civics:[/b] Base game, Follows ability, Swap whole, Split up or Off entirely. Civics bring their traditions and the buildings, quarters and improvements they unlock.
 [/list]
-Civilizations only trade within their age.
+Civilizations only swap with civilizations from the same age.
 
 [h2]What travels together[/h2]
 Things that need each other stay together: a quarter's two buildings, the great people a quarter brings (the Logios with the Acropolis, the Conquistador with the Plaza and five more), the Sherpa and the Highland Power Station, and Sengoku's Samurai and the Kinsei civic. When the game keeps a unique's rule on its civilization's ability, such as the Conquistador crossing Ocean, the rule goes with the unique. Carthage's second Merchant or Colonist goes with the Colonist, and the Pirate Republic's “no Settlers” goes with the Buccaneer and its settling charge. Yi Sun-sin's Fleet Commander bonuses stay together, and whoever holds Ibn Battuta's Wildcard bonus gets his Wildcard points. Every civilization bonus can be dealt. A “+30% Production towards <wonder>” bonus names its wonder for whoever holds it, and Assyria’s “Codices are not awarded from Technologies” goes to whoever holds it. The Inca’s and Songhai’s treasure convoys come with their civics, and their cards say so.
@@ -62,7 +63,7 @@ Build your own leader and Build your own civilization are card screens. Fill you
 A leader's shuffled ability, attributes and start terrain show on the leader select, the loading screen, the diplomacy leader panel and the Civilopedia, with a “Starts near:” line for start terrain. A civilization's dealt ability, uniques, civics and tags show on the civilization select and the loading screen. The leader panel's Who got what says which leader each bonus came from. City Details names the percentage bonuses the game lists as “Other”.
 
 [h2]Single-player only[/h2]
-This release is for single-player games. Multiplayer hasn't been tested, so play it on your own for now.
+This release is for single-player games. Multiplayer hasn't been tested yet.
 
 [h2]Other mods and maps[/h2]
 [list]

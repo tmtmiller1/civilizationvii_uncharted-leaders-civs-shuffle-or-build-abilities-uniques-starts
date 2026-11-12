@@ -3,10 +3,9 @@
 Changes to Uncharted Leaders & Civs for Civilization VII. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and Semantic Versioning.
 
-## [0.1.0] - Unreleased
+## [1.0.0] - Unreleased
 
-Named Uncharted Leaders & Civs (Re-dealable Leader Abilities, Attributes, and Start Biases while in development),
-with the mod id `uncharted-leaders-and-civs`. The first version. Much of it has been seen in lab games; the rest is on the watch list.
+The first release.
 
 ### Setup options
 - A Uncharted Leaders & Civs Settings section in Advanced Settings. The options save with the game and reach the other
@@ -24,11 +23,11 @@ with the mod id `uncharted-leaders-and-civs`. The first version. Much of it has 
   Spain's coastal yields are +1 in Antiquity, +2 in Exploration and +3 in Modern. A bonus the game drops in an age
   (Spain's cheaper town conversion in Antiquity) stays out of that age's deal and build cards. A yield line from a
   dealt bonus, a leader's or a civilization's, names the ability it came from ("Siglo de Oro (Coastal)").
-- Every civilization bonus can be dealt or built. A civilization's "+30% Production towards <wonder>" now moves
+- Every civilization bonus can be dealt or built. A civilization's "+30% Production towards <wonder>" moves
   and names its wonder for whoever holds it: holding Egypt's means +30% towards the Pyramids. Assyria's "Codices are
-  not awarded from Technologies" goes to whoever holds it, and Assyria gets its codices back. The Inca's and
-  Songhai's treasure convoys and Joseon's Seowon rule go with the civic or quarter they come from; their cards say
-  so, and clicking one takes that civic.
+  not awarded from Technologies" goes to whoever holds it, and a civilization without it, Assyria included, earns
+  codices from Technologies. The Inca's and Songhai's treasure convoys and Joseon's Seowon rule go with the civic or
+  quarter they come from; their cards say so, and clicking one takes that civic.
 - A civilization's attribute tags (Cultural, Economic and the rest) go with its ability: whoever is dealt Greece's
   ability is Cultural and Political, earns those attribute quests' points and, in Test of Time, gets those
   traditions. With abilities on Split up the tag sets are shuffled among the age's civilizations.
@@ -94,8 +93,7 @@ with the mod id `uncharted-leaders-and-civs`. The first version. Much of it has 
   game's own.
 
 ### Known limits
-- Every time the game loads, it works the shuffle out again from the setup choices, so an update to this mod can
-  change a campaign already under way. From the first release on, a change that would do that only applies to games
-  set up after it.
+- When this mod updates, a campaign keeps the shuffle it started with; if a fix has to change it, a notice on the next
+  turn says so.
 - The Civilization pool only applies when the game starts.
 - English only for now.
