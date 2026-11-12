@@ -23,7 +23,7 @@ const LIMITS = { "civfanatics-tagline.txt": 100, "moddb-description-short.txt": 
 
 // The release body opens with the preview image at the release's tag, as the other Tower mods' releases do.
 const TAG = "v0.1.0";
-const REPO = "tmtmiller1/Uncharted-Leaders-Civs-Shuffle-or-build-abilities-uniques-starts";
+const REPO = "tmtmiller1/civilizationvii_uncharted-leaders-civs-shuffle-or-build-abilities-uniques-starts";
 const GITHUB_HEAD = `<p align="center"><img src="https://raw.githubusercontent.com/${REPO}/${TAG}/docs/workshop-preview.png" `
   + `alt="Uncharted Leaders & Civs" width="200"></p>\n\nThis is the mod's first release.\n\n`;
 

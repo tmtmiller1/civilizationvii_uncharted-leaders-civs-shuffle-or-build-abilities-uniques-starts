@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/tmtmiller1/Uncharted-Leaders-Civs-Shuffle-or-build-abilities-uniques-starts/v0.1.0/docs/workshop-preview.png" alt="Uncharted Leaders & Civs" width="200"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/tmtmiller1/civilizationvii_uncharted-leaders-civs-shuffle-or-build-abilities-uniques-starts/v0.1.0/docs/workshop-preview.png" alt="Uncharted Leaders & Civs" width="200"></p>
 
 This is the mod's first release.
 
