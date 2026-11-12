@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const loaderDir = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(loaderDir, "..");
-const MODULE_PREFIX = "/re-dealable-leader-abilities-attributes-and-start-biases/";
+const MODULE_PREFIX = "/uncharted-leaders-and-civs/";
 const STUB_FILE = path.join(loaderDir, "stubs", "engine-module-stub.mjs");
 
 export async function resolve(specifier, context, defaultResolve) {

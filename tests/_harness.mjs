@@ -156,7 +156,7 @@ export async function builder() {
 
 export async function modinfoText({ fromFile = false } = {}) {
   if (fromFile) {
-    return fs.readFileSync(need("re-dealable-leader-abilities-attributes-and-start-biases.modinfo"), "utf8");
+    return fs.readFileSync(need("uncharted-leaders-and-civs.modinfo"), "utf8");
   }
   return (await builder()).buildModinfo();
 }

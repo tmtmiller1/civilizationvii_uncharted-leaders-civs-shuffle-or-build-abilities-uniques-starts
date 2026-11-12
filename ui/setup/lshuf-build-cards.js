@@ -10,23 +10,23 @@ import {
   GENERIC_BIASES, ONOFF, PARAM, T_MODE,
   biasTableOfTag, pieceId,
   splitTags, joinTags, buildKindOf
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { KNOWN_LEADERS } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-known-leaders.js";
-import { joinBullets, splitBullets } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-text.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { KNOWN_LEADERS } from "/uncharted-leaders-and-civs/shared/lshuf-known-leaders.js";
+import { joinBullets, splitBullets } from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
 import {
   findParam, paramValue, setParam, startAge
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
-import { isLocalHost } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { isLocalHost } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
 import {
   attributeIcon, civBackground, civSymbol, leaderPortrait, uniqueIcon
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-art.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-art.js";
 import {
   compose, composedOrEmpty, plainWords, query
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-query.js";
-import { civPieceKey } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-query.js";
+import { civPieceKey } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
 import {
   UNIQUE_KIND_KEY, civCivicsText, civicCards, civicsTreeData, leadOf, slotWeight, uniqueRiders, withLine
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-civics.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-civics.js";
 
 export { compose, civicsTreeData };
 

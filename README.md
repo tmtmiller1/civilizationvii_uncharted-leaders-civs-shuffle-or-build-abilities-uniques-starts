@@ -1,4 +1,6 @@
-# Re-dealable Leader Abilities, Attributes, and Start Biases
+# Uncharted Leaders & Civs
+
+Shuffle or build abilities, uniques & starts.
 
 A Civilization VII mod that shuffles what leaders and civilizations bring to a game. Leaders can swap whole
 abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random. Civilizations
@@ -12,7 +14,7 @@ first release says so.
 
 ## What it does
 
-- **Re-dealable Leaders Settings** in Advanced Settings: a Mode that sets the three leader rows (abilities,
+- **Uncharted Leaders & Civs Settings** in Advanced Settings: a Mode that sets the three leader rows (abilities,
   attributes, start terrain), three civilization rows (abilities, uniques, civics), AI agendas, Human players keep
   their own leader, Keep my built civilization and Reveal who got what, then buttons for the leader list, leaders
   from other mods, the Leader pool, the Civilization pool, AI players, the two build screens and Advanced settings
@@ -50,7 +52,7 @@ Steam doesn't take the preview through `steamcmd` for this account, so it goes u
 
 ## Screenshots
 
-![Re-dealable Leaders Settings in Advanced Options](docs/screenshots/01-settings.jpg)
+![Uncharted Leaders & Civs Settings in Advanced Options](docs/screenshots/01-settings.jpg)
 ![A leader's mixed bonuses on the leader select, the new buttons boxed](docs/screenshots/02-leader-select.jpg)
 ![The Leader pool button beside Random](docs/screenshots/03-leader-pool-button.jpg)
 ![The Build your own leader button](docs/screenshots/04-build-your-own-leader.jpg)

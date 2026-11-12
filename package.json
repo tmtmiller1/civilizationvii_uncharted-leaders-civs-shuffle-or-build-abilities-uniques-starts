@@ -1,8 +1,8 @@
 {
-  "name": "re-dealable-leader-abilities-attributes-and-start-biases-dev",
+  "name": "uncharted-leaders-and-civs-dev",
   "version": "0.0.0",
   "private": true,
-  "description": "Generators, lint and tests for the Re-dealable Leader Abilities, Attributes, and Start Biases Civ VII mod. Not shipped.",
+  "description": "Generators, lint and tests for the Uncharted Leaders & Civs Civ VII mod. Not shipped.",
   "type": "module",
   "scripts": {
     "check": "node scripts/check-syntax.mjs",

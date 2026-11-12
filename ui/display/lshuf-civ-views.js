@@ -3,10 +3,10 @@
 // and improvements of the civ whose civics it got, and with a single civic the buildings that civic unlocks. Shared
 // by the setup screen (lshuf-setup-display.js) and the game (lshuf-game.js), which both write the result into the
 // config rows with writeCivItemRows.
-import { bulletAt, joinBullets } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-text.js";
-import { BOUND_PIECE_OF } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { shippedCivView } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-config-rows.js";
-import { civPieceKey } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+import { bulletAt, joinBullets } from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
+import { BOUND_PIECE_OF } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { shippedCivView } from "/uncharted-leaders-and-civs/ui/display/lshuf-config-rows.js";
+import { civPieceKey } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
 
 const CIV_UNIQUE = "CIVUNQ_";
 const UNIQUE_ROW_KIND = { unit: "KIND_UNIT", building: "KIND_BUILDING", quarter: "KIND_QUARTER", improvement: "KIND_IMPROVEMENT" };

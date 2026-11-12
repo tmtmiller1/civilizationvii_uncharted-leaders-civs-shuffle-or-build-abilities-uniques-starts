@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const MOD_ID = "re-dealable-leader-abilities-attributes-and-start-biases";
+const MOD_ID = "uncharted-leaders-and-civs";
 const OUT = path.join(root, `${MOD_ID}.modinfo`);
 const IMPORT_ROOTS = ["ui", "shared", "base-standard"];
 const IMPORT_EXT = /\.(js|css|html|png)$/;

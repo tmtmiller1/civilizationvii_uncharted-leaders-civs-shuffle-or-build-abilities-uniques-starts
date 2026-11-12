@@ -9,9 +9,9 @@
 //   leaderName(leaderType) -> string            the leader's composed name
 //   attributeName(traitType) -> string | null   the attribute an attribute trait stands for, composed
 //   whyOf(leaderType) -> string | null          the setup screen's check detail for a modded leader left out
-import { REASON, STATUS } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { bulletAt, splitBullets } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-text.js";
-import { reasonKey, whyKey } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+import { REASON, STATUS } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { bulletAt, splitBullets } from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
+import { reasonKey, whyKey } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
 
 // LShufResultLeaders.Axes holds the dealt axes as |ABILITY|ATTRIBUTES|BIASES|.
 const AXIS = { Ability: "ABILITY", Attributes: "ATTRIBUTES", Biases: "BIASES" };

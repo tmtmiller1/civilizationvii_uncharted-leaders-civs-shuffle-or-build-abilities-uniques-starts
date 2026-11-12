@@ -7,8 +7,8 @@
 
 import {
   CIV_MODE_CUSTOM, CIV_PRESETS, EVENT, MODE_CUSTOM, PARAM, PRESETS, civPresetOf, presetOf
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { paramValue, setParam } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { paramValue, setParam } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 
 // Each preset: its parameter, its three parts, what each value sets, the reverse lookup and its Custom value.
 const GROUPS = [

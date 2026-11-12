@@ -1,28 +1,28 @@
-// Shell UIScripts entry for Re-dealable Leaders' setup side:
+// Shell UIScripts entry for Uncharted Leaders & Civs' setup side:
 // - adds the "Build your own leader..." button under the ability text on the leader select screen;
-// - adds the window buttons after the mod's rows in its Re-dealable Leaders Settings section, from a
+// - adds the window buttons after the mod's rows in its Uncharted Leaders & Civs Settings section, from a
 //   MutationObserver (not by wrapping AdvancedOptionsScreen through ComponentRegistry: Supercolors calls the base
 //   screen directly and drops wrappers);
 // - gives the deal number a new value each time setup opens, on the host;
 // - hides Drongo's start-bias panel and civ badges while a re-deal mode is on (they show the shipped biases);
 // - registers the mod's only startCampaign handler.
 
-import { PARAM, B_MODE, EVENT } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { PARAM, B_MODE, EVENT } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import {
   startPresetWatch, stopPresetWatch
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-presets.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-presets.js";
 import {
   paramValue, rollSeed, setSeed
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
-import { isLocalHost } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
-import { startModdedChecks } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-mod-check.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { isLocalHost } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { startModdedChecks } from "/uncharted-leaders-and-civs/ui/setup/lshuf-mod-check.js";
 import {
   endStartSession, installStartHandler
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-start.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-start.js";
 import {
   injectAccordionButtons
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-accordion.js";
-import { injectBuildButton } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-entry.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-accordion.js";
+import { injectBuildButton } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-entry.js";
 
 const DRONGO_STYLE_ID = "lshuf-hide-drongo-bias";
 const DRONGO_RULE = "#drongos-leader-bias-panel, .drongos-civilization-spawn-bias-overlay { display: none !important; }";

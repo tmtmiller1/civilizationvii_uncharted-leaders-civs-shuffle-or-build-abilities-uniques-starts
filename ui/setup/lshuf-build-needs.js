@@ -4,7 +4,7 @@
 //
 // A unique counts as named when the card's text carries its icon ([icon:UNIT_COLONIST]) or its name as a whole word.
 // It counts as held when it's the builder civilization's own (its card is marked own) or one of the picks.
-import { BUILD_KIND, PIECE_NEEDS, buildKindOf } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { BUILD_KIND, PIECE_NEEDS, buildKindOf } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 
 const UNIQUE_PREFIX = "CIVUNQ_";
 const ICON = /\[icon:([A-Za-z0-9_]+)\]/g;

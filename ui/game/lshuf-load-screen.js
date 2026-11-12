@@ -7,12 +7,12 @@
 //
 // The screen reads once GameCore is initialized, before any mod UI script loads, so the mod's copy of the game's
 // load-screen-bootstrap.js (base-standard/ui-next/screens/load-screen/) calls prepareLoadScreen() first.
-import { guarded } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+import { guarded } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
 import {
   leaderView, readCivItemRows, SHIPPED_CIV_ITEMS, shippedCivView, writeCivItemRows, writeLeaderRows
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-config-rows.js";
-import { civDealViews } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-civ-views.js";
-import { gameContext, readGameDeal } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-game-data.js";
+} from "/uncharted-leaders-and-civs/ui/display/lshuf-config-rows.js";
+import { civDealViews } from "/uncharted-leaders-and-civs/ui/display/lshuf-civ-views.js";
+import { gameContext, readGameDeal } from "/uncharted-leaders-and-civs/ui/game/lshuf-game-data.js";
 
 const LOG = "[lshuf-load]";
 const RANDOM = "RANDOM";

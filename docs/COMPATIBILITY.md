@@ -1,4 +1,4 @@
-# Re-dealable Leader Abilities, Attributes, and Start Biases: compatibility
+# Uncharted Leaders & Civs: compatibility
 
 Status: read-only audit, 2026-11-06, against the [SPEC](SPEC.md) and the probe results of the same day. This audit
 wasn't watched in a game. The findings come from reading the other mods' files (tp-share corpus, the Workshop folder, our

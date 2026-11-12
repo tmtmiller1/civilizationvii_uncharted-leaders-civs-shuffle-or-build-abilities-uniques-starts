@@ -5,12 +5,12 @@
 // throttled MutationObserver watches the page the way ui/setup/lshuf-setup.js does, since the screens come and go
 // with the transition.
 
-import { injectBuildButton } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-entry.js";
-import { writeBuildKeys } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-keys.js";
-import { BUILD_SLOTS } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { injectBuildButton } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-entry.js";
+import { writeBuildKeys } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-keys.js";
+import { BUILD_SLOTS } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import {
   buildForLeader, buildPicks, isLocalHost, readSlots
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
 
 const THROTTLE_MS = 150;
 const log = (msg) => console.warn(`[lshuf-game] ${msg}`);

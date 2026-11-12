@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Mod id="lshuf-probe-crossage" version="1" xmlns="ModInfo">
 	<Properties>
-		<Name>Re-dealable cross-age probe</Name>
+		<Name>Uncharted Leaders &amp; Civs cross-age probe</Name>
 		<Description>Puts America's +1 Production on Resources on every Antiquity civilization. Not for release.</Description>
 		<Authors>tower</Authors>
 		<Package>Mod</Package>

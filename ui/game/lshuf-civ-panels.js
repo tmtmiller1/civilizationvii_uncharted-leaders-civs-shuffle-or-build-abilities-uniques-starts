@@ -5,8 +5,8 @@
 // a game with moved civics runs, the panel's traditions query answers with each tradition under the base trait of the
 // civilization in the game that holds it now (the loading screen's civicUnlockJudge decides), and a tradition its
 // civilization gave away to nobody in the game drops out. Every other query passes through untouched.
-import { guarded } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
-import { civicTables, civicUnlockJudge } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-load-screen.js";
+import { guarded } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
+import { civicTables, civicUnlockJudge } from "/uncharted-leaders-and-civs/ui/game/lshuf-load-screen.js";
 
 const LOG = "[lshuf-game]";
 // A trait no civilization holds, for a tradition whose civilization gave it away to nobody in this game.

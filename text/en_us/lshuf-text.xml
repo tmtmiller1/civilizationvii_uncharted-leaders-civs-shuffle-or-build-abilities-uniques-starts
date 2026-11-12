@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- English text for Re-dealable Leader Abilities, Attributes, and Start Biases. Key names are in CONTRACTS.md
+<!-- English text for Uncharted Leaders &amp; Civs. Key names are in CONTRACTS.md
      section 8. Bullet-piece text (LOC_LSHUF_PIECE_<PieceId>) is generated from the game's own text in
      data/text-generated/ and isn't written here. text/TRANSLATION.md lists what the other languages need. -->
 <Database>
     <EnglishText>
         <!-- The mod -->
-        <Row Tag="LOC_LSHUF_MOD_NAME"><Text>Re-dealable Leader Abilities, Attributes, and Start Biases</Text></Row>
+        <Row Tag="LOC_LSHUF_MOD_NAME"><Text>Uncharted Leaders &amp; Civs</Text></Row>
         <Row Tag="LOC_LSHUF_MOD_DESCRIPTION"><Text>Shuffles leader abilities, attributes and start terrain at the start of a game. Leaders can swap abilities, swap everything, or have the separate bonuses inside each ability mixed between them, and you can turn abilities, attributes or start terrain off for everyone. It works in multiplayer through the game's own lobby, and the game's leader screens show what each leader ended up with, including where they like to start.</Text></Row>
 
         <!-- The window -->
-        <Row Tag="LOC_LSHUF_WINDOW_TITLE"><Text>Re-dealable Leaders</Text></Row>
+        <Row Tag="LOC_LSHUF_WINDOW_TITLE"><Text>Uncharted Leaders &amp; Civs</Text></Row>
         <Row Tag="LOC_LSHUF_CLOSE"><Text>Close</Text></Row>
         <Row Tag="LOC_LSHUF_HOST_ONLY"><Text>Only the host can change these settings. You'll see them update here as the host changes them.</Text></Row>
         <Row Tag="LOC_LSHUF_LIST_ALL"><Text>All</Text></Row>
         <Row Tag="LOC_LSHUF_LIST_NONE"><Text>None</Text></Row>
-        <Row Tag="LOC_LSHUF_SECTION_TITLE"><Text>Re-dealable Leaders Settings</Text></Row>
+        <Row Tag="LOC_LSHUF_SECTION_TITLE"><Text>Uncharted Leaders &amp; Civs Settings</Text></Row>
         <Row Tag="LOC_LSHUF_BTN_LEADERS"><Text>Choose which leaders are shuffled...</Text></Row>
         <Row Tag="LOC_LSHUF_BTN_POOLS"><Text>Leader pool...</Text></Row>
         <Row Tag="LOC_LSHUF_BTN_MODDED"><Text>Leaders from other mods...</Text></Row>
@@ -138,7 +138,7 @@
         <Row Tag="LOC_LSHUF_REVEAL_BUILT"><Text>{1_Name} built this leader by hand.</Text></Row>
         <Row Tag="LOC_LSHUF_REASON_BUILT"><Text>built by hand</Text></Row>
         <Row Tag="LOC_LSHUF_BTN_ADVANCED"><Text>Advanced settings...</Text></Row>
-        <Row Tag="LOC_LSHUF_ADVANCED_TITLE"><Text>Re-dealable Leaders advanced settings</Text></Row>
+        <Row Tag="LOC_LSHUF_ADVANCED_TITLE"><Text>Uncharted Leaders &amp; Civs advanced settings</Text></Row>
         <Row Tag="LOC_LSHUF_CIVS_OUT_NAME"><Text>Civilization pool</Text></Row>
         <Row Tag="LOC_LSHUF_CIVS_OUT_DESC"><Text>Random slots only get ticked civilizations. A civilization someone picks by hand stays. Applies at game start.</Text></Row>
         <Row Tag="LOC_LSHUF_LIST_COUNT"><Text>{1_On} of {2_Total} on</Text></Row>

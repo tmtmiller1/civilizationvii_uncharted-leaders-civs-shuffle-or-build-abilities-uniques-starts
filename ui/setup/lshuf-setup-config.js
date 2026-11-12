@@ -3,14 +3,14 @@
 
 import {
   PARAM, OPTION_DEFAULTS, REASON, BUILD_SLOTS, fromListValue
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import {
   KNOWN_LEADERS, MODDED_LEADER_TYPES
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-known-leaders.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-known-leaders.js";
 import {
   paramValue, paramBool, paramValues, currentSeed, startAge
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
-import { moddedCheckResult } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-mod-check.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { moddedCheckResult } from "/uncharted-leaders-and-civs/ui/setup/lshuf-mod-check.js";
 
 export const PLAIN_RANDOM = "RANDOM";
 

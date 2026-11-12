@@ -1,5 +1,5 @@
 // Runs every test file in tests/ in its own Node process with the mod-path loader registered, so imports of
-// /re-dealable-leader-abilities-attributes-and-start-biases/... resolve to this checkout.
+// /uncharted-leaders-and-civs/... resolve to this checkout.
 //
 //   node tests/run-all.mjs                 run everything
 //   node tests/run-all.mjs deal modinfo   only files whose name contains one of the filters

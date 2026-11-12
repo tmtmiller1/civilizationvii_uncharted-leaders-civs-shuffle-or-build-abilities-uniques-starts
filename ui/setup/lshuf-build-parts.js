@@ -1,16 +1,16 @@
 // The pieces of the Build your own leader screen: the slot row, the toolbar and the card grid. Each takes the window
 // (for its cards, counts, filters and handlers) and returns an element built from the game's own controls and art.
 
-import { BUILD_KIND, buildKindOf } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { el } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
+import { BUILD_KIND, buildKindOf } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { el } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
 import {
   attributeIdsOf, cantTake, cardFor, compose, isWholeCard, slotOfKind
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-cards.js";
-import { CARD_ATTR, TOOLTIP_STYLE } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-tooltip.js";
-import { slotLayout } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-layout.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-cards.js";
+import { CARD_ATTR, TOOLTIP_STYLE } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-tooltip.js";
+import { slotLayout } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-layout.js";
 import {
   attributeIcon, SLOT_BASE, TAG_EQUIPPED
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-art.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-art.js";
 
 const SLOT_GROUPS = [
   ["ability", "LOC_LSHUF_BUILD_SLOTS_ABILITY"],
@@ -41,7 +41,7 @@ const DETAILS_DWELL_MS = 160;
 const kindKey = (kind) => `LOC_LSHUF_BUILD_KIND_${kind.toUpperCase()}`;
 
 // The game's rollover glow, shown while the mouse is over the parent (.group).
-const MOD_ID = "re-dealable-leader-abilities-attributes-and-start-biases";
+const MOD_ID = "uncharted-leaders-and-civs";
 
 const highlight = () => el("div", "img-rollover-highlight absolute inset-0 opacity-0 group-hover\\:opacity-100 pointer-events-none");
 

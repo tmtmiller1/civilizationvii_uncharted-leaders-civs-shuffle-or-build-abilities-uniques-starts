@@ -12,7 +12,7 @@ import {
 } from "../shared/lshuf-constants.js";
 import { KNOWN_LEADERS, MODDED_LEADER_TYPES, VANILLA_LEADERS } from "../shared/lshuf-known-leaders.js";
 
-const MODINFO = "re-dealable-leader-abilities-attributes-and-start-biases.modinfo";
+const MODINFO = "uncharted-leaders-and-civs.modinfo";
 
 test("the built modinfo names no missing file", async () => {
   const { buildModinfo, missingItems } = await builder();

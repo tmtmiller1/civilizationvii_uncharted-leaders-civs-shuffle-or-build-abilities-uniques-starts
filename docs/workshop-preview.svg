@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Workshop / identity emblem for Re-dealable Leader Abilities, Attributes, and Start Biases. The Tower-mods family
+<!-- Workshop / identity emblem for Uncharted Leaders &amp; Civs. The Tower-mods family
      look (dark ground, gold frame, parchment art, serif wordmark) and the shared hex tile of Canals, Dams, National
      Parks and Partisans. Motif: three cards dealt in a fan under a night sky, one for each part the mod shuffles: a
      crown for leaders, a banner for civilizations, a mountain for start terrain. A gold arc over the fan is the
@@ -114,12 +114,12 @@
   <!-- Wordmark, on two lines -->
   <text x="512" y="788" text-anchor="middle"
         font-family="Georgia, 'Times New Roman', serif" font-size="80"
-        font-weight="bold" fill="#e7d4a3" letter-spacing="3">RE-DEALABLE</text>
+        font-weight="bold" fill="#e7d4a3" letter-spacing="3">UNCHARTED</text>
   <text x="512" y="874" text-anchor="middle"
         font-family="Georgia, 'Times New Roman', serif" font-size="80"
-        font-weight="bold" fill="#e7d4a3" letter-spacing="3">LEADERS</text>
+        font-weight="bold" fill="#e7d4a3" letter-spacing="3">LEADERS &amp; CIVS</text>
   <!-- Tagline -->
   <text x="512" y="936" text-anchor="middle"
         font-family="Georgia, 'Times New Roman', serif" font-size="38"
-        fill="#c9a24c" opacity="0.92">Shuffle leaders and civilizations</text>
+        fill="#c9a24c" opacity="0.92">Shuffle or build abilities, uniques &amp; starts</text>
 </svg>

@@ -1,7 +1,7 @@
 // Reading and writing the mod's setup parameters through GameSetup, shell scope. Every option is a Hidden = 1
 // parameter (data/frontend/parameters.sql), so only the mod's window shows them.
 
-import { PARAM, SEED_MIN, SEED_MAX, EVENT } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { PARAM, SEED_MIN, SEED_MAX, EVENT } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 
 const log = (msg) => console.warn(`[lshuf-setup] ${msg}`);
 

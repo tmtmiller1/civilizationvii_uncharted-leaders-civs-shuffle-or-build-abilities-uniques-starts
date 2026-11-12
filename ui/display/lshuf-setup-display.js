@@ -4,13 +4,13 @@
 // The deal is worked out here with the same module the game's SQL is generated from (shared/deal/lshuf-deal.js),
 // over the setup-side copy of the gameplay rows (LShufSetup_*), kept to the leaders and civs this player has.
 // With "Show what everyone got: As you meet them" only the local player's own leader is shown.
-import { DEAL_VERSION, buildDealInput, computeDeal } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/deal/lshuf-deal.js";
-import { readDealConfigFromSetup, isLocalHost } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
+import { DEAL_VERSION, buildDealInput, computeDeal } from "/uncharted-leaders-and-civs/shared/deal/lshuf-deal.js";
+import { readDealConfigFromSetup, isLocalHost } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
 import {
   EVENT, KEY, REVEAL, OPTION_DEFAULTS, BIAS_TABLES, BIAS_TARGET_COLUMN, A_MODE, T_MODE,
   B_MODE
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { biasLine, LINE_BREAK } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-text.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { biasLine, LINE_BREAK } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-text.js";
 import {
   attributeTags,
   leaderView,
@@ -21,9 +21,9 @@ import {
   shippedCivView,
   writeCivItemRows,
   writeLeaderRows
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-config-rows.js";
-import { guarded, mapSetsStarts } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
-import { civDealViews } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-civ-views.js";
+} from "/uncharted-leaders-and-civs/ui/display/lshuf-config-rows.js";
+import { guarded, mapSetsStarts } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
+import { civDealViews } from "/uncharted-leaders-and-civs/ui/display/lshuf-civ-views.js";
 
 const LOG = "[lshuf-setup-display]";
 const POLL_MS = 500;

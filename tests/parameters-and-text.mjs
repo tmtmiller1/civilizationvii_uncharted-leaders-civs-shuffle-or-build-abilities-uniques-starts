@@ -248,7 +248,9 @@ function readText() {
   const map = new Map();
   for (const m of xml.matchAll(/<(?:Row|Replace)\s+Tag="([^"]+)"[^>]*>\s*<Text>([\s\S]*?)<\/Text>/g)) {
     assert.ok(!map.has(m[1]), `duplicate Tag ${m[1]}`);
-    map.set(m[1], m[2]);
+    // The text as the game shows it: XML's entities decoded ("Uncharted Leaders &amp; Civs" reads with an "&").
+    map.set(m[1], m[2].replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&apos;/g, "'")
+      .replace(/&amp;/g, "&"));
   }
   return map;
 }
@@ -262,7 +264,7 @@ test("every LOC key in CONTRACTS sections 2 and 8 has English text", () => {
   for (const [key, ph] of Object.entries(placeholders())) {
     for (const p of ph) assert.ok(text.get(key)?.includes(p), `${key} uses ${p}`);
   }
-  assert.equal(text.get("LOC_LSHUF_MOD_NAME"), "Re-dealable Leader Abilities, Attributes, and Start Biases");
+  assert.equal(text.get("LOC_LSHUF_MOD_NAME"), "Uncharted Leaders & Civs");
 });
 
 test("every LOC key parameters.sql names has English text", () => {

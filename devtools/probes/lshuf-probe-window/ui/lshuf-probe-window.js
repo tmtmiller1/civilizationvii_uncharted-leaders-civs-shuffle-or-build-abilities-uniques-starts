@@ -16,7 +16,7 @@ class ProbeWindow extends Panel {
     box.style.minWidth = "40rem";
     const title = document.createElement("div");
     title.className = "font-title text-xl mb-4";
-    title.textContent = "Re-dealable Leaders (probe window)";
+    title.textContent = "Uncharted Leaders & Civs (probe window)";
     const toggle = document.createElement("fxs-checkbox");
     toggle.id = "lshuf-probe-window-toggle";
     const p = GameSetup.findGameParameter("LShufP16Hidden");
@@ -50,7 +50,7 @@ function inject() {
   if (!list || list.querySelector(".lshuf-probe-window__open")) return;
   const btn = document.createElement("fxs-button");
   btn.classList.add("lshuf-probe-window__open", "m-2");
-  btn.setAttribute("caption", "Re-dealable Leaders...");
+  btn.setAttribute("caption", "Uncharted Leaders & Civs...");
   btn.addEventListener("action-activate", () => globalThis.__lshufOpenWindow());
   list.insertBefore(btn, list.firstChild);
   log.injected++;

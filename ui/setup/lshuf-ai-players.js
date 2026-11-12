@@ -5,11 +5,11 @@
 // game's own player rows write (PlayerLeader, PlayerCivilization). Nothing is built here: the AI players get the
 // shuffle settings and the pools. A page of the setup window (lshuf-setup-window.js, "aiplayers").
 
-import { el, compose } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
-import { readSlots, PLAIN_RANDOM } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
-import { hostPicker } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-pick.js";
-import { civBackground, leaderPortrait } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-art.js";
-import { aiRows } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-layout.js";
+import { el, compose } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
+import { readSlots, PLAIN_RANDOM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { hostPicker } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-pick.js";
+import { civBackground, leaderPortrait } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-art.js";
+import { aiRows } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-layout.js";
 
 const log = (msg) => console.warn(`[lshuf-setup] ${msg}`);
 const real = (value) => (value && value !== PLAIN_RANDOM ? value : null);

@@ -7,7 +7,7 @@
 // income modifiers (the game's "Bonus" line) are left alone.
 import CityDetails from "/base-standard/ui/city-details/model-city-details.js";
 
-const PATCHED = Symbol.for("re-dealable-leaders.city-details-names");
+const PATCHED = Symbol.for("uncharted-leaders-and-civs.city-details-names");
 const VERSION = "1";
 const EPSILON = 1e-6;
 

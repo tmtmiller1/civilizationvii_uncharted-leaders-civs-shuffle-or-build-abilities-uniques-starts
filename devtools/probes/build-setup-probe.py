@@ -41,7 +41,7 @@ setup += ("INSERT INTO DomainValues (Domain, Value, Name, Description, Icon, Sor
 w("data/setup-params.sql", setup)
 
 text = ""
-for tag, s in [("LOC_LSHUF_P14_GROUP", "Probe: Re-dealable Leaders"),
+for tag, s in [("LOC_LSHUF_P14_GROUP", "Probe: Uncharted Leaders & Civs"),
                ("LOC_LSHUF_P14_LEADERS", "Probe: leaders to re-deal"),
                ("LOC_LSHUF_P15_POOL1", "Probe: leader pool 1"),
                ("LOC_LSHUF_P15_RANDOM_POOL_1", "Random from pool 1")]:

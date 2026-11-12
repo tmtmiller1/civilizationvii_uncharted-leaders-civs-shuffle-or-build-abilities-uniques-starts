@@ -3,9 +3,9 @@
 // Database.query("gameplay") instead (CONTRACTS.md 11).
 import {
   OPTION_DEFAULTS, MODE
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { guarded, mapSetsStarts, rowsOf } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
-import { attributeTags, readLeaderRows } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-config-rows.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { guarded, mapSetsStarts, rowsOf } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
+import { attributeTags, readLeaderRows } from "/uncharted-leaders-and-civs/ui/display/lshuf-config-rows.js";
 
 export function readGameplay(name) {
   const fromInfo = guarded(`GameInfo.${name}`, () => {

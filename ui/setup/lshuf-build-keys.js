@@ -1,8 +1,8 @@
 // The config keys the deal reads (CONTRACTS 3 and 13): one shared writer for the setup screens
 // (lshuf-setup-start.js) and the age-transition screens in a game (ui/game/lshuf-game-transition.js), so builds made
 // at a transition reach the next age's data load the way setup builds reach the first.
-import { BUILD_SLOTS, KEY, listValue } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { builderFromSetup } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
+import { BUILD_SLOTS, KEY, listValue } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { builderFromSetup } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
 
 const log = (msg) => console.warn(`[lshuf-keys] ${msg}`);
 

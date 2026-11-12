@@ -1,7 +1,7 @@
--- Setup parameters for Re-dealable Leaders (CONTRACTS.md section 2). Shell scope, group lshuf-shell, LoadOrder 20000,
+-- Setup parameters for Uncharted Leaders & Civs (CONTRACTS.md section 2). Shell scope, group lshuf-shell, LoadOrder 20000,
 -- so leader mods have added their frontend Leaders rows first.
 --
--- The nine main options are ordinary rows in a section of their own, "Re-dealable Leaders Settings", drawn by the game
+-- The nine main options are ordinary rows in a section of their own, "Uncharted Leaders & Civs Settings", drawn by the game
 -- like Triumph Settings or Difficulty Settings (one ParameterGroups row, used in single player and the lobby), and
 -- ui/setup/lshuf-setup-accordion.js adds an "Advanced settings..." button right after them. The rest are Hidden = 1:
 -- the advanced window reads and writes them with GameSetup. All of them save with the game,

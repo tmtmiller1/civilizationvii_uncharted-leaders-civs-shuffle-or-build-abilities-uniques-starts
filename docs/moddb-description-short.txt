@@ -1,4 +1,4 @@
-Re-dealable Leader Abilities, Attributes, and Start Biases shuffles what leaders and civilizations bring to a game of Civilization VII.
+Uncharted Leaders & Civs shuffles what leaders and civilizations bring to a game of Civilization VII.
 
 - Leaders swap whole abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random, with attributes and start terrain on their own rows.
 - Civilizations trade their abilities, attribute tags, unique units and civics the same way, within each age.

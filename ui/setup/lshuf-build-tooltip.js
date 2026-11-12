@@ -4,9 +4,9 @@
 // data-lshuf-card="<id>"; the screen registers its cards here before it draws them.
 
 import TooltipManager from "/core/ui/tooltips/tooltip-manager.js";
-import { BUILD_KIND } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { el } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
-import { compose } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-cards.js";
+import { BUILD_KIND } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { el } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
+import { compose } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-cards.js";
 
 export const TOOLTIP_STYLE = "lshuf-card";
 export const CARD_ATTR = "data-lshuf-card";

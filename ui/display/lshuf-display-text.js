@@ -7,12 +7,12 @@
 //                                        the leader's shipped ability Name and Description keys
 //   targetName(tableName, targetType) -> key | null   (biasLine) the game's own name key for a bias target
 //   mapSetsStarts -> boolean             (biasLine) the map places starts itself and ignores start biases
-import { BIAS_TABLES } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { BIAS_TABLES } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import {
   splitBullets,
   bulletAt,
   joinBullets
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-text.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
 
 // Lines in a description are separated with the game's own newline markup.
 export const LINE_BREAK = "[n]";

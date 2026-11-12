@@ -1,9 +1,9 @@
-[h1]Re-dealable Leader Abilities, Attributes, and Start Biases[/h1]
+[h1]Uncharted Leaders & Civs: Shuffle or build abilities, uniques & starts[/h1]
 
 Shuffle what leaders and civilizations bring to a game. Leaders can swap whole abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random. Civilizations can do the same with their abilities, unique units and civics, within each age. You can also take any part out of the game for everyone. The game's own screens show what each leader and civilization ended up with.
 
 [h2]Where to find it[/h2]
-In New Game, open Advanced Settings and expand [b]Re-dealable Leaders Settings[/b]. The settings save with the game like any other setup option.
+In New Game, open Advanced Settings and expand [b]Uncharted Leaders & Civs Settings[/b]. The settings save with the game like any other setup option.
 
 [h2]Leader mode and Civilization mode[/h2]
 Each mode sets its rows at once, with the same choices for leaders and civilizations:

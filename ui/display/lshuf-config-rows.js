@@ -5,15 +5,15 @@
 //
 // Name keeps a text key where one fits (the screens stylize it); Description holds composed text in the player's
 // language, since a dealt description has no key of its own (CONTRACTS.md 8, 11).
-import { DEAL_VERSION_UNKNOWN, fnv1a } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+import { DEAL_VERSION_UNKNOWN, fnv1a } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
 import {
   assembleDescription,
   biasLine,
   biasRowsOf
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-text.js";
+} from "/uncharted-leaders-and-civs/ui/display/lshuf-display-text.js";
 import {
   MODE, A_MODE
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 
 const sqlText = (value) => (value == null ? "NULL" : `'${String(value).replace(/'/g, "''")}'`);
 

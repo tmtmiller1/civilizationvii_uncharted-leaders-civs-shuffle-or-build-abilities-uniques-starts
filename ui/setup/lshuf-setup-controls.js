@@ -1,10 +1,10 @@
 // The rows of the mod's setup window, built from fxs- controls. Each builder returns { el, sync } where sync() redraws
 // the control from the current setup values (another player's or the host's change, a sticky-setup restore).
 
-import { SEED_MIN, SEED_MAX } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { SEED_MIN, SEED_MAX } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import {
   paramValue, paramBool, paramValues, paramChoices, paramReadOnly, setParam, parseSeed, currentSeed, rollSeed, setSeed
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 
 const CHECKBOX_CHANGE = "component-value-changed";
 const DROPDOWN_CHANGE = "dropdown-selection-change";

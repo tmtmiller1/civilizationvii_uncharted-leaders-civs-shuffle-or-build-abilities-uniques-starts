@@ -10,9 +10,9 @@
 // and Cultural Diffusion decorates panel-city-details) that watches the panel's root with a throttled
 // MutationObserver, since the panel rebuilds the container every time the shown player changes.
 import DiplomacyManager from "/base-standard/ui/diplomacy/diplomacy-manager.js";
-import { REVEAL } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { guarded } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
-import { revealLines } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-reveal-lines.js";
+import { REVEAL } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { guarded } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
+import { revealLines } from "/uncharted-leaders-and-civs/ui/game/lshuf-reveal-lines.js";
 
 const LOG = "[lshuf-reveal]";
 // The panel comes as two elements, the player's own and another player's (both extend panel-diplomacy-actions, which

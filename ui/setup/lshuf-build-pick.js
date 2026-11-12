@@ -1,12 +1,12 @@
 // Your own leader and civilization, picked right in the build window instead of going back to the game's list. It
 // writes the same player setting the game's leader and civ lists write (PlayerLeader, PlayerCivilization), so those
 // screens show the same pick, and offers only what the game's list lets you choose (owned, unlocked).
-import { B_MODE, ONOFF, PARAM } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { paramValue } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
-import { PLAIN_RANDOM } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
-import { el } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
-import { dropdown } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-parts.js";
-import { pickerItems } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-layout.js";
+import { B_MODE, ONOFF, PARAM } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { paramValue } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { PLAIN_RANDOM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { el } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
+import { dropdown } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-parts.js";
+import { pickerItems } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-layout.js";
 
 const log = (msg) => console.warn(`[lshuf-build] ${msg}`);
 

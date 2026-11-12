@@ -308,7 +308,7 @@ SPEC section 3, "Living with other mods" and "Data safety", are binding. In shor
 
 ## 7. JS modules shared across workstreams
 
-Import paths in shipped code start with `/re-dealable-leader-abilities-attributes-and-start-biases/` (`MOD_PATH`).
+Import paths in shipped code start with `/uncharted-leaders-and-civs/` (`MOD_PATH`).
 Every `.js`/`.css` under `ui/` and `shared/` is listed in both scopes' `ImportFiles` by the modinfo builder.
 
 | File | Owner | Scope | Exports / role |
@@ -351,7 +351,7 @@ Keys (F writes the English; C, D and B use them). `_DESC` keys are tooltips.
 
 | Group | Keys |
 | --- | --- |
-| Mod | `LOC_LSHUF_MOD_NAME` ("Re-dealable Leader Abilities, Attributes, and Start Biases"), `LOC_LSHUF_MOD_DESCRIPTION` |
+| Mod | `LOC_LSHUF_MOD_NAME` ("Uncharted Leaders & Civs"), `LOC_LSHUF_MOD_DESCRIPTION` |
 | Window | `LOC_LSHUF_WINDOW_TITLE`, `LOC_LSHUF_CLOSE`, `LOC_LSHUF_HOST_ONLY`, `LOC_LSHUF_LIST_ALL`, `LOC_LSHUF_LIST_NONE`, `LOC_LSHUF_LIST_COUNT` (`{1_On}`, `{2_Total}`), `LOC_LSHUF_SEED_NEW`, `LOC_LSHUF_SEED_RANGE` (`{1_Min}`, `{2_Max}`), `LOC_LSHUF_MODDED_NONE_INSTALLED` |
 | Window headings | `LOC_LSHUF_HEADING_POOLS`, `LOC_LSHUF_HEADING_MODDED`, `LOC_LSHUF_SECTION_TITLE`, `LOC_LSHUF_ADVANCED_TITLE` |
 | Window buttons | `LOC_LSHUF_BTN_LEADERS`, `LOC_LSHUF_BTN_POOLS`, `LOC_LSHUF_BTN_MODDED`, `LOC_LSHUF_BTN_CIVS`, `LOC_LSHUF_BTN_ADVANCED`; list buttons `LOC_LSHUF_LIST_ALL`, `LOC_LSHUF_LIST_NONE` |
@@ -439,7 +439,7 @@ equals any entry of `Value` split on commas.
    it). Unique units, buildings and improvements hang on civilization traits, which the deal doesn't touch.
 5. **No `LShufModdedMany` flag.** The Modded leaders window decides itself when to show the modded list. The one
    `ParameterGroups` row is the section's (item 6).
-6. **The layout (owner, 2026-11-06).** Advanced Settings has a "Re-dealable Leaders Settings" section, drawn by the
+6. **The layout (owner, 2026-11-06).** Advanced Settings has a "Uncharted Leaders & Civs Settings" section, drawn by the
    game like Triumph Settings or Difficulty Settings from one `ParameterGroups` row (`LShufOptions`, single player and
    lobby alike). Its rows are the seven main options as ordinary parameters: Leader shuffle, Leader abilities, Leader
    attributes, Start terrain, AI behavior, Human players keep their own leader, See other leaders' shuffled bonuses.
@@ -663,7 +663,7 @@ with no civ or an unknown civ, `no-pieces` when nothing applied. The civ deal is
 
 ## 15. One setting per part, presets on top (owner, 2026-11-06 night)
 
-**What the player sees.** The Re-dealable Leaders Settings rows become: Leader shuffle (a preset: Normal, Full
+**What the player sees.** The Uncharted Leaders & Civs Settings rows become: Leader shuffle (a preset: Normal, Full
 random, Paired random, Logical split random, Split random, and Custom when the parts don't match a preset), Leader
 abilities (Normal / Swapped whole / Split into bonuses / Off for everyone), Leader attributes (Normal / Random /
 Paired with the ability / Off for everyone), Start terrain (Normal / Follows the bonuses / Paired with the ability /
@@ -699,7 +699,7 @@ run over presets); custom combinations are added to the self-check and to deal-j
 
 ## 16. Civilizations shuffle too: abilities and uniques (owner, 2026-11-06 night; builds after section 15 lands)
 
-**What the player sees.** Two more rows in Re-dealable Leaders Settings (and in the civ build screen's strip), after
+**What the player sees.** Two more rows in Uncharted Leaders & Civs Settings (and in the civ build screen's strip), after
 Start terrain: **Civilization abilities** (Normal / Swapped within the age / Off for everyone) and **Civilization
 uniques** (Normal / With the ability / Shuffled / Off for everyone). The civ select's cards show what each
 civilization ended up with; in the game the civilization has it. A built civilization (section 14) keeps its picks
@@ -744,7 +744,7 @@ Parked 2026-11-09 (section 28): the AI players aren't hand-built any more. This 
 AI leaders window was; the files are in `mod_ideas_tested/re-dealable-ai-leader-builds/`.
 
 The player's own build screens (from the leader select, the civ select and the lobby) build slot 1 only; the
-"Building for" dropdown is gone. "AI leaders..." in Re-dealable Leaders Settings opens the AI leaders window
+"Building for" dropdown is gone. "AI leaders..." in Uncharted Leaders & Civs Settings opens the AI leaders window
 (`ui/setup/lshuf-ai-window.js`): one row per AI player slot with its leader portrait, civ art, names, what it has
 picked, and Build leader..., Build civilization... and Clear; a row on Random says to give it a leader in the player
 rows. Build leader/civilization gives the leader a builder slot (2..`BUILD_SLOTS`, `slotForLeader`) and opens the

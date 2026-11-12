@@ -4,9 +4,9 @@
 // a civics-only unit) with the game's icons, and lines from each civic to the ones it needs. Data: the setup
 // copy's LShufSetup_CivicNodes and LShufSetup_CivCivics, the shell's Traditions and CivilizationItems.
 
-import { el } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
-import { compose } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-query.js";
-import { civicsTreeData } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-civics.js";
+import { el } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
+import { compose } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-query.js";
+import { civicsTreeData } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-civics.js";
 
 const stylize = (text) => (Locale.stylize ? Locale.stylize(text) : text);
 

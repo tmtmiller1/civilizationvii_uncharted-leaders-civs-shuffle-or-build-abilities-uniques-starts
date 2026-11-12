@@ -7,19 +7,19 @@
 // between. After the host has written the keys once, each PlayerInfoChanged rewrites the keep keys and the
 // not-in-game list from the slots as they are then, until setup closes.
 
-import { EVENT, KEY, listValue } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { EVENT, KEY, listValue } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import {
   KNOWN_LEADERS, MODDED_LEADER_TYPES
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-known-leaders.js";
-import { currentSeed } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-known-leaders.js";
+import { currentSeed } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import {
   isLocalHost, readSlots, readOptions, leadersSwitchedOff, planRandomSlots, randomChoices, keptLeaders,
   notInGame, anyModdedBoxOn, buildOut, readDealConfigFromSetup, slotsAfterPools, PLAIN_RANDOM, civChoices,
   civsSwitchedOff, planRandomCivSlots
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
-import { moddedCheckResult } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-mod-check.js";
-import { DEAL_VERSION } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/deal/lshuf-deal-util.js";
-import { clearWritten, setKey, writeBuildKeys } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-keys.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { moddedCheckResult } from "/uncharted-leaders-and-civs/ui/setup/lshuf-mod-check.js";
+import { DEAL_VERSION } from "/uncharted-leaders-and-civs/shared/deal/lshuf-deal-util.js";
+import { clearWritten, setKey, writeBuildKeys } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-keys.js";
 
 const log = (msg) => console.warn(`[lshuf-setup] ${msg}`);
 

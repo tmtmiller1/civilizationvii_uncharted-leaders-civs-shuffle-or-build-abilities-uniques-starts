@@ -28,19 +28,19 @@ Notes for translators:
 
 | Key | English |
 | --- | --- |
-| `LOC_LSHUF_MOD_NAME` | Re-dealable Leader Abilities, Attributes, and Start Biases |
+| `LOC_LSHUF_MOD_NAME` | Uncharted Leaders & Civs |
 | `LOC_LSHUF_MOD_DESCRIPTION` | Shuffles leader abilities, attributes and start terrain at the start of a game. Leaders can swap abilities, swap everything, or have the separate bonuses inside each ability mixed between them, and you can turn abilities, attributes or start terrain off for everyone. It works in multiplayer through the game's own lobby, and the game's leader screens show what each leader ended up with, including where they like to start. |
 
 ## The window
 
 | Key | English |
 | --- | --- |
-| `LOC_LSHUF_WINDOW_TITLE` | Re-dealable Leaders |
+| `LOC_LSHUF_WINDOW_TITLE` | Uncharted Leaders & Civs |
 | `LOC_LSHUF_CLOSE` | Close |
 | `LOC_LSHUF_HOST_ONLY` | Only the host can change these settings. You'll see them update here as the host changes them. |
 | `LOC_LSHUF_LIST_ALL` | All |
 | `LOC_LSHUF_LIST_NONE` | None |
-| `LOC_LSHUF_SECTION_TITLE` | Re-dealable Leaders Settings |
+| `LOC_LSHUF_SECTION_TITLE` | Uncharted Leaders & Civs Settings |
 | `LOC_LSHUF_BTN_LEADERS` | Choose which leaders are shuffled... |
 | `LOC_LSHUF_BTN_POOLS` | Leader pool... |
 | `LOC_LSHUF_BTN_MODDED` | Leaders from other mods... |
@@ -140,7 +140,7 @@ Notes for translators:
 | `LOC_LSHUF_REVEAL_BUILT` | {1_Name} built this leader by hand. |
 | `LOC_LSHUF_REASON_BUILT` | built by hand |
 | `LOC_LSHUF_BTN_ADVANCED` | Advanced settings... |
-| `LOC_LSHUF_ADVANCED_TITLE` | Re-dealable Leaders advanced settings |
+| `LOC_LSHUF_ADVANCED_TITLE` | Uncharted Leaders & Civs advanced settings |
 | `LOC_LSHUF_CIVS_OUT_NAME` | Civilization pool |
 | `LOC_LSHUF_CIVS_OUT_DESC` | Random slots only get ticked civilizations. A civilization someone picks by hand stays. Applies at game start. |
 | `LOC_LSHUF_LIST_COUNT` | {1_On} of {2_Total} on |

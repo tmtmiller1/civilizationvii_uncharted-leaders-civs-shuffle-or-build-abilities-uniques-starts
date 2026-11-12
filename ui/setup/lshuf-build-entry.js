@@ -6,13 +6,13 @@
 // the civilization select's Random button. The multiplayer lobby has neither screen, so both buttons sit in its
 // bottom row next to Mementos, the game's own "pick for your slot" button there.
 
-import { openBuildWindow } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-window.js";
-import { compose, el } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
-import { openSetupWindow } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-window.js";
-import { paramChoices, paramValues } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
-import { PARAM, hasLeaderBuild } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { readPicks } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-cards.js";
-import { poolBadge } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-layout.js";
+import { openBuildWindow } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-window.js";
+import { compose, el } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
+import { openSetupWindow } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-window.js";
+import { paramChoices, paramValues } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { PARAM, hasLeaderBuild } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { readPicks } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-cards.js";
+import { poolBadge } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-layout.js";
 
 const inGame = () => {
   try {

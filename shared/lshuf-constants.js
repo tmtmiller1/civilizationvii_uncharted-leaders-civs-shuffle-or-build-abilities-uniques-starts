@@ -2,7 +2,7 @@
 // the spelling instead of retyping it. Owned by the lead: workstreams import it and don't edit it.
 import { CIV_WONDER_PIECES } from "./lshuf-civ-wonder-pieces.js";
 
-export const MOD_ID = "re-dealable-leader-abilities-attributes-and-start-biases";
+export const MOD_ID = "uncharted-leaders-and-civs";
 export const MOD_PATH = `/${MOD_ID}`;
 
 // Setup parameters (frontend Parameters.ParameterID). The ConfigurationKey is the same string unless noted.

@@ -5,7 +5,7 @@
 // panel and the City Details bonus-line names.
 //
 // With "Show what everyone got: As you meet them", a leader shows as shipped until the local player meets them.
-import { KEY } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
+import { KEY } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import {
   leaderView,
   previewDifferences,
@@ -14,23 +14,23 @@ import {
   shippedCivView,
   writeCivItemRows,
   writeLeaderRows
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-config-rows.js";
-import { civDealViews } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-civ-views.js";
-import { guarded } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/display/lshuf-display-util.js";
+} from "/uncharted-leaders-and-civs/ui/display/lshuf-config-rows.js";
+import { civDealViews } from "/uncharted-leaders-and-civs/ui/display/lshuf-civ-views.js";
+import { guarded } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
 import {
   gameContext,
   readGameDeal,
   readGameplay,
   shippedViewOf
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-game-data.js";
+} from "/uncharted-leaders-and-civs/ui/game/lshuf-game-data.js";
 import {
   installRevealSection,
   isMetMode,
   setRevealSource
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-reveal-panel.js";
-import { installCityDetailsNames } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-city-details-names.js";
-import { installTraditionOwners } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-civ-panels.js";
-import { installTransitionButtons } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-game-transition.js";
+} from "/uncharted-leaders-and-civs/ui/game/lshuf-reveal-panel.js";
+import { installCityDetailsNames } from "/uncharted-leaders-and-civs/ui/game/lshuf-city-details-names.js";
+import { installTraditionOwners } from "/uncharted-leaders-and-civs/ui/game/lshuf-civ-panels.js";
+import { installTransitionButtons } from "/uncharted-leaders-and-civs/ui/game/lshuf-game-transition.js";
 
 const LOG = "[lshuf-game]";
 const state = {

@@ -4,7 +4,7 @@
 //
 // checkModinfoText and isPortraitOnlyScript are pure, for the tests. checkModdedLeader touches the engine.
 
-import { MODDED_LEADERS } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-known-leaders.js";
+import { MODDED_LEADERS } from "/uncharted-leaders-and-civs/shared/lshuf-known-leaders.js";
 
 // Text codes for a failing check (LShufModWhy_<LEADER>, LOC_LSHUF_WHY_*).
 export const WHY = { Script: "script", UIScript: "uiscript", ImportJs: "importjs", Missing: "missing" };

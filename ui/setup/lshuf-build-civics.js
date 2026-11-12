@@ -4,11 +4,11 @@
 // (tradition text) and its CivilizationItems rows (the unlocks' text and icons). The three setup tables don't change
 // while the shell is up, so they're read once.
 
-import { BUILD, BUILD_KIND } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { joinBullets } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-text.js";
+import { BUILD, BUILD_KIND } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { joinBullets } from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
 import {
   compose, composedOrEmpty, plainWords, query, sq
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-query.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-query.js";
 
 export const UNIQUE_KIND_KEY = {
   unit: "LOC_LSHUF_BUILD_UNIQUE_KIND_UNIT",

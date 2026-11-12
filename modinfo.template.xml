@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Template for re-dealable-leader-abilities-attributes-and-start-biases.modinfo. Don't edit the .modinfo by hand:
+<!-- Template for uncharted-leaders-and-civs.modinfo. Don't edit the .modinfo by hand:
      run `npm run build:modinfo`. The markers below are filled from data/generated/modinfo-criteria.xml,
      data/generated/modinfo-groups.xml (workstream B) and the file tree under ui/ and shared/. -->
-<Mod id="re-dealable-leader-abilities-attributes-and-start-biases" version="1" xmlns="ModInfo">
+<Mod id="uncharted-leaders-and-civs" version="1" xmlns="ModInfo">
 	<Properties>
 		<Name>LOC_LSHUF_MOD_NAME</Name>
 		<Description>LOC_LSHUF_MOD_DESCRIPTION</Description>
 		<Authors>Tower</Authors>
-		<Package>ReDealableLeaders</Package>
+		<Package>UnchartedLeadersAndCivs</Package>
 		<PackageSortIndex>1000</PackageSortIndex>
 		<!-- The deal is rebuilt from the deal number in the game config at each load and each age, so a save needs the
 		     mod on to play the same leaders. -->

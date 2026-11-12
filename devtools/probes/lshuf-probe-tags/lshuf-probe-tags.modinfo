@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Mod id="lshuf-probe-tags" version="1" xmlns="ModInfo">
 	<Properties>
-		<Name>Re-dealable probe: civilization tags</Name>
+		<Name>Uncharted Leaders &amp; Civs probe: civilization tags</Name>
 		<Description>Moves Rome's Militaristic tag to Expansionist. Not for release.</Description>
 		<Authors>tower</Authors>
 		<Package>Mod</Package>

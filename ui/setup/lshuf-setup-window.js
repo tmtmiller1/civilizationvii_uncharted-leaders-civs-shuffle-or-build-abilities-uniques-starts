@@ -8,18 +8,18 @@
 import Panel from "/core/ui/panel-support.js";
 import ContextManager from "/core/ui/context-manager/context-manager.js";
 import { InputEngineEventName } from "/core/ui/input/input-support.js";
-import { MOD_ID, PARAM } from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { paramBool } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
-import { isLocalHost } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
-import { startModdedChecks } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-mod-check.js";
+import { MOD_ID, PARAM } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { paramBool } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { isLocalHost } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { startModdedChecks } from "/uncharted-leaders-and-civs/ui/setup/lshuf-mod-check.js";
 import {
   el, dropdownRow, checkboxRow, seedRow, leaderList
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
 import {
   opt, pageButtons, readRevision
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-section.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-section.js";
 
-import { buildAiPlayers } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-ai-players.js";
+import { buildAiPlayers } from "/uncharted-leaders-and-civs/ui/setup/lshuf-ai-players.js";
 
 const SYNC_MS = 500;
 const tagOf = (page) => `lshuf-setup-window-${page}`;
@@ -184,7 +184,7 @@ for (const page of Object.keys(PAGES)) {
   };
   Controls.define(tagOf(page), {
     createInstance: PageWindow,
-    description: `Re-dealable Leaders setup window (${page})`,
+    description: `Uncharted Leaders & Civs setup window (${page})`,
     classNames: [tagOf(page), "lshuf-setup-window"],
     styles: [`fs://game/${MOD_ID}/ui/setup/lshuf-setup.css`],
     initializeImmediately: true

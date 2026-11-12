@@ -11,31 +11,31 @@ import ContextManager from "/core/ui/context-manager/context-manager.js";
 import { InputEngineEvent, InputEngineEventName } from "/core/ui/input/input-support.js";
 import {
   MOD_ID, A_MODE, BUILD_KIND, CA_MODE, CC_MODE, MODE, PARAM, buildKindOf
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/shared/lshuf-constants.js";
-import { setParam, START_AGE_PARAM } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-params.js";
+} from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { setParam, START_AGE_PARAM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import {
   el, dropdownRow, checkboxRow
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
-import { opt, readRevision } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-section.js";
-import { isLocalHost, readOptions } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
-import { openSetupWindow } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-window.js";
-import { syncPresets } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-presets.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
+import { opt, readRevision } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-section.js";
+import { isLocalHost, readOptions } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { openSetupWindow } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-window.js";
+import { syncPresets } from "/uncharted-leaders-and-civs/ui/setup/lshuf-presets.js";
 import {
   attributeIdsOf, buildCards, cantTake, cardFor, civicSlotCount, compose, disabledNote, hostCiv, hostLeader,
   isWholeCard, nextIdFor, otherPagePicks, readPicks, slotCounts, slotOfKind, uniquesStayOwn, wholePickInGroup,
   writePicks
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-cards.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-cards.js";
 import {
   civBackground, leaderPortrait, SLOT_BASE, TAG_EQUIPPED
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-art.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-art.js";
 import {
   dropdown, renderGrid, renderSlots, renderToolbar
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-parts.js";
-import { registerCards } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-tooltip.js";
-import { uniqueNeeds } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-needs.js";
-import { renderCivicsTree } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-tree.js";
-import { BUILD_PAGES, cardsShown, pageOf } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-layout.js";
-import { biasesLive, hostPicker } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-pick.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-parts.js";
+import { registerCards } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-tooltip.js";
+import { uniqueNeeds } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-needs.js";
+import { renderCivicsTree } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-tree.js";
+import { BUILD_PAGES, cardsShown, pageOf } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-layout.js";
+import { biasesLive, hostPicker } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-pick.js";
 
 export const BUILD_WINDOW_TAG = "lshuf-build-window";
 const SYNC_MS = 500;
@@ -620,7 +620,7 @@ class LShufBuildWindow extends Panel {
 
 Controls.define(BUILD_WINDOW_TAG, {
   createInstance: LShufBuildWindow,
-  description: "Re-dealable Leaders: build your own leader or civilization",
+  description: "Uncharted Leaders & Civs: build your own leader or civilization",
   classNames: [BUILD_WINDOW_TAG],
   styles: [`fs://game/${MOD_ID}/ui/setup/lshuf-setup.css`, `fs://game/${MOD_ID}/ui/setup/lshuf-build.css`],
   initializeImmediately: true

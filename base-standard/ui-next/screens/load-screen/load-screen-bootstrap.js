@@ -1,7 +1,7 @@
 // The game's load-screen-bootstrap.js (base-standard, 1.5.0) with one addition: the mod's loading screen prep runs
 // just before the screen reads its data (CONTRACTS 8). Mod UI scripts load only after that read, so this file stands
 // in for the shipped one at the same path. Everything below the prep line is the shipped file, unchanged.
-import { prepareLoadScreen } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/game/lshuf-load-screen.js";
+import { prepareLoadScreen } from "/uncharted-leaders-and-civs/ui/game/lshuf-load-screen.js";
 prepareLoadScreen();
 
 import { render } from '../../../../core/vendor/solid-js/web/dist/web.js';

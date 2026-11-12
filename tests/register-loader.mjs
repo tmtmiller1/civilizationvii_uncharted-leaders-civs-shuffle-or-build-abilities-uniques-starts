@@ -1,4 +1,4 @@
-// Registers tests/loader.mjs so /re-dealable-leader-abilities-attributes-and-start-biases/... imports resolve to this
+// Registers tests/loader.mjs so /uncharted-leaders-and-civs/... imports resolve to this
 // checkout. Use with `node --import ./tests/register-loader.mjs <file>`.
 import { register } from "node:module";
 

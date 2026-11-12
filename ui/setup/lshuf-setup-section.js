@@ -1,8 +1,8 @@
 // Pieces the setup windows share: option text keys, the list-window buttons, headings, the setup revision and the
 // host-only lock.
 
-import { isLocalHost } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-config.js";
-import { el } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-controls.js";
+import { isLocalHost } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { el } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
 
 export const opt = (key) => [`LOC_LSHUF_${key}_NAME`, `LOC_LSHUF_${key}_DESC`];
 

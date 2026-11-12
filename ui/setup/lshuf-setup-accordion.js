@@ -1,15 +1,15 @@
 // The Leader pool..., Civilization pool..., AI players..., Build your own leader..., Build your own
 // civilization... and Advanced settings... buttons, right after
-// the main options in the mod's own "Re-dealable Leaders Settings" section of Advanced Settings (ordinary rows,
+// the main options in the mod's own "Uncharted Leaders & Civs Settings" section of Advanced Settings (ordinary rows,
 // data/frontend/parameters.sql).
 // The game draws a section's rows only while it's open, so the buttons go in after our last row whenever that row is
 // on screen, and leave with it.
 
-import { openSetupWindow } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-window.js";
-import { openBuildWindow } from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-build-window.js";
+import { openSetupWindow } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-window.js";
+import { openBuildWindow } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-window.js";
 import {
   pageButtons, SECTION_BUTTONS
-} from "/re-dealable-leader-abilities-attributes-and-start-biases/ui/setup/lshuf-setup-section.js";
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-section.js";
 
 const BUTTON_ROW_CLASS = "lshuf-setup__advanced-row";
 // Our first and last rows in the section, by their option names.

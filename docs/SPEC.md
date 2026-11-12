@@ -1,7 +1,7 @@
-# Re-dealable Leader Abilities, Attributes, and Start Biases: spec
+# Uncharted Leaders & Civs: spec
 
 Status: specced 2026-11-06 with the owner's answers folded in the same day; probes 1, 7, 8 and 10 watched in lab games;
-nothing built. Mod id and folder: `re-dealable-leader-abilities-attributes-and-start-biases`. Earlier drafts
+nothing built. Mod id and folder: `uncharted-leaders-and-civs`. Earlier drafts
 called it Leader Shuffle. Ideas parked for later are in [FUTURE.md](FUTURE.md).
 
 A game-setup option that randomizes leader abilities, leader attributes and start biases for a new game. It offers four
@@ -22,7 +22,7 @@ At game setup, under the advanced options, a **Leader Shuffle** dropdown:
 | Split random | Abilities are broken into their bullet points and dealt out to random leaders along with the attributes. Each leader's start bias is built from the pieces they got, so a leader holding Pachacuti's mountain bullets starts near mountains |
 | Split full random | The same deal as Split random, with start biases rolled from scratch as in Full random |
 
-Next to it, under the mod's own "Re-dealable Leaders" heading (section 3, "The setup screen", has the full list,
+Next to it, under the mod's own "Uncharted Leaders & Civs" heading (section 3, "The setup screen", has the full list,
 order and wording):
 
 | Option | Values | Default |
@@ -189,7 +189,7 @@ headings and option names say plainly what they do; and our other mods' setup op
 tools/plans/setup-options-layout-plan.md).
 
 **One heading for the mod.** All of the mod's options sit in their own section, a `ParameterGroups` row named
-"Re-dealable Leaders", the way Settlement Limit Settings has its own. The advanced screen draws a group as an accordion
+"Uncharted Leaders & Civs", the way Settlement Limit Settings has its own. The advanced screen draws a group as an accordion
 with that heading (`AdvancedOptionsAccordian`, `advanced-options.js` line 871).
 
 **Option names.** The window's layout is in CONTRACTS.md 12.6 (main choices first, the rest under Advanced settings,
@@ -227,7 +227,7 @@ collapse can't be made reliable.
 
 **A window of the mod's own (owner idea, 2026-11-06).** Probe 14 showed two lists in one section run together, since
 the game draws a list inside a section as plain rows with no heading. The owner's idea: one row on the advanced screen,
-"Re-dealable Leaders...", that opens a window just for this mod's setup, with its own headings, lists that start closed,
+"Uncharted Leaders & Civs...", that opens a window just for this mod's setup, with its own headings, lists that start closed,
 and room for the pools. Emigration already opens a window like this from the Options menu's Mods tab
 (`ui/options/emigration-advanced-editor.js`, the way the base game opens its key-remap and language editors). At setup:
 the mod's options stay as setup parameters with `Hidden = 1`, so they still save with the game and travel to every
@@ -783,7 +783,7 @@ captures in `working_screenshots/leader-shuffle-probes-2026-11-06/`. What they c
     find the hook that runs before the game starts for the create-game screen's own Start button.
 
 16. **A window of the mod's own.** Set a `Hidden = 1` setup parameter from a script and check it gates a data group in
-    the game; add a "Re-dealable Leaders..." button to the Advanced Settings popup and open a pushed window over the
+    the game; add a "Uncharted Leaders & Civs..." button to the Advanced Settings popup and open a pushed window over the
     create-game screen; in a two-machine lobby (with probe 9) check only the host can change it.
 
 Probes 1, 7, 8 and 10 were watched in a lab game on 2026-11-06 (results above). Still owed:
@@ -797,7 +797,7 @@ Probes 1, 7, 8 and 10 were watched in a lab game on 2026-11-06 (results above). 
 
 ## 7b. Build your own leader and civilization (owner asks, 2026-11-06; built the same day, unwatched; CONTRACTS.md 13 and 14 have the as-built rules)
 
-**What the player sees.** A "Build your own leader..." button with the other buttons in the Re-dealable Leaders
+**What the player sees.** A "Build your own leader..." button with the other buttons in the Uncharted Leaders & Civs
 Settings section opens a screen laid out like the memento select: your leader's slots along the top, a grid of cards
 under them with a search box and filter dropdowns, and a details pane for the card under the cursor. Every piece in
 the shuffle is a card: each bullet of each leader ability, each attribute kind, each AI behavior (a leader's agendas
@@ -863,7 +863,7 @@ Settled 2026-11-06:
    do. Start biases get a line of their own, since the game doesn't show them today.
 7. With attributes off, each leader gets all twelve diplomatic actions the attributes unlock.
 8. Start biases, abilities and attributes each have their own None switch in setup.
-9. The mod's name is "Re-dealable Leader Abilities, Attributes, and Start Biases".
+9. The mod's name is "Uncharted Leaders & Civs".
 10. A bonus line City Details would call "Other" is shown by name under its yield.
 11. Legend nodes in the attribute trees follow the setup options (section 3).
 12. Earning attributes in play is parked for later (FUTURE.md).
@@ -875,6 +875,6 @@ Settled 2026-11-06:
 
 15. An accordion at setup picks which leaders go into the deal, for base game and DLC leaders and for the listed
     modded leaders the player has installed (shown when Include modded leaders is on and two or more are installed).
-16. The mod's options sit under one "Re-dealable Leaders" heading with the plain names in section 3; lists start closed;
+16. The mod's options sit under one "Uncharted Leaders & Civs" heading with the plain names in section 3; lists start closed;
     Civilization VI-style leader pools pick who's in the game, with re-dealing inside that set; modded leaders get three
     separate check boxes (abilities, attributes, start biases).

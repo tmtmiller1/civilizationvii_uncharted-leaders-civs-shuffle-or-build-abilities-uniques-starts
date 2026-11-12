@@ -1,14 +1,15 @@
 # Changelog
 
-Changes to Re-dealable Leader Abilities, Attributes, and Start Biases for Civilization VII. The format follows
+Changes to Uncharted Leaders & Civs for Civilization VII. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and Semantic Versioning.
 
 ## [0.1.0] - Unreleased
 
-The first version. Much of it has been seen in lab games; the rest is on the watch list.
+Named Uncharted Leaders & Civs (Re-dealable Leader Abilities, Attributes, and Start Biases while in development),
+with the mod id `uncharted-leaders-and-civs`. The first version. Much of it has been seen in lab games; the rest is on the watch list.
 
 ### Setup options
-- A Re-dealable Leaders Settings section in Advanced Settings. The options save with the game and reach the other
+- A Uncharted Leaders & Civs Settings section in Advanced Settings. The options save with the game and reach the other
   players through the lobby like any other setup option, and only the host changes them.
 - Leader mode and Civilization mode, with the same choices: No shuffle, Swap whole, Swap partial and Mix bonuses
   (plus Mix bonuses, random start for leaders). Swap whole moves everything from one leader or civilization. Swap
