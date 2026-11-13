@@ -3,21 +3,6 @@
 Changes to Uncharted Leaders & Civs for Civilization VII. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and Semantic Versioning.
 
-## [1.1.0] - Unreleased
-
-### Added
-- Your own mode. Both build pages have a **Follow the AI players' settings** box, ticked by default, and your own
-  Leader mode or Civilization mode. Pick a mode of your own and the box unticks: you're shuffled by your mode, and
-  the AI players by the settings in Advanced Settings. Your share is laid on top as copies, so an AI player whose
-  bonus you took keeps it too. Cards you build stay yours either way. Ticking the box again puts you back on the AI
-  players' settings.
-- Two more Leader modes, **Agendas only** (abilities, attributes and start terrain stay; AI agendas are shuffled) and
-  **Agendas and attributes** (abilities and start terrain stay; attributes and AI agendas are shuffled). Picking one
-  also sets AI agendas to Swap whole.
-
-### Fixed
-- AI agendas set to Swap whole now shuffle even when leader abilities are on Base game.
-
 ## [1.0.0] - Unreleased
 
 The first release.
@@ -59,6 +44,15 @@ The first release.
 - 25 leader mods built like the base game's leaders can join the shuffle through three check boxes, after a check
   of the mod's files at setup. Every other modded leader plays as its mod made it.
 
+- Your own mode. Both build pages have a **Follow the AI players' settings** box, ticked by default, and your own
+  Leader mode or Civilization mode. Pick a mode of your own and the box unticks: you're shuffled by your mode, and
+  the AI players by the settings in Advanced Settings. Your share is laid on top as copies, so an AI player whose
+  bonus you took keeps it too. Cards you build stay yours either way. Ticking the box again puts you back on the AI
+  players' settings.
+- Two Leader modes for agendas, **Agendas only** (abilities, attributes and start terrain stay; AI agendas are
+  shuffled) and **Agendas and attributes** (abilities and start terrain stay; attributes and AI agendas are
+  shuffled). Picking one also sets AI agendas to Swap whole, and AI agendas on Swap whole shuffle even while leader
+  abilities stay on Base game.
 ### Build your own leader and civilization
 - Build your own leader: fill your leader's slots from cards for every leader's bonuses or whole ability, attributes,
   AI behavior and start terrain, plus start terrain of your own choosing. Whatever you don't take is shuffled among

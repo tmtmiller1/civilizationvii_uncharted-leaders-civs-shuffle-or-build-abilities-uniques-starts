@@ -1,8 +1,8 @@
-<p align="center"><img src="https://raw.githubusercontent.com/tmtmiller1/civilizationvii_uncharted-leaders-civs-shuffle-or-build-abilities-uniques-starts/v1.1.0/docs/workshop-preview.png" alt="Uncharted Leaders & Civs" width="200"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/tmtmiller1/civilizationvii_uncharted-leaders-civs-shuffle-or-build-abilities-uniques-starts/v1.0.0/docs/workshop-preview.png" alt="Uncharted Leaders & Civs" width="200"></p>
 
-Version 1.1.0 adds your own Leader and Civilization mode, and two agenda modes.
+This is the mod's first release.
 
-**Version 1.1.0. Compatible with Civilization VII 1.5.1. Single-player only.**
+**Version 1.0.0. Compatible with Civilization VII 1.5.1. Single-player only.**
 
 Shuffle what leaders and civilizations bring to a game. Leaders can swap whole abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random. Civilizations can do the same with their abilities, unique units and civics, within each age. You can also take any part out of the game for everyone. The game's own screens show what each leader and civilization ended up with.
 

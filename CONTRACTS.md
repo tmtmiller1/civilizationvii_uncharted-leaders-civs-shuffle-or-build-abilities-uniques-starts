@@ -1429,7 +1429,7 @@ leader rows 2301-2303, Civilization mode 2304, the three civilization rows 2305-
 keep their own leader 2309, Keep my built civilization 2310, Reveal who got what 2311. Tests:
 `tests/parameters-and-text.mjs`, `tests/civ-mode.mjs`.
 
-## 33. Your own mode, and agendas on their own (owner, 2026-11-12; 1.1.0, branch human-mode)
+## 33. Your own mode, and agendas on their own (owner, 2026-11-12; in 1.0.0)
 
 **What the player sees.** On both build pages the settings box gets a checkbox, **Follow the AI players' settings**,
 ticked by default, and your own **Leader mode** (leader page) or **Civilization mode** (civilization page) dropdown
