@@ -1,0 +1,57 @@
+Tower Mod License 1.0
+
+Uncharted Leaders & Civs, a mod for Sid Meier's Civilization VII
+Copyright (c) 2026 tmtmiller ("Tower")
+
+Sid Meier's Civilization VII and its art, data and other assets belong to Firaxis Games and 2K (Take-Two Interactive),
+and this license doesn't cover them. Any screenshots of the game here are included for illustration, and any short
+passages quoted from the game's own files are still theirs.
+
+All rights are reserved, apart from the permissions below.
+
+What you're welcome to do
+
+You can download, install and play this mod, whether you got it from Steam Workshop or from its GitHub repository. You
+can read the source to see how it works, change your own copy for your own games, and share screenshots, videos, links
+and reviews. On GitHub you can view and fork the repository as GitHub's Terms of Service allow.
+
+What needs my written permission first
+
+Anything else you'd like to do with the code, art or text needs my written permission first. That includes uploading a
+copy or a changed version anywhere (Steam Workshop, Nexus Mods, CivFanatics, another repository), copying parts of it
+into another mod or project, and selling it or anything built from it.
+
+Machine learning and AI
+
+That permission also covers machine learning and AI uses. Using this work, in whole or in part, to train, fine-tune,
+test or improve an AI or machine learning model, putting it in a dataset collected for that, or handing it to an AI
+tool so the tool can reproduce or adapt it for another project all need my written permission, and I'm not giving it
+at this time. Asking an AI tool to explain the mod, or to help with your own copy for your own games, is fine.
+
+Text and data mining
+
+I expressly reserve the rights to text and data mining of this work under Article 4(3) of Directive (EU) 2019/790 and
+the national laws that put it into effect, including section 44b(3) of the German Copyright Act (UrhG). The
+reservation applies to every copy of the work, wherever it's hosted or downloaded from.
+
+Material under its own terms
+
+base-standard/ui-next/screens/load-screen/load-screen-bootstrap.js is the game's own file with a few lines added at the
+top so the loading screen shows the shuffle. The game's part of it belongs to Firaxis Games and 2K, and this license
+covers only the added lines.
+
+Rights that others already hold
+
+This license covers what I hold rights in. Take-Two, Valve and GitHub each have rights under their own terms (the
+Take-Two Terms of Service, the Steam Subscriber Agreement and the GitHub Terms of Service), and those stay as they
+are.
+
+Use at your own risk
+
+The mod comes as it is, without any warranty. You use it at your own risk, and as far as the law allows, I'm not
+liable for any harm that comes from using it, including lost or damaged saves.
+
+Asking for permission
+
+Open an issue on this mod's GitHub repository or message Tower on Steam. Permission counts when I've written back
+saying yes to your specific use.

@@ -119,3 +119,9 @@ that age with the other mods off.
 
 These all run offline. Anything in a running game (lab games, deploys, logs) goes through Tower Bench, as the
 workspace rules say.
+
+## License
+
+Tower Mod License 1.0, in [LICENSE](LICENSE). You're welcome to play it and read it; reuploading it, reusing the code
+elsewhere and using it for AI training need my written permission.
+`base-standard/ui-next/screens/load-screen/load-screen-bootstrap.js` is the game's own file with a few lines added.
