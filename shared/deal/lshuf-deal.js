@@ -11,6 +11,7 @@ import { dealPersona, dealUnlocks, personaFrom } from "./lshuf-deal-unlocks.js";
 import { buildDealInput } from "./lshuf-deal-input.js";
 import { buildStates, isBuilder } from "./lshuf-deal-build.js";
 import { dealCivBuilds } from "./lshuf-deal-civ.js";
+import { keepOwn, overlayOwn, ownOf } from "./lshuf-deal-own.js";
 
 export { DEAL_VERSION, buildDealInput };
 
@@ -54,8 +55,12 @@ function metaRows(ctx, axes) {
   return rows;
 }
 
-export function computeDeal(input) {
+export function computeDeal(rawInput) {
+  // CONTRACTS 33: with HumanFollows "0" the host builder sits out the AI players' deal and its cards go on top.
+  const own = ownOf(rawInput);
+  const input = keepOwn(rawInput, own);
   const ctx = makeContext(input);
+  ctx.own = own;
   ctx.builds = buildStates(ctx);
   const axes = computeAxes(ctx);
   const ability = dealAbility(ctx, axes);
@@ -65,13 +70,13 @@ export function computeDeal(input) {
   const pieces = [];
   for (const leader of sortIds(ctx.majors)) pieces.push(...(ability.pieces[leader] || []));
   const civ = dealCivBuilds(ctx);
-  return {
+  return overlayOwn(ctx, axes, {
     leaders: leaderRows(ctx, axes, ability, persona, biases),
     pieces,
     attributes: attributes.rows,
     biases: biases.rows,
-    unlocks: dealUnlocks(ctx, axes, ability, attributes),
+    unlocks: dealUnlocks(ctx, axes, ability, attributes, persona),
     civPieces: civ.rows,
     meta: [...metaRows(ctx, axes), ...civ.meta]
-  };
+  });
 }

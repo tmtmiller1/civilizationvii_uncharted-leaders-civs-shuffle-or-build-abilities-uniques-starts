@@ -6,6 +6,7 @@ import { SALT } from "../lshuf-key.js";
 import { MAX_TAG_BIASES, cyclicDonors, groupBy, tagSegments } from "./lshuf-deal-util.js";
 import { biasStats, rollBiases, tagBiases } from "./lshuf-deal-bias-stats.js";
 import { buildsFor } from "./lshuf-deal-build.js";
+import { ownCivOf } from "./lshuf-deal-own.js";
 
 const isLeaderRow = (r) => r.LeaderType != null;
 const isCivRow = (r) => r.LeaderType == null && r.CivilizationType != null;
@@ -96,8 +97,7 @@ function dealLeaders(ctx, B, ability, stats, res) {
   });
 }
 
-function dealCivs(ctx, stats, res) {
-  const civs = ctx.input.civs;
+function dealCivs(ctx, civs, stats, res) {
   if (ctx.f.rollBiases) {
     civs.forEach((c, rank) => {
       for (const b of rollBiases(ctx.seed, stats, rank, true)) res.rows.push(newRow(b, null, c.type, "rolled"));
@@ -117,18 +117,21 @@ function dealCivs(ctx, stats, res) {
 
 export function dealBiases(ctx, axes, ability) {
   const B = axes.B;
-  const stats = biasStats(ctx.input.biasRows, ctx.input.civs.length);
+  // The host on its own mode keeps its civilization's start terrain out of the AI players' shuffle (CONTRACTS 33).
+  const ownCiv = ownCivOf(ctx);
+  const civs = ctx.input.civs.filter((c) => c.type !== ownCiv);
+  const stats = biasStats(ctx.input.biasRows, civs.length);
   const civActive = B.dealt.length > 0;
-  const legacy = new Set(ctx.input.civs.map((c) => c.type));
+  const legacy = new Set(civs.map((c) => c.type));
   const replaced = new Set(B.off ? B.eligible : B.dealt);
   const dropped = (r) => {
     if (isLeaderRow(r)) return replaced.has(r.LeaderType);
-    return B.off || (civActive && legacy.has(r.CivilizationType));
+    return (B.off && r.CivilizationType !== ownCiv) || (civActive && legacy.has(r.CivilizationType));
   };
   const res = { rows: ctx.input.biasRows.filter((r) => !dropped(r)).map((r) => out(r, "shipped")), biasFrom: {} };
   if (civActive) {
     dealLeaders(ctx, B, ability, stats, res);
-    dealCivs(ctx, stats, res);
+    dealCivs(ctx, civs, stats, res);
     civBuild(ctx, B, res);
   }
   return res;

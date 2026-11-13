@@ -8,8 +8,9 @@ import { buildOf } from "./lshuf-deal-build.js";
 
 export function dealPersona(ctx, axes) {
   const A = axes.A;
-  const ownPool = A.off && ctx.f.active && A.eligible.length >= 2 ? A.eligible : [];
-  const pool = A.dealt.length ? A.dealt : ownPool;
+  const offPool = A.off && ctx.f.active && A.eligible.length >= 2 ? A.eligible : [];
+  const alonePool = ctx.f.agendasAlone && A.eligible.length >= 2 ? A.eligible : [];
+  const pool = A.dealt.length ? A.dealt : offPool.length ? offPool : alonePool;
   const donors = ctx.f.redealtPersona && pool.length >= 2 ? cyclicDonors(ctx.seed, SALT.Personality, pool) : {};
   return { donors };
 }
@@ -23,8 +24,19 @@ export function personaFrom(ctx, axes, ability, persona, leader) {
     return ctx.f.follows ? ability.abilityFrom[leader] : leader;
   }
   if (isOffFor(A, leader) && persona.donors[leader]) return persona.donors[leader];
+  // Abilities on Base game with agendas Swap whole (CONTRACTS 33): a builder's agendas card first, else the cycle.
+  if (ctx.f.agendasAlone && persona.donors[leader]) {
+    const build = buildOf(ctx, leader);
+    return build && build.persona != null ? build.persona : persona.donors[leader];
+  }
   return leader;
 }
+
+// A leader whose agendas came from someone else while its ability stayed (CONTRACTS 33): it goes down the copy path,
+// so its legend nodes hang on its dealt trait.
+export const agendaCopy = (ctx, axes, persona, leader) => ctx.f.agendasAlone && !axes.A.dealtSet.has(leader)
+  && !isOffFor(axes.A, leader) && persona.donors[leader] != null
+  && personaFrom(ctx, axes, null, persona, leader) !== leader;
 
 // The leader whose attribute card carries an unlock in tree `tree`, or undefined to fall back.
 function attributeHolder(ctx, axes, attrs, owner, tree) {
@@ -61,7 +73,7 @@ function absentRow(ctx, axes, ability, u, owner) {
   return { ToLeaderType: holder, ToTraitType: holderTrait(ctx, axes, ability, holder) || u.trait };
 }
 
-function unlockRow(ctx, { axes, ability, attrs }, owner, u) {
+function unlockRow(ctx, { axes, ability, attrs, persona }, owner, u) {
   const row = { ProgressionTreeNodeType: u.node, TargetType: u.target, FromTraitType: u.trait };
   if (!axes.A.dealtSet.has(owner) && takenFromAbsent(ctx, ability, owner)) {
     return { ...row, ...absentRow(ctx, axes, ability, u, owner) };
@@ -76,13 +88,13 @@ function unlockRow(ctx, { axes, ability, attrs }, owner, u) {
     row.ToTraitType = null;
   } else {
     row.ToLeaderType = owner;
-    row.ToTraitType = u.trait;
+    row.ToTraitType = persona && agendaCopy(ctx, axes, persona, owner) ? TRAIT.dealt(owner) : u.trait;
   }
   return row;
 }
 
-export function dealUnlocks(ctx, axes, ability, attrs) {
+export function dealUnlocks(ctx, axes, ability, attrs, persona = null) {
   const owners = {};
   for (const l of ctx.input.leaders) if (l.ability && !(l.ability in owners)) owners[l.ability] = l.type;
-  return ctx.input.unlocks.map((u) => unlockRow(ctx, { axes, ability, attrs }, owners[u.trait], u));
+  return ctx.input.unlocks.map((u) => unlockRow(ctx, { axes, ability, attrs, persona }, owners[u.trait], u));
 }

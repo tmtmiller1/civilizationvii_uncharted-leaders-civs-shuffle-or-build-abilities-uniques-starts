@@ -260,6 +260,8 @@
 <Criteria id="lshuf-opt-Mode-LSHUF_MODE_SWAP_LEADERS"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_SWAP_LEADERS</Value></ConfigurationValueMatches></Criteria>
 <Criteria id="lshuf-opt-Mode-LSHUF_MODE_SPLIT_MATCHED"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_SPLIT_MATCHED</Value></ConfigurationValueMatches></Criteria>
 <Criteria id="lshuf-opt-Mode-LSHUF_MODE_SPLIT_RANDOM"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_SPLIT_RANDOM</Value></ConfigurationValueMatches></Criteria>
+<Criteria id="lshuf-opt-Mode-LSHUF_MODE_AGENDAS"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_AGENDAS</Value></ConfigurationValueMatches></Criteria>
+<Criteria id="lshuf-opt-Mode-LSHUF_MODE_AGENDAS_ATTRIBUTES"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_AGENDAS_ATTRIBUTES</Value></ConfigurationValueMatches></Criteria>
 <Criteria id="lshuf-opt-Mode-LSHUF_MODE_CUSTOM"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_CUSTOM</Value></ConfigurationValueMatches></Criteria>
 <Criteria id="lshuf-opt-Biases-LSHUF_B_NORMAL"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufBiases</ConfigurationId><Value>LSHUF_B_NORMAL</Value></ConfigurationValueMatches></Criteria>
 <Criteria id="lshuf-opt-Biases-LSHUF_B_MATCHED"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufBiases</ConfigurationId><Value>LSHUF_B_MATCHED</Value></ConfigurationValueMatches></Criteria>
@@ -301,6 +303,8 @@
 <Criteria id="lshuf-opt-Dealing-LSHUF_DEAL_CHANCE"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufDealing</ConfigurationId><Value>LSHUF_DEAL_CHANCE</Value></ConfigurationValueMatches></Criteria>
 <Criteria id="lshuf-opt-Reveal-LSHUF_REVEAL_START"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufReveal</ConfigurationId><Value>LSHUF_REVEAL_START</Value></ConfigurationValueMatches></Criteria>
 <Criteria id="lshuf-opt-Reveal-LSHUF_REVEAL_MET"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufReveal</ConfigurationId><Value>LSHUF_REVEAL_MET</Value></ConfigurationValueMatches></Criteria>
+<Criteria id="lshuf-opt-HumanFollows-1"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufHumanFollows</ConfigurationId><Value>1</Value></ConfigurationValueMatches></Criteria>
+<Criteria id="lshuf-opt-HumanFollows-0"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufHumanFollows</ConfigurationId><Value>0</Value></ConfigurationValueMatches></Criteria>
 <Criteria id="lshuf-age-AGE_ANTIQUITY"><AgeInUse>AGE_ANTIQUITY</AgeInUse></Criteria>
 <Criteria id="lshuf-age-AGE_EXPLORATION"><AgeInUse>AGE_EXPLORATION</AgeInUse></Criteria>
 <Criteria id="lshuf-age-AGE_MODERN"><AgeInUse>AGE_MODERN</AgeInUse></Criteria>

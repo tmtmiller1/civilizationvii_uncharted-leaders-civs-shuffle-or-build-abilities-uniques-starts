@@ -4,28 +4,41 @@
 UPDATE LShufWork_L SET InA = EXISTS (SELECT 1 FROM LShufWork_Pool p WHERE p.Axis = 'A' AND p.LeaderType = LShufWork_L.LeaderType), InT = EXISTS (SELECT 1 FROM LShufWork_Pool p WHERE p.Axis = 'T' AND p.LeaderType = LShufWork_L.LeaderType), InB = EXISTS (SELECT 1 FROM LShufWork_Pool p WHERE p.Axis = 'B' AND p.LeaderType = LShufWork_L.LeaderType),
   Changed = COALESCE((SELECT s.Changed FROM LShufWork_Shape s WHERE s.LeaderType = LShufWork_L.LeaderType), 0);
 UPDATE LShufWork_L SET AbilityFrom = CASE
+  WHEN Own = 1 THEN COALESCE((SELECT MIN(o.FromLeader) FROM LShufWork_OwnPiece o WHERE o.Kind = 'whole'),
+    (SELECT o.FromLeader FROM LShufWork_OwnPiece o WHERE o.Kind = 'bullet' GROUP BY o.FromLeader
+      ORDER BY COUNT(*) DESC, o.FromLeader LIMIT 1), LeaderType)
   WHEN InA = 1 THEN CASE WHEN (SELECT IsWhole FROM LShufWork_Cfg) = 1 THEN COALESCE((SELECT bb.FromLeader FROM LShufWork_BBullet bb
       WHERE bb.Leader = LShufWork_L.LeaderType GROUP BY bb.FromLeader ORDER BY COUNT(*) DESC, bb.FromLeader LIMIT 1), (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'A' AND d.LeaderType = LShufWork_L.LeaderType))
     ELSE COALESCE((SELECT f.Giver FROM LShufWork_Flow f WHERE f.Receiver = LShufWork_L.LeaderType ORDER BY f.C DESC, f.V DESC, f.Giver LIMIT 1), LeaderType) END
   WHEN (SELECT OffA FROM LShufWork_Cfg) = 1 AND RA IS NULL THEN NULL ELSE LeaderType END;
 UPDATE LShufWork_L SET PersonaFrom = CASE
+  WHEN Own = 1 THEN COALESCE((SELECT b.PersonaPick FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1), LeaderType)
   WHEN InA = 1 THEN CASE WHEN (SELECT b.PersonaPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = LShufWork_L.LeaderType) IS NOT NULL THEN (SELECT b.PersonaPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = LShufWork_L.LeaderType)
     WHEN (SELECT PRedealt FROM LShufWork_Cfg) = 1 THEN (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType) WHEN (SELECT Follows FROM LShufWork_Cfg) = 1 THEN AbilityFrom
     ELSE LeaderType END
-  WHEN (SELECT OffA FROM LShufWork_Cfg) = 1 AND RA IS NULL AND (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType) IS NOT NULL THEN (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType) ELSE LeaderType END,
-  BiasFrom = CASE WHEN InB = 1 THEN CASE WHEN (SELECT b.BiasPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = LShufWork_L.LeaderType) IS NOT NULL THEN (SELECT b.BiasPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = LShufWork_L.LeaderType)
+  WHEN (SELECT OffA FROM LShufWork_Cfg) = 1 AND RA IS NULL AND (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType) IS NOT NULL THEN (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType)
+  WHEN (SELECT ANormal FROM LShufWork_Cfg) = 1 AND (SELECT PRedealt FROM LShufWork_Cfg) = 1 AND RA IS NULL
+    AND (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType) IS NOT NULL AND (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType) <> LShufWork_L.LeaderType THEN COALESCE((SELECT b.PersonaPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = LShufWork_L.LeaderType), (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType)) ELSE LeaderType END,
+  BiasFrom = CASE WHEN Own = 1 THEN CASE WHEN (SELECT b.BiasPick FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1) IS NOT NULL THEN (SELECT b.BiasPick FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1)
+    WHEN (SELECT b.GenericBiasPick FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1) IN ('BIOME_DESERT', 'BIOME_GRASSLAND', 'BIOME_PLAINS', 'BIOME_TROPICAL', 'BIOME_TUNDRA', 'TERRAIN_FLAT', 'TERRAIN_HILL', 'TERRAIN_MOUNTAIN', 'TERRAIN_NAVIGABLE_RIVER', 'FEATURE_CLASS_VEGETATED', 'FEATURE_CLASS_FLOODPLAIN', 'COAST', 'RIVER', 'LAKE', 'NATURAL_WONDER', 'ISLAND') THEN NULL ELSE LeaderType END
+  WHEN InB = 1 THEN CASE WHEN (SELECT b.BiasPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = LShufWork_L.LeaderType) IS NOT NULL THEN (SELECT b.BiasPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = LShufWork_L.LeaderType)
     WHEN (SELECT b.GenericBiasPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = LShufWork_L.LeaderType) IS NOT NULL THEN NULL
     WHEN (SELECT BCycle FROM LShufWork_Cfg) = 1 THEN (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'B' AND d.LeaderType = LShufWork_L.LeaderType)
     WHEN (SELECT BFromA FROM LShufWork_Cfg) = 1 THEN COALESCE((SELECT f.Giver FROM LShufWork_Flow f WHERE f.Receiver = LShufWork_L.LeaderType ORDER BY f.C DESC, f.V DESC, f.Giver LIMIT 1), LShufWork_L.LeaderType) ELSE NULL END
   WHEN (SELECT OffB FROM LShufWork_Cfg) = 1 AND RB IS NULL THEN NULL ELSE LeaderType END;
+UPDATE LShufWork_L SET PCopy = (Own = 0 AND InA = 0 AND (SELECT ANormal FROM LShufWork_Cfg) = 1 AND (SELECT PRedealt FROM LShufWork_Cfg) = 1 AND RA IS NULL
+    AND (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType) IS NOT NULL AND (SELECT d.Donor FROM LShufWork_Donor d WHERE d.Axis = 'P' AND d.LeaderType = LShufWork_L.LeaderType) <> LShufWork_L.LeaderType AND PersonaFrom <> LeaderType);
 
 DELETE FROM LShufResultLeaders;
 INSERT INTO LShufResultLeaders (LeaderType, Status, Axes, Reason, AbilityFrom, PersonaFrom, BiasFrom)
-  SELECT LeaderType, CASE WHEN InA = 1 OR InT = 1 OR InB = 1 THEN 'dealt' ELSE 'asshipped' END, CASE WHEN InA = 1 OR InT = 1 OR InB = 1 THEN '|' || (CASE WHEN InA = 1 THEN 'ABILITY|' ELSE '' END)
-    || (CASE WHEN InT = 1 THEN 'ATTRIBUTES|' ELSE '' END) || (CASE WHEN InB = 1 THEN 'BIASES|' ELSE '' END) ELSE NULL END,
-  COALESCE(CASE WHEN InA = 1 THEN NULL WHEN (SELECT OffA FROM LShufWork_Cfg) = 1 AND RA IS NULL THEN NULL ELSE COALESCE(RA, (SELECT a.Level FROM LShufWork_Axis a WHERE a.Axis = 'A')) END, CASE WHEN InT = 1 THEN NULL WHEN (SELECT OffT FROM LShufWork_Cfg) = 1 AND RT IS NULL THEN NULL ELSE COALESCE(RT, (SELECT a.Level FROM LShufWork_Axis a WHERE a.Axis = 'T')) END, CASE WHEN InB = 1 THEN NULL WHEN (SELECT OffB FROM LShufWork_Cfg) = 1 AND RB IS NULL THEN NULL ELSE COALESCE(RB, (SELECT a.Level FROM LShufWork_Axis a WHERE a.Axis = 'B')) END,
+  SELECT LeaderType, CASE WHEN Own = 1 THEN CASE WHEN OA = 1 OR OT = 1 OR OB = 1 THEN 'dealt' ELSE 'asshipped' END
+    WHEN InA = 1 OR InT = 1 OR InB = 1 THEN 'dealt' ELSE 'asshipped' END,
+  CASE WHEN Own = 1 THEN CASE WHEN OA = 1 OR OT = 1 OR OB = 1 THEN '|' || (CASE WHEN OA = 1 THEN 'ABILITY|' ELSE '' END)
+    || (CASE WHEN OT = 1 THEN 'ATTRIBUTES|' ELSE '' END) || (CASE WHEN OB = 1 THEN 'BIASES|' ELSE '' END) ELSE NULL END ELSE CASE WHEN InA = 1 OR InT = 1 OR InB = 1 THEN '|' || (CASE WHEN InA = 1 THEN 'ABILITY|' ELSE '' END)
+    || (CASE WHEN InT = 1 THEN 'ATTRIBUTES|' ELSE '' END) || (CASE WHEN InB = 1 THEN 'BIASES|' ELSE '' END) ELSE NULL END END,
+  CASE WHEN Own = 1 THEN 'built' ELSE COALESCE(CASE WHEN InA = 1 THEN NULL WHEN (SELECT OffA FROM LShufWork_Cfg) = 1 AND RA IS NULL THEN NULL ELSE COALESCE(RA, (SELECT a.Level FROM LShufWork_Axis a WHERE a.Axis = 'A')) END, CASE WHEN InT = 1 THEN NULL WHEN (SELECT OffT FROM LShufWork_Cfg) = 1 AND RT IS NULL THEN NULL ELSE COALESCE(RT, (SELECT a.Level FROM LShufWork_Axis a WHERE a.Axis = 'T')) END, CASE WHEN InB = 1 THEN NULL WHEN (SELECT OffB FROM LShufWork_Cfg) = 1 AND RB IS NULL THEN NULL ELSE COALESCE(RB, (SELECT a.Level FROM LShufWork_Axis a WHERE a.Axis = 'B')) END,
     CASE WHEN EXISTS (SELECT 1 FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = LeaderType) THEN 'built' END,
-    CASE WHEN Changed = 1 THEN 'modded-changed' END),
+    CASE WHEN Changed = 1 THEN 'modded-changed' END) END,
   AbilityFrom, PersonaFrom, BiasFrom FROM LShufWork_L;
 
 DELETE FROM LShufResultPieces;
@@ -34,7 +47,9 @@ INSERT INTO LShufResultPieces (LeaderType, PieceId, FromLeaderType, Kind, SortIn
 INSERT INTO LShufResultPieces (LeaderType, PieceId, FromLeaderType, Kind, SortIndex) SELECT LeaderType, PieceId, FromLeader, Kind, SortIndex FROM LShufWork_Held;
 INSERT INTO LShufResultPieces (LeaderType, PieceId, FromLeaderType, Kind, SortIndex) SELECT Leader, PieceId, FromLeader, 'bullet', SortIndex FROM LShufWork_BBullet;
 INSERT INTO LShufResultPieces (LeaderType, PieceId, FromLeaderType, Kind, SortIndex) SELECT LeaderType, LeaderType || '__WHOLE', LeaderType, 'whole', 0 FROM LShufWork_L
-  WHERE InA = 0 AND Ability IS NOT NULL AND NOT ((SELECT OffA FROM LShufWork_Cfg) = 1 AND RA IS NULL);
+  WHERE InA = 0 AND Ability IS NOT NULL AND NOT ((SELECT OffA FROM LShufWork_Cfg) = 1 AND RA IS NULL) AND NOT (Own = 1 AND OA = 1);
+INSERT INTO LShufResultPieces (LeaderType, PieceId, FromLeaderType, Kind, SortIndex) SELECT l.LeaderType, o.PieceId, o.FromLeader, o.Kind, o.SortIndex FROM LShufWork_OwnPiece o
+  JOIN LShufWork_L l ON l.Own = 1 AND l.OA = 1;
 
 DELETE FROM LShufResultAttributes;
 INSERT INTO LShufResultAttributes (LeaderType, TraitType, FromLeaderType) SELECT d.LeaderType, lt.TraitType, d.Donor FROM LShufWork_Donor d JOIN LeaderTraits lt ON lt.LeaderType = d.Donor
@@ -53,7 +68,12 @@ INSERT INTO LShufResultAttributes (LeaderType, TraitType, FromLeaderType, Copy)
   FROM LShufWork_ADealt d JOIN LShufWork_ACardAll c ON c.CardId = d.CardId;
 INSERT INTO LShufResultAttributes (LeaderType, TraitType, FromLeaderType) SELECT LeaderType, 'TRAIT_LSHUF_EQUAL_ACTIONS', NULL FROM LShufWork_L WHERE InT = 0 AND (SELECT OffT FROM LShufWork_Cfg) = 1 AND RT IS NULL;
 INSERT INTO LShufResultAttributes (LeaderType, TraitType, FromLeaderType) SELECT l.LeaderType, lt.TraitType, l.LeaderType FROM LShufWork_L l JOIN LeaderTraits lt ON lt.LeaderType = l.LeaderType
-  WHERE l.InT = 0 AND NOT ((SELECT OffT FROM LShufWork_Cfg) = 1 AND l.RT IS NULL) AND lt.TraitType IN (SELECT TraitType FROM LShufAttributeTraits);
+  WHERE l.InT = 0 AND NOT ((SELECT OffT FROM LShufWork_Cfg) = 1 AND l.RT IS NULL) AND lt.TraitType IN (SELECT TraitType FROM LShufAttributeTraits) AND NOT (l.Own = 1 AND l.OT = 1);
+INSERT INTO LShufResultAttributes (LeaderType, TraitType, FromLeaderType, Copy)
+  SELECT b.Leader, p.Arg, b.Leader, (SELECT COUNT(*) FROM LShufWork_BuildPiece p2 WHERE p2.Slot = p.Slot AND p2.Kind = 'attr'
+      AND p2.Arg = p.Arg AND p2.Copy < p.Copy)
+  FROM LShufWork_BuildPiece p JOIN LShufWork_Build b ON b.Slot = p.Slot AND b.Own = 1 AND b.OK = 1
+  WHERE p.Kind = 'attr' AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits);
 
 CREATE TABLE IF NOT EXISTS LShufWork_U (Node TEXT, Target TEXT, Trait TEXT, Tree TEXT, Owner TEXT, AttrTrait TEXT, Holder TEXT, ToTrait TEXT, PRIMARY KEY (Node, Target));
 DELETE FROM LShufWork_U;
@@ -76,7 +96,18 @@ UPDATE LShufWork_U SET Holder = CASE
     WHEN (SELECT l.InT FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 1 THEN (SELECT d.LeaderType FROM LShufWork_ADealt d WHERE d.CardId = Owner || '|' || AttrTrait)
     ELSE Owner END, (SELECT f.Receiver FROM LShufWork_Flow f WHERE f.Giver = Owner ORDER BY f.C DESC, f.V DESC, f.Receiver LIMIT 1), Owner)
   WHEN (SELECT OffA FROM LShufWork_Cfg) = 1 AND (SELECT l.RA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) IS NULL THEN NULL ELSE Owner END;
+-- The host on its own mode with copies (CONTRACTS 33): its own legend nodes, and an absent leader's whose cards it
+-- took, go on its dealt trait; a leader whose agendas came from another while its ability stayed keeps its own nodes
+-- on its dealt trait too.
+UPDATE LShufWork_U SET Holder = (SELECT l.LeaderType FROM LShufWork_L l WHERE l.Own = 1)
+  WHERE EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.Own = 1 AND (l.OA = 1 OR l.OP = 1))
+    AND (Owner = (SELECT l.LeaderType FROM LShufWork_L l WHERE l.Own = 1)
+      OR ((SELECT l.RA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 'notingame' AND (SELECT l.Ability FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) IS NOT NULL
+        AND EXISTS (SELECT 1 FROM LShufWork_OwnPiece o WHERE o.FromLeader = LShufWork_U.Owner)));
 UPDATE LShufWork_U SET ToTrait = CASE WHEN Holder IS NULL THEN NULL
+  WHEN Holder = (SELECT l.LeaderType FROM LShufWork_L l WHERE l.Own = 1 AND (l.OA = 1 OR l.OP = 1))
+    AND (Owner = Holder OR (SELECT l.RA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 'notingame') THEN 'TRAIT_LSHUF_' || Holder
+  WHEN (SELECT l.PCopy FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 1 AND Holder = Owner THEN 'TRAIT_LSHUF_' || Holder
   WHEN (SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Owner) = 0 AND Holder = Owner THEN Trait
   WHEN (SELECT l.InA FROM LShufWork_L l WHERE l.LeaderType = LShufWork_U.Holder) = 1 THEN CASE WHEN (SELECT IsWhole FROM LShufWork_Cfg) = 1 AND (SELECT Follows FROM LShufWork_Cfg) = 1 AND NOT ((SELECT b.PersonaPick FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = Holder) IS NOT NULL OR COALESCE((SELECT b.BulletBuild FROM LShufWork_Build b WHERE b.OK = 1 AND b.Leader = Holder), 0) = 1) THEN Trait
     ELSE 'TRAIT_LSHUF_' || Holder END

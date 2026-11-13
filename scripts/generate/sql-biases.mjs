@@ -15,6 +15,14 @@ import {
 import { BUILDS_IN, CFG, header, key, q, rankUpdate, work } from "./sql-util.mjs";
 
 const dealtB = "(SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B')";
+// The host on its own mode (CONTRACTS 33, lshuf-deal-own.js): its civilization sits out the civilization shuffle, and
+// its start terrain cards go on top whatever the AI rows say.
+export const OWN_CIV = "(SELECT b.Civ FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1)";
+const OWN_LEADER = "(SELECT b.Leader FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1)";
+// Its civilization start terrain card, when its civ is set and the card's civ has rows.
+export const OWN_CIVBIAS = `(SELECT b.CivBiasPick FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1 AND b.Civ IS NOT NULL
+  AND EXISTS (SELECT 1 FROM LShufWork_BRow rr WHERE rr.LeaderType IS NULL AND rr.CivilizationType = b.CivBiasPick))`;
+const OWN_B = "(SELECT l.OB FROM LShufWork_L l WHERE l.Own = 1)";
 // A builder's start terrain card applies (lshuf-deal-biases.js dealLeaders), and its civilization card applies
 // (civBuild: the builder's civ is picked by hand and the card's civ has rows). Builders in the bias pool only.
 // No LeaderType column inside these subqueries: `col` is often the outer row's bare LeaderType.
@@ -87,7 +95,7 @@ INSERT INTO LShufWork_BShape SELECT (SELECT COUNT(*) FROM LShufWork_BRow),
 function civs() {
   return `${work("LShufWork_Civ", "CivilizationType TEXT PRIMARY KEY, Age TEXT, Rank INTEGER, GRank INTEGER, GK INTEGER, GPos INTEGER, GN INTEGER, Donor TEXT")}
 INSERT INTO LShufWork_Civ (CivilizationType, Age) SELECT CivilizationType, COALESCE(MIN(Age), '') FROM LegacyCivilizations
-  GROUP BY CivilizationType;
+  WHERE CivilizationType IS NOT ${OWN_CIV} GROUP BY CivilizationType;
 ${rankUpdate("LShufWork_Civ", "Rank", [], [["CivilizationType"]])}
 ${rankUpdate("LShufWork_Civ", "GRank", ["Age"], [["CivilizationType"]])}
 UPDATE LShufWork_Civ SET GK = ${key(SALT.CivBiases, "GRank")},
@@ -193,8 +201,10 @@ function results() {
   const legacy = "r.CivilizationType IN (SELECT CivilizationType FROM LShufWork_Civ)";
   const replaced = `r.LeaderType IN (SELECT LeaderType FROM LShufWork_L WHERE (${CFG("OffB")} = 1 AND RB IS NULL))
     OR r.LeaderType IN (SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'B')`;
-  const dropped = `CASE WHEN r.LeaderType IS NOT NULL THEN (${replaced})
-    ELSE (${CFG("OffB")} = 1 OR (${dealtB} = 1 AND ${legacy})) END`;
+  const ownDrop = `(r.LeaderType = ${OWN_LEADER} AND COALESCE(${OWN_B}, 0) = 1)`;
+  const dropped = `CASE WHEN r.LeaderType IS NOT NULL THEN (${replaced} OR ${ownDrop})
+    ELSE ((${CFG("OffB")} = 1 AND r.CivilizationType IS NOT ${OWN_CIV}) OR (${dealtB} = 1 AND ${legacy})
+      OR (r.CivilizationType = ${OWN_CIV} AND ${OWN_CIVBIAS} IS NOT NULL)) END`;
   const ins = "INSERT INTO LShufResultBiases (TableName, LeaderType, CivilizationType, TargetType, Score, Origin)";
   return `DELETE FROM LShufResultBiases;
 ${ins} SELECT r.TableName, r.LeaderType, r.CivilizationType, r.TargetType, r.Score, 'shipped' FROM LShufWork_BRow r
@@ -219,7 +229,22 @@ ${ins} SELECT r.TableName, NULL, c.CivilizationType, r.TargetType, r.Score,
 ${ins} SELECT r.TableName, NULL, b.Civ, r.TargetType, r.Score, 'moved'
   FROM ${BUILDS_IN("B")} JOIN LShufWork_BRow r ON r.CivilizationType = b.CivBiasPick AND r.LeaderType IS NULL
   WHERE b.OK = 1 AND b.Civ IS NOT NULL AND b.CivBiasPick IS NOT NULL;
+${ins} SELECT r.TableName, b.Leader, r.CivilizationType, r.TargetType, r.Score, 'moved' FROM LShufWork_Build b
+  JOIN LShufWork_BRow r ON r.LeaderType = b.BiasPick WHERE b.Own = 1 AND b.OK = 1 AND b.BiasPick IS NOT NULL;
+${ownGenericRows(ins)}
+${ins} SELECT r.TableName, NULL, ${OWN_CIV}, r.TargetType, r.Score, 'moved' FROM LShufWork_BRow r
+  WHERE r.LeaderType IS NULL AND r.CivilizationType = ${OWN_CIVBIAS};
 `;
+}
+
+// The host's generic start terrain card on its own mode, when it holds no leader's start terrain card.
+function ownGenericRows(ins) {
+  return GENERIC_BIASES.map(([tag, score]) => {
+    const table = biasTableOfTag(tag);
+    const target = BIAS_TARGET_COLUMN[table] ? `'${tag}'` : "NULL";
+    return `${ins} SELECT '${table}', b.Leader, NULL, ${target}, ${score}, 'moved' FROM LShufWork_Build b
+  WHERE b.Own = 1 AND b.OK = 1 AND b.BiasPick IS NULL AND b.GenericBiasPick = '${tag}';`;
+  }).join("\n");
 }
 
 export function biasesSql() {

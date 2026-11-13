@@ -1,5 +1,18 @@
 // Who is in each axis's deal (CONTRACTS.md section 5.4), and the flags the mode and switches set.
-import { A_MODE, B_MODE, DEALING, ONOFF, PERSONA, REASON, T_MODE, presetOf } from "../lshuf-constants.js";
+import { A_MODE, B_MODE, DEALING, MODE, MODE_CUSTOM, ONOFF, PERSONA, PRESETS, REASON, T_MODE } from "../lshuf-constants.js";
+
+// The preset the parts make, for LShufResultMeta.Mode (CONTRACTS 33): the two agenda presets need AI agendas Swap whole
+// with abilities and start terrain on Base game; the other presets match on the three parts alone.
+const AGENDA_PRESETS = new Set([MODE.AgendasOnly, MODE.AgendasAttributes]);
+export function dealMode(a, t, b, persona) {
+  if (persona === PERSONA.Redealt && a === A_MODE.Normal && b === B_MODE.Normal) {
+    if (t === T_MODE.Normal) return MODE.AgendasOnly;
+    if (t === T_MODE.Random) return MODE.AgendasAttributes;
+  }
+  const hit = Object.entries(PRESETS)
+    .find(([m, v]) => !AGENDA_PRESETS.has(m) && v[0] === a && v[1] === t && v[2] === b);
+  return hit ? hit[0] : MODE_CUSTOM;
+}
 
 export const AXES = ["A", "T", "B"];
 export const AXIS_NAME = { A: "ABILITY", T: "ATTRIBUTES", B: "BIASES" };
@@ -19,7 +32,7 @@ export function partFlags(o) {
   const live = (v, normal) => v !== normal && v !== ONOFF.Off;
   return {
     A, T, B,
-    mode: presetOf(A, T, B),
+    mode: dealMode(A, T, B, o.Personality),
     isWhole,
     isSplit,
     tCycle: T === T_MODE.Paired && isWhole,
@@ -40,7 +53,9 @@ export function makeContext(input) {
     balanced: o.Dealing !== DEALING.Chance,
     persona: o.Personality,
     follows: o.Personality !== PERSONA.Stays && o.Personality !== PERSONA.Redealt,
-    redealtPersona: o.Personality === PERSONA.Redealt
+    redealtPersona: o.Personality === PERSONA.Redealt,
+    // Agendas shuffle on their own while abilities stay on Base game (CONTRACTS 33).
+    agendasAlone: o.Personality === PERSONA.Redealt && o.Abilities === A_MODE.Normal
   };
   const byType = new Map(input.leaders.map((l) => [l.type, l]));
   return { input, seed: input.seed, f, byType, majors: input.leaders.map((l) => l.type) };

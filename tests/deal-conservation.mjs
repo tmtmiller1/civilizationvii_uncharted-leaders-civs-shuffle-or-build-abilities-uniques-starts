@@ -2,10 +2,12 @@
 // as it gave up (SPEC section 3, "Modes 3 and 4"). Checked on both runners' rows: the SQL for the sampled deal
 // numbers, computeDeal for 1..32. With the mapping as shipped (Reviewed = 0, so the split modes deal whole abilities)
 // and with every row reviewed (bullets). Waits on B and A.
+import assert from "node:assert/strict";
 import test from "node:test";
 
 import { dealConfig, dealModule, gameConfig, jsResult, loadGame, readTableFrom, resultObjects, sqlResult } from "./_harness.mjs";
 import {
+  AGENDA_MODES,
   checkAttributesConserved,
   checkBulletsConserved,
   checkDealShape,
@@ -69,3 +71,24 @@ for (const reviewed of [false, true]) {
     }
   });
 }
+
+// The agenda presets (CONTRACTS 33): every attribute dealt once (Agendas and attributes), nothing else dealt, and
+// every agenda set going to exactly one leader.
+test("agenda presets: attributes and agendas each dealt once, abilities untouched", async () => {
+  for (const mode of AGENDA_MODES) {
+    for (const seed of SAMPLE_SEEDS) {
+      const spec = { seed, options: { Mode: mode } };
+      const run = await loadGame({ config: gameConfig(spec) });
+      try {
+        const where = `SQL ${mode} seed ${seed}`;
+        const res = resultObjects(run.db, sqlResult(run.db));
+        const shape = checkDealShape(res, { pre: run.pre, spec, where });
+        checkAttributesConserved(res, { pre: run.pre, spec, where, attrPool: shape.attrPool });
+        const personas = res.leaders.map((r) => r.PersonaFrom).sort();
+        assert.deepEqual(personas, res.leaders.map((r) => r.LeaderType).sort(), `${where}: each agenda set held once`);
+      } finally {
+        run.close();
+      }
+    }
+  }
+});

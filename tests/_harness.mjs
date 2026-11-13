@@ -30,7 +30,7 @@ import {
   PROJECT_ROOT
 } from "../scripts/fixtures/build-fixtures.mjs";
 import {
-  BUILD_SLOTS, CONFIG_KEY, configKeyOf, KEY, listValue, OPTION_DEFAULTS, PARAM, REASON, PRESETS
+  BUILD_SLOTS, CONFIG_KEY, configKeyOf, KEY, listValue, OPTION_DEFAULTS, PARAM, REASON, PRESETS, PRESET_PERSONA
 } from "../shared/lshuf-constants.js";
 import { KNOWN_LEADERS, MODDED_LEADER_TYPES, VANILLA_LEADERS } from "../shared/lshuf-known-leaders.js";
 
@@ -45,7 +45,7 @@ export const RESULT_TABLES = {
   civPieces: "LShufResultCivPieces",
   meta: "LShufResultMeta"
 };
-export const BOOL_OPTIONS = ["KeepMine", "KeepBuiltCiv", "ModdedAbilities", "ModdedAttributes", "ModdedBiases"];
+export const BOOL_OPTIONS = ["KeepMine", "KeepBuiltCiv", "ModdedAbilities", "ModdedAttributes", "ModdedBiases", "HumanFollows"];
 
 // ---------------------------------------------------------------------------------------------------------------
 // Files that other workstreams haven't written yet.
@@ -216,6 +216,8 @@ export function normalizeOptions(options = {}) {
     if (!("Attributes" in options)) out.Attributes = t;
     if (!("Biases" in options)) out.Biases = b;
   }
+  // The agenda presets write AI agendas Swap whole too (CONTRACTS 33).
+  if (PRESET_PERSONA[out.Mode] && !("Personality" in options)) out.Personality = PRESET_PERSONA[out.Mode];
   return out;
 }
 

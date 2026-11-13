@@ -24,7 +24,10 @@ import {
 } from "../shared/lshuf-constants.js";
 
 export const MODES = Object.values(MODE);
-export const DEAL_MODES = MODES.filter((m) => m !== MODE.None);
+// The modes that deal abilities. The two agenda presets (CONTRACTS 33) leave abilities and start terrain on Base game;
+// tests/deal-human-own.mjs covers them.
+export const AGENDA_MODES = [MODE.AgendasOnly, MODE.AgendasAttributes];
+export const DEAL_MODES = MODES.filter((m) => m !== MODE.None && !AGENDA_MODES.includes(m));
 export const WHOLE_MODES = [MODE.SwapAbilities, MODE.SwapLeaders];
 export const SPLIT_MODES = [MODE.SplitMatched, MODE.SplitRandom];
 export const OFF_SETS = [

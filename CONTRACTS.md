@@ -1428,3 +1428,78 @@ reads the three rows, so `LShufCivMode` isn't in `OPTION_DEFAULTS`. Main rows re
 leader rows 2301-2303, Civilization mode 2304, the three civilization rows 2305-2307, AI agendas 2308, Human players
 keep their own leader 2309, Keep my built civilization 2310, Reveal who got what 2311. Tests:
 `tests/parameters-and-text.mjs`, `tests/civ-mode.mjs`.
+
+## 33. Your own mode, and agendas on their own (owner, 2026-11-12; 1.1.0, branch human-mode)
+
+**What the player sees.** On both build pages the settings box gets a checkbox, **Follow the AI players' settings**,
+ticked by default, and your own **Leader mode** (leader page) or **Civilization mode** (civilization page) dropdown
+beside it. Ticked, you're shuffled exactly as the AI players are (today's behaviour, unchanged). Picking a mode from
+your dropdown unticks it; ticking it again puts you back on the AI players' settings. Advanced Settings' Leader mode
+and Civilization mode, and the rows under them, are the AI players' settings while the box is unticked. Cards you
+build are yours either way. Every human player shares the one human setting; the mod ships single-player, so in
+practice this is the host. Leader mode, both yours and the AI players', gains two presets: **Agendas only** (abilities,
+attributes and start terrain stay; AI agendas shuffle) and **Agendas and attributes** (abilities and start terrain
+stay; attributes and agendas shuffle).
+
+**Parameters (frontend, `data/frontend/parameters.sql`, setup side).**
+- `LShufHumanFollows` bool, default 1, config key `LShufHumanFollows`, in `OPTION_DEFAULTS` as `"1"` (the deal reads it).
+- `LShufHumanMode` (domain `LShufHumanModeValues`: the five leader presets plus the two new ones, no Custom; default
+  `LSHUF_MODE_NONE`) and `LShufHumanCivMode` (domain `LShufHumanCivModeValues`: the four civ presets; default
+  `LSHUF_CM_NORMAL`). Both hidden from Advanced Settings' own rows (shown only on the build pages); setup side only,
+  not in `OPTION_DEFAULTS`.
+- `PARAM.HumanFollows`, `PARAM.HumanMode`, `PARAM.HumanCivMode` in `shared/lshuf-constants.js`.
+- Picking a value in either human dropdown sets `LShufHumanFollows` 0. Ticking the box sets it 1 and leaves the two
+  dropdowns as they were.
+
+**The presets (`shared/lshuf-constants.js`).** `MODE.AgendasOnly = "LSHUF_MODE_AGENDAS"`, `MODE.AgendasAttributes =
+"LSHUF_MODE_AGENDAS_ATTRIBUTES"`. `PRESETS` entries become `[Abilities, Attributes, Biases]` as before, and a new
+`PRESET_PERSONA` map gives the AI agendas value a preset writes: the two new ones write `PERSONA.Redealt`, the five old
+ones write nothing (the row stays as it is). `presetOf(a, t, b, persona)` reads the two new presets when A and B are
+Normal and persona is Redealt (T Normal: Agendas only; T Random: Agendas and attributes); otherwise as today (so
+Normal/Normal/Normal with persona Redealt reads Agendas only, not No shuffle). Both new values go into
+`LShufModeValues` too, between No shuffle and Swap whole.
+
+**The deal: agendas without abilities (JS and SQL alike).** With AI agendas Swap whole (`PERSONA.Redealt`) and
+abilities Normal, the agendas shuffle among every leader eligible for the ability axis (`A.eligible`), on the same
+cyclic donors as today (`SALT.Personality`). Abilities Off keeps today's rule. `f.active` stays as it is for every
+other purpose. A builder's `PERSONA_` pick still wins. Since `f.active` stays as it is, Agendas only (every part
+on Base game) counts as Leader shuffle off for a builder following the AI players' settings: only its civilization
+cards build there, as on No shuffle; Agendas and attributes is active, so its agendas card wins. `LShufResultMeta.Mode`
+reads the agenda presets only with AI agendas Swap whole (`dealMode` in `lshuf-deal-axes.js`, `modeExpr` in
+`sql-prepare.mjs`); Base game abilities, Random attributes and Base game start terrain with any other agendas value
+reads Custom, as before.
+
+**The deal: you on your own (JS and SQL alike), when `HumanFollows` is `"0"` and the host builder (slot 1) resolves.**
+- The builder leader is taken out of every leader axis pool as if kept (`REASON.Kept` for the pools; its
+  `LShufResultLeaders.Reason` is `built`): the AI players deal among themselves under the AI rows, and nothing leaves
+  their deck for the builder.
+- The builder's picks apply on top as copies: every bullet, whole, attribute, persona, start terrain and civilization
+  card it holds, on any part, whatever the AI rows say (no `f.active` gate, no `ModeOff`). A part with no pick keeps
+  the builder's own (abilities, attributes, start terrain, agendas). The donor keeps its own copy.
+- Civilization side: the builder's civilization (`LShufBuild.CivilizationType`) is out of the civilization shuffle
+  and keeps its own on any part without a card, and its civilization cards apply whatever the AI rows say. As built
+  (2026-11-12) they apply as today's civilization builds do, not as copies: an ability or civics card swaps with its
+  source civ, a unique, civic or bonus card moves to the builder (CONTRACTS 14, 19, 21), because the civilization apply
+  has no copy path for whole abilities, trees or uniques. Its civilization start terrain sits out the civilization
+  start terrain shuffle too: its own rows stay unless it holds a civilization start terrain card.
+- The builder's legend nodes (its own ability's, and an absent leader's whose cards it took, CONTRACTS 24) go on its
+  dealt trait once it holds ability or agendas cards; the legend nodes of a leader whose card it copied stay with
+  whoever holds that leader's ability in the AI players' deal.
+- With `HumanFollows` `"1"` (the default) every rule is today's, byte for byte: the JS-equals-SQL suite and the
+  conservation tests run unchanged.
+
+**Your share from your mode (setup side, `shared/deal/lshuf-human-picks.js`, pure).** `humanPicks(input, config,
+humanMode, humanCivMode)` returns the card ids the host gets from its own modes: it runs `computeDeal` on the same
+input with the leader rows set from `humanMode`'s preset (and its `PRESET_PERSONA`) and the civilization rows from
+`humanCivMode`'s preset, every other option unchanged, and reads the host leader's result: pieces (`bullet` and
+`whole` ids; `remainder` rows are skipped), attributes (`ATTR_` / `ATTR<n>_`), `PersonaFrom` (`PERSONA_<L>` when not
+itself), biases (`BIAS_<L>` when `BiasFrom` is another leader, `GBIAS_<tag>` for rolled tags), and its civilization's
+cards (`CIVABIL_`, `CIVUNQ_`, `CIVCIVC_` / `CIVNODE_`, civ bullets). A part the human mode leaves Normal gives no ids.
+`writeBuildKeys` and `readDealConfigFromSetup` (the preview) merge them into slot 1's picks when `LShufHumanFollows` is
+"0": a hand-built card of a kind replaces the generated ones of that kind (abilities, attributes, agendas, start
+terrain, civilization ability, uniques, civics each count as one kind). The keys are written at game start as today,
+so a loaded save and every later age read the same picks.
+
+**Tests.** JS equals SQL for `HumanFollows` "0" across the seven leader presets for the AI rows and a sample of
+human picks; agendas-only and agendas-and-attributes in the conservation suite; `humanPicks` for every human mode on
+the three age fixtures; parameters-and-text for the new rows and text.

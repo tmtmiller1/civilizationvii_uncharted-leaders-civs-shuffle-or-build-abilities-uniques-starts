@@ -50,8 +50,8 @@ The table below was written on 2026-11-06 from 513 SQL files, workstream B's fir
 | --- | --- | --- |
 | Common table expressions (WITH ... AS) | 3.8.3 | `data/text-generated/lshuf-civ-piece-text.sql`, `data/text-generated/lshuf-piece-text.sql` |
 | WITH RECURSIVE | 3.8.3 | `data/text-generated/lshuf-civ-piece-text.sql`, `data/text-generated/lshuf-piece-text.sql` |
-| INSERT OR IGNORE / OR REPLACE | 3.0.0 | `data/frontend/parameters.sql`, `data/generated/build/build-LEADER_ADA_LOVELACE.sql`, `data/generated/build/build-LEADER_ALEXANDER.sql` and 4510 more |
-| REPLACE INTO | 3.0.0 | `data/generated/options/age-AGE_ANTIQUITY.sql`, `data/generated/options/age-AGE_EXPLORATION.sql`, `data/generated/options/age-AGE_MODERN.sql` and 48 more |
+| INSERT OR IGNORE / OR REPLACE | 3.0.0 | `data/frontend/parameters.sql`, `data/generated/build/build-LEADER_ADA_LOVELACE.sql`, `data/generated/build/build-LEADER_ALEXANDER.sql` and 4514 more |
+| REPLACE INTO | 3.0.0 | `data/generated/options/age-AGE_ANTIQUITY.sql`, `data/generated/options/age-AGE_EXPLORATION.sql`, `data/generated/options/age-AGE_MODERN.sql` and 52 more |
 | INSERT ... SELECT | 3.0.0 | `data/frontend/civ-items-copy.sql`, `data/frontend/parameters.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_CULTURAL.sql` and 3976 more |
 | Multi-row VALUES | 3.7.11 | `data/frontend/parameters.sql`, `data/generated/deal/deal-6-apply.sql`, `data/generated/known-leaders.sql` and 7 more |
 | Correlated subqueries (COUNT(*) rank) | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql` and 3 more |

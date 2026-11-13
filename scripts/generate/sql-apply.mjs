@@ -4,6 +4,7 @@
 // so a row whose parent is missing is skipped.
 import { BIAS_TABLES, BIAS_TARGET_COLUMN, TRAIT } from "../../shared/lshuf-constants.js";
 import { civApplySql } from "./sql-civ.mjs";
+import { OWN_CIV, OWN_CIVBIAS } from "./sql-biases.mjs";
 import { BUILD_OF, CFG, header, q } from "./sql-util.mjs";
 
 const DEALT = q(TRAIT.dealt(""));
@@ -18,8 +19,12 @@ const BIAS_PARENT = {
 const ATTR = "SELECT TraitType FROM LShufAttributeTraits";
 // Copy path: every split leader, and whole-mode leaders when the personality is kept apart from the ability.
 // A builder with an AI behavior pick is a copy leader in the whole modes too (CONTRACTS 13).
-const COPY_LEADERS = `SELECT LeaderType FROM LShufWork_L WHERE InA = 1 AND (NOT (${CFG("IsWhole")} = 1 AND ${CFG("Follows")} = 1)
-  OR ${BUILD_OF("PersonaPick", "LeaderType")} IS NOT NULL OR COALESCE(${BUILD_OF("BulletBuild", "LeaderType")}, 0) = 1)`;
+// The host on its own mode holding ability or agendas cards, and a leader whose agendas came from another while its
+// ability stayed (CONTRACTS 33), are copy leaders too: their own agendas leave with the ability trait.
+const OWN_COPY = "(Own = 1 AND (OA = 1 OR OP = 1)) OR PCopy = 1";
+const COPY_LEADERS = `SELECT LeaderType FROM LShufWork_L WHERE (InA = 1 AND (NOT (${CFG("IsWhole")} = 1 AND ${CFG("Follows")} = 1)
+  OR ${BUILD_OF("PersonaPick", "LeaderType")} IS NOT NULL OR COALESCE(${BUILD_OF("BulletBuild", "LeaderType")}, 0) = 1))
+  OR ${OWN_COPY}`;
 const PERSONA_LEADERS = `${COPY_LEADERS} UNION SELECT LeaderType FROM LShufWork_L WHERE ${CFG("OffA")} = 1 AND RA IS NULL`;
 const agendaMods = (leader) => `SELECT mm.ModifierId FROM LShufMappingModifiers mm JOIN LShufMapping m ON m.PieceId = mm.PieceId
       WHERE m.LeaderType = ${leader} AND (m.Kind = 'agenda' OR mm.Role = 'agenda')`;
@@ -139,8 +144,8 @@ INSERT OR IGNORE INTO AiFavoredItems (Favored, Item, ListType, StringVal, Value,
 }
 
 function leaderTraits() {
-  const removeAbility = `SELECT LeaderType FROM LShufWork_L WHERE InA = 1 OR (${CFG("OffA")} = 1 AND RA IS NULL)`;
-  const removeAttrs = `SELECT LeaderType FROM LShufWork_L WHERE InT = 1 OR (${CFG("OffT")} = 1 AND RT IS NULL)`;
+  const removeAbility = `SELECT LeaderType FROM LShufWork_L WHERE InA = 1 OR (${CFG("OffA")} = 1 AND RA IS NULL) OR ${OWN_COPY}`;
+  const removeAttrs = `SELECT LeaderType FROM LShufWork_L WHERE InT = 1 OR (${CFG("OffT")} = 1 AND RT IS NULL) OR (Own = 1 AND OT = 1)`;
   return `DELETE FROM LeaderTraits WHERE LeaderType IN (${removeAbility})
   AND TraitType = ${ability("LeaderTraits.LeaderType")};
 DELETE FROM LeaderTraits WHERE LeaderType IN (${removeAttrs}) AND TraitType IN (${ATTR});
@@ -229,14 +234,16 @@ INSERT OR IGNORE INTO LeaderTraits (LeaderType, TraitType) SELECT ${STORY_PIN}, 
 function biases() {
   const legacyDrop = `SELECT CivilizationType FROM LShufWork_Civ WHERE ${CFG("RollBiases")} = 1 OR Donor <> CivilizationType`;
   const leaders = `SELECT LeaderType FROM LShufWork_Pool WHERE Axis = 'B'
-    UNION SELECT LeaderType FROM LShufWork_L WHERE ${CFG("OffB")} = 1 AND RB IS NULL`;
+    UNION SELECT LeaderType FROM LShufWork_L WHERE ${CFG("OffB")} = 1 AND RB IS NULL
+    UNION SELECT LeaderType FROM LShufWork_L WHERE Own = 1 AND OB = 1`;
   const dealtB = "(SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B')";
   return BIAS_TABLES.map((t) => {
     const col = BIAS_TARGET_COLUMN[t];
     const parent = BIAS_PARENT[t];
     const targetOk = col && parent ? ` AND r.TargetType IN (SELECT ${parent[1]} FROM ${parent[0]})` : "";
     return `DELETE FROM ${t} WHERE LeaderType IN (${leaders});
-DELETE FROM ${t} WHERE LeaderType IS NULL AND (${CFG("OffB")} = 1 OR (${dealtB} = 1 AND CivilizationType IN (${legacyDrop})));
+DELETE FROM ${t} WHERE LeaderType IS NULL AND ((${CFG("OffB")} = 1 AND CivilizationType IS NOT ${OWN_CIV})
+  OR (${dealtB} = 1 AND CivilizationType IN (${legacyDrop})) OR (CivilizationType = ${OWN_CIV} AND ${OWN_CIVBIAS} IS NOT NULL));
 INSERT OR IGNORE INTO ${t} (CivilizationType, LeaderType${col ? `, ${col}` : ""}, Score)
   SELECT r.CivilizationType, r.LeaderType${col ? ", r.TargetType" : ""}, r.Score FROM LShufResultBiases r
   WHERE r.TableName = ${q(t)} AND r.Origin <> 'shipped'

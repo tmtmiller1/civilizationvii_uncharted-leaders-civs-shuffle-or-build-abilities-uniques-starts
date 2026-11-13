@@ -5,7 +5,7 @@ import {
 } from "../lshuf-constants.js";
 import { LEADER_TYPE_REQUIREMENT, cmp, groupBy, sortIds } from "./lshuf-deal-util.js";
 
-const BOOL_OPTIONS = ["KeepMine", "KeepBuiltCiv", "ModdedAbilities", "ModdedAttributes", "ModdedBiases"];
+const BOOL_OPTIONS = ["KeepMine", "KeepBuiltCiv", "ModdedAbilities", "ModdedAttributes", "ModdedBiases", "HumanFollows"];
 
 function safeRows(readTable, name) {
   try {

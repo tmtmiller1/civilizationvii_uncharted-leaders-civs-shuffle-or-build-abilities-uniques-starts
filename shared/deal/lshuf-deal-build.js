@@ -112,6 +112,15 @@ export function buildStates(ctx) {
   const out = [];
   const civOnly = !ctx.f.active;
   for (const b of ctx.input.builders) {
+    // The host on its own mode (CONTRACTS 33): every card counts, whatever the AI rows say (lshuf-deal-own.js).
+    if (ctx.own && b.slot === 1 && b.leader === ctx.own.leader) {
+      const pieces = b.pieces.filter((id) => !claimed.has(id));
+      leaders.add(b.leader);
+      for (const id of pieces) claimed.add(id);
+      out.push({ slot: b.slot, leader: b.leader, civ: b.civ, ok: true, why: null, own: true,
+        ...sortPicks(pieces, ctx.input.attrTraits, majors) });
+      continue;
+    }
     const keptCiv = keptCivBuild(ctx, b);
     const civPiecesOnly = civOnly || keptCiv;
     let why = builderWhy(ctx, b, civOnly, keptCiv, leaders);

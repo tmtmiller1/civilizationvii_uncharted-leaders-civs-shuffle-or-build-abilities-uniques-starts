@@ -30,7 +30,11 @@ export const PARAM = {
   Reveal: "LShufReveal",
   Seed: "LShufSeed",
   // Build your own leader: the card ids the screen stores, "|id|id|" (CONTRACTS section 13).
-  BuildPicks: "LShufBuildPicks"
+  BuildPicks: "LShufBuildPicks",
+  // Your own mode (CONTRACTS 33): follow the AI players' settings, or your own Leader mode and Civilization mode.
+  HumanFollows: "LShufHumanFollows",
+  HumanMode: "LShufHumanMode",
+  HumanCivMode: "LShufHumanCivMode"
 };
 
 // Parameters whose ConfigurationKey differs from the ParameterID.
@@ -47,7 +51,10 @@ export const MODE = {
   SwapAbilities: "LSHUF_MODE_SWAP_ABILITIES",
   SwapLeaders: "LSHUF_MODE_SWAP_LEADERS",
   SplitMatched: "LSHUF_MODE_SPLIT_MATCHED",
-  SplitRandom: "LSHUF_MODE_SPLIT_RANDOM"
+  SplitRandom: "LSHUF_MODE_SPLIT_RANDOM",
+  // CONTRACTS 33: abilities and start terrain stay; agendas shuffle (and attributes, in the second).
+  AgendasOnly: "LSHUF_MODE_AGENDAS",
+  AgendasAttributes: "LSHUF_MODE_AGENDAS_ATTRIBUTES"
 };
 
 export const ONOFF = { Redealt: "LSHUF_REDEALT", Off: "LSHUF_OFF" };
@@ -77,10 +84,23 @@ export const PRESETS = {
   LSHUF_MODE_SWAP_ABILITIES: [A_MODE.Whole, T_MODE.Random, B_MODE.Rolled],
   LSHUF_MODE_SWAP_LEADERS: [A_MODE.Whole, T_MODE.Paired, B_MODE.Paired],
   LSHUF_MODE_SPLIT_MATCHED: [A_MODE.Split, T_MODE.Random, B_MODE.Matched],
-  LSHUF_MODE_SPLIT_RANDOM: [A_MODE.Split, T_MODE.Random, B_MODE.Rolled]
+  LSHUF_MODE_SPLIT_RANDOM: [A_MODE.Split, T_MODE.Random, B_MODE.Rolled],
+  LSHUF_MODE_AGENDAS: [A_MODE.Normal, T_MODE.Normal, B_MODE.Normal],
+  LSHUF_MODE_AGENDAS_ATTRIBUTES: [A_MODE.Normal, T_MODE.Random, B_MODE.Normal]
 };
-export function presetOf(abilities, attributes, biases) {
-  const hit = Object.entries(PRESETS).find(([, v]) => v[0] === abilities && v[1] === attributes && v[2] === biases);
+// The AI agendas value a preset writes (CONTRACTS 33); a preset not listed leaves the row as it is.
+export const PRESET_PERSONA = {
+  LSHUF_MODE_AGENDAS: "LSHUF_PERSONA_REDEALT",
+  LSHUF_MODE_AGENDAS_ATTRIBUTES: "LSHUF_PERSONA_REDEALT"
+};
+export function presetOf(abilities, attributes, biases, persona = null) {
+  if (persona === "LSHUF_PERSONA_REDEALT" && abilities === A_MODE.Normal && biases === B_MODE.Normal) {
+    if (attributes === T_MODE.Normal) return MODE.AgendasOnly;
+    if (attributes === T_MODE.Random) return MODE.AgendasAttributes;
+  }
+  // The agenda presets match only through the agendas value above.
+  const hit = Object.entries(PRESETS).find(([k, v]) => !(k in PRESET_PERSONA)
+    && v[0] === abilities && v[1] === attributes && v[2] === biases);
   return hit ? hit[0] : MODE_CUSTOM;
 }
 
@@ -131,7 +151,9 @@ export const OPTION_DEFAULTS = {
   CivCivics: "LSHUF_CC_NORMAL",
   Personality: PERSONA.Follows,
   Dealing: DEALING.Balanced,
-  Reveal: REVEAL.Start
+  Reveal: REVEAL.Start,
+  // CONTRACTS 33: "0" when the host plays its own mode; the deal then keeps the host out of the AI players' deal.
+  HumanFollows: "1"
 };
 
 

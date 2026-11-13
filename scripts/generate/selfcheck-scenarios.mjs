@@ -1,11 +1,14 @@
 // The game configs the self-check runs: every mode at several seeds, the switches, keep and left-out lists, the
 // modded boxes, and the split modes again with the mapping marked reviewed so the piece deal itself runs.
-import { A_MODE, B_MODE, DEALING, MODE, ONOFF, PERSONA, T_MODE } from "../../shared/lshuf-constants.js";
+import { A_MODE, B_MODE, DEALING, MODE, ONOFF, PERSONA, PRESET_PERSONA, T_MODE } from "../../shared/lshuf-constants.js";
 
 const ALL_MODES = Object.values(MODE);
 
+// A preset writes its AI agendas value too (CONTRACTS 33), the way the setup screen writes it.
 function cfg(seed, extra = {}) {
-  return { LShufSeed: String(seed), ...extra };
+  const persona = PRESET_PERSONA[extra.LShufMode];
+  const agendas = persona && !extra.LShufPersonality ? { LShufPersonality: persona } : {};
+  return { LShufSeed: String(seed), ...agendas, ...extra };
 }
 
 // Custom combinations of the three parts (CONTRACTS 15): Leader shuffle reads Custom, the deal follows the parts.
@@ -114,6 +117,10 @@ export function scenarios() {
     LShufBuilt3: built(["LEADER_HATSHEPSUT__B01", "LEADER_CONFUCIUS__B02", "ATTR_TRAIT_LEADER_ATTRIBUTE_ECONOMIC", "PERSONA_LEADER_AMINA"]) };
   for (const mode of ALL_MODES) {
     out.push({ name: `build three slots ${mode} seed 25`, config: cfg(25, { LShufMode: mode, ...amina, LShufBuilt: hand, ...ai2, ...ai3 }) });
+  }
+  // You on your own (CONTRACTS 33): the host's cards as copies over the AI players' deal, on every preset.
+  for (const mode of ALL_MODES) {
+    out.push({ name: `own mode ${mode} seed 27`, config: cfg(27, { LShufMode: mode, LShufHumanFollows: "0", ...amina, LShufBuilt: hand }) });
   }
   out.push({
     name: "build slot 2 only (host not building), SPLIT_RANDOM seed 26",

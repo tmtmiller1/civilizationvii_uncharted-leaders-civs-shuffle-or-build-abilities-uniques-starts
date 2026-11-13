@@ -3,7 +3,9 @@
 
 CREATE TABLE IF NOT EXISTS LShufWork_Cfg (Seed INTEGER, Mode TEXT, IsPaired INTEGER, IsFull INTEGER, IsMatched INTEGER, IsWhole INTEGER, IsSplit INTEGER, Active INTEGER, RollBiases INTEGER, Balanced INTEGER, Follows INTEGER, PRedealt INTEGER, OffA INTEGER, OffT INTEGER, OffB INTEGER, MA TEXT, MT TEXT, MB TEXT, PA TEXT, PT TEXT, PB TEXT, ANormal INTEGER, TNormal INTEGER, BNormal INTEGER, TCycle INTEGER, TFromA INTEGER, BCycle INTEGER, BFromA INTEGER, CA TEXT, CU TEXT, CC TEXT);
 DELETE FROM LShufWork_Cfg;
-INSERT INTO LShufWork_Cfg SELECT s, CASE WHEN pa = 'LSHUF_A_NORMAL' AND pt = 'LSHUF_T_NORMAL' AND pb = 'LSHUF_B_NORMAL' THEN 'LSHUF_MODE_NONE' WHEN pa = 'LSHUF_A_WHOLE' AND pt = 'LSHUF_T_RANDOM' AND pb = 'LSHUF_B_ROLLED' THEN 'LSHUF_MODE_SWAP_ABILITIES' WHEN pa = 'LSHUF_A_WHOLE' AND pt = 'LSHUF_T_PAIRED' AND pb = 'LSHUF_B_PAIRED' THEN 'LSHUF_MODE_SWAP_LEADERS' WHEN pa = 'LSHUF_A_SPLIT' AND pt = 'LSHUF_T_RANDOM' AND pb = 'LSHUF_B_MATCHED' THEN 'LSHUF_MODE_SPLIT_MATCHED' WHEN pa = 'LSHUF_A_SPLIT' AND pt = 'LSHUF_T_RANDOM' AND pb = 'LSHUF_B_ROLLED' THEN 'LSHUF_MODE_SPLIT_RANDOM' ELSE 'LSHUF_MODE_CUSTOM' END,
+INSERT INTO LShufWork_Cfg SELECT s, CASE WHEN pe = 'LSHUF_PERSONA_REDEALT' AND pa = 'LSHUF_A_NORMAL' AND pb = 'LSHUF_B_NORMAL' AND pt = 'LSHUF_T_NORMAL'
+    THEN 'LSHUF_MODE_AGENDAS' WHEN pe = 'LSHUF_PERSONA_REDEALT' AND pa = 'LSHUF_A_NORMAL' AND pb = 'LSHUF_B_NORMAL'
+    AND pt = 'LSHUF_T_RANDOM' THEN 'LSHUF_MODE_AGENDAS_ATTRIBUTES' WHEN pa = 'LSHUF_A_NORMAL' AND pt = 'LSHUF_T_NORMAL' AND pb = 'LSHUF_B_NORMAL' THEN 'LSHUF_MODE_NONE' WHEN pa = 'LSHUF_A_WHOLE' AND pt = 'LSHUF_T_RANDOM' AND pb = 'LSHUF_B_ROLLED' THEN 'LSHUF_MODE_SWAP_ABILITIES' WHEN pa = 'LSHUF_A_WHOLE' AND pt = 'LSHUF_T_PAIRED' AND pb = 'LSHUF_B_PAIRED' THEN 'LSHUF_MODE_SWAP_LEADERS' WHEN pa = 'LSHUF_A_SPLIT' AND pt = 'LSHUF_T_RANDOM' AND pb = 'LSHUF_B_MATCHED' THEN 'LSHUF_MODE_SPLIT_MATCHED' WHEN pa = 'LSHUF_A_SPLIT' AND pt = 'LSHUF_T_RANDOM' AND pb = 'LSHUF_B_ROLLED' THEN 'LSHUF_MODE_SPLIT_RANDOM' ELSE 'LSHUF_MODE_CUSTOM' END,
   pt = 'LSHUF_T_PAIRED' AND pa = 'LSHUF_A_WHOLE',
   pa = 'LSHUF_A_WHOLE' AND pt = 'LSHUF_T_RANDOM' AND pb = 'LSHUF_B_ROLLED',
   pb = 'LSHUF_B_MATCHED' AND pa = 'LSHUF_A_SPLIT',
@@ -15,14 +17,14 @@ INSERT INTO LShufWork_Cfg SELECT s, CASE WHEN pa = 'LSHUF_A_NORMAL' AND pt = 'LS
   pa, pt, pb, pa = 'LSHUF_A_NORMAL', pt = 'LSHUF_T_NORMAL', pb = 'LSHUF_B_NORMAL',
   pt = 'LSHUF_T_PAIRED' AND pa = 'LSHUF_A_WHOLE', pt = 'LSHUF_T_PAIRED' AND pa = 'LSHUF_A_SPLIT',
   pb IN ('LSHUF_B_PAIRED', 'LSHUF_B_MATCHED') AND pa = 'LSHUF_A_WHOLE', pb = 'LSHUF_B_PAIRED' AND pa = 'LSHUF_A_SPLIT', ca, cu, cc
-FROM (SELECT s, m, dl, pe, ma, mt, mb, ca, cu, cc, CASE WHEN ab IN ('LSHUF_A_NORMAL', 'LSHUF_A_WHOLE', 'LSHUF_A_SPLIT', 'LSHUF_OFF') THEN ab WHEN m = 'LSHUF_MODE_NONE' THEN 'LSHUF_A_NORMAL' WHEN m = 'LSHUF_MODE_SWAP_ABILITIES' THEN 'LSHUF_A_WHOLE' WHEN m = 'LSHUF_MODE_SWAP_LEADERS' THEN 'LSHUF_A_WHOLE' WHEN m = 'LSHUF_MODE_SPLIT_MATCHED' THEN 'LSHUF_A_SPLIT' WHEN m = 'LSHUF_MODE_SPLIT_RANDOM' THEN 'LSHUF_A_SPLIT' ELSE 'LSHUF_A_NORMAL' END AS pa, CASE WHEN at IN ('LSHUF_T_NORMAL', 'LSHUF_T_RANDOM', 'LSHUF_T_PAIRED', 'LSHUF_OFF') THEN at WHEN m = 'LSHUF_MODE_NONE' THEN 'LSHUF_T_NORMAL' WHEN m = 'LSHUF_MODE_SWAP_ABILITIES' THEN 'LSHUF_T_RANDOM' WHEN m = 'LSHUF_MODE_SWAP_LEADERS' THEN 'LSHUF_T_PAIRED' WHEN m = 'LSHUF_MODE_SPLIT_MATCHED' THEN 'LSHUF_T_RANDOM' WHEN m = 'LSHUF_MODE_SPLIT_RANDOM' THEN 'LSHUF_T_RANDOM' ELSE 'LSHUF_T_NORMAL' END AS pt,
-    CASE WHEN bi IN ('LSHUF_B_NORMAL', 'LSHUF_B_MATCHED', 'LSHUF_B_PAIRED', 'LSHUF_B_ROLLED', 'LSHUF_OFF') THEN bi WHEN m = 'LSHUF_MODE_NONE' THEN 'LSHUF_B_NORMAL' WHEN m = 'LSHUF_MODE_SWAP_ABILITIES' THEN 'LSHUF_B_ROLLED' WHEN m = 'LSHUF_MODE_SWAP_LEADERS' THEN 'LSHUF_B_PAIRED' WHEN m = 'LSHUF_MODE_SPLIT_MATCHED' THEN 'LSHUF_B_MATCHED' WHEN m = 'LSHUF_MODE_SPLIT_RANDOM' THEN 'LSHUF_B_ROLLED' ELSE 'LSHUF_B_NORMAL' END AS pb FROM
+FROM (SELECT s, m, dl, pe, ma, mt, mb, ca, cu, cc, CASE WHEN ab IN ('LSHUF_A_NORMAL', 'LSHUF_A_WHOLE', 'LSHUF_A_SPLIT', 'LSHUF_OFF') THEN ab WHEN m = 'LSHUF_MODE_NONE' THEN 'LSHUF_A_NORMAL' WHEN m = 'LSHUF_MODE_SWAP_ABILITIES' THEN 'LSHUF_A_WHOLE' WHEN m = 'LSHUF_MODE_SWAP_LEADERS' THEN 'LSHUF_A_WHOLE' WHEN m = 'LSHUF_MODE_SPLIT_MATCHED' THEN 'LSHUF_A_SPLIT' WHEN m = 'LSHUF_MODE_SPLIT_RANDOM' THEN 'LSHUF_A_SPLIT' WHEN m = 'LSHUF_MODE_AGENDAS' THEN 'LSHUF_A_NORMAL' WHEN m = 'LSHUF_MODE_AGENDAS_ATTRIBUTES' THEN 'LSHUF_A_NORMAL' ELSE 'LSHUF_A_NORMAL' END AS pa, CASE WHEN at IN ('LSHUF_T_NORMAL', 'LSHUF_T_RANDOM', 'LSHUF_T_PAIRED', 'LSHUF_OFF') THEN at WHEN m = 'LSHUF_MODE_NONE' THEN 'LSHUF_T_NORMAL' WHEN m = 'LSHUF_MODE_SWAP_ABILITIES' THEN 'LSHUF_T_RANDOM' WHEN m = 'LSHUF_MODE_SWAP_LEADERS' THEN 'LSHUF_T_PAIRED' WHEN m = 'LSHUF_MODE_SPLIT_MATCHED' THEN 'LSHUF_T_RANDOM' WHEN m = 'LSHUF_MODE_SPLIT_RANDOM' THEN 'LSHUF_T_RANDOM' WHEN m = 'LSHUF_MODE_AGENDAS' THEN 'LSHUF_T_NORMAL' WHEN m = 'LSHUF_MODE_AGENDAS_ATTRIBUTES' THEN 'LSHUF_T_RANDOM' ELSE 'LSHUF_T_NORMAL' END AS pt,
+    CASE WHEN bi IN ('LSHUF_B_NORMAL', 'LSHUF_B_MATCHED', 'LSHUF_B_PAIRED', 'LSHUF_B_ROLLED', 'LSHUF_OFF') THEN bi WHEN m = 'LSHUF_MODE_NONE' THEN 'LSHUF_B_NORMAL' WHEN m = 'LSHUF_MODE_SWAP_ABILITIES' THEN 'LSHUF_B_ROLLED' WHEN m = 'LSHUF_MODE_SWAP_LEADERS' THEN 'LSHUF_B_PAIRED' WHEN m = 'LSHUF_MODE_SPLIT_MATCHED' THEN 'LSHUF_B_MATCHED' WHEN m = 'LSHUF_MODE_SPLIT_RANDOM' THEN 'LSHUF_B_ROLLED' WHEN m = 'LSHUF_MODE_AGENDAS' THEN 'LSHUF_B_NORMAL' WHEN m = 'LSHUF_MODE_AGENDAS_ATTRIBUTES' THEN 'LSHUF_B_NORMAL' ELSE 'LSHUF_B_NORMAL' END AS pb FROM
   (SELECT COALESCE((SELECT MIN(Seed) FROM LShufSeed), 1) AS s, COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'Mode'), 'LSHUF_MODE_NONE') AS m, COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'Dealing'), 'LSHUF_DEAL_BALANCED') AS dl,
   COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'Personality'), 'LSHUF_PERSONA_FOLLOWS') AS pe, (SELECT Value FROM LShufOptions WHERE Name = 'Abilities') AS ab, (SELECT Value FROM LShufOptions WHERE Name = 'Attributes') AS at, (SELECT Value FROM LShufOptions WHERE Name = 'Biases') AS bi,
   COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'ModdedAbilities'), '0') AS ma, COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'ModdedAttributes'), '0') AS mt, COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'ModdedBiases'), '0') AS mb,
   COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'CivAbilities'), 'LSHUF_CA_NORMAL') AS ca, COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'CivUniques'), 'LSHUF_CU_NORMAL') AS cu, COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'CivCivics'), 'LSHUF_CC_NORMAL') AS cc) i) o;
 
-CREATE TABLE IF NOT EXISTS LShufWork_L (LeaderType TEXT PRIMARY KEY, Ability TEXT, AbilityName TEXT, NAttr INTEGER, NMods INTEGER, Known INTEGER, Modded INTEGER, Kept INTEGER, OutReason TEXT, ModOK INTEGER, LTReq INTEGER, Base TEXT, RA TEXT, RT TEXT, RB TEXT, InA INTEGER, InT INTEGER, InB INTEGER, Changed INTEGER, AbilityFrom TEXT, PersonaFrom TEXT, BiasFrom TEXT);
+CREATE TABLE IF NOT EXISTS LShufWork_L (LeaderType TEXT PRIMARY KEY, Ability TEXT, AbilityName TEXT, NAttr INTEGER, NMods INTEGER, Known INTEGER, Modded INTEGER, Kept INTEGER, OutReason TEXT, ModOK INTEGER, LTReq INTEGER, Base TEXT, RA TEXT, RT TEXT, RB TEXT, InA INTEGER, InT INTEGER, InB INTEGER, Changed INTEGER, AbilityFrom TEXT, PersonaFrom TEXT, BiasFrom TEXT, Own INTEGER NOT NULL DEFAULT 0, OA INTEGER NOT NULL DEFAULT 0, OT INTEGER NOT NULL DEFAULT 0, OB INTEGER NOT NULL DEFAULT 0, OP INTEGER NOT NULL DEFAULT 0, PCopy INTEGER NOT NULL DEFAULT 0);
 DELETE FROM LShufWork_L;
 INSERT INTO LShufWork_L (LeaderType) SELECT DISTINCT LeaderType FROM Leaders WHERE IsMajorLeader = 1;
 UPDATE LShufWork_L SET Ability = (SELECT MIN(lt.TraitType) FROM LeaderTraits lt JOIN Traits t ON t.TraitType = lt.TraitType
@@ -46,6 +48,11 @@ UPDATE LShufWork_L SET Base = CASE
   WHEN OutReason IS NOT NULL THEN OutReason WHEN NMods = 0 AND NAttr = 0 THEN 'observer'
   WHEN Modded = 1 AND ModOK = 0 THEN 'modded-notok' WHEN Modded = 1 AND LTReq = 1 THEN 'modded-leadertype'
   ELSE NULL END;
+-- The host on its own mode (CONTRACTS 33, lshuf-deal-own.js ownOf): HumanFollows 0, the slot-1 builder, in the game
+-- with nothing against it. It sits out every leader pool as if kept.
+UPDATE LShufWork_L SET Own = 1 WHERE COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'HumanFollows'), '1') = '0' AND Base IS NULL
+  AND LeaderType = (SELECT b.LeaderType FROM LShufBuild b WHERE b.Slot = 1);
+UPDATE LShufWork_L SET Base = 'kept' WHERE Own = 1;
 UPDATE LShufWork_L SET
   RA = COALESCE(Base, CASE WHEN Modded = 1 AND (SELECT MA FROM LShufWork_Cfg) <> '1' THEN 'modded-off' END),
   RT = COALESCE(Base, CASE WHEN Modded = 1 AND (SELECT MT FROM LShufWork_Cfg) <> '1' THEN 'modded-off' END),
@@ -61,11 +68,12 @@ UPDATE LShufWork_Axis SET
   Level = CASE WHEN Off = 1 THEN NULL WHEN (SELECT Active FROM LShufWork_Cfg) = 0 OR CASE Axis WHEN 'A' THEN (SELECT ANormal FROM LShufWork_Cfg) WHEN 'T' THEN (SELECT TNormal FROM LShufWork_Cfg) ELSE (SELECT BNormal FROM LShufWork_Cfg) END = 1 THEN 'mode-none'
     WHEN NElig < 2 THEN 'too-few' ELSE NULL END;
 
-CREATE TABLE IF NOT EXISTS LShufWork_Build (Slot INTEGER PRIMARY KEY, Leader TEXT, Civ TEXT, OK INTEGER, Why TEXT, PersonaPick TEXT, BiasPick TEXT, GenericBiasPick TEXT, CivBiasPick TEXT, WholePick TEXT, OldDonor TEXT, HasT INTEGER, BulletBuild INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS LShufWork_Build (Slot INTEGER PRIMARY KEY, Leader TEXT, Civ TEXT, OK INTEGER, Why TEXT, PersonaPick TEXT, BiasPick TEXT, GenericBiasPick TEXT, CivBiasPick TEXT, WholePick TEXT, OldDonor TEXT, HasT INTEGER, BulletBuild INTEGER NOT NULL DEFAULT 0, Own INTEGER NOT NULL DEFAULT 0);
 DELETE FROM LShufWork_Build;
 INSERT INTO LShufWork_Build (Slot, Leader, Civ) SELECT Slot, LeaderType, CivilizationType FROM LShufBuild
   WHERE Slot BETWEEN 1 AND 4 ORDER BY Slot;
-UPDATE LShufWork_Build SET Why = CASE WHEN (SELECT Active FROM LShufWork_Cfg) = 0
+UPDATE LShufWork_Build SET Own = 1 WHERE Slot = 1 AND Leader IN (SELECT LeaderType FROM LShufWork_L WHERE Own = 1);
+UPDATE LShufWork_Build SET Why = CASE WHEN Own = 1 THEN NULL WHEN (SELECT Active FROM LShufWork_Cfg) = 0
     AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 1 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
@@ -82,7 +90,7 @@ UPDATE LShufWork_Build SET Why = CASE WHEN (SELECT Active FROM LShufWork_Cfg) = 
     THEN 'builder-not-in-game'
   WHEN EXISTS (SELECT 1 FROM LShufWork_Build b2 WHERE b2.Slot < 1 AND b2.Leader = LShufWork_Build.Leader AND b2.Why IS NULL)
     THEN 'builder-not-in-game' END WHERE Slot = 1;
-UPDATE LShufWork_Build SET Why = CASE WHEN (SELECT Active FROM LShufWork_Cfg) = 0
+UPDATE LShufWork_Build SET Why = CASE WHEN Own = 1 THEN NULL WHEN (SELECT Active FROM LShufWork_Cfg) = 0
     AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 2 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
@@ -99,7 +107,7 @@ UPDATE LShufWork_Build SET Why = CASE WHEN (SELECT Active FROM LShufWork_Cfg) = 
     THEN 'builder-not-in-game'
   WHEN EXISTS (SELECT 1 FROM LShufWork_Build b2 WHERE b2.Slot < 2 AND b2.Leader = LShufWork_Build.Leader AND b2.Why IS NULL)
     THEN 'builder-not-in-game' END WHERE Slot = 2;
-UPDATE LShufWork_Build SET Why = CASE WHEN (SELECT Active FROM LShufWork_Cfg) = 0
+UPDATE LShufWork_Build SET Why = CASE WHEN Own = 1 THEN NULL WHEN (SELECT Active FROM LShufWork_Cfg) = 0
     AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 3 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
@@ -116,7 +124,7 @@ UPDATE LShufWork_Build SET Why = CASE WHEN (SELECT Active FROM LShufWork_Cfg) = 
     THEN 'builder-not-in-game'
   WHEN EXISTS (SELECT 1 FROM LShufWork_Build b2 WHERE b2.Slot < 3 AND b2.Leader = LShufWork_Build.Leader AND b2.Why IS NULL)
     THEN 'builder-not-in-game' END WHERE Slot = 3;
-UPDATE LShufWork_Build SET Why = CASE WHEN (SELECT Active FROM LShufWork_Cfg) = 0
+UPDATE LShufWork_Build SET Why = CASE WHEN Own = 1 THEN NULL WHEN (SELECT Active FROM LShufWork_Cfg) = 0
     AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 4 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
@@ -151,13 +159,29 @@ INSERT OR IGNORE INTO LShufWork_BuildPiece (PieceId, Slot, Kind, Arg, Copy)
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
     WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')) ORDER BY Slot, PieceId;
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic') OR LShufBuildPieces.Slot IN (SELECT Slot FROM LShufWork_Build WHERE Own = 1)) ORDER BY Slot, PieceId;
 UPDATE LShufWork_Build SET Why = 'no-pieces'
-  WHERE Why IS NULL AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p WHERE p.Slot = LShufWork_Build.Slot);
+  WHERE Why IS NULL AND Own = 0 AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p WHERE p.Slot = LShufWork_Build.Slot);
 UPDATE LShufWork_Build SET OK = (Why IS NULL), PersonaPick = (SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = 'persona' AND p.Slot = LShufWork_Build.Slot AND p.Arg IN (SELECT LeaderType FROM LShufWork_L)), BiasPick = (SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = 'bias' AND p.Slot = LShufWork_Build.Slot AND p.Arg IN (SELECT LeaderType FROM LShufWork_L)),
   CivBiasPick = (SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = 'civbias' AND p.Slot = LShufWork_Build.Slot), GenericBiasPick = (SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = 'gbias' AND p.Slot = LShufWork_Build.Slot);
 -- A leader's start terrain card wins over a generic one when both are ticked.
 UPDATE LShufWork_Build SET GenericBiasPick = NULL WHERE BiasPick IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS LShufWork_OwnPiece (PieceId TEXT PRIMARY KEY, FromLeader TEXT, Kind TEXT, Idx INTEGER, SortIndex INTEGER);
+DELETE FROM LShufWork_OwnPiece;
+INSERT OR IGNORE INTO LShufWork_OwnPiece (PieceId, FromLeader, Kind, Idx)
+  SELECT p.Arg || '__WHOLE', p.Arg, 'whole', 0 FROM LShufWork_BuildPiece p JOIN LShufWork_Build b ON b.Slot = p.Slot AND b.Own = 1 AND b.OK = 1
+  WHERE p.Kind = 'whole' AND p.Arg IN (SELECT LeaderType FROM LShufWork_L WHERE Ability IS NOT NULL);
+INSERT OR IGNORE INTO LShufWork_OwnPiece (PieceId, FromLeader, Kind, Idx)
+  SELECT p.Arg, m.LeaderType, 'bullet', COALESCE(m.BulletIndex, 0) FROM LShufWork_BuildPiece p JOIN LShufWork_Build b ON b.Slot = p.Slot AND b.Own = 1 AND b.OK = 1
+  JOIN LShufMapping m ON m.PieceId = p.Arg AND m.Kind = 'bullet' AND m.LeaderType = substr(p.Arg, 1, instr(p.Arg, '__B') - 1)
+  WHERE p.Kind = 'bullet' AND instr(p.Arg, '__B') > 0 AND m.LeaderType IN (SELECT LeaderType FROM LShufWork_L);
+UPDATE LShufWork_OwnPiece SET SortIndex = (SELECT COUNT(*) FROM LShufWork_OwnPiece o WHERE 1 = 1 AND (o.FromLeader < LShufWork_OwnPiece.FromLeader OR (o.FromLeader = LShufWork_OwnPiece.FromLeader AND (o.Idx < LShufWork_OwnPiece.Idx OR (o.Idx = LShufWork_OwnPiece.Idx AND (o.PieceId < LShufWork_OwnPiece.PieceId)))))) WHERE 1 = 1;
+UPDATE LShufWork_L SET OA = EXISTS (SELECT 1 FROM LShufWork_OwnPiece),
+  OT = EXISTS (SELECT 1 FROM LShufWork_BuildPiece p JOIN LShufWork_Build b ON b.Slot = p.Slot AND b.Own = 1 AND b.OK = 1 WHERE p.Kind = 'attr' AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits)),
+  OB = EXISTS (SELECT 1 FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1 AND (b.BiasPick IS NOT NULL OR b.GenericBiasPick IN ('BIOME_DESERT', 'BIOME_GRASSLAND', 'BIOME_PLAINS', 'BIOME_TROPICAL', 'BIOME_TUNDRA', 'TERRAIN_FLAT', 'TERRAIN_HILL', 'TERRAIN_MOUNTAIN', 'TERRAIN_NAVIGABLE_RIVER', 'FEATURE_CLASS_VEGETATED', 'FEATURE_CLASS_FLOODPLAIN', 'COAST', 'RIVER', 'LAKE', 'NATURAL_WONDER', 'ISLAND'))),
+  OP = EXISTS (SELECT 1 FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1 AND b.PersonaPick IS NOT NULL)
+  WHERE Own = 1;
 
 CREATE TABLE IF NOT EXISTS LShufWork_Pool (Axis TEXT, LeaderType TEXT, Rank INTEGER, K INTEGER, Pos INTEGER, N INTEGER, PRIMARY KEY (Axis, LeaderType));
 DELETE FROM LShufWork_Pool;
@@ -165,7 +189,7 @@ INSERT INTO LShufWork_Pool (Axis, LeaderType) SELECT 'A', LeaderType FROM LShufW
 INSERT INTO LShufWork_Pool (Axis, LeaderType) SELECT 'T', LeaderType FROM LShufWork_L WHERE RT IS NULL AND (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'T') = 1;
 INSERT INTO LShufWork_Pool (Axis, LeaderType) SELECT 'TS', LeaderType FROM LShufWork_L WHERE RT IS NULL AND (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'T') = 1;
 INSERT INTO LShufWork_Pool (Axis, LeaderType) SELECT 'B', LeaderType FROM LShufWork_L WHERE RB IS NULL AND (SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'B') = 1;
-INSERT INTO LShufWork_Pool (Axis, LeaderType) SELECT 'P', LeaderType FROM LShufWork_L WHERE RA IS NULL AND (SELECT PRedealt FROM LShufWork_Cfg) = 1 AND ((SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'A') = 1 OR ((SELECT OffA FROM LShufWork_Cfg) = 1 AND (SELECT Active FROM LShufWork_Cfg) = 1 AND (SELECT NElig FROM LShufWork_Axis WHERE Axis = 'A') >= 2));
+INSERT INTO LShufWork_Pool (Axis, LeaderType) SELECT 'P', LeaderType FROM LShufWork_L WHERE RA IS NULL AND (SELECT PRedealt FROM LShufWork_Cfg) = 1 AND ((SELECT Dealt FROM LShufWork_Axis WHERE Axis = 'A') = 1 OR ((SELECT OffA FROM LShufWork_Cfg) = 1 AND (SELECT Active FROM LShufWork_Cfg) = 1 AND (SELECT NElig FROM LShufWork_Axis WHERE Axis = 'A') >= 2) OR ((SELECT ANormal FROM LShufWork_Cfg) = 1 AND (SELECT NElig FROM LShufWork_Axis WHERE Axis = 'A') >= 2));
 UPDATE LShufWork_Pool SET Rank = (SELECT COUNT(*) FROM LShufWork_Pool o WHERE o.Axis = LShufWork_Pool.Axis AND (o.LeaderType < LShufWork_Pool.LeaderType)) WHERE 1 = 1;
 UPDATE LShufWork_Pool SET K = ((((((((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (CASE Axis WHEN 'TS' THEN 4 WHEN 'P' THEN 10 ELSE 1 END) * 104729 + (Rank) * 1299709 + 1) % 67108859) * ((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (CASE Axis WHEN 'TS' THEN 4 WHEN 'P' THEN 10 ELSE 1 END) * 104729 + (Rank) * 1299709 + 1) % 67108859)) + 1013904223) % 67108859) * (((((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (CASE Axis WHEN 'TS' THEN 4 WHEN 'P' THEN 10 ELSE 1 END) * 104729 + (Rank) * 1299709 + 1) % 67108859) * ((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (CASE Axis WHEN 'TS' THEN 4 WHEN 'P' THEN 10 ELSE 1 END) * 104729 + (Rank) * 1299709 + 1) % 67108859)) + 1013904223) % 67108859)) + 1664525) % 67108859), N = (SELECT COUNT(*) FROM LShufWork_Pool o WHERE o.Axis = LShufWork_Pool.Axis);
 UPDATE LShufWork_Pool SET Pos = (SELECT COUNT(*) FROM LShufWork_Pool o WHERE o.Axis = LShufWork_Pool.Axis AND (o.K < LShufWork_Pool.K OR (o.K = LShufWork_Pool.K AND (o.LeaderType < LShufWork_Pool.LeaderType)))) WHERE 1 = 1;

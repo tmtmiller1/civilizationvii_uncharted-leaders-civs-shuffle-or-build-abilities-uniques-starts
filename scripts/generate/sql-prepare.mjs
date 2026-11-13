@@ -1,7 +1,9 @@
 // Deal step 1: the config row, every major leader with its ability and checks, the axis states and the pools.
 import {
-  A_MODE, B_MODE, BUILD_SLOTS, BUILD_WHY, DEALING, MODE_CUSTOM, ONOFF, OPTION_DEFAULTS, PERSONA, PRESETS, REASON, T_MODE
+  A_MODE, B_MODE, BUILD_SLOTS, BUILD_WHY, DEALING, MODE, MODE_CUSTOM, ONOFF, OPTION_DEFAULTS, PERSONA, PRESETS, REASON,
+  T_MODE
 } from "../../shared/lshuf-constants.js";
+import { GENERIC_BIASES } from "../../shared/lshuf-constants.js";
 import { SALT } from "../../shared/lshuf-key.js";
 import { LEADER_TYPE_REQUIREMENT } from "../../shared/deal/lshuf-deal-util.js";
 import { BUILD_SLOT, CFG, header, key, q, rankUpdate, SLOTS, work } from "./sql-util.mjs";
@@ -24,10 +26,15 @@ function partExpr(name) {
   const byPreset = Object.entries(PRESETS).map(([mode, parts]) => `WHEN m = ${q(mode)} THEN ${q(parts[index])}`).join(" ");
   return `CASE WHEN ${col} IN (${own}) THEN ${col} ${byPreset} ELSE ${q(values.Normal)} END`;
 }
+// The agenda presets need AI agendas Swap whole as well (lshuf-deal-axes.js dealMode, CONTRACTS 33).
+const AGENDA_PRESETS = [MODE.AgendasOnly, MODE.AgendasAttributes];
 function modeExpr() {
-  const cases = Object.entries(PRESETS)
+  const agendas = `WHEN pe = ${q(PERSONA.Redealt)} AND pa = ${q(A_MODE.Normal)} AND pb = ${q(B_MODE.Normal)} AND pt = ${q(T_MODE.Normal)}
+    THEN ${q(MODE.AgendasOnly)} WHEN pe = ${q(PERSONA.Redealt)} AND pa = ${q(A_MODE.Normal)} AND pb = ${q(B_MODE.Normal)}
+    AND pt = ${q(T_MODE.Random)} THEN ${q(MODE.AgendasAttributes)}`;
+  const cases = Object.entries(PRESETS).filter(([mode]) => !AGENDA_PRESETS.includes(mode))
     .map(([mode, [a, t, b]]) => `WHEN pa = ${q(a)} AND pt = ${q(t)} AND pb = ${q(b)} THEN ${q(mode)}`).join(" ");
-  return `CASE ${cases} ELSE ${q(MODE_CUSTOM)} END`;
+  return `CASE ${agendas} ${cases} ELSE ${q(MODE_CUSTOM)} END`;
 }
 
 function config() {
@@ -70,7 +77,9 @@ function leaders() {
     "LShufWork_L",
     "LeaderType TEXT PRIMARY KEY, Ability TEXT, AbilityName TEXT, NAttr INTEGER, NMods INTEGER, Known INTEGER, " +
       "Modded INTEGER, Kept INTEGER, OutReason TEXT, ModOK INTEGER, LTReq INTEGER, Base TEXT, RA TEXT, RT TEXT, RB TEXT, " +
-      "InA INTEGER, InT INTEGER, InB INTEGER, Changed INTEGER, AbilityFrom TEXT, PersonaFrom TEXT, BiasFrom TEXT"
+      "InA INTEGER, InT INTEGER, InB INTEGER, Changed INTEGER, AbilityFrom TEXT, PersonaFrom TEXT, BiasFrom TEXT, " +
+      "Own INTEGER NOT NULL DEFAULT 0, OA INTEGER NOT NULL DEFAULT 0, OT INTEGER NOT NULL DEFAULT 0, " +
+      "OB INTEGER NOT NULL DEFAULT 0, OP INTEGER NOT NULL DEFAULT 0, PCopy INTEGER NOT NULL DEFAULT 0"
   )}
 INSERT INTO LShufWork_L (LeaderType) SELECT DISTINCT LeaderType FROM Leaders WHERE IsMajorLeader = 1;
 UPDATE LShufWork_L SET Ability = (SELECT MIN(lt.TraitType) FROM LeaderTraits lt JOIN Traits t ON t.TraitType = lt.TraitType
@@ -94,6 +103,11 @@ UPDATE LShufWork_L SET Base = CASE
   WHEN OutReason IS NOT NULL THEN OutReason WHEN NMods = 0 AND NAttr = 0 THEN ${q(REASON.Observer)}
   WHEN Modded = 1 AND ModOK = 0 THEN ${q(REASON.ModdedNotOK)} WHEN Modded = 1 AND LTReq = 1 THEN ${q(REASON.ModdedLeaderType)}
   ELSE NULL END;
+-- The host on its own mode (CONTRACTS 33, lshuf-deal-own.js ownOf): HumanFollows 0, the slot-1 builder, in the game
+-- with nothing against it. It sits out every leader pool as if kept.
+UPDATE LShufWork_L SET Own = 1 WHERE ${opt("HumanFollows")} = '0' AND Base IS NULL
+  AND LeaderType = (SELECT b.LeaderType FROM LShufBuild b WHERE b.Slot = 1);
+UPDATE LShufWork_L SET Base = ${q(REASON.Kept)} WHERE Own = 1;
 UPDATE LShufWork_L SET
   RA = COALESCE(Base, CASE WHEN Modded = 1 AND ${CFG("MA")} <> '1' THEN ${q(REASON.ModdedOff)} END),
   RT = COALESCE(Base, CASE WHEN Modded = 1 AND ${CFG("MT")} <> '1' THEN ${q(REASON.ModdedOff)} END),
@@ -125,12 +139,15 @@ function pools() {
     `INSERT INTO LShufWork_Pool (Axis, LeaderType) SELECT ${q(pool)}, LeaderType FROM LShufWork_L WHERE ${r} IS NULL AND ${cond};`;
   const salt = `CASE Axis WHEN 'TS' THEN ${SALT.AttributeRedraw} WHEN 'P' THEN ${SALT.Personality} ELSE ${SALT.Leaders} END`;
   const ownPersona = `${CFG("OffA")} = 1 AND ${CFG("Active")} = 1 AND (SELECT NElig FROM LShufWork_Axis WHERE Axis = 'A') >= 2`;
+  // Abilities on Base game with agendas Swap whole (CONTRACTS 33): the agendas cycle over the leaders that could be
+  // dealt.
+  const alone = `${CFG("ANormal")} = 1 AND (SELECT NElig FROM LShufWork_Axis WHERE Axis = 'A') >= 2`;
   return `${work("LShufWork_Pool", "Axis TEXT, LeaderType TEXT, Rank INTEGER, K INTEGER, Pos INTEGER, N INTEGER, PRIMARY KEY (Axis, LeaderType)")}
 ${add("A", "RA", `${dealt("A")} = 1`)}
 ${add("T", "RT", `${dealt("T")} = 1`)}
 ${add("TS", "RT", `${dealt("T")} = 1`)}
 ${add("B", "RB", `${dealt("B")} = 1`)}
-${add("P", "RA", `${CFG("PRedealt")} = 1 AND (${dealt("A")} = 1 OR (${ownPersona}))`)}
+${add("P", "RA", `${CFG("PRedealt")} = 1 AND (${dealt("A")} = 1 OR (${ownPersona}) OR (${alone}))`)}
 ${rankUpdate("LShufWork_Pool", "Rank", ["Axis"], [["LeaderType"]])}
 UPDATE LShufWork_Pool SET K = ${key(salt, "Rank")}, N = (SELECT COUNT(*) FROM LShufWork_Pool o WHERE o.Axis = LShufWork_Pool.Axis);
 ${rankUpdate("LShufWork_Pool", "Pos", ["Axis"], [["K"], ["LeaderType"]])}
@@ -165,29 +182,56 @@ function build() {
   // (lshuf-deal-build.js keptCiv); that slot then takes the civilization cards only.
   const keptCiv = (leader) => `(${opt("KeepBuiltCiv")} = '1' AND EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = ${leader} AND l.Base = ${q(REASON.Kept)}))`;
   const pieceSlotLeader = "(SELECT w.Leader FROM LShufWork_Build w WHERE w.Slot = LShufBuildPieces.Slot)";
-  const civOnlyOK = `((${CFG("Active")} = 1 AND NOT ${keptCiv(pieceSlotLeader)}) OR ${civOnly})`;
+  // The host on its own mode (CONTRACTS 33): every card counts.
+  const ownSlot = "LShufBuildPieces.Slot IN (SELECT Slot FROM LShufWork_Build WHERE Own = 1)";
+  const civOnlyOK = `((${CFG("Active")} = 1 AND NOT ${keptCiv(pieceSlotLeader)}) OR ${civOnly} OR ${ownSlot})`;
   // Slot by slot, so a lower slot's verdict is known when a higher one checks for the same leader.
-  const why = SLOTS.map((n) => `UPDATE LShufWork_Build SET Why = CASE WHEN ${CFG("Active")} = 0
+  const why = SLOTS.map((n) => `UPDATE LShufWork_Build SET Why = CASE WHEN Own = 1 THEN NULL WHEN ${CFG("Active")} = 0
     AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = ${n} AND ${civOnly}) THEN ${q(BUILD_WHY.ModeOff)}
   WHEN NOT EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base IS NULL)
     AND NOT (${keptCiv("LShufWork_Build.Leader")} AND EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = ${n} AND ${civOnly}))
     THEN ${q(BUILD_WHY.NotInGame)}
   WHEN EXISTS (SELECT 1 FROM LShufWork_Build b2 WHERE b2.Slot < ${n} AND b2.Leader = LShufWork_Build.Leader AND b2.Why IS NULL)
     THEN ${q(BUILD_WHY.NotInGame)} END WHERE Slot = ${n};`).join("\n");
-  return `${work("LShufWork_Build", "Slot INTEGER PRIMARY KEY, Leader TEXT, Civ TEXT, OK INTEGER, Why TEXT, PersonaPick TEXT, BiasPick TEXT, GenericBiasPick TEXT, CivBiasPick TEXT, WholePick TEXT, OldDonor TEXT, HasT INTEGER, BulletBuild INTEGER NOT NULL DEFAULT 0")}
+  return `${work("LShufWork_Build", "Slot INTEGER PRIMARY KEY, Leader TEXT, Civ TEXT, OK INTEGER, Why TEXT, PersonaPick TEXT, BiasPick TEXT, GenericBiasPick TEXT, CivBiasPick TEXT, WholePick TEXT, OldDonor TEXT, HasT INTEGER, BulletBuild INTEGER NOT NULL DEFAULT 0, Own INTEGER NOT NULL DEFAULT 0")}
 INSERT INTO LShufWork_Build (Slot, Leader, Civ) SELECT Slot, LeaderType, CivilizationType FROM LShufBuild
   WHERE Slot BETWEEN 1 AND ${BUILD_SLOTS} ORDER BY Slot;
+UPDATE LShufWork_Build SET Own = 1 WHERE Slot = 1 AND Leader IN (SELECT LeaderType FROM LShufWork_L WHERE Own = 1);
 ${why}
 ${work("LShufWork_BuildPiece", "PieceId TEXT PRIMARY KEY, Slot INTEGER, Kind TEXT, Arg TEXT, Copy INTEGER NOT NULL DEFAULT 1")}
 INSERT OR IGNORE INTO LShufWork_BuildPiece (PieceId, Slot, Kind, Arg, Copy)
   SELECT PieceId, Slot, ${kind}, ${arg}, CASE WHEN substr(PieceId, 1, 6) = 'ATTR2_' THEN 2 ELSE 1 END FROM LShufBuildPieces
   WHERE Slot IN (SELECT Slot FROM LShufWork_Build WHERE Why IS NULL) AND ${civOnlyOK} ORDER BY Slot, PieceId;
 UPDATE LShufWork_Build SET Why = ${q(BUILD_WHY.NoPieces)}
-  WHERE Why IS NULL AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p WHERE p.Slot = LShufWork_Build.Slot);
+  WHERE Why IS NULL AND Own = 0 AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p WHERE p.Slot = LShufWork_Build.Slot);
 UPDATE LShufWork_Build SET OK = (Why IS NULL), PersonaPick = ${pick("persona", major)}, BiasPick = ${pick("bias", major)},
   CivBiasPick = ${pick("civbias")}, GenericBiasPick = ${pick("gbias")};
 -- A leader's start terrain card wins over a generic one when both are ticked.
 UPDATE LShufWork_Build SET GenericBiasPick = NULL WHERE BiasPick IS NOT NULL;
+`;
+}
+
+// The host's cards on its own mode (lshuf-deal-own.js ownCards): wholes of leaders with an ability and bullets the
+// mapping lists, in the order its pieces sort; and which parts it took cards for (OA abilities, OT attributes,
+// OB start terrain, OP agendas).
+function ownCards() {
+  const ownSlot = "JOIN LShufWork_Build b ON b.Slot = p.Slot AND b.Own = 1 AND b.OK = 1";
+  const owner = "substr(p.Arg, 1, instr(p.Arg, '__B') - 1)";
+  const tags = GENERIC_BIASES.map(([t]) => q(t)).join(", ");
+  return `${work("LShufWork_OwnPiece", "PieceId TEXT PRIMARY KEY, FromLeader TEXT, Kind TEXT, Idx INTEGER, SortIndex INTEGER")}
+INSERT OR IGNORE INTO LShufWork_OwnPiece (PieceId, FromLeader, Kind, Idx)
+  SELECT p.Arg || '__WHOLE', p.Arg, 'whole', 0 FROM LShufWork_BuildPiece p ${ownSlot}
+  WHERE p.Kind = 'whole' AND p.Arg IN (SELECT LeaderType FROM LShufWork_L WHERE Ability IS NOT NULL);
+INSERT OR IGNORE INTO LShufWork_OwnPiece (PieceId, FromLeader, Kind, Idx)
+  SELECT p.Arg, m.LeaderType, 'bullet', COALESCE(m.BulletIndex, 0) FROM LShufWork_BuildPiece p ${ownSlot}
+  JOIN LShufMapping m ON m.PieceId = p.Arg AND m.Kind = 'bullet' AND m.LeaderType = ${owner}
+  WHERE p.Kind = 'bullet' AND instr(p.Arg, '__B') > 0 AND m.LeaderType IN (SELECT LeaderType FROM LShufWork_L);
+${rankUpdate("LShufWork_OwnPiece", "SortIndex", [], [["FromLeader"], ["Idx"], ["PieceId"]])}
+UPDATE LShufWork_L SET OA = EXISTS (SELECT 1 FROM LShufWork_OwnPiece),
+  OT = EXISTS (SELECT 1 FROM LShufWork_BuildPiece p ${ownSlot} WHERE p.Kind = 'attr' AND p.Arg IN (SELECT TraitType FROM LShufAttributeTraits)),
+  OB = EXISTS (SELECT 1 FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1 AND (b.BiasPick IS NOT NULL OR b.GenericBiasPick IN (${tags}))),
+  OP = EXISTS (SELECT 1 FROM LShufWork_Build b WHERE b.Own = 1 AND b.OK = 1 AND b.PersonaPick IS NOT NULL)
+  WHERE Own = 1;
 `;
 }
 
@@ -240,6 +284,7 @@ ${rankUpdate("LShufWork_BBullet", "SortIndex", ["Leader"], [["PieceId"]])}
 }
 
 export function prepareSql() {
-  return [header("Deal step 1: config, leaders, pools"), config(), leaders(), axes(), build(), pools(), wholeSwap(), bulletBuild()]
+  return [header("Deal step 1: config, leaders, pools"), config(), leaders(), axes(), build(), ownCards(), pools(), wholeSwap(),
+    bulletBuild()]
     .join("\n");
 }

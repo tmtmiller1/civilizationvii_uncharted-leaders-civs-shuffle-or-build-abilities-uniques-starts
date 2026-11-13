@@ -1047,6 +1047,14 @@
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
 	<Actions><UpdateDatabase><Item>data/generated/options/opt-Mode-LSHUF_MODE_SPLIT_RANDOM.sql</Item></UpdateDatabase></Actions>
 </ActionGroup>
+<ActionGroup id="lshuf-opt-Mode-LSHUF_MODE_AGENDAS" scope="game" criteria="lshuf-opt-Mode-LSHUF_MODE_AGENDAS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/options/opt-Mode-LSHUF_MODE_AGENDAS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-opt-Mode-LSHUF_MODE_AGENDAS_ATTRIBUTES" scope="game" criteria="lshuf-opt-Mode-LSHUF_MODE_AGENDAS_ATTRIBUTES">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/options/opt-Mode-LSHUF_MODE_AGENDAS_ATTRIBUTES.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
 <ActionGroup id="lshuf-opt-Mode-LSHUF_MODE_CUSTOM" scope="game" criteria="lshuf-opt-Mode-LSHUF_MODE_CUSTOM">
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
 	<Actions><UpdateDatabase><Item>data/generated/options/opt-Mode-LSHUF_MODE_CUSTOM.sql</Item></UpdateDatabase></Actions>
@@ -1210,6 +1218,14 @@
 <ActionGroup id="lshuf-opt-Reveal-LSHUF_REVEAL_MET" scope="game" criteria="lshuf-opt-Reveal-LSHUF_REVEAL_MET">
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
 	<Actions><UpdateDatabase><Item>data/generated/options/opt-Reveal-LSHUF_REVEAL_MET.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-opt-HumanFollows-1" scope="game" criteria="lshuf-opt-HumanFollows-1">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/options/opt-HumanFollows-1.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-opt-HumanFollows-0" scope="game" criteria="lshuf-opt-HumanFollows-0">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/options/opt-HumanFollows-0.sql</Item></UpdateDatabase></Actions>
 </ActionGroup>
 <ActionGroup id="lshuf-age-AGE_ANTIQUITY" scope="game" criteria="lshuf-age-AGE_ANTIQUITY">
 	<Properties><LoadOrder>20010</LoadOrder></Properties>

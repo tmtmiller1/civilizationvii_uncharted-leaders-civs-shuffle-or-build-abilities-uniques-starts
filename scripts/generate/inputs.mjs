@@ -22,7 +22,9 @@ const VALUES = {
   Dealing: Object.values(DEALING),
   Reveal: Object.values(REVEAL),
   // On by default, so turning it off needs its own group.
-  KeepBuiltCiv: ["1", "0"]
+  KeepBuiltCiv: ["1", "0"],
+  // CONTRACTS 33: on by default; "0" when the host plays its own mode.
+  HumanFollows: ["1", "0"]
 };
 
 const matches = (key, value) =>
