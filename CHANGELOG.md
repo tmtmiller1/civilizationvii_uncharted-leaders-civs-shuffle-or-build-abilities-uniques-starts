@@ -3,6 +3,21 @@
 Changes to Uncharted Leaders & Civs for Civilization VII. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and Semantic Versioning.
 
+## [1.1.0] - Unreleased
+
+### Added
+- Your own mode. Both build pages have a **Follow the AI players' settings** box, ticked by default, and your own
+  Leader mode or Civilization mode. Pick a mode of your own and the box unticks: you're shuffled by your mode, and
+  the AI players by the settings in Advanced Settings. Your share is laid on top as copies, so an AI player whose
+  bonus you took keeps it too. Cards you build stay yours either way. Ticking the box again puts you back on the AI
+  players' settings.
+- Two more Leader modes, **Agendas only** (abilities, attributes and start terrain stay; AI agendas are shuffled) and
+  **Agendas and attributes** (abilities and start terrain stay; attributes and AI agendas are shuffled). Picking one
+  also sets AI agendas to Swap whole.
+
+### Fixed
+- AI agendas set to Swap whole now shuffle even when leader abilities are on Base game.
+
 ## [1.0.0] - Unreleased
 
 The first release.

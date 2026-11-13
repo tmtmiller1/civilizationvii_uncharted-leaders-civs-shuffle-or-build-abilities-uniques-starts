@@ -1,6 +1,8 @@
-<p align="center"><img src="https://raw.githubusercontent.com/tmtmiller1/civilizationvii_uncharted-leaders-civs-shuffle-or-build-abilities-uniques-starts/v1.0.0/docs/workshop-preview.png" alt="Uncharted Leaders & Civs" width="200"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/tmtmiller1/civilizationvii_uncharted-leaders-civs-shuffle-or-build-abilities-uniques-starts/v1.1.0/docs/workshop-preview.png" alt="Uncharted Leaders & Civs" width="200"></p>
 
-Uncharted Leaders & Civs 1.0.0 is the mod's first release. It works with the Civilization VII 1.5.1 update and is single-player only.
+Version 1.1.0 adds your own Leader and Civilization mode, and two agenda modes.
+
+**Version 1.1.0. Compatible with Civilization VII 1.5.1. Single-player only.**
 
 Shuffle what leaders and civilizations bring to a game. Leaders can swap whole abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random. Civilizations can do the same with their abilities, unique units and civics, within each age. You can also take any part out of the game for everyone. The game's own screens show what each leader and civilization ended up with.
 
@@ -14,6 +16,7 @@ A mode sets all the rows below in one go. Leaders and civilizations have the sam
 - **Swap partial:** each leader gets another leader’s ability, with attributes dealt out separately and a random start. Each civilization’s ability, uniques and civics are each swapped whole, from different civilizations: Rome might take Greece’s ability, Egypt’s uniques and Persia’s civics.
 - **Mix bonuses:** abilities are split into bonuses and dealt out at random, along with attributes, uniques and civics. Leaders start on terrain that suits the bonuses they got.
 - **Mix bonuses, random start:** leaders only; the same, with random start terrain.
+- **Agendas only** and **Agendas and attributes:** leaders only; abilities and start terrain stay, and AI agendas (and attributes) shuffle.
 
 Change a row by hand and its mode reads Custom.
 
@@ -46,7 +49,10 @@ Off entirely takes that part out of the game for everyone. With leader abilities
 - **Choose which leaders are shuffled:** unticked leaders play as normal.
 
 ## Build your own
-Build your own leader and Build your own civilization are card screens. Fill your slots from another leader's bonuses or whole ability, attributes, AI behavior and start terrain, or another civilization's ability or bonuses, uniques, civics and start terrain. Tick Every age to take a civilization's ability or start terrain from another age. The cards you leave are shuffled among the AI players. When a card goes with another, a button adds the other one. Each screen shows its mode, with Advanced for the other rows, and the civilization select between ages has the same Build your own civilization button.
+Build your own leader and Build your own civilization are card screens. Fill your slots from another leader's bonuses or whole ability, attributes, AI behavior and start terrain, or another civilization's ability or bonuses, uniques, civics and start terrain. Tick Every age to take a civilization's ability or start terrain from another age. The cards you leave are shuffled among the AI players. When a card goes with another, a button adds the other one. The civilization select between ages has the same Build your own civilization button.
+
+## Your own mode
+On a build page, untick **Follow the AI players' settings** and pick your own Leader mode or Civilization mode. Yours shuffles you, and Advanced Settings shuffles the AI players. Cards you build stay yours.
 
 ## Advanced settings
 - **Split fairness:** Fair shares gives everyone about the same strength. With Pure luck some leaders end up stronger.

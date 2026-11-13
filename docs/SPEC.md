@@ -633,6 +633,8 @@ ability and attributes, the attribute victory strategies, and `LeaderCivPrioriti
 
 With Leader abilities on None, agendas and `LeaderCivPriorities` follow this setting the same way, with no bonus lists
 left to follow.
+With Leader abilities on Base game, Shuffled still deals whole personalities among the leaders in the ability pool;
+that's what the Agendas only and Agendas and attributes modes do (CONTRACTS 33, 1.1.0).
 
 ## 6. Rolling a start bias from scratch
 
