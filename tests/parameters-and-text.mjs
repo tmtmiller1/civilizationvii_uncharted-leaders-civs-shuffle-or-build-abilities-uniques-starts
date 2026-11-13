@@ -46,12 +46,21 @@ const PARAMS = [
   ["LShufBuildPicks4", "text", 0, null, "LOC_LSHUF_BUILD_TITLE"],
   ["LShufBuildFor4", "text", 0, null, "LOC_LSHUF_BUILD_FOR"],
   // Added after the hidden rows took their numbers; its own row number comes from MAIN_SORT.
-  [PARAM.KeepBuiltCiv, "bool", 0, "1", "LOC_LSHUF_KEEP_BUILT_CIV_NAME"]
+  [PARAM.KeepBuiltCiv, "bool", 0, "1", "LOC_LSHUF_KEEP_BUILT_CIV_NAME"],
+  // Your own mode (CONTRACTS 33), shown on the build pages only.
+  [PARAM.HumanFollows, "bool", 0, "1", "LOC_LSHUF_HUMAN_FOLLOWS_NAME"],
+  [PARAM.HumanMode, "LShufHumanModeValues", 0, MODE.None, "LOC_LSHUF_HUMAN_MODE_NAME"],
+  [PARAM.HumanCivMode, "LShufHumanCivModeValues", 0, "LSHUF_CM_NORMAL", "LOC_LSHUF_HUMAN_CIV_MODE_NAME"]
 ];
 
 const SELECT_DOMAINS = {
   // Swap whole before Swap partial, the order the civilization mode uses too (CONTRACTS 32).
-  LShufModeValues: [MODE.None, MODE.SwapLeaders, MODE.SwapAbilities, MODE.SplitMatched, MODE.SplitRandom, MODE_CUSTOM],
+  LShufModeValues: [MODE.None, MODE.AgendasOnly, MODE.AgendasAttributes, MODE.SwapLeaders, MODE.SwapAbilities,
+    MODE.SplitMatched, MODE.SplitRandom, MODE_CUSTOM],
+  // Your own modes (CONTRACTS 33): the same presets, no Custom.
+  LShufHumanModeValues: [MODE.None, MODE.AgendasOnly, MODE.AgendasAttributes, MODE.SwapLeaders, MODE.SwapAbilities,
+    MODE.SplitMatched, MODE.SplitRandom],
+  LShufHumanCivModeValues: Object.keys(CIV_PRESETS),
   LShufCivModeValues: [...Object.keys(CIV_PRESETS), CIV_MODE_CUSTOM],
   LShufAValues: Object.values(A_MODE),
   LShufTValues: Object.values(T_MODE),

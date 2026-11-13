@@ -3,10 +3,13 @@
 // settings section write through GameSetup without our events, so this watches the four values on a short timer
 // while setup is open, as well as our own setup-changed event.
 
-// The civilization mode (CONTRACTS 32) is the same over Civilization abilities, uniques and civics.
+// The civilization mode (CONTRACTS 32) is the same over Civilization abilities, uniques and civics. The Leader mode
+// also watches AI agendas (CONTRACTS 33): Agendas only and Agendas and attributes set it to Swap whole, and read
+// back from it.
 
 import {
-  CIV_MODE_CUSTOM, CIV_PRESETS, EVENT, MODE_CUSTOM, PARAM, PRESETS, civPresetOf, presetOf
+  CIV_MODE_CUSTOM, CIV_PRESETS, EVENT, MODE_CUSTOM, OPTION_DEFAULTS, PARAM, PRESETS, PRESET_PERSONA, civPresetOf,
+  presetOf
 } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import { paramValue, setParam } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 
@@ -14,7 +17,8 @@ import { paramValue, setParam } from "/uncharted-leaders-and-civs/ui/setup/lshuf
 const GROUPS = [
   {
     mode: PARAM.Mode, parts: [PARAM.Abilities, PARAM.Attributes, PARAM.Biases], sets: PRESETS, of: presetOf,
-    custom: MODE_CUSTOM
+    custom: MODE_CUSTOM, extra: PARAM.Personality, extraSets: PRESET_PERSONA,
+    extraDefault: OPTION_DEFAULTS.Personality
   },
   {
     mode: PARAM.CivMode, parts: [PARAM.CivAbilities, PARAM.CivUniques, PARAM.CivCivics], sets: CIV_PRESETS,
@@ -25,7 +29,9 @@ const POLL_MS = 400;
 const last = new Map();
 let timer = 0;
 
-const snapshot = (g) => [paramValue(g.mode), ...g.parts.map((p) => paramValue(p))].map((v) => (v == null ? "" : String(v)));
+// The mode, its parts, and the extra value it reads back from (AI agendas for the Leader mode), as strings.
+const watched = (g) => [g.mode, ...g.parts, ...(g.extra ? [g.extra] : [])];
+const snapshot = (g) => watched(g).map((p) => paramValue(p)).map((v) => (v == null ? "" : String(v)));
 
 // Writes only what differs, so a write never fires another write.
 function write(paramId, value) {
@@ -33,21 +39,32 @@ function write(paramId, value) {
   setParam(paramId, value);
 }
 
+// A preset picked: its parts, and the extra value it sets (or the extra's default when leaving a preset that set it,
+// so No shuffle after Agendas only shuffles nothing).
+function applyPreset(g, mode, before) {
+  g.sets[mode].forEach((v, i) => write(g.parts[i], v));
+  if (!g.extra) return;
+  if (g.extraSets[mode]) write(g.extra, g.extraSets[mode]);
+  else if (g.extraSets[before]) write(g.extra, g.extraDefault);
+}
+
 function syncGroup(g) {
   const now = snapshot(g);
   const before = last.get(g.mode) || now;
   last.set(g.mode, now);
-  const [mode, ...parts] = now;
+  const [mode, ...rest] = now;
+  const parts = rest.slice(0, g.parts.length);
   const modeChanged = mode !== before[0];
-  const partChanged = parts.some((v, i) => v !== before[i + 1]);
+  const partChanged = rest.some((v, i) => v !== before[i + 1]);
   if (modeChanged && g.sets[mode]) {
-    g.sets[mode].forEach((v, i) => write(g.parts[i], v));
+    applyPreset(g, mode, before[0]);
     last.set(g.mode, snapshot(g));
     return;
   }
   const modeStale = !g.sets[mode] && mode !== g.custom;
   if (partChanged || modeStale) {
-    if (parts.every(Boolean)) write(g.mode, g.of(...parts));
+    const extra = g.extra ? [rest[g.parts.length] || null] : [];
+    if (parts.every(Boolean)) write(g.mode, g.of(...parts, ...extra));
     last.set(g.mode, snapshot(g));
   }
 }

@@ -72,6 +72,15 @@
         <Row Tag="LOC_LSHUF_BUILD_SHUFFLE_TITLE"><Text>Shuffle for everyone</Text></Row>
         <Row Tag="LOC_LSHUF_BUILD_SHUFFLE_NOTE"><Text>These shuffle abilities, attributes and start terrain at random for the whole game, AI players included. You don't need to build anything to use them.</Text></Row>
         <Row Tag="LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV"><Text>These shuffle civilization abilities, uniques and civics at random for the whole game, AI players included. You don't need to build anything to use them.</Text></Row>
+        <Row Tag="LOC_LSHUF_BUILD_SHUFFLE_TITLE_AI"><Text>Shuffle for the AI players</Text></Row>
+        <Row Tag="LOC_LSHUF_BUILD_SHUFFLE_NOTE_AI"><Text>These shuffle the AI players' abilities, attributes and start terrain at random. You play by your own Leader mode.</Text></Row>
+        <Row Tag="LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV_AI"><Text>These shuffle the AI players' civilization abilities, uniques and civics at random. You play by your own Civilization mode.</Text></Row>
+        <Row Tag="LOC_LSHUF_HUMAN_FOLLOWS_NAME"><Text>Follow the AI players' settings</Text></Row>
+        <Row Tag="LOC_LSHUF_HUMAN_FOLLOWS_DESC"><Text>Ticked, you're shuffled the same way as the AI players. Pick your own Leader mode or Civilization mode to play by your own settings, and the AI players keep the settings below.</Text></Row>
+        <Row Tag="LOC_LSHUF_HUMAN_MODE_NAME"><Text>Your Leader mode</Text></Row>
+        <Row Tag="LOC_LSHUF_HUMAN_MODE_DESC"><Text>How your own leader gets shuffled. Picking one stops you following the AI players' settings. Cards you build still come first.</Text></Row>
+        <Row Tag="LOC_LSHUF_HUMAN_CIV_MODE_NAME"><Text>Your Civilization mode</Text></Row>
+        <Row Tag="LOC_LSHUF_HUMAN_CIV_MODE_DESC"><Text>How your own civilization gets shuffled. Picking one stops you following the AI players' settings. Cards you build still come first.</Text></Row>
         <Row Tag="LOC_LSHUF_CIV_POOL_TIP"><Text>Civilization pool: choose which civilizations Random can pick.</Text></Row>
         <Row Tag="LOC_LSHUF_BUILD_YOUR_LEADER"><Text>Your leader: {1_Name}</Text></Row>
         <Row Tag="LOC_LSHUF_BUILD_NO_LEADER"><Text>Pick your leader to start.</Text></Row>
@@ -189,6 +198,10 @@
         <!-- Option values -->
         <Row Tag="LOC_LSHUF_MODE_NONE"><Text>No shuffle</Text></Row>
         <Row Tag="LOC_LSHUF_MODE_NONE_DESC"><Text>Every leader plays as normal.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_AGENDAS"><Text>Agendas only</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_AGENDAS_DESC"><Text>Abilities, attributes and start terrain stay as they are. The AI agendas are shuffled.</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES"><Text>Agendas and attributes</Text></Row>
+        <Row Tag="LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES_DESC"><Text>Abilities and start terrain stay as they are. Attributes and AI agendas are shuffled.</Text></Row>
         <Row Tag="LOC_LSHUF_MODE_SWAP_ABILITIES"><Text>Swap partial</Text></Row>
         <Row Tag="LOC_LSHUF_MODE_SWAP_ABILITIES_DESC"><Text>Each leader gets another leader's whole ability. Attributes are dealt out separately, and start terrain is a random roll.</Text></Row>
         <Row Tag="LOC_LSHUF_MODE_SWAP_LEADERS"><Text>Swap whole</Text></Row>

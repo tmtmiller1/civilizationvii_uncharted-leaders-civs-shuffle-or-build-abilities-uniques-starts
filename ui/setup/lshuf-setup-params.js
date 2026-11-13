@@ -26,6 +26,13 @@ export function paramBool(paramId) {
   return v === "1" || v === "true";
 }
 
+// Follow the AI players' settings (CONTRACTS 33): ticked unless the parameter says otherwise, so a setup from before
+// the box existed follows, as it always did.
+export function humanFollows() {
+  const v = paramValue("LShufHumanFollows");
+  return v == null || v === "" || v === "1" || v === "true";
+}
+
 // An array parameter's stored values, as strings.
 export function paramValues(paramId) {
   const p = findParam(paramId);

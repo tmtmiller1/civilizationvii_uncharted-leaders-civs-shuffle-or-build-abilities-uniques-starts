@@ -12,7 +12,7 @@
 		<!-- The deal is rebuilt from the deal number in the game config at each load and each age, so a save needs the
 		     mod on to play the same leaders. -->
 		<AffectsSavedGames>1</AffectsSavedGames>
-		<Version>1.0.0</Version>
+		<Version>1.1.0</Version>
 	</Properties>
 	<!-- No DLC dependency: DLC leaders' rows are selected through their parent tables (workspace rule: any DLC). -->
 	<Dependencies>

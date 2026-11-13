@@ -22,7 +22,7 @@ Notes for translators:
   language when the mod is built, so translators can skip them.
 - When a key's English changes meaning, delete that key from each language file so the stale translation isn't kept.
 
-120 keys to translate.
+301 keys to translate.
 
 ## The mod
 
@@ -100,6 +100,15 @@ Notes for translators:
 | `LOC_LSHUF_BUILD_SHUFFLE_TITLE` | Shuffle for everyone |
 | `LOC_LSHUF_BUILD_SHUFFLE_NOTE` | These shuffle abilities, attributes and start terrain at random for the whole game, AI players included. You don't need to build anything to use them. |
 | `LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV` | These shuffle civilization abilities, uniques and civics at random for the whole game, AI players included. You don't need to build anything to use them. |
+| `LOC_LSHUF_BUILD_SHUFFLE_TITLE_AI` | Shuffle for the AI players |
+| `LOC_LSHUF_BUILD_SHUFFLE_NOTE_AI` | These shuffle the AI players' abilities, attributes and start terrain at random. You play by your own Leader mode. |
+| `LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV_AI` | These shuffle the AI players' civilization abilities, uniques and civics at random. You play by your own Civilization mode. |
+| `LOC_LSHUF_HUMAN_FOLLOWS_NAME` | Follow the AI players' settings |
+| `LOC_LSHUF_HUMAN_FOLLOWS_DESC` | Ticked, you're shuffled the same way as the AI players. Pick your own Leader mode or Civilization mode to play by your own settings, and the AI players keep the settings below. |
+| `LOC_LSHUF_HUMAN_MODE_NAME` | Your Leader mode |
+| `LOC_LSHUF_HUMAN_MODE_DESC` | How your own leader gets shuffled. Picking one stops you following the AI players' settings. Cards you build still come first. |
+| `LOC_LSHUF_HUMAN_CIV_MODE_NAME` | Your Civilization mode |
+| `LOC_LSHUF_HUMAN_CIV_MODE_DESC` | How your own civilization gets shuffled. Picking one stops you following the AI players' settings. Cards you build still come first. |
 | `LOC_LSHUF_CIV_POOL_TIP` | Civilization pool: choose which civilizations Random can pick. |
 | `LOC_LSHUF_BTN_AI_PLAYERS` | AI players... |
 | `LOC_LSHUF_AI_PLAYERS_TITLE` | AI players |
@@ -198,6 +207,10 @@ Notes for translators:
 | --- | --- |
 | `LOC_LSHUF_MODE_NONE` | No shuffle |
 | `LOC_LSHUF_MODE_NONE_DESC` | Every leader plays as normal. |
+| `LOC_LSHUF_MODE_AGENDAS` | Agendas only |
+| `LOC_LSHUF_MODE_AGENDAS_DESC` | Abilities, attributes and start terrain stay as they are. The AI agendas are shuffled. |
+| `LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES` | Agendas and attributes |
+| `LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES_DESC` | Abilities and start terrain stay as they are. Attributes and AI agendas are shuffled. |
 | `LOC_LSHUF_MODE_SWAP_ABILITIES` | Swap partial |
 | `LOC_LSHUF_MODE_SWAP_ABILITIES_DESC` | Each leader gets another leader's whole ability. Attributes are dealt out separately, and start terrain is a random roll. |
 | `LOC_LSHUF_MODE_SWAP_LEADERS` | Swap whole |

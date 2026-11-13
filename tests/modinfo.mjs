@@ -86,7 +86,8 @@ const VALUES = {
   Personality: Object.values(PERSONA),
   Dealing: Object.values(DEALING),
   Reveal: Object.values(REVEAL),
-  KeepBuiltCiv: ["1", "0"]
+  KeepBuiltCiv: ["1", "0"],
+  HumanFollows: ["1", "0"]
 };
 
 test("generated groups: ids, criteria and files as section 9 gives them", () => {

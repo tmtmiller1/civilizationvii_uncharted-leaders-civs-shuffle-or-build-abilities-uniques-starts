@@ -8,9 +8,12 @@ import {
   KNOWN_LEADERS, MODDED_LEADER_TYPES
 } from "/uncharted-leaders-and-civs/shared/lshuf-known-leaders.js";
 import {
-  paramValue, paramBool, paramValues, currentSeed, startAge
+  paramValue, paramBool, paramValues, currentSeed, startAge, humanFollows
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import { moddedCheckResult } from "/uncharted-leaders-and-civs/ui/setup/lshuf-mod-check.js";
+import { buildDealInput } from "/uncharted-leaders-and-civs/shared/deal/lshuf-deal.js";
+import { humanPicks, mergePicks } from "/uncharted-leaders-and-civs/shared/deal/lshuf-human-picks.js";
+import { readSetupTable } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-tables.js";
 
 export const PLAIN_RANDOM = "RANDOM";
 
@@ -53,7 +56,10 @@ const BOOL_OPTIONS = new Set(["KeepMine", "KeepBuiltCiv", "ModdedAbilities", "Mo
 export function readOptions() {
   const options = {};
   for (const name of Object.keys(OPTION_DEFAULTS)) {
-    if (BOOL_OPTIONS.has(name)) {
+    // Ticked unless set otherwise, like the box (CONTRACTS 33).
+    if (name === "HumanFollows") {
+      options[name] = humanFollows() ? "1" : "0";
+    } else if (BOOL_OPTIONS.has(name)) {
       options[name] = paramBool(PARAM[name]) ? "1" : "0";
     } else {
       options[name] = paramValue(PARAM[name]) || OPTION_DEFAULTS[name];
@@ -219,27 +225,58 @@ export function buildForLeader(n) {
 
 const realLeader = (slot) => !!(slot && slot.leader && slot.leader !== PLAIN_RANDOM && !NOT_A_LEADER.has(slot.leader));
 
+// The slot builder slot n builds: the local player's for slot 1, else the AI slot LShufBuildFor<n> names.
+function builderSlot(slots, n) {
+  if (n !== 1) {
+    const leader = buildForLeader(n);
+    return leader ? slots.find((s) => !s.human && s.leader === leader) : null;
+  }
+  try {
+    const id = GameContext.localPlayerID;
+    return slots.find((s) => s.id === id);
+  } catch (_) {
+    return null;
+  }
+}
+
 // Build your own leader (CONTRACTS 13): builder slot n as a deal builder { slot, leader, civ, pieces }, or null.
 // Slot 1 is the local player's slot; slot n > 1 is the AI slot whose leader LShufBuildFor<n> names, if that leader
-// is in the game as an AI. Null without picks, or while the slot is still Random.
-export function builderFromSetup(slots, n = 1, picks = buildPicks(n)) {
-  if (!picks.length) return null;
-  let slot = null;
-  if (n === 1) {
-    let id = -1;
-    try {
-      id = GameContext.localPlayerID;
-    } catch (_) {
-      return null;
-    }
-    slot = slots.find((s) => s.id === id);
-  } else {
-    const leader = buildForLeader(n);
-    slot = leader ? slots.find((s) => !s.human && s.leader === leader) : null;
-  }
+// is in the game as an AI. Null without picks (outside your own mode), or while the slot is still Random.
+export function builderFromSetup(slots, n = 1, hand = buildPicks(n)) {
+  const own = n === 1 && !humanFollows();
+  if (!hand.length && !own) return null;
+  const slot = builderSlot(slots, n);
   if (!realLeader(slot)) return null;
   const civ = slot.civ && slot.civ !== PLAIN_RANDOM ? slot.civ : null;
+  const picks = own ? mergePicks(hand, ownModePicks(slots, slot.leader, civ)) : hand;
+  // In your own mode the host is a builder even with no cards, so it stays out of the AI players' deal (CONTRACTS 33).
+  if (!picks.length && !own) return null;
   return { slot: n, leader: slot.leader, civ, pieces: picks };
+}
+
+// Your share from your own mode (CONTRACTS 33): the cards the host's leader and civilization get under its own Leader
+// mode and Civilization mode, worked out over the setup tables. Kept for the same inputs, since the preview asks
+// every half second. [] when the tables can't be read (the host then builds by hand only, and the log says so).
+const ownCache = { key: "", picks: [] };
+function ownModePicks(slots, leader, civ) {
+  const options = readOptions();
+  const humanMode = paramValue(PARAM.HumanMode) || "LSHUF_MODE_NONE";
+  const humanCivMode = paramValue(PARAM.HumanCivMode) || "LSHUF_CM_NORMAL";
+  const base = {
+    seed: currentSeed(), options, kept: keptLeaders(slots, options), out: buildOut(slots), modOK: modOKLeaders(options),
+    builders: [], age: startAge()
+  };
+  const key = JSON.stringify([base, humanMode, humanCivMode, leader, civ]);
+  if (key === ownCache.key) return ownCache.picks;
+  let picks = [];
+  try {
+    picks = humanPicks(buildDealInput(readSetupTable, base), base, humanMode, humanCivMode, { leader, civ });
+  } catch (e) {
+    console.warn(`[lshuf-setup] your own mode's cards couldn't be worked out: ${e}`);
+  }
+  ownCache.key = key;
+  ownCache.picks = picks;
+  return picks;
 }
 
 // Every builder slot that resolves, in slot order.

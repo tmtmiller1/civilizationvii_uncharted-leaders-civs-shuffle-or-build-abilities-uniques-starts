@@ -46,11 +46,17 @@ VALUES
   ('LShufBuildPicks3', 'LOC_LSHUF_BUILD_TITLE', 'LOC_LSHUF_BUILD_INTRO', 'text', 0, NULL, 'Game', 'LShufBuildPicks3', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2319),
   ('LShufBuildFor3', 'LOC_LSHUF_BUILD_FOR', 'LOC_LSHUF_BUILD_INTRO', 'text', 0, NULL, 'Game', 'LShufBuildFor3', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2320),
   ('LShufBuildPicks4', 'LOC_LSHUF_BUILD_TITLE', 'LOC_LSHUF_BUILD_INTRO', 'text', 0, NULL, 'Game', 'LShufBuildPicks4', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2321),
-  ('LShufBuildFor4', 'LOC_LSHUF_BUILD_FOR', 'LOC_LSHUF_BUILD_INTRO', 'text', 0, NULL, 'Game', 'LShufBuildFor4', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2322);
+  ('LShufBuildFor4', 'LOC_LSHUF_BUILD_FOR', 'LOC_LSHUF_BUILD_INTRO', 'text', 0, NULL, 'Game', 'LShufBuildFor4', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2322),
+  -- Your own mode (CONTRACTS 33), on the two build pages only: follow the AI players' settings, or your own modes.
+  ('LShufHumanFollows', 'LOC_LSHUF_HUMAN_FOLLOWS_NAME', 'LOC_LSHUF_HUMAN_FOLLOWS_DESC', 'bool', 0, 1, 'Game', 'LShufHumanFollows', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2324),
+  ('LShufHumanMode', 'LOC_LSHUF_HUMAN_MODE_NAME', 'LOC_LSHUF_HUMAN_MODE_DESC', 'LShufHumanModeValues', 0, 'LSHUF_MODE_NONE', 'Game', 'LShufHumanMode', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2325),
+  ('LShufHumanCivMode', 'LOC_LSHUF_HUMAN_CIV_MODE_NAME', 'LOC_LSHUF_HUMAN_CIV_MODE_DESC', 'LShufHumanCivModeValues', 0, 'LSHUF_CM_NORMAL', 'Game', 'LShufHumanCivMode', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2326);
 
 -- Values of the select options, in the order the window lists them.
 INSERT OR IGNORE INTO DomainValues (Domain, Value, Name, Description, SortIndex) VALUES
   ('LShufModeValues', 'LSHUF_MODE_NONE', 'LOC_LSHUF_MODE_NONE', 'LOC_LSHUF_MODE_NONE_DESC', 10),
+  ('LShufModeValues', 'LSHUF_MODE_AGENDAS', 'LOC_LSHUF_MODE_AGENDAS', 'LOC_LSHUF_MODE_AGENDAS_DESC', 12),
+  ('LShufModeValues', 'LSHUF_MODE_AGENDAS_ATTRIBUTES', 'LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES', 'LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES_DESC', 14),
   ('LShufModeValues', 'LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES_DESC', 30),
   ('LShufModeValues', 'LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS_DESC', 20),
   ('LShufModeValues', 'LSHUF_MODE_SPLIT_MATCHED', 'LOC_LSHUF_MODE_SPLIT_MATCHED', 'LOC_LSHUF_MODE_SPLIT_MATCHED_DESC', 40),
@@ -61,6 +67,18 @@ INSERT OR IGNORE INTO DomainValues (Domain, Value, Name, Description, SortIndex)
   ('LShufCivModeValues', 'LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL_DESC', 30),
   ('LShufCivModeValues', 'LSHUF_CM_SPLIT', 'LOC_LSHUF_CM_SPLIT', 'LOC_LSHUF_CM_SPLIT_DESC', 40),
   ('LShufCivModeValues', 'LSHUF_CM_CUSTOM', 'LOC_LSHUF_CM_CUSTOM', 'LOC_LSHUF_CM_CUSTOM_DESC', 50),
+  -- Your own Leader mode and Civilization mode (CONTRACTS 33): the presets, no Custom; the same names as the AI's.
+  ('LShufHumanModeValues', 'LSHUF_MODE_NONE', 'LOC_LSHUF_MODE_NONE', 'LOC_LSHUF_MODE_NONE_DESC', 10),
+  ('LShufHumanModeValues', 'LSHUF_MODE_AGENDAS', 'LOC_LSHUF_MODE_AGENDAS', 'LOC_LSHUF_MODE_AGENDAS_DESC', 12),
+  ('LShufHumanModeValues', 'LSHUF_MODE_AGENDAS_ATTRIBUTES', 'LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES', 'LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES_DESC', 14),
+  ('LShufHumanModeValues', 'LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS_DESC', 20),
+  ('LShufHumanModeValues', 'LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES_DESC', 30),
+  ('LShufHumanModeValues', 'LSHUF_MODE_SPLIT_MATCHED', 'LOC_LSHUF_MODE_SPLIT_MATCHED', 'LOC_LSHUF_MODE_SPLIT_MATCHED_DESC', 40),
+  ('LShufHumanModeValues', 'LSHUF_MODE_SPLIT_RANDOM', 'LOC_LSHUF_MODE_SPLIT_RANDOM', 'LOC_LSHUF_MODE_SPLIT_RANDOM_DESC', 50),
+  ('LShufHumanCivModeValues', 'LSHUF_CM_NORMAL', 'LOC_LSHUF_CM_NORMAL', 'LOC_LSHUF_CM_NORMAL_DESC', 10),
+  ('LShufHumanCivModeValues', 'LSHUF_CM_WHOLE', 'LOC_LSHUF_CM_WHOLE', 'LOC_LSHUF_CM_WHOLE_DESC', 20),
+  ('LShufHumanCivModeValues', 'LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL_DESC', 30),
+  ('LShufHumanCivModeValues', 'LSHUF_CM_SPLIT', 'LOC_LSHUF_CM_SPLIT', 'LOC_LSHUF_CM_SPLIT_DESC', 40),
   ('LShufAValues', 'LSHUF_A_NORMAL', 'LOC_LSHUF_A_NORMAL', 'LOC_LSHUF_A_NORMAL_DESC', 10),
   ('LShufAValues', 'LSHUF_A_WHOLE', 'LOC_LSHUF_A_WHOLE', 'LOC_LSHUF_A_WHOLE_DESC', 20),
   ('LShufAValues', 'LSHUF_A_SPLIT', 'LOC_LSHUF_A_SPLIT', 'LOC_LSHUF_A_SPLIT_DESC', 30),

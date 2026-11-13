@@ -9,7 +9,7 @@
 		<!-- The deal is rebuilt from the deal number in the game config at each load and each age, so a save needs the
 		     mod on to play the same leaders. -->
 		<AffectsSavedGames>1</AffectsSavedGames>
-		<Version>1.0.0</Version>
+		<Version>1.1.0</Version>
 	</Properties>
 	<!-- No DLC dependency: DLC leaders' rows are selected through their parent tables (workspace rule: any DLC). -->
 	<Dependencies>
@@ -279,6 +279,8 @@
 		<Criteria id="lshuf-opt-Mode-LSHUF_MODE_SWAP_LEADERS"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_SWAP_LEADERS</Value></ConfigurationValueMatches></Criteria>
 		<Criteria id="lshuf-opt-Mode-LSHUF_MODE_SPLIT_MATCHED"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_SPLIT_MATCHED</Value></ConfigurationValueMatches></Criteria>
 		<Criteria id="lshuf-opt-Mode-LSHUF_MODE_SPLIT_RANDOM"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_SPLIT_RANDOM</Value></ConfigurationValueMatches></Criteria>
+		<Criteria id="lshuf-opt-Mode-LSHUF_MODE_AGENDAS"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_AGENDAS</Value></ConfigurationValueMatches></Criteria>
+		<Criteria id="lshuf-opt-Mode-LSHUF_MODE_AGENDAS_ATTRIBUTES"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_AGENDAS_ATTRIBUTES</Value></ConfigurationValueMatches></Criteria>
 		<Criteria id="lshuf-opt-Mode-LSHUF_MODE_CUSTOM"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufMode</ConfigurationId><Value>LSHUF_MODE_CUSTOM</Value></ConfigurationValueMatches></Criteria>
 		<Criteria id="lshuf-opt-Biases-LSHUF_B_NORMAL"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufBiases</ConfigurationId><Value>LSHUF_B_NORMAL</Value></ConfigurationValueMatches></Criteria>
 		<Criteria id="lshuf-opt-Biases-LSHUF_B_MATCHED"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufBiases</ConfigurationId><Value>LSHUF_B_MATCHED</Value></ConfigurationValueMatches></Criteria>
@@ -320,6 +322,8 @@
 		<Criteria id="lshuf-opt-Dealing-LSHUF_DEAL_CHANCE"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufDealing</ConfigurationId><Value>LSHUF_DEAL_CHANCE</Value></ConfigurationValueMatches></Criteria>
 		<Criteria id="lshuf-opt-Reveal-LSHUF_REVEAL_START"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufReveal</ConfigurationId><Value>LSHUF_REVEAL_START</Value></ConfigurationValueMatches></Criteria>
 		<Criteria id="lshuf-opt-Reveal-LSHUF_REVEAL_MET"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufReveal</ConfigurationId><Value>LSHUF_REVEAL_MET</Value></ConfigurationValueMatches></Criteria>
+		<Criteria id="lshuf-opt-HumanFollows-1"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufHumanFollows</ConfigurationId><Value>1</Value></ConfigurationValueMatches></Criteria>
+		<Criteria id="lshuf-opt-HumanFollows-0"><ConfigurationValueMatches><Group>Game</Group><ConfigurationId>LShufHumanFollows</ConfigurationId><Value>0</Value></ConfigurationValueMatches></Criteria>
 		<Criteria id="lshuf-age-AGE_ANTIQUITY"><AgeInUse>AGE_ANTIQUITY</AgeInUse></Criteria>
 		<Criteria id="lshuf-age-AGE_EXPLORATION"><AgeInUse>AGE_EXPLORATION</AgeInUse></Criteria>
 		<Criteria id="lshuf-age-AGE_MODERN"><AgeInUse>AGE_MODERN</AgeInUse></Criteria>
@@ -5026,9 +5030,11 @@
 					<Item>shared/deal/lshuf-deal-build.js</Item>
 					<Item>shared/deal/lshuf-deal-civ.js</Item>
 					<Item>shared/deal/lshuf-deal-input.js</Item>
+					<Item>shared/deal/lshuf-deal-own.js</Item>
 					<Item>shared/deal/lshuf-deal-unlocks.js</Item>
 					<Item>shared/deal/lshuf-deal-util.js</Item>
 					<Item>shared/deal/lshuf-deal.js</Item>
+					<Item>shared/deal/lshuf-human-picks.js</Item>
 					<Item>shared/lshuf-civ-wonder-pieces.js</Item>
 					<Item>shared/lshuf-constants.js</Item>
 					<Item>shared/lshuf-key.js</Item>
@@ -5088,6 +5094,7 @@
 					<Item>ui/setup/lshuf-setup-params.js</Item>
 					<Item>ui/setup/lshuf-setup-section.js</Item>
 					<Item>ui/setup/lshuf-setup-start.js</Item>
+					<Item>ui/setup/lshuf-setup-tables.js</Item>
 					<Item>ui/setup/lshuf-setup-window.js</Item>
 					<Item>ui/setup/lshuf-setup.css</Item>
 					<Item>ui/setup/lshuf-setup.js</Item>
@@ -6156,6 +6163,14 @@
 			<Properties><LoadOrder>20010</LoadOrder></Properties>
 			<Actions><UpdateDatabase><Item>data/generated/options/opt-Mode-LSHUF_MODE_SPLIT_RANDOM.sql</Item></UpdateDatabase></Actions>
 		</ActionGroup>
+		<ActionGroup id="lshuf-opt-Mode-LSHUF_MODE_AGENDAS" scope="game" criteria="lshuf-opt-Mode-LSHUF_MODE_AGENDAS">
+			<Properties><LoadOrder>20010</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/generated/options/opt-Mode-LSHUF_MODE_AGENDAS.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-opt-Mode-LSHUF_MODE_AGENDAS_ATTRIBUTES" scope="game" criteria="lshuf-opt-Mode-LSHUF_MODE_AGENDAS_ATTRIBUTES">
+			<Properties><LoadOrder>20010</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/generated/options/opt-Mode-LSHUF_MODE_AGENDAS_ATTRIBUTES.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
 		<ActionGroup id="lshuf-opt-Mode-LSHUF_MODE_CUSTOM" scope="game" criteria="lshuf-opt-Mode-LSHUF_MODE_CUSTOM">
 			<Properties><LoadOrder>20010</LoadOrder></Properties>
 			<Actions><UpdateDatabase><Item>data/generated/options/opt-Mode-LSHUF_MODE_CUSTOM.sql</Item></UpdateDatabase></Actions>
@@ -6319,6 +6334,14 @@
 		<ActionGroup id="lshuf-opt-Reveal-LSHUF_REVEAL_MET" scope="game" criteria="lshuf-opt-Reveal-LSHUF_REVEAL_MET">
 			<Properties><LoadOrder>20010</LoadOrder></Properties>
 			<Actions><UpdateDatabase><Item>data/generated/options/opt-Reveal-LSHUF_REVEAL_MET.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-opt-HumanFollows-1" scope="game" criteria="lshuf-opt-HumanFollows-1">
+			<Properties><LoadOrder>20010</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/generated/options/opt-HumanFollows-1.sql</Item></UpdateDatabase></Actions>
+		</ActionGroup>
+		<ActionGroup id="lshuf-opt-HumanFollows-0" scope="game" criteria="lshuf-opt-HumanFollows-0">
+			<Properties><LoadOrder>20010</LoadOrder></Properties>
+			<Actions><UpdateDatabase><Item>data/generated/options/opt-HumanFollows-0.sql</Item></UpdateDatabase></Actions>
 		</ActionGroup>
 		<ActionGroup id="lshuf-age-AGE_ANTIQUITY" scope="game" criteria="lshuf-age-AGE_ANTIQUITY">
 			<Properties><LoadOrder>20010</LoadOrder></Properties>
@@ -24986,9 +25009,11 @@
 					<Item>shared/deal/lshuf-deal-build.js</Item>
 					<Item>shared/deal/lshuf-deal-civ.js</Item>
 					<Item>shared/deal/lshuf-deal-input.js</Item>
+					<Item>shared/deal/lshuf-deal-own.js</Item>
 					<Item>shared/deal/lshuf-deal-unlocks.js</Item>
 					<Item>shared/deal/lshuf-deal-util.js</Item>
 					<Item>shared/deal/lshuf-deal.js</Item>
+					<Item>shared/deal/lshuf-human-picks.js</Item>
 					<Item>shared/lshuf-civ-wonder-pieces.js</Item>
 					<Item>shared/lshuf-constants.js</Item>
 					<Item>shared/lshuf-key.js</Item>
@@ -25048,6 +25073,7 @@
 					<Item>ui/setup/lshuf-setup-params.js</Item>
 					<Item>ui/setup/lshuf-setup-section.js</Item>
 					<Item>ui/setup/lshuf-setup-start.js</Item>
+					<Item>ui/setup/lshuf-setup-tables.js</Item>
 					<Item>ui/setup/lshuf-setup-window.js</Item>
 					<Item>ui/setup/lshuf-setup.css</Item>
 					<Item>ui/setup/lshuf-setup.js</Item>

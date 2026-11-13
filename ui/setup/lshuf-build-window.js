@@ -12,7 +12,7 @@ import { InputEngineEvent, InputEngineEventName } from "/core/ui/input/input-sup
 import {
   MOD_ID, A_MODE, BUILD_KIND, CA_MODE, CC_MODE, MODE, PARAM, buildKindOf
 } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
-import { setParam, START_AGE_PARAM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { humanFollows, setParam, START_AGE_PARAM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import {
   el, dropdownRow, checkboxRow
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
@@ -369,24 +369,24 @@ class LShufBuildWindow extends Panel {
     this.Root.appendChild(frame);
     this.load();
     // The settings, in a box that says what they are: the shuffle for the whole game, AI players included, which
-    // needs no build. The page's mode shows; Advanced opens the rest (owner, 2026-11-10).
+    // needs no build. The page's mode shows; Advanced opens the rest (owner, 2026-11-10). Above it, your own line
+    // (CONTRACTS 33): Follow the AI players' settings, and your own mode for this page. Unticked, the box below is
+    // the AI players' shuffle and says so.
     this.settingsPanel = this.buildSettings();
+    const yours = this.buildYours();
     const shuffle = el("div", "lshuf-build__shuffle-box");
-    shuffle.append(
-      el("div", "lshuf-build__shuffle-title font-title text-sm uppercase text-secondary", "LOC_LSHUF_BUILD_SHUFFLE_TITLE"),
-      el("div", "lshuf-build__shuffle-note font-body text-xs text-accent-2",
-        this.scope === "civ" ? "LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV" : "LOC_LSHUF_BUILD_SHUFFLE_NOTE"),
-      this.settingsPanel
-    );
-    this.settingsBox.appendChild(shuffle);
+    this.shuffleTitle = el("div", "lshuf-build__shuffle-title font-title text-sm uppercase text-secondary");
+    this.shuffleNote = el("div", "lshuf-build__shuffle-note font-body text-xs text-accent-2");
+    shuffle.append(this.shuffleTitle, this.shuffleNote, this.settingsPanel);
+    this.syncShuffleText();
+    this.settingsBox.append(yours, shuffle);
     this.toolbar.appendChild(renderToolbar(this));
     this.refresh();
   }
 
-  // The settings that decide whether a build counts, right here so the player can turn the shuffle on without
-  // leaving: the leader screen gets the leader settings, the civ screen the start terrain switch and its pool.
-  buildSettings() {
-    const ctx = {
+  // The shared context of the settings controls: host only, and a change redraws the window.
+  settingsContext() {
+    return {
       locked: () => !isLocalHost(),
       changed: () => {
         this.revision = readRevision();
@@ -394,6 +394,43 @@ class LShufBuildWindow extends Panel {
         this.refresh();
       }
     };
+  }
+
+  // Your own line (CONTRACTS 33): the Follow the AI players' settings box, and your own Leader mode (leader page) or
+  // Civilization mode (civilization page). Picking your own mode unticks the box; ticking it puts you back on the AI
+  // players' settings and leaves your modes as they were.
+  buildYours() {
+    const ctx = this.settingsContext();
+    const own = {
+      locked: ctx.locked,
+      changed: () => {
+        if (humanFollows()) setParam(PARAM.HumanFollows, false);
+        ctx.changed();
+      }
+    };
+    const follows = checkboxRow(PARAM.HumanFollows, ...opt("HUMAN_FOLLOWS"), ctx);
+    const mine = this.scope === "civ" ? dropdownRow(PARAM.HumanCivMode, ...opt("HUMAN_CIV_MODE"), own)
+      : dropdownRow(PARAM.HumanMode, ...opt("HUMAN_MODE"), own);
+    const row = el("div", "lshuf-build__yours lshuf-build__settings-row flex flex-row flex-wrap items-center");
+    row.append(follows.el, mine.el);
+    this.yourControls = [follows, mine];
+    return row;
+  }
+
+  // The shuffle box's title and line: for everyone while you follow the AI players' settings, else for the AI.
+  syncShuffleText() {
+    if (!this.shuffleTitle) return;
+    const follows = humanFollows();
+    const civ = this.scope === "civ";
+    this.shuffleTitle.setAttribute("data-l10n-id", follows ? "LOC_LSHUF_BUILD_SHUFFLE_TITLE" : "LOC_LSHUF_BUILD_SHUFFLE_TITLE_AI");
+    const note = civ ? "LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV" : "LOC_LSHUF_BUILD_SHUFFLE_NOTE";
+    this.shuffleNote.setAttribute("data-l10n-id", follows ? note : `${note}_AI`);
+  }
+
+  // The settings that decide whether a build counts, right here so the player can turn the shuffle on without
+  // leaving: the leader screen gets the leader settings, the civ screen the start terrain switch and its pool.
+  buildSettings() {
+    const ctx = this.settingsContext();
     // One line: this page's mode (CONTRACTS 32), the Advanced button and the pool. Advanced opens the rows the mode
     // sets and the rest; it stays open or closed across both pages.
     const main = el("div", "lshuf-build__settings-row flex flex-row flex-wrap items-center");
@@ -446,7 +483,8 @@ class LShufBuildWindow extends Panel {
   refresh() {
     try {
       this.syncShown();
-      for (const c of this.settingControls || []) c.sync();
+      for (const c of [...(this.yourControls || []), ...(this.settingControls || [])]) c.sync();
+      this.syncShuffleText();
       this.syncCivicSlots();
       this.drawHead();
       if (!this.flashing) this.showNote();

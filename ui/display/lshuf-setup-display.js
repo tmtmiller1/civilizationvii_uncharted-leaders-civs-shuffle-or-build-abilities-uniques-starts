@@ -6,6 +6,7 @@
 // With "Show what everyone got: As you meet them" only the local player's own leader is shown.
 import { DEAL_VERSION, buildDealInput, computeDeal } from "/uncharted-leaders-and-civs/shared/deal/lshuf-deal.js";
 import { readDealConfigFromSetup, isLocalHost } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { readSetupTable } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-tables.js";
 import {
   EVENT, KEY, REVEAL, OPTION_DEFAULTS, BIAS_TABLES, BIAS_TARGET_COLUMN, A_MODE, T_MODE,
   B_MODE
@@ -28,19 +29,7 @@ import { civDealViews } from "/uncharted-leaders-and-civs/ui/display/lshuf-civ-v
 const LOG = "[lshuf-setup-display]";
 const POLL_MS = 500;
 
-// Gameplay tables the deal reads (CONTRACTS.md 4.2), with the columns that name a leader or a civ, so rows of a
-// leader or civ this player doesn't have are left out, as the game's own database would leave them out.
-const LEADER_COLUMN = {
-  Leaders: "LeaderType",
-  LeaderTraits: "LeaderType",
-  LeaderCivPriorities: "Leader"
-};
-const CIV_COLUMN = { LeaderCivPriorities: "Civilization", LegacyCivilizations: "CivilizationType" };
-
 const state = {
-  tables: new Map(),
-  installedLeaders: null,
-  installedCivs: null,
   shipped: null,
   tagOf: null,
   tagTypes: [],
@@ -51,38 +40,8 @@ const state = {
   revision: null
 };
 
-function configRows(sql) {
-  return guarded(`query ${sql.slice(0, 80)}`, () => Database.query("config", sql) || [], []);
-}
-
-function installed() {
-  if (!state.installedLeaders) {
-    state.installedLeaders = new Set(configRows("SELECT LeaderType FROM Leaders").map((r) => r.LeaderType));
-    const civs = configRows("SELECT CivilizationType FROM Civilizations");
-    state.installedCivs = new Set(civs.map((r) => r.CivilizationType));
-  }
-  return state;
-}
-
-function keepRow(name, row) {
-  const { installedLeaders, installedCivs } = installed();
-  const leaderColumn = LEADER_COLUMN[name] || (name.startsWith("StartBias") ? "LeaderType" : null);
-  const civColumn = CIV_COLUMN[name] || (name.startsWith("StartBias") ? "CivilizationType" : null);
-  if (leaderColumn && row[leaderColumn] != null && !installedLeaders.has(row[leaderColumn])) return false;
-  if (civColumn && row[civColumn] != null && !installedCivs.has(row[civColumn])) return false;
-  return true;
-}
-
-// readTable for buildDealInput: our own LShuf* tables as they are, the game's tables from the setup copy.
-function readTable(name) {
-  if (!state.tables.has(name)) {
-    const rows = name.startsWith("LShuf")
-      ? configRows(`SELECT * FROM ${name}`)
-      : configRows(`SELECT * FROM LShufSetup_${name}`).filter((row) => keepRow(name, row));
-    state.tables.set(name, rows);
-  }
-  return state.tables.get(name);
-}
+// readTable for buildDealInput: the shared setup-side reader (ui/setup/lshuf-setup-tables.js).
+const readTable = readSetupTable;
 
 // The shipped ability keys of a leader: its LeaderItems row names the trait, the setup copy holds the keys.
 function abilityOf(leaderType) {
