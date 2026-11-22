@@ -7,14 +7,15 @@
 
 import {
   A_MODE, B_MODE, BUILD, BUILD_KIND, CU_MODE, BUILD_UNREVIEWED_BULLETS, BIAS_TABLES, CIV_OWN_AGE_PIECES,
-  GENERIC_BIASES, ONOFF, PARAM, T_MODE,
+  GENERIC_BIASES, ONOFF, PARAM, T_MODE, UNIQUE_EXTRA_SLOTS,
   biasTableOfTag, pieceId,
   splitTags, joinTags, buildKindOf
 } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import { KNOWN_LEADERS } from "/uncharted-leaders-and-civs/shared/lshuf-known-leaders.js";
-import { joinBullets, splitBullets } from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
+import { joinBullets, mergedBullets, splitBullets } from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
+import { greatPeopleRows, markBundleNotes } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-notes.js";
 import {
-  findParam, paramValue, setParam, startAge
+  findParam, humanFollows, paramValue, setParam, startAge
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import { isLocalHost } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
 import {
@@ -56,8 +57,10 @@ export function hostCiv() {
 }
 
 // Why the screen is disabled, or null when the player can build: the matching LOC_LSHUF_BUILD_* note.
-// Any of the three parts doing something (not Normal, not Off), the deal's `active`.
+// Any of the three parts doing something (not Normal, not Off), the deal's `active`, or you on a mode of your own
+// (CONTRACTS 34), where your cards count whatever the AI players' parts say.
 export function partsActive() {
+  if (!humanFollows()) return true;
   const live = (paramId, normal) => {
     const v = paramValue(paramId) || normal;
     return v !== normal && v !== ONOFF.Off;
@@ -343,7 +346,8 @@ function abilityCards(ctx) {
       const text = bulletPieceText(b, live);
       cards.push({
         ...base, id: b.PieceId, kind: BUILD_KIND.Bullet, name: `${ability.name} ${first}`, text,
-        value: Number(b.Value || 1), reviewed: reviewed || BUILD_UNREVIEWED_BULLETS, bullets: 1
+        value: Number(b.Value || 1), reviewed: reviewed || BUILD_UNREVIEWED_BULLETS, bullets: 1,
+        merged: mergedBullets(b)
       });
     }
   }
@@ -437,6 +441,7 @@ function civBulletCards(ctx, civ, base, ability) {
     .map((p) => ({
       ...base, id: p.PieceId, kind: BUILD_KIND.CivBullet, name: `${ability.name} ${Number(p.BulletIndex)}`,
       text: bulletPieceText(p, live, civPieceKey(p.PieceId, startAge() || null)), value: Number(p.Value || 1),
+      merged: mergedBullets(p),
       ...(p.GoesWithId ? { goesWith: String(p.GoesWithId) } : {})
     }));
 }
@@ -551,6 +556,7 @@ export function buildCards(builder, builderCiv = null) {
   cards.push(...civCards(ctx, builderCiv));
   markCivBiasAges(ctx, cards, builderCiv);
   markGoesWith(cards);
+  markBundleNotes(cards, greatPeopleRows());
   // Kind by kind; within start terrain the generic cards sit together at the front; then the builder's own, then
   // by name.
   cards.sort((a, b) => GRID_ORDER.indexOf(a.kind) - GRID_ORDER.indexOf(b.kind)
@@ -582,7 +588,9 @@ export function markGoesWith(cards) {
 
 // The builder's slots: what its leader gave up. ability: bullet count in the mapping (0 -> 1 whole slot);
 // attributes: its own attribute count; behavior 1; terrain 1; civAbility: the civ's own movable bonus count (0 -> 1
-// whole slot), civUniques: its own unique count (0 -> 1), civCivics: one slot for a whole tree, or with single civic
+// whole slot), civUniques: its own unique count with room for UNIQUE_EXTRA_SLOTS at least (CONTRACTS 35; the build
+// window adds the extra slots on top where the civ keeps its own, uniqueSlotCount), ownUniques: that own count,
+// civCivics: one slot for a whole tree, or with single civic
 // cards shown (wholeCivics false) the civ's own civic count (0 -> 1, so a civ with no tree of its own still takes
 // civics); civTerrain 1. The civ groups need a civ picked by hand.
 export function slotCounts(builder, civ, cards, wholeCivics = true) {
@@ -603,7 +611,8 @@ export function slotCounts(builder, civ, cards, wholeCivics = true) {
     behavior: 1,
     terrain: 1,
     civAbility: civ ? Math.max(1, civBullets) : 0,
-    civUniques: civ ? Math.max(1, ownUniques) : 0,
+    civUniques: civ ? uniqueSlotCount(ownUniques, false) : 0,
+    ownUniques: civ ? ownUniques : 0,
     civCivics: civ ? civicSlotCount(ownCivics, wholeCivics) : 0,
     civTerrain: civ ? 1 : 0
   };
@@ -613,6 +622,33 @@ export function slotCounts(builder, civ, cards, wholeCivics = true) {
 // Civilization uniques Split up the builder's own uniques go into the shuffle and it holds only its picks; under Off
 // entirely nobody keeps theirs; on every other setting the game keeps the civ's own and adds what it took.
 export const uniquesStayOwn = (cuMode) => cuMode !== CU_MODE.Split && cuMode !== CU_MODE.Off;
+
+// How many unique slots a builder civ has (CONTRACTS 35): where it keeps its own uniques, its own count (they start
+// in the slots) plus UNIQUE_EXTRA_SLOTS; otherwise enough for its own count or a whole set of another civ's, whichever
+// is more.
+export const uniqueSlotCount = (own, stay) => (stay ? own + UNIQUE_EXTRA_SLOTS : Math.max(own, UNIQUE_EXTRA_SLOTS));
+
+// --- your civilization's own uniques (CONTRACTS 35) ---
+
+const UNIQUE_PREFIX = "CIVUNQ_";
+const DROP_PREFIX = "CIVDROP_";
+export const isDrop = (id) => buildKindOf(String(id)) === BUILD_KIND.CivUniqueDrop;
+export const uniqueOfDrop = (id) => `${UNIQUE_PREFIX}${String(id).slice(DROP_PREFIX.length)}`;
+export const dropOfUnique = (id) => BUILD.civUniqueDrop(String(id).slice(UNIQUE_PREFIX.length));
+
+// The builder civ's own uniques still in its slots, where the settings keep them (stay): each own unique card with no
+// drop among the picks. Pure.
+export function keptOwnUniques(cards, picks, stay) {
+  if (!stay) return [];
+  const dropped = new Set(picks.filter(isDrop).map(uniqueOfDrop));
+  return cards.filter((c) => c.kind === BUILD_KIND.CivUnique && c.own && !dropped.has(c.id) && !picks.includes(c.id))
+    .map((c) => c.id);
+}
+
+// What sits in the slots, in order: the kept own uniques, then the picks, the drops left out. Pure.
+export const slotPicks = (cards, picks, stay) => [
+  ...keptOwnUniques(cards, picks, stay), ...picks.filter((id) => !isDrop(id))
+];
 
 // How many civics slots a builder civ has: one for a whole tree, else one per civic of its own tree (at least one).
 export const civicSlotCount = (ownCivics, wholeCivics) => (wholeCivics ? 1 : Math.max(1, ownCivics));
@@ -661,6 +697,11 @@ export function slotsUsed(picks, counts) {
 // The card an id belongs to: the id's own card, or for an attribute's second copy the attribute's card.
 export function cardFor(byId, id) {
   if (byId.has(id)) return byId.get(id);
+  // A drop answers to the own unique it takes out; a drop of a civ other than the page's builder civ to nothing.
+  if (isDrop(id)) {
+    const own = byId.get(uniqueOfDrop(id));
+    return own && own.own ? own : null;
+  }
   if (buildKindOf(id) === BUILD_KIND.Attribute) return byId.get(BUILD.attribute(BUILD.attributeTrait(id))) || null;
   return null;
 }
@@ -683,7 +724,28 @@ export function nextIdFor(card, picks) {
   return have >= 2 ? null : BUILD.attribute(BUILD.attributeTrait(card.id), have + 1);
 }
 
-export function cantTake(card, picks, counts) {
+// The slot groups with no limit while the page's AI players' setting reads Custom (CONTRACTS 35, "Taking more than
+// the normal number"): every group but start terrain and AI behavior.
+export const OPEN_GROUPS = ["ability", "attributes", "civAbility", "civUniques", "civCivics"];
+
+// How many slots a group draws: its normal count, or in an open group one more than it holds once it's full, so
+// there's always an empty slot to click into.
+export function slotsShown(group, picks, counts, open = false) {
+  const n = counts[group] || 0;
+  if (!n || !open || !OPEN_GROUPS.includes(group)) return n;
+  return Math.max(n, slotsUsed(picks, counts)[group] + 1);
+}
+
+// The open groups holding more than their normal count: [{ group, have, normal }], in slot group order.
+export function overGroups(picks, counts, open = false) {
+  if (!open) return [];
+  const used = slotsUsed(picks, counts);
+  return OPEN_GROUPS.filter((g) => counts[g] > 0 && used[g] > counts[g])
+    .map((g) => ({ group: g, have: used[g], normal: counts[g] }));
+}
+
+// `open`: the page's AI players' setting reads Custom, and the open groups take any number of cards.
+export function cantTake(card, picks, counts, open = false) {
   if (nextIdFor(card, picks) == null) return "taken";
   if (!card.reviewed) return "unreviewed";
   if (card.ageOnly) return "otherage";
@@ -691,6 +753,7 @@ export function cantTake(card, picks, counts) {
   const used = slotsUsed(picks, counts);
   const group = slotOfKind(card.kind);
   if (isWholeCard(card.kind)) return used[group] > 0 ? "full" : null;
+  if (open && OPEN_GROUPS.includes(group)) return null;
   if (used[group] >= counts[group]) return "full";
   // A card that brings others along needs a slot for each (CONTRACTS 23).
   return used[group] + slotWeight(card.id) > counts[group] ? "bundle" : null;

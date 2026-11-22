@@ -20,22 +20,22 @@ INSERT OR IGNORE INTO Parameters (ParameterID, Name, Description, Domain, Array,
   SupportsHotseatMultiplayer, ChangeableAfterGameStart, UxHint, SortIndex)
 VALUES
   ('LShufMode', 'LOC_LSHUF_MODE_NAME', 'LOC_LSHUF_MODE_DESC', 'LShufModeValues', 0, 'LSHUF_MODE_NONE', 'Game', 'LShufMode', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2300),
-  ('LShufBiases', 'LOC_LSHUF_BIASES_NAME', 'LOC_LSHUF_BIASES_DESC', 'LShufBValues', 0, 'LSHUF_B_NORMAL', 'Game', 'LShufBiases', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2303),
-  ('LShufCivMode', 'LOC_LSHUF_CIV_MODE_NAME', 'LOC_LSHUF_CIV_MODE_DESC', 'LShufCivModeValues', 0, 'LSHUF_CM_NORMAL', 'Game', 'LShufCivMode', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2304),
-  ('LShufCivAbilities', 'LOC_LSHUF_CIV_ABILITIES_NAME', 'LOC_LSHUF_CIV_ABILITIES_DESC', 'LShufCAValues', 0, 'LSHUF_CA_NORMAL', 'Game', 'LShufCivAbilities', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2305),
-  ('LShufCivUniques', 'LOC_LSHUF_CIV_UNIQUES_NAME', 'LOC_LSHUF_CIV_UNIQUES_DESC', 'LShufCUValues', 0, 'LSHUF_CU_NORMAL', 'Game', 'LShufCivUniques', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2306),
-  ('LShufCivCivics', 'LOC_LSHUF_CIV_CIVICS_NAME', 'LOC_LSHUF_CIV_CIVICS_DESC', 'LShufCCValues', 0, 'LSHUF_CC_NORMAL', 'Game', 'LShufCivCivics', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2307),
-  ('LShufAbilities', 'LOC_LSHUF_ABILITIES_NAME', 'LOC_LSHUF_ABILITIES_DESC', 'LShufAValues', 0, 'LSHUF_A_NORMAL', 'Game', 'LShufAbilities', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2301),
-  ('LShufAttributes', 'LOC_LSHUF_ATTRIBUTES_NAME', 'LOC_LSHUF_ATTRIBUTES_DESC', 'LShufTValues', 0, 'LSHUF_T_NORMAL', 'Game', 'LShufAttributes', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2302),
-  ('LShufKeepMine', 'LOC_LSHUF_KEEP_MINE_NAME', 'LOC_LSHUF_KEEP_MINE_DESC', 'bool', 0, 0, 'Game', 'LShufKeepMine', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2309),
-  ('LShufKeepBuiltCiv', 'LOC_LSHUF_KEEP_BUILT_CIV_NAME', 'LOC_LSHUF_KEEP_BUILT_CIV_DESC', 'bool', 0, 1, 'Game', 'LShufKeepBuiltCiv', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2310),
+  ('LShufBiases', 'LOC_LSHUF_BIASES_NAME', 'LOC_LSHUF_BIASES_DESC', 'LShufBValues', 0, 'LSHUF_B_NORMAL', 'Game', 'LShufBiases', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2303),
+  ('LShufCivMode', 'LOC_LSHUF_CIV_MODE_NAME', 'LOC_LSHUF_CIV_MODE_DESC', 'LShufCivModeValues', 0, 'LSHUF_CM_NORMAL', 'Game', 'LShufCivMode', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2301),
+  ('LShufCivAbilities', 'LOC_LSHUF_CIV_ABILITIES_NAME', 'LOC_LSHUF_CIV_ABILITIES_DESC', 'LShufCAValues', 0, 'LSHUF_CA_NORMAL', 'Game', 'LShufCivAbilities', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2305),
+  ('LShufCivUniques', 'LOC_LSHUF_CIV_UNIQUES_NAME', 'LOC_LSHUF_CIV_UNIQUES_DESC', 'LShufCUValues', 0, 'LSHUF_CU_NORMAL', 'Game', 'LShufCivUniques', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2306),
+  ('LShufCivCivics', 'LOC_LSHUF_CIV_CIVICS_NAME', 'LOC_LSHUF_CIV_CIVICS_DESC', 'LShufCCValues', 0, 'LSHUF_CC_NORMAL', 'Game', 'LShufCivCivics', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2307),
+  ('LShufAbilities', 'LOC_LSHUF_ABILITIES_NAME', 'LOC_LSHUF_ABILITIES_DESC', 'LShufAValues', 0, 'LSHUF_A_NORMAL', 'Game', 'LShufAbilities', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2301),
+  ('LShufAttributes', 'LOC_LSHUF_ATTRIBUTES_NAME', 'LOC_LSHUF_ATTRIBUTES_DESC', 'LShufTValues', 0, 'LSHUF_T_NORMAL', 'Game', 'LShufAttributes', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2302),
+  ('LShufKeepMine', 'LOC_LSHUF_KEEP_MINE_NAME', 'LOC_LSHUF_KEEP_MINE_DESC', 'bool', 0, 0, 'Game', 'LShufKeepMine', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2309),
+  ('LShufKeepBuiltCiv', 'LOC_LSHUF_KEEP_BUILT_CIV_NAME', 'LOC_LSHUF_KEEP_BUILT_CIV_DESC', 'bool', 0, 1, 'Game', 'LShufKeepBuiltCiv', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2310),
   ('LShufLeadersOut', 'LOC_LSHUF_LEADERS_OUT_NAME', 'LOC_LSHUF_LEADERS_OUT_DESC', 'LShufLeaderValues', 1, NULL, 'Game', 'LShufExcludedLeaders', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, 'InvertSelection', 2305),
   ('LShufModdedAbilities', 'LOC_LSHUF_MODDED_ABILITIES_NAME', 'LOC_LSHUF_MODDED_ABILITIES_DESC', 'bool', 0, 0, 'Game', 'LShufModdedAbilities', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2306),
   ('LShufModdedAttributes', 'LOC_LSHUF_MODDED_ATTRIBUTES_NAME', 'LOC_LSHUF_MODDED_ATTRIBUTES_DESC', 'bool', 0, 0, 'Game', 'LShufModdedAttributes', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2307),
   ('LShufModdedBiases', 'LOC_LSHUF_MODDED_BIASES_NAME', 'LOC_LSHUF_MODDED_BIASES_DESC', 'bool', 0, 0, 'Game', 'LShufModdedBiases', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2308),
   ('LShufModdedOut', 'LOC_LSHUF_MODDED_OUT_NAME', 'LOC_LSHUF_MODDED_OUT_DESC', 'LShufModdedLeaderValues', 1, NULL, 'Game', 'LShufExcludedModdedLeaders', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, 'InvertSelection', 2309),
   ('LShufLeaderPoolOut', 'LOC_LSHUF_POOL_NAME', 'LOC_LSHUF_POOL_DESC', 'LShufPoolLeaderValues', 1, NULL, 'Game', 'LShufLeaderPoolOut', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, 'InvertSelection', 2310),
-  ('LShufPersonality', 'LOC_LSHUF_PERSONALITY_NAME', 'LOC_LSHUF_PERSONALITY_DESC', 'LShufPersonalityValues', 0, 'LSHUF_PERSONA_FOLLOWS', 'Game', 'LShufPersonality', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2308),
+  ('LShufPersonality', 'LOC_LSHUF_PERSONALITY_NAME', 'LOC_LSHUF_PERSONALITY_DESC', 'LShufPersonalityValues', 0, 'LSHUF_PERSONA_FOLLOWS', 'Game', 'LShufPersonality', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2304),
   ('LShufDealing', 'LOC_LSHUF_DEALING_NAME', 'LOC_LSHUF_DEALING_DESC', 'LShufDealingValues', 0, 'LSHUF_DEAL_BALANCED', 'Game', 'LShufDealing', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2312),
   ('LShufReveal', 'LOC_LSHUF_REVEAL_NAME', 'LOC_LSHUF_REVEAL_DESC', 'LShufRevealValues', 0, 'LSHUF_REVEAL_START', 'Game', 'LShufReveal', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2311),
   ('LShufSeed', 'LOC_LSHUF_SEED_NAME', 'LOC_LSHUF_SEED_DESC', 'text', 0, '1', 'Game', 'LShufSeed', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2314),
@@ -47,10 +47,11 @@ VALUES
   ('LShufBuildFor3', 'LOC_LSHUF_BUILD_FOR', 'LOC_LSHUF_BUILD_INTRO', 'text', 0, NULL, 'Game', 'LShufBuildFor3', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2320),
   ('LShufBuildPicks4', 'LOC_LSHUF_BUILD_TITLE', 'LOC_LSHUF_BUILD_INTRO', 'text', 0, NULL, 'Game', 'LShufBuildPicks4', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2321),
   ('LShufBuildFor4', 'LOC_LSHUF_BUILD_FOR', 'LOC_LSHUF_BUILD_INTRO', 'text', 0, NULL, 'Game', 'LShufBuildFor4', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2322),
-  -- Your own mode (CONTRACTS 33), on the two build pages only: follow the AI players' settings, or your own modes.
+  -- Your own mode (CONTRACTS 33, 34): Your leader and Your civilization are rows in the section; the setup writes
+  -- LShufHumanFollows from them ("1" when both are Same as the AI players).
   ('LShufHumanFollows', 'LOC_LSHUF_HUMAN_FOLLOWS_NAME', 'LOC_LSHUF_HUMAN_FOLLOWS_DESC', 'bool', 0, 1, 'Game', 'LShufHumanFollows', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2324),
-  ('LShufHumanMode', 'LOC_LSHUF_HUMAN_MODE_NAME', 'LOC_LSHUF_HUMAN_MODE_DESC', 'LShufHumanModeValues', 0, 'LSHUF_MODE_NONE', 'Game', 'LShufHumanMode', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2325),
-  ('LShufHumanCivMode', 'LOC_LSHUF_HUMAN_CIV_MODE_NAME', 'LOC_LSHUF_HUMAN_CIV_MODE_DESC', 'LShufHumanCivModeValues', 0, 'LSHUF_CM_NORMAL', 'Game', 'LShufHumanCivMode', 'GameOptions', 1, 0, 1, 1, 1, 1, 0, NULL, 2326);
+  ('LShufHumanMode', 'LOC_LSHUF_HUMAN_MODE_NAME', 'LOC_LSHUF_HUMAN_MODE_DESC', 'LShufHumanModeValues', 0, 'LSHUF_MODE_SAME', 'Game', 'LShufHumanMode', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2302),
+  ('LShufHumanCivMode', 'LOC_LSHUF_HUMAN_CIV_MODE_NAME', 'LOC_LSHUF_HUMAN_CIV_MODE_DESC', 'LShufHumanCivModeValues', 0, 'LSHUF_CM_SAME', 'Game', 'LShufHumanCivMode', 'LShufOptions', 0, 0, 1, 1, 1, 1, 0, NULL, 2303);
 
 -- Values of the select options, in the order the window lists them.
 INSERT OR IGNORE INTO DomainValues (Domain, Value, Name, Description, SortIndex) VALUES
@@ -67,14 +68,16 @@ INSERT OR IGNORE INTO DomainValues (Domain, Value, Name, Description, SortIndex)
   ('LShufCivModeValues', 'LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL_DESC', 30),
   ('LShufCivModeValues', 'LSHUF_CM_SPLIT', 'LOC_LSHUF_CM_SPLIT', 'LOC_LSHUF_CM_SPLIT_DESC', 40),
   ('LShufCivModeValues', 'LSHUF_CM_CUSTOM', 'LOC_LSHUF_CM_CUSTOM', 'LOC_LSHUF_CM_CUSTOM_DESC', 50),
-  -- Your own Leader mode and Civilization mode (CONTRACTS 33): the presets, no Custom; the same names as the AI's.
+  -- Your leader and Your civilization (CONTRACTS 33, 34): Same as the AI players, then the presets, no Custom. Your
+  -- leader leaves out New personalities, which only changes how an AI behaves.
+  ('LShufHumanModeValues', 'LSHUF_MODE_SAME', 'LOC_LSHUF_MODE_SAME', 'LOC_LSHUF_MODE_SAME_DESC', 5),
   ('LShufHumanModeValues', 'LSHUF_MODE_NONE', 'LOC_LSHUF_MODE_NONE', 'LOC_LSHUF_MODE_NONE_DESC', 10),
-  ('LShufHumanModeValues', 'LSHUF_MODE_AGENDAS', 'LOC_LSHUF_MODE_AGENDAS', 'LOC_LSHUF_MODE_AGENDAS_DESC', 12),
   ('LShufHumanModeValues', 'LSHUF_MODE_AGENDAS_ATTRIBUTES', 'LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES', 'LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES_DESC', 14),
   ('LShufHumanModeValues', 'LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS', 'LOC_LSHUF_MODE_SWAP_LEADERS_DESC', 20),
   ('LShufHumanModeValues', 'LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES', 'LOC_LSHUF_MODE_SWAP_ABILITIES_DESC', 30),
   ('LShufHumanModeValues', 'LSHUF_MODE_SPLIT_MATCHED', 'LOC_LSHUF_MODE_SPLIT_MATCHED', 'LOC_LSHUF_MODE_SPLIT_MATCHED_DESC', 40),
   ('LShufHumanModeValues', 'LSHUF_MODE_SPLIT_RANDOM', 'LOC_LSHUF_MODE_SPLIT_RANDOM', 'LOC_LSHUF_MODE_SPLIT_RANDOM_DESC', 50),
+  ('LShufHumanCivModeValues', 'LSHUF_CM_SAME', 'LOC_LSHUF_CM_SAME', 'LOC_LSHUF_CM_SAME_DESC', 5),
   ('LShufHumanCivModeValues', 'LSHUF_CM_NORMAL', 'LOC_LSHUF_CM_NORMAL', 'LOC_LSHUF_CM_NORMAL_DESC', 10),
   ('LShufHumanCivModeValues', 'LSHUF_CM_WHOLE', 'LOC_LSHUF_CM_WHOLE', 'LOC_LSHUF_CM_WHOLE_DESC', 20),
   ('LShufHumanCivModeValues', 'LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL', 'LOC_LSHUF_CM_PARTIAL_DESC', 30),

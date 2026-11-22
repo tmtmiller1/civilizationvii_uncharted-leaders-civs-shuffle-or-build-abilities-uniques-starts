@@ -3,7 +3,56 @@
 Changes to Uncharted Leaders & Civs for Civilization VII. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and Semantic Versioning.
 
-## [1.0.0] - Unreleased
+## [1.0.2] - 2026-11-22
+
+### Changed
+- Your civilization's own uniques start in its unique slots on Build your own civilization, and you can take them out.
+  A unique you take out goes to another civilization of the age. This applies when Civilization uniques is on Base
+  game, Follows ability or Swap whole.
+- Every civilization has room for its own uniques plus two more, so a civilization with one unique unit can still take
+  another's pair.
+- With a page set to Custom, you can take as many cards as you like into every part but start terrain and AI behavior.
+  A line under the slots says when a part holds more than its normal number, since that makes your build stronger.
+
+### Fixed
+- The build window flickered on the setup screens.
+- The setting names on the build pages overlapped their dropdowns.
+- A card's tooltip stayed on screen after a click, covering the window's tabs.
+- Two-line card names sat on the leader's portrait, a card's number could wrap onto a line of its own, and the main
+  menu's text showed through behind the cards.
+
+## [1.0.1] - 2026-11-21
+
+### Changed
+- The settings section asks two questions. **AI players' leaders** and **AI players' civilizations** say how the AI
+  players are shuffled, and **Your leader** and **Your civilization** say how you are: Same as the AI players, or a
+  choice of your own. A line under each dropdown says what the current pick does. This replaces the Follow the AI
+  players' settings box on the build pages.
+- The choices are renamed to say what happens: Play as normal, Trade places (everything from one other leader or
+  civilization), Mixed swap (an ability from one, the rest from others), Mix bonuses (single bonuses from several,
+  with starts that suit them) and, for leaders, Mix bonuses with a random start, New personalities, and New
+  personalities and attributes. Saved games keep their settings.
+- AI agendas is now **Leader personalities**: As the game made them, Follow their bonuses or Shuffled. The New
+  personalities choices set it to Shuffled.
+- The rows for each part (abilities, attributes, start terrain, and the civilization rows) moved behind the
+  Advanced settings... button.
+- Human players keep their own leader and Keep my built civilization are gone from the screen. Your leader on Play
+  as normal keeps your own leader, and cards you build always count.
+- A note wherever things come together or one choice sets another: on build cards and slots (whole abilities,
+  merged bonuses, a bonus that goes with a unique, the great person a civic or ability brings), on the settings whose
+  pick sets or depends on another row, and in Who got what for bonuses that came together.
+
+### Fixed
+- Build your own civilization between ages offered only the cards of the age you were leaving. It now offers the
+  next age's abilities, uniques and civics, and marks the rest as another age.
+- Between ages you couldn't take out the cards you picked at setup, and new cards didn't stick. Both work now, and
+  Clear all slots leaves your slots empty.
+- The civilization select between ages showed the next age's civilizations with a swapped ability but their own
+  uniques and civics. They now show the uniques and civics they'll be dealt in that age.
+- The civilization you pick between ages takes your built cards into the new age. Before, they stayed with the
+  civilization you were leaving.
+
+## [1.0.0] - 2026-11-12
 
 The first release.
 

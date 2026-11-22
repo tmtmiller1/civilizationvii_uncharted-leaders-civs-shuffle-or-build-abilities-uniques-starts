@@ -6,6 +6,7 @@
 //
 // With "Show what everyone got: As you meet them", a leader shows as shipped until the local player meets them.
 import { KEY } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
+import { mergedBullets } from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
 import {
   leaderView,
   previewDifferences,
@@ -116,6 +117,11 @@ function revealContent() {
   const data = state.data;
   const attributeOf = new Map();
   for (const row of readGameplay("LShufAttributeTraits")) attributeOf.set(row.TraitType, row.AttributeType);
+  const merged = new Map();
+  for (const row of readGameplay("LShufMapping")) {
+    const nums = mergedBullets(row);
+    if (nums) merged.set(String(row.PieceId), nums);
+  }
   const metOnly = isMetMode(data.reveal);
   return {
     deal: data.deal,
@@ -123,6 +129,7 @@ function revealContent() {
     mode: data.mode,
     attributeOf,
     abilityOf: state.context.ctx.abilityOf,
+    mergedOf: (pieceId) => merged.get(String(pieceId)) || null,
     whyOf: (leaderType) => guarded("why", () => Configuration.getGame().getValue(KEY.modWhy(leaderType)), null),
     viewOf,
     // With As you meet them, only the local player's leader and the leaders they've met show their deal.

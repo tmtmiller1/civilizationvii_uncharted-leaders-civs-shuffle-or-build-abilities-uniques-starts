@@ -22,7 +22,7 @@ Notes for translators:
   language when the mod is built, so translators can skip them.
 - When a key's English changes meaning, delete that key from each language file so the stale translation isn't kept.
 
-301 keys to translate.
+369 keys to translate.
 
 ## The mod
 
@@ -67,10 +67,8 @@ Notes for translators:
 | `LOC_LSHUF_BUILD_SLOT_CIV_ABILITY` | Ability |
 | `LOC_LSHUF_BUILD_SLOTS_CIV_UNIQUES` | Uniques |
 | `LOC_LSHUF_BUILD_CIV_SWAP_NOTE` | Taking a whole ability swaps it: that civilization gets yours. |
-| `LOC_LSHUF_BUILD_CIV_UNIQUES_ADD_NOTE` | You keep your own uniques. These are added. |
+| `LOC_LSHUF_BUILD_CIV_UNIQUES_ADD_NOTE` | Your own uniques start here. Take one out and another civilization of the age gets it, and its slot is free for another unique. |
 | `LOC_LSHUF_BUILD_CIV_UNIQUES_SPLIT_NOTE` | Your own uniques are shuffled away. You play with these. |
-| `LOC_LSHUF_BUILD_SLOTS_CIV_UNIQUES_ADD` | Added uniques |
-| `LOC_LSHUF_BUILD_SLOTS_CIV_UNIQUES_KEPT` | Your uniques |
 | `LOC_LSHUF_BUILD_EVERY_AGE_TIP` | Also show abilities and start terrain from other ages. |
 | `LOC_LSHUF_BUILD_SLOT_RIDER` | Comes with {2_Lead}. Click to remove both. |
 | `LOC_LSHUF_BUILD_GROUP_TIP_ABILITY` | Single bonuses, or one whole ability. |
@@ -81,7 +79,6 @@ Notes for translators:
 | `LOC_LSHUF_BUILD_GROUP_TIP_CIV_UNIQUES` | Unique units, one per slot. |
 | `LOC_LSHUF_BUILD_GROUP_TIP_CIV_CIVICS` | Single civics, or one whole civics tree. |
 | `LOC_LSHUF_BUILD_GROUP_TIP_CIV_TERRAIN` | Where your civilization starts. |
-| `LOC_LSHUF_BUILD_SLOTS_CIV_UNIQUES_KEPT_TIP` | You keep this one. |
 | `LOC_LSHUF_BUILD_UNIQUE_KIND_UNIT` | Unique unit |
 | `LOC_LSHUF_BUILD_UNIQUE_KIND_BUILDING` | Unique building |
 | `LOC_LSHUF_BUILD_UNIQUE_KIND_QUARTER` | Unique quarter (with its two buildings) |
@@ -91,24 +88,18 @@ Notes for translators:
 | `LOC_LSHUF_BUILD_SELECT` | Select |
 | `LOC_LSHUF_CU_SPLIT_DESC` | Each unique goes to a random civilization. Everyone gets the same number back. |
 | `LOC_LSHUF_CC_SPLIT_DESC` | Each civic goes to a random civilization. Everyone gets the same number back. |
-| `LOC_LSHUF_BUILD_MODE_AUTO` | Leader mode is No shuffle. Take a card and Leader mode switches to Mix bonuses, random start. |
-| `LOC_LSHUF_BUILD_MODE_TURNED_ON` | Leader mode is now Mix bonuses, random start. |
+| `LOC_LSHUF_BUILD_MODE_AUTO` | Your leader is Same as the AI players, and they play as normal. Take a card and Your leader turns to Play as normal, with your cards on top. |
+| `LOC_LSHUF_BUILD_MODE_TURNED_ON` | Your leader is now Play as normal, with your cards on top. The AI players stay as they were. |
 | `LOC_LSHUF_POOL_BADGE` | Pool |
 | `LOC_LSHUF_POOL_TIP` | Leader pool: choose which leaders Random can pick. |
 | `LOC_LSHUF_BUILD_PAGE_ME_LEADER` | Your leader |
 | `LOC_LSHUF_BUILD_PAGE_ME_CIV` | Your civilization |
-| `LOC_LSHUF_BUILD_SHUFFLE_TITLE` | Shuffle for everyone |
-| `LOC_LSHUF_BUILD_SHUFFLE_NOTE` | These shuffle abilities, attributes and start terrain at random for the whole game, AI players included. You don't need to build anything to use them. |
-| `LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV` | These shuffle civilization abilities, uniques and civics at random for the whole game, AI players included. You don't need to build anything to use them. |
-| `LOC_LSHUF_BUILD_SHUFFLE_TITLE_AI` | Shuffle for the AI players |
-| `LOC_LSHUF_BUILD_SHUFFLE_NOTE_AI` | These shuffle the AI players' abilities, attributes and start terrain at random. You play by your own Leader mode. |
-| `LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV_AI` | These shuffle the AI players' civilization abilities, uniques and civics at random. You play by your own Civilization mode. |
 | `LOC_LSHUF_HUMAN_FOLLOWS_NAME` | Follow the AI players' settings |
 | `LOC_LSHUF_HUMAN_FOLLOWS_DESC` | Ticked, you're shuffled the same way as the AI players. Pick your own Leader mode or Civilization mode to play by your own settings, and the AI players keep the settings below. |
-| `LOC_LSHUF_HUMAN_MODE_NAME` | Your Leader mode |
-| `LOC_LSHUF_HUMAN_MODE_DESC` | How your own leader gets shuffled. Picking one stops you following the AI players' settings. Cards you build still come first. |
-| `LOC_LSHUF_HUMAN_CIV_MODE_NAME` | Your Civilization mode |
-| `LOC_LSHUF_HUMAN_CIV_MODE_DESC` | How your own civilization gets shuffled. Picking one stops you following the AI players' settings. Cards you build still come first. |
+| `LOC_LSHUF_HUMAN_MODE_NAME` | Your leader |
+| `LOC_LSHUF_HUMAN_MODE_DESC` | How your own leader is shuffled: the same way as the AI players, or a way of your own. Cards you build stay yours either way. |
+| `LOC_LSHUF_HUMAN_CIV_MODE_NAME` | Your civilization |
+| `LOC_LSHUF_HUMAN_CIV_MODE_DESC` | How your own civilization is shuffled: the same way as the AI players, or a way of your own. Cards you build stay yours either way. |
 | `LOC_LSHUF_CIV_POOL_TIP` | Civilization pool: choose which civilizations Random can pick. |
 | `LOC_LSHUF_BTN_AI_PLAYERS` | AI players... |
 | `LOC_LSHUF_AI_PLAYERS_TITLE` | AI players |
@@ -118,7 +109,7 @@ Notes for translators:
 | `LOC_LSHUF_BUILD_NONE_YET` | not picked yet |
 | `LOC_LSHUF_BUILD_YOUR_LEADER` | Your leader: {1_Name} |
 | `LOC_LSHUF_BUILD_NO_LEADER` | Pick your leader to start. |
-| `LOC_LSHUF_BUILD_MODE_OFF` | Leader mode is No shuffle, so these picks won't be used. Pick a Leader mode to build. |
+| `LOC_LSHUF_BUILD_MODE_OFF` | Your leader is Same as the AI players, and they play as normal, so these picks won't be used. Pick a mode for Your leader to build. |
 | `LOC_LSHUF_BUILD_HOST_ONLY` | Only the host builds a leader in this version. |
 | `LOC_LSHUF_BUILD_SLOTS_ABILITY` | Ability |
 | `LOC_LSHUF_BUILD_SLOTS_ATTRIBUTES` | Attributes |
@@ -168,8 +159,8 @@ Notes for translators:
 
 | Key | English |
 | --- | --- |
-| `LOC_LSHUF_MODE_NAME` | Leader mode |
-| `LOC_LSHUF_MODE_DESC` | How leaders get shuffled. Picking one sets the Leader rows below. |
+| `LOC_LSHUF_MODE_NAME` | AI players' leaders |
+| `LOC_LSHUF_MODE_DESC` | How the AI players' leaders are shuffled. Picking one sets the rows under Advanced settings..., and the two New personalities modes also set Leader personalities to Shuffled. |
 | `LOC_LSHUF_BIASES_NAME` | Leader start terrain |
 | `LOC_LSHUF_BIASES_DESC` | Where each leader likes to start. |
 | `LOC_LSHUF_ABILITIES_NAME` | Leader abilities |
@@ -192,8 +183,8 @@ Notes for translators:
 | `LOC_LSHUF_MODDED_OUT_DESC` | The supported modded leaders you have installed. Unticked ones play exactly as their mod made them. |
 | `LOC_LSHUF_POOL_NAME` | Leader pool |
 | `LOC_LSHUF_POOL_DESC` | Random slots only get ticked leaders. A leader someone picks by hand stays. |
-| `LOC_LSHUF_PERSONALITY_NAME` | AI agendas |
-| `LOC_LSHUF_PERSONALITY_DESC` | How the AI leaders behave after the shuffle. |
+| `LOC_LSHUF_PERSONALITY_NAME` | Leader personalities |
+| `LOC_LSHUF_PERSONALITY_DESC` | How the AI leaders behave: as the game made them, like the leader their bonuses came from, or shuffled. |
 | `LOC_LSHUF_DEALING_NAME` | Split fairness |
 | `LOC_LSHUF_DEALING_DESC` | For Split up: whether strong bonuses are shared out evenly. |
 | `LOC_LSHUF_REVEAL_NAME` | Reveal who got what |
@@ -205,34 +196,34 @@ Notes for translators:
 
 | Key | English |
 | --- | --- |
-| `LOC_LSHUF_MODE_NONE` | No shuffle |
-| `LOC_LSHUF_MODE_NONE_DESC` | Every leader plays as normal. |
-| `LOC_LSHUF_MODE_AGENDAS` | Agendas only |
-| `LOC_LSHUF_MODE_AGENDAS_DESC` | Abilities, attributes and start terrain stay as they are. The AI agendas are shuffled. |
-| `LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES` | Agendas and attributes |
-| `LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES_DESC` | Abilities and start terrain stay as they are. Attributes and AI agendas are shuffled. |
-| `LOC_LSHUF_MODE_SWAP_ABILITIES` | Swap partial |
-| `LOC_LSHUF_MODE_SWAP_ABILITIES_DESC` | Each leader gets another leader's whole ability. Attributes are dealt out separately, and start terrain is a random roll. |
-| `LOC_LSHUF_MODE_SWAP_LEADERS` | Swap whole |
-| `LOC_LSHUF_MODE_SWAP_LEADERS_DESC` | Each leader gets another leader's ability, attributes and start terrain, all from the same leader. |
+| `LOC_LSHUF_MODE_NONE` | Play as normal |
+| `LOC_LSHUF_MODE_NONE_DESC` | Everyone plays as the game made them. |
+| `LOC_LSHUF_MODE_AGENDAS` | New personalities |
+| `LOC_LSHUF_MODE_AGENDAS_DESC` | Same leaders; the AI players behave like other leaders. Picking it sets Leader personalities to Shuffled. |
+| `LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES` | New personalities and attributes |
+| `LOC_LSHUF_MODE_AGENDAS_ATTRIBUTES_DESC` | Same abilities; the AI players get new attributes and behave like other leaders. Picking it sets Leader personalities to Shuffled. |
+| `LOC_LSHUF_MODE_SWAP_ABILITIES` | Mixed swap |
+| `LOC_LSHUF_MODE_SWAP_ABILITIES_DESC` | Each leader takes an ability from one leader, and attributes and start terrain from others. |
+| `LOC_LSHUF_MODE_SWAP_LEADERS` | Trade places |
+| `LOC_LSHUF_MODE_SWAP_LEADERS_DESC` | Each leader takes everything from one other leader. |
 | `LOC_LSHUF_MODE_SPLIT_MATCHED` | Mix bonuses |
-| `LOC_LSHUF_MODE_SPLIT_MATCHED_DESC` | Abilities are split into bonuses, and every bonus and attribute goes to a random leader. Start terrain suits the bonuses each leader got. |
+| `LOC_LSHUF_MODE_SPLIT_MATCHED_DESC` | Each leader gets single bonuses from several leaders, and starts that suit them. |
 | `LOC_LSHUF_MODE_SPLIT_RANDOM` | Mix bonuses, random start |
-| `LOC_LSHUF_MODE_SPLIT_RANDOM_DESC` | Abilities are split into bonuses, and every bonus and attribute goes to a random leader. Start terrain is random. |
+| `LOC_LSHUF_MODE_SPLIT_RANDOM_DESC` | The same, with a random start. |
 | `LOC_LSHUF_MODE_CUSTOM` | Custom |
-| `LOC_LSHUF_MODE_CUSTOM_DESC` | You changed a Leader row by hand. |
-| `LOC_LSHUF_CIV_MODE_NAME` | Civilization mode |
-| `LOC_LSHUF_CIV_MODE_DESC` | How civilizations get shuffled. Picking one sets the Civilization rows below. Civilizations only trade within their age. |
-| `LOC_LSHUF_CM_NORMAL` | No shuffle |
-| `LOC_LSHUF_CM_NORMAL_DESC` | Every civilization plays as normal. |
-| `LOC_LSHUF_CM_WHOLE` | Swap whole |
-| `LOC_LSHUF_CM_WHOLE_DESC` | Each civilization gets another civilization's ability, uniques and civics, all from the same civilization. |
-| `LOC_LSHUF_CM_PARTIAL` | Swap partial |
-| `LOC_LSHUF_CM_PARTIAL_DESC` | Each civilization gets another civilization's whole ability. Its uniques and its civics each come whole from other civilizations. |
+| `LOC_LSHUF_MODE_CUSTOM_DESC` | Set part by part under Advanced settings. |
+| `LOC_LSHUF_CIV_MODE_NAME` | AI players' civilizations |
+| `LOC_LSHUF_CIV_MODE_DESC` | How the AI players' civilizations are shuffled. Picking one sets the rows under Advanced settings.... Civilizations only trade within their age. |
+| `LOC_LSHUF_CM_NORMAL` | Play as normal |
+| `LOC_LSHUF_CM_NORMAL_DESC` | Every civilization plays as the game made it. |
+| `LOC_LSHUF_CM_WHOLE` | Trade places |
+| `LOC_LSHUF_CM_WHOLE_DESC` | Each civilization takes another's ability, uniques and civics, all from the same one. |
+| `LOC_LSHUF_CM_PARTIAL` | Mixed swap |
+| `LOC_LSHUF_CM_PARTIAL_DESC` | Ability, uniques and civics each come whole from a different civilization. |
 | `LOC_LSHUF_CM_SPLIT` | Mix bonuses |
-| `LOC_LSHUF_CM_SPLIT_DESC` | Abilities are split into bonuses, and every bonus, unique and civic goes to a random civilization. |
+| `LOC_LSHUF_CM_SPLIT_DESC` | Abilities, uniques and civics are split up and dealt out. |
 | `LOC_LSHUF_CM_CUSTOM` | Custom |
-| `LOC_LSHUF_CM_CUSTOM_DESC` | You changed a Civilization row by hand. |
+| `LOC_LSHUF_CM_CUSTOM_DESC` | Set part by part under Advanced settings. |
 | `LOC_LSHUF_A_NORMAL` | Base game |
 | `LOC_LSHUF_A_NORMAL_DESC` | Each leader keeps its own. |
 | `LOC_LSHUF_A_WHOLE` | Swap whole |
@@ -244,17 +235,17 @@ Notes for translators:
 | `LOC_LSHUF_T_RANDOM` | Split up |
 | `LOC_LSHUF_T_RANDOM_DESC` | Each attribute goes to a random leader. Everyone gets the same number back. |
 | `LOC_LSHUF_T_PAIRED` | Follows ability |
-| `LOC_LSHUF_T_PAIRED_DESC` | Attributes go with the ability. |
+| `LOC_LSHUF_T_PAIRED_DESC` | Attributes go with the ability. With leader abilities on Base game, they're split up at random instead. |
 | `LOC_LSHUF_B_NORMAL` | Base game |
 | `LOC_LSHUF_B_NORMAL_DESC` | Each leader and civilization keeps its own. |
 | `LOC_LSHUF_B_MATCHED` | Logical with bonuses |
-| `LOC_LSHUF_B_MATCHED_DESC` | Start terrain suits the bonuses each leader got. |
+| `LOC_LSHUF_B_MATCHED_DESC` | Start terrain suits the bonuses each leader got. With leader abilities on Base game, it's a random roll instead. |
 | `LOC_LSHUF_B_PAIRED` | Follows ability |
-| `LOC_LSHUF_B_PAIRED_DESC` | Start terrain goes with the ability. |
+| `LOC_LSHUF_B_PAIRED_DESC` | Start terrain goes with the ability. With leader abilities on Base game, it's a random roll instead. |
 | `LOC_LSHUF_B_ROLLED` | Random roll |
 | `LOC_LSHUF_B_ROLLED_DESC` | Start terrain is random. |
 | `LOC_LSHUF_CIV_ABILITIES_NAME` | Civilization abilities |
-| `LOC_LSHUF_CIV_ABILITIES_DESC` | Where each civilization's ability goes, with its attribute tags. Civilizations only trade within their age. |
+| `LOC_LSHUF_CIV_ABILITIES_DESC` | Where each civilization's ability goes, with its attribute tags and any great person it grants that no quarter brings. Civilizations only trade within their age. |
 | `LOC_LSHUF_CIV_UNIQUES_NAME` | Civilization uniques |
 | `LOC_LSHUF_CIV_UNIQUES_DESC` | Where each civilization's unique units go. |
 | `LOC_LSHUF_CA_NORMAL` | Base game |
@@ -267,15 +258,15 @@ Notes for translators:
 | `LOC_LSHUF_CU_NORMAL` | Base game |
 | `LOC_LSHUF_CU_NORMAL_DESC` | Each civilization keeps its own. |
 | `LOC_LSHUF_CU_PAIRED` | Follows ability |
-| `LOC_LSHUF_CU_PAIRED_DESC` | Uniques go with the ability. |
+| `LOC_LSHUF_CU_PAIRED_DESC` | Uniques go with the ability. Unless civilization abilities are on Swap whole, each civilization keeps its own. |
 | `LOC_LSHUF_CU_SHUFFLED` | Swap whole |
 | `LOC_LSHUF_CU_SHUFFLED_DESC` | Each civilization gets another's whole set. |
 | `LOC_LSHUF_CIV_CIVICS_NAME` | Civilization civics |
-| `LOC_LSHUF_CIV_CIVICS_DESC` | Where each civilization's civics go, with the traditions, buildings and quarters they unlock. |
+| `LOC_LSHUF_CIV_CIVICS_DESC` | Where each civilization's civics go, with the traditions, buildings and quarters they unlock and the great people a quarter brings. |
 | `LOC_LSHUF_CC_NORMAL` | Base game |
 | `LOC_LSHUF_CC_NORMAL_DESC` | Each civilization keeps its own. |
 | `LOC_LSHUF_CC_PAIRED` | Follows ability |
-| `LOC_LSHUF_CC_PAIRED_DESC` | Civics go with the ability. |
+| `LOC_LSHUF_CC_PAIRED_DESC` | Civics go with the ability. Unless civilization abilities are on Swap whole, each civilization keeps its own. |
 | `LOC_LSHUF_CC_SHUFFLED` | Swap whole |
 | `LOC_LSHUF_CC_SHUFFLED_DESC` | Each civilization gets another's whole civics tree. |
 | `LOC_LSHUF_BUILD_KIND_CIVCIVICS` | Civics |
@@ -285,6 +276,7 @@ Notes for translators:
 | `LOC_LSHUF_BUILD_TREE_BUTTON` | Tree |
 | `LOC_LSHUF_BUILD_TREE_CIV` | Civilization |
 | `LOC_LSHUF_BUILD_NEEDS` | {1_Card} goes with the {2_Unique}. |
+| `LOC_LSHUF_BUILD_OVER_NORMAL` | {1_Part}: {2_Have} cards, where the normal number is {3_Normal}. That makes this build stronger than the others. |
 | `LOC_LSHUF_BUILD_NEEDS_TAKE` | Take the {1_Unique} too |
 | `LOC_LSHUF_BUILD_ADVANCED_SHOW` | Advanced |
 | `LOC_LSHUF_BUILD_ADVANCED_HIDE` | Hide advanced |
@@ -295,19 +287,26 @@ Notes for translators:
 | `LOC_LSHUF_BUILD_NEEDS_BONUS_TAKE` | Take {1_Card} too |
 | `LOC_LSHUF_BUILD_WITH` | With: {1_Names} |
 | `LOC_LSHUF_BUILD_CARD_BUNDLE_FULL` | Takes {1_Count} slots, one for each part that comes with it. |
+| `LOC_LSHUF_DIPLO_MERGED` | Bonuses {1_List} from {2_Leader} came together because they only work together. |
+| `LOC_LSHUF_CIV_UNIT_BRINGS` | It brings this bonus with it: |
+| `LOC_LSHUF_BUILD_CARD_WHOLE` | Every bonus of this ability comes together on one card. |
+| `LOC_LSHUF_BUILD_CARD_WHOLE_TREE` | Every civic of this tree comes together on one card, with what they unlock. |
+| `LOC_LSHUF_BUILD_CARD_MERGED` | Bonuses {1_List} come as one card because they only work together. |
+| `LOC_LSHUF_BUILD_BRINGS` | Brings {1_Names} with it. |
+| `LOC_LSHUF_BUILD_GREAT_PERSON` | Comes with the {1_Name} great person: whoever holds this receives them. {2_Desc} |
 | `LOC_LSHUF_BUILD_CIVICS_TRADITION` | Tradition [B]{1_Name}[/B]: {2_Text} |
 | `LOC_LSHUF_BUILD_CIVICS_UNLOCK` | {1_Kind} [B]{2_Name}[/B]: {3_Text} |
 | `LOC_LSHUF_BUILD_CIVICS_UNLOCK_NAME` | {1_Kind} [B]{2_Name}[/B] |
 | `LOC_LSHUF_REDEALT` | Shuffled |
-| `LOC_LSHUF_REDEALT_DESC` | Shuffled as the Leader mode says. |
+| `LOC_LSHUF_REDEALT_DESC` | Shuffled the way the AI players' leaders are. |
 | `LOC_LSHUF_OFF` | Off entirely |
 | `LOC_LSHUF_OFF_DESC` | Removed for everyone. Hand-built leaders and civilizations keep their picks. |
-| `LOC_LSHUF_PERSONA_STAYS` | Base game |
-| `LOC_LSHUF_PERSONA_STAYS_DESC` | Each AI keeps its own agendas. |
-| `LOC_LSHUF_PERSONA_FOLLOWS` | Logical with bonuses |
-| `LOC_LSHUF_PERSONA_FOLLOWS_DESC` | Each AI plays like the leader its bonuses came from. |
-| `LOC_LSHUF_PERSONA_REDEALT` | Swap whole |
-| `LOC_LSHUF_PERSONA_REDEALT_DESC` | Agendas are shuffled on their own. |
+| `LOC_LSHUF_PERSONA_STAYS` | As the game made them |
+| `LOC_LSHUF_PERSONA_STAYS_DESC` | Each AI keeps its own personality. |
+| `LOC_LSHUF_PERSONA_FOLLOWS` | Follow their bonuses |
+| `LOC_LSHUF_PERSONA_FOLLOWS_DESC` | Each AI plays like the leader its bonuses came from. With leader abilities on Base game, each AI keeps its own personality. |
+| `LOC_LSHUF_PERSONA_REDEALT` | Shuffled |
+| `LOC_LSHUF_PERSONA_REDEALT_DESC` | Personalities are dealt out to other leaders, apart from the bonuses. |
 | `LOC_LSHUF_DEAL_BALANCED` | Fair shares |
 | `LOC_LSHUF_DEAL_BALANCED_DESC` | Everyone gets about the same strength. |
 | `LOC_LSHUF_DEAL_CHANCE` | Pure luck |
@@ -356,7 +355,7 @@ Notes for translators:
 | `LOC_LSHUF_REASON_MODDED_LEADERTYPE` | its ability checks for its own leader, so it can't move |
 | `LOC_LSHUF_REASON_MODDED_CHANGED` | its ability has changed since it was checked, so it moves as one piece |
 | `LOC_LSHUF_REASON_TOO_FEW` | fewer than two leaders were left to shuffle |
-| `LOC_LSHUF_REASON_MODE_NONE` | Leader mode is No shuffle |
+| `LOC_LSHUF_REASON_MODE_NONE` | the leaders are on Play as normal |
 | `LOC_LSHUF_WHY_SCRIPT` | its mod now runs a gameplay script |
 | `LOC_LSHUF_WHY_UISCRIPT` | its mod now runs an interface script |
 | `LOC_LSHUF_WHY_IMPORTJS` | its mod now loads a script file |
@@ -369,3 +368,75 @@ Notes for translators:
 | `LOC_LSHUF_TRAIT_DEALT_DESCRIPTION` | Bonuses this leader got from other leaders' abilities in the shuffle. The leader screens list each one. |
 | `LOC_LSHUF_TRAIT_EQUAL_ACTIONS_NAME` | Equal Footing |
 | `LOC_LSHUF_TRAIT_EQUAL_ACTIONS_DESCRIPTION` | Leader attributes are off for this game, so each leader gets all twelve diplomatic actions the attributes would have unlocked. |
+
+## More keys (the setup lines, and keys the lists above had missed)
+
+| Key | English |
+| --- | --- |
+| `LOC_LSHUF_BUILD_RANDOM` | Random |
+| `LOC_LSHUF_BUILD_DETAILS_EMPTY` | Point at a card to read it here. Click it to put it in a slot. |
+| `LOC_LSHUF_BUILD_EVERY_AGE` | Every age |
+| `LOC_LSHUF_BUILD_CARD_OTHER_AGE` | Only a civilization of the {1_Age} Age can take this. |
+| `LOC_LSHUF_BUILD_CARD_OTHER_AGE_CIVICS` | This age's game doesn't load the {1_Age} Age's civics. |
+| `LOC_LSHUF_BUILD_VIEW_TREE` | View civics tree |
+| `LOC_LSHUF_BUILD_TREE_TAKE` | Take this tree |
+| `LOC_LSHUF_BUILD_TREE_PUT_BACK` | Put this tree back |
+| `LOC_LSHUF_BUILD_TREE_CLOSE` | Close |
+| `LOC_LSHUF_BUILD_CIVIC_TAKE` | Take this civic |
+| `LOC_LSHUF_BUILD_CIVIC_PUT_BACK` | Put this civic back |
+| `LOC_LSHUF_BUILD_PICK_LEADER` | Leader |
+| `LOC_LSHUF_BUILD_PICK_CIV` | Civilization |
+| `LOC_LSHUF_BUILD_CARD_TERRAIN_OFF` | Counts once Leader start terrain is set to something other than Base game. |
+| `LOC_LSHUF_BUILD_CARD_OWN_CIV` | Your civilization's own |
+| `LOC_LSHUF_CU_SPLIT` | Split up |
+| `LOC_LSHUF_CC_SPLIT` | Split up |
+| `LOC_LSHUF_BUILD_KIND_CIVCIVIC` | Civic |
+| `LOC_LSHUF_DIPLO_NOT_SHUFFLED` | Not shuffled: {1_Reason} |
+| `LOC_LSHUF_DIPLO_ABILITY_FROM` | Ability from {1_Name} |
+| `LOC_LSHUF_DIPLO_ABILITY_OWN` | Their own ability |
+| `LOC_LSHUF_DIPLO_FROM` | from {1_Name} |
+| `LOC_LSHUF_DIPLO_OWN` | their own |
+| `LOC_LSHUF_DIPLO_ATTRIBUTES` | Attributes: {1_List} |
+| `LOC_LSHUF_DIPLO_ITEM_FROM` | {1_Item} (from {2_Name}) |
+| `LOC_LSHUF_DIPLO_TERRAIN_FROM` | Start terrain from {1_Name} |
+| `LOC_LSHUF_DIPLO_TERRAIN_DRAWN` | Start terrain rolled for this game |
+| `LOC_LSHUF_DIPLO_TERRAIN_MATCHED` | Start terrain matched to the bonuses they hold |
+| `LOC_LSHUF_DIPLO_BEHAVIOR_FROM` | AI behavior from {1_Name} |
+| `LOC_LSHUF_TRAIT_CIV_DEALT_DESCRIPTION` | Bonuses this civilization got from other civilizations' abilities in the shuffle. The civilization screens list each one. |
+| `LOC_LSHUF_MODE_SAME` | Same as the AI players |
+| `LOC_LSHUF_MODE_SAME_DESC` | You're shuffled with the AI players, the same way. |
+| `LOC_LSHUF_CM_SAME` | Same as the AI players |
+| `LOC_LSHUF_CM_SAME_DESC` | You're shuffled with the AI players, the same way. |
+| `LOC_LSHUF_LINE_AI_MODE_NONE` | Each AI leader plays as the game made them. |
+| `LOC_LSHUF_LINE_AI_MODE_SWAP_LEADERS` | Each AI leader takes everything from one other leader. |
+| `LOC_LSHUF_LINE_AI_MODE_SWAP_ABILITIES` | Each AI leader takes an ability from one leader, and attributes and start terrain from others. |
+| `LOC_LSHUF_LINE_AI_MODE_SPLIT_MATCHED` | Each AI leader gets single bonuses from several other leaders, and starts that suit them. |
+| `LOC_LSHUF_LINE_AI_MODE_SPLIT_RANDOM` | Each AI leader gets single bonuses from several other leaders, with a random start. |
+| `LOC_LSHUF_LINE_AI_MODE_AGENDAS` | Same leaders; the AI players behave like other leaders. |
+| `LOC_LSHUF_LINE_AI_MODE_AGENDAS_ATTRIBUTES` | Same abilities; the AI players get new attributes and behave like other leaders. |
+| `LOC_LSHUF_LINE_AI_MODE_CUSTOM` | Set part by part under Advanced settings. |
+| `LOC_LSHUF_LINE_AI_CM_NORMAL` | Each AI civilization plays as the game made it. |
+| `LOC_LSHUF_LINE_AI_CM_WHOLE` | Each AI civilization takes another's ability, uniques and civics, all from the same one. |
+| `LOC_LSHUF_LINE_AI_CM_PARTIAL` | Each AI civilization's ability, uniques and civics each come whole from a different civilization. |
+| `LOC_LSHUF_LINE_AI_CM_SPLIT` | The AI civilizations' abilities, uniques and civics are split up and dealt out. |
+| `LOC_LSHUF_LINE_AI_CM_CUSTOM` | Set part by part under Advanced settings. |
+| `LOC_LSHUF_LINE_YOU_MODE_SAME` | You're shuffled with the AI players, the same way. |
+| `LOC_LSHUF_LINE_YOU_MODE_NONE` | You play your leader as the game made them. |
+| `LOC_LSHUF_LINE_YOU_MODE_SWAP_LEADERS` | You take everything from one other leader. |
+| `LOC_LSHUF_LINE_YOU_MODE_SWAP_ABILITIES` | You take an ability from one leader, and attributes and start terrain from others. |
+| `LOC_LSHUF_LINE_YOU_MODE_SPLIT_MATCHED` | You get single bonuses from several leaders, and a start that suits them. |
+| `LOC_LSHUF_LINE_YOU_MODE_SPLIT_RANDOM` | You get single bonuses from several leaders, with a random start. |
+| `LOC_LSHUF_LINE_YOU_MODE_AGENDAS_ATTRIBUTES` | You keep your ability and start terrain, and get new attributes. |
+| `LOC_LSHUF_LINE_YOU_CM_SAME` | You're shuffled with the AI players, the same way. |
+| `LOC_LSHUF_LINE_YOU_CM_NORMAL` | You play your civilization as the game made it. |
+| `LOC_LSHUF_LINE_YOU_CM_WHOLE` | You take another civilization's ability, uniques and civics, all from the same one. |
+| `LOC_LSHUF_LINE_YOU_CM_PARTIAL` | Your ability, uniques and civics each come whole from a different civilization. |
+| `LOC_LSHUF_LINE_YOU_CM_SPLIT` | You get single bonuses, uniques and civics from several civilizations. |
+| `LOC_LSHUF_LINE_YOU_BUILD` | Or build yours card by card with Build your own leader... and Build your own civilization... |
+| `LOC_LSHUF_LINE_REVEAL_REVEAL_START` | You see what everyone got from the start. |
+| `LOC_LSHUF_LINE_REVEAL_REVEAL_MET` | You see what another leader got once you've met them. |
+| `LOC_LSHUF_LINE_PERSONALITY_PERSONA_STAYS` | Each AI keeps its own personality. |
+| `LOC_LSHUF_LINE_PERSONALITY_PERSONA_FOLLOWS` | Each AI plays like the leader its bonuses came from. |
+| `LOC_LSHUF_LINE_PERSONALITY_PERSONA_REDEALT` | Personalities are dealt out to other leaders, apart from the bonuses. |
+| `LOC_LSHUF_ADVANCED_PARTS_HEADING` | Part by part |
+| `LOC_LSHUF_ADVANCED_PARTS_NOTE` | Each row sets one part for the AI players. Changing one makes their mode read Custom. |

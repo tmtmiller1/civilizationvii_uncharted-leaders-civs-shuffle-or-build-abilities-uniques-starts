@@ -77,16 +77,16 @@ UPDATE LShufWork_Build SET Why = CASE WHEN Own = 1 THEN NULL WHEN (SELECT Active
     AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 1 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')) THEN 'mode-off'
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop')) THEN 'mode-off'
   WHEN NOT EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base IS NULL)
     AND NOT ((COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'KeepBuiltCiv'), '1') = '1' AND EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base = 'kept')) AND EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 1 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')))
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop')))
     THEN 'builder-not-in-game'
   WHEN EXISTS (SELECT 1 FROM LShufWork_Build b2 WHERE b2.Slot < 1 AND b2.Leader = LShufWork_Build.Leader AND b2.Why IS NULL)
     THEN 'builder-not-in-game' END WHERE Slot = 1;
@@ -94,16 +94,16 @@ UPDATE LShufWork_Build SET Why = CASE WHEN Own = 1 THEN NULL WHEN (SELECT Active
     AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 2 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')) THEN 'mode-off'
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop')) THEN 'mode-off'
   WHEN NOT EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base IS NULL)
     AND NOT ((COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'KeepBuiltCiv'), '1') = '1' AND EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base = 'kept')) AND EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 2 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')))
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop')))
     THEN 'builder-not-in-game'
   WHEN EXISTS (SELECT 1 FROM LShufWork_Build b2 WHERE b2.Slot < 2 AND b2.Leader = LShufWork_Build.Leader AND b2.Why IS NULL)
     THEN 'builder-not-in-game' END WHERE Slot = 2;
@@ -111,16 +111,16 @@ UPDATE LShufWork_Build SET Why = CASE WHEN Own = 1 THEN NULL WHEN (SELECT Active
     AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 3 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')) THEN 'mode-off'
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop')) THEN 'mode-off'
   WHEN NOT EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base IS NULL)
     AND NOT ((COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'KeepBuiltCiv'), '1') = '1' AND EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base = 'kept')) AND EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 3 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')))
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop')))
     THEN 'builder-not-in-game'
   WHEN EXISTS (SELECT 1 FROM LShufWork_Build b2 WHERE b2.Slot < 3 AND b2.Leader = LShufWork_Build.Leader AND b2.Why IS NULL)
     THEN 'builder-not-in-game' END WHERE Slot = 3;
@@ -128,16 +128,16 @@ UPDATE LShufWork_Build SET Why = CASE WHEN Own = 1 THEN NULL WHEN (SELECT Active
     AND NOT EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 4 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')) THEN 'mode-off'
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop')) THEN 'mode-off'
   WHEN NOT EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base IS NULL)
     AND NOT ((COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'KeepBuiltCiv'), '1') = '1' AND EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = LShufWork_Build.Leader AND l.Base = 'kept')) AND EXISTS (SELECT 1 FROM LShufBuildPieces WHERE Slot = 4 AND (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')))
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop')))
     THEN 'builder-not-in-game'
   WHEN EXISTS (SELECT 1 FROM LShufWork_Build b2 WHERE b2.Slot < 4 AND b2.Leader = LShufWork_Build.Leader AND b2.Why IS NULL)
     THEN 'builder-not-in-game' END WHERE Slot = 4;
@@ -147,19 +147,19 @@ INSERT OR IGNORE INTO LShufWork_BuildPiece (PieceId, Slot, Kind, Arg, Copy)
   SELECT PieceId, Slot, CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
     WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END, CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' THEN substr(PieceId, 6) WHEN substr(PieceId, 1, 6) = 'ATTR2_' THEN substr(PieceId, 7) WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN substr(PieceId, 9)
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN substr(PieceId, 9) WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN substr(PieceId, 9)
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN substr(PieceId, 8) WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN substr(PieceId, 9) WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN substr(PieceId, 7) WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN substr(PieceId, 6)
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN substr(PieceId, 9)
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN substr(PieceId, 9) WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN substr(PieceId, 9)
     WHEN substr(PieceId, -7) = '__WHOLE' THEN substr(PieceId, 1, length(PieceId) - 7) ELSE PieceId END, CASE WHEN substr(PieceId, 1, 6) = 'ATTR2_' THEN 2 ELSE 1 END FROM LShufBuildPieces
   WHERE Slot IN (SELECT Slot FROM LShufWork_Build WHERE Why IS NULL) AND (((SELECT Active FROM LShufWork_Cfg) = 1 AND NOT (COALESCE((SELECT Value FROM LShufOptions WHERE Name = 'KeepBuiltCiv'), '1') = '1' AND EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = (SELECT w.Leader FROM LShufWork_Build w WHERE w.Slot = LShufBuildPieces.Slot) AND l.Base = 'kept'))) OR (CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\_\_B__' ESCAPE '\' THEN 'civbullet'
-    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic') OR LShufBuildPieces.Slot IN (SELECT Slot FROM LShufWork_Build WHERE Own = 1)) ORDER BY Slot, PieceId;
+    WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop') OR LShufBuildPieces.Slot IN (SELECT Slot FROM LShufWork_Build WHERE Own = 1)) ORDER BY Slot, PieceId;
 UPDATE LShufWork_Build SET Why = 'no-pieces'
   WHERE Why IS NULL AND Own = 0 AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p WHERE p.Slot = LShufWork_Build.Slot);
 UPDATE LShufWork_Build SET OK = (Why IS NULL), PersonaPick = (SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = 'persona' AND p.Slot = LShufWork_Build.Slot AND p.Arg IN (SELECT LeaderType FROM LShufWork_L)), BiasPick = (SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = 'bias' AND p.Slot = LShufWork_Build.Slot AND p.Arg IN (SELECT LeaderType FROM LShufWork_L)),

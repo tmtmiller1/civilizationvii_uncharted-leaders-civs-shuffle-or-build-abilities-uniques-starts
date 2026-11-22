@@ -57,6 +57,7 @@ function lookupsOf(content) {
     abilityOf: content.abilityOf,
     leaderName,
     whyOf: content.whyOf,
+    mergedOf: content.mergedOf || (() => null),
     attributeName: (traitType) => {
       const attribute = content.attributeOf.get(traitType);
       const info = attribute ? guarded("attribute", () => GameInfo.Attributes.lookup(attribute), null) : null;

@@ -56,3 +56,11 @@ test("the Pirates' no-Settlers bonus needs the settle charge, and the charge nam
   // With no unique cards on the screen the bonus still asks for its other half.
   assert.equal(uniqueNeeds([CHARGE, NO_SETTLERS], [NO_SETTLERS.id]).length, 1);
 });
+
+test("an own unique taken out of its slots (CIVDROP_) isn't held any more", async () => {
+  const { uniqueNeeds } = await load();
+  assert.deepEqual(uniqueNeeds(CARDS, [LEGION_BONUS.id]), [], "Rome's own Legion is held");
+  const needs = uniqueNeeds(CARDS, [LEGION_BONUS.id, "CIVDROP_UNIT_LEGION"]);
+  assert.equal(needs.length, 1);
+  assert.equal(needs[0].unique.id, LEGION.id);
+});

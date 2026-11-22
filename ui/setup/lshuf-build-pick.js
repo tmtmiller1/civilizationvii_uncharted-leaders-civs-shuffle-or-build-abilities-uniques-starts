@@ -3,7 +3,8 @@
 // screens show the same pick, and offers only what the game's list lets you choose (owned, unlocked).
 import { B_MODE, ONOFF, PARAM } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import { paramValue } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
-import { PLAIN_RANDOM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { PLAIN_RANDOM, TRANSITION_CIV_PARAM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { inGame } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import { el } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
 import { dropdown } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-parts.js";
 import { pickerItems } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-layout.js";
@@ -78,8 +79,11 @@ function setHost(paramName, value, playerId) {
 // A labelled dropdown for a player's leader ("leader") or civilization ("civ"); onChange runs after a pick lands.
 // With no opts it's the host's own, without Random (your build pages). opts.playerId names another player, and
 // opts.allowRandom puts Random at the head of the list as a pick that writes RANDOM back (the AI players window).
+// In a running game (an age transition) the leader stays as it is and the civ list is the next age's, which the game
+// keeps in its own player setting.
 export function hostPicker(scope, onChange, opts = {}) {
-  const paramName = scope === "civ" ? "PlayerCivilization" : "PlayerLeader";
+  if (inGame() && scope !== "civ") return el("div", "lshuf-build__pick");
+  const paramName = scope !== "civ" ? "PlayerLeader" : inGame() ? TRANSITION_CIV_PARAM : "PlayerCivilization";
   const { items, selected } = hostChoices(paramName, opts);
   const box = el("div", `lshuf-build__pick lshuf-pick--${scope === "civ" ? "civ" : "leader"} flex flex-row items-center mt-2`);
   if (items.filter((i) => i.value && i.value !== PLAIN_RANDOM).length < 1) return box;

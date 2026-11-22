@@ -22,10 +22,12 @@ const STEAM_LIMIT = 8000;
 const LIMITS = { "civfanatics-tagline.txt": 100, "moddb-description-short.txt": 1000 };
 
 // The release body opens with the preview image at the release's tag, as the other Tower mods' releases do.
-const TAG = "v1.0.0";
+const TAG = "v1.0.2";
 const REPO = "tmtmiller1/civilizationvii_uncharted-leaders-civs-shuffle-or-build-abilities-uniques-starts";
 const GITHUB_HEAD = `<p align="center"><img src="https://raw.githubusercontent.com/${REPO}/${TAG}/docs/workshop-preview.png" `
-  + `alt="Uncharted Leaders & Civs" width="200"></p>\n\nThis is the mod's first release.\n\n`;
+  + `alt="Uncharted Leaders & Civs" width="200"></p>
+
+`;
 
 function civfanatics(text) {
   return text

@@ -73,6 +73,10 @@ export const CA_MODE = { Normal: "LSHUF_CA_NORMAL", Swapped: "LSHUF_CA_SWAPPED",
 export const CU_MODE = {
   Normal: "LSHUF_CU_NORMAL", Paired: "LSHUF_CU_PAIRED", Shuffled: "LSHUF_CU_SHUFFLED", Split: "LSHUF_CU_SPLIT", Off: ONOFF.Off
 };
+// Whether a civilization builder keeps its own uniques next to the ones it takes (CONTRACTS 14, 25 and 35): under
+// Split up its own go into the shuffle and under Off entirely nobody keeps theirs; on every other setting the game
+// keeps the civ's own, less the ones the builder takes out (CIVDROP_ cards).
+export const uniquesStayOwn = (cuMode) => cuMode !== CU_MODE.Split && cuMode !== CU_MODE.Off;
 // Unique civics (CONTRACTS 18): the civ's civics tree with its traditions and the uniques its nodes unlock.
 // Split: each civic dealt on its own (CONTRACTS 21).
 export const CC_MODE = {
@@ -108,6 +112,9 @@ export function presetOf(abilities, attributes, biases, persona = null) {
 // Swap whole moves a civilization's ability, uniques and civics together; Swap partial swaps each as a whole set,
 // with a different civilization each.
 export const CIV_MODE_CUSTOM = "LSHUF_CM_CUSTOM";
+// Your leader and Your civilization (CONTRACTS 34): "Same as the AI players", the first value of each. Not presets:
+// with both on it, you're shuffled with the AI players exactly as before.
+export const HUMAN_SAME = { leader: "LSHUF_MODE_SAME", civ: "LSHUF_CM_SAME" };
 export const CIV_PRESETS = {
   LSHUF_CM_NORMAL: [CA_MODE.Normal, CU_MODE.Normal, CC_MODE.Normal],
   LSHUF_CM_WHOLE: [CA_MODE.Swapped, CU_MODE.Paired, CC_MODE.Paired],
@@ -198,6 +205,9 @@ export const BUILD = {
   // or improvement type).
   civAbility: (civilizationType) => `CIVABIL_${civilizationType}`,
   civUnique: (type) => `CIVUNQ_${type}`,
+  // One of the builder civilization's own uniques, taken out of its slots (CONTRACTS 35): the civ doesn't keep it, and
+  // the deal gives it to another civilization of the age. Only on the settings where a builder keeps its own uniques.
+  civUniqueDrop: (type) => `CIVDROP_${type}`,
   // A civilization's unique civics: its civics tree, its traditions, and every unique the tree's nodes unlock.
   civCivics: (civilizationType) => `CIVCIVC_${civilizationType}`,
   civTags: (civilizationType) => `CIVTAGS_${civilizationType}`,
@@ -216,12 +226,17 @@ export const GENERIC_BIASES = [
 ];
 export const BUILD_KIND = {
   Bullet: "bullet", Whole: "whole", Attribute: "attribute", Persona: "persona", Bias: "bias", CivBias: "civbias",
-  CivAbility: "civability", CivUnique: "civunique", CivCivics: "civcivics", CivBullet: "civbullet", CivCivic: "civcivic"
+  CivAbility: "civability", CivUnique: "civunique", CivCivics: "civcivics", CivBullet: "civbullet", CivCivic: "civcivic",
+  CivUniqueDrop: "civuniquedrop"
 };
 const KIND_BY_PREFIX = [
   ["PERSONA_", BUILD_KIND.Persona], ["CIVBIAS_", BUILD_KIND.CivBias], ["CIVABIL_", BUILD_KIND.CivAbility],
-  ["CIVUNQ_", BUILD_KIND.CivUnique], ["CIVCIVC_", BUILD_KIND.CivCivics], ["CIVNODE_", BUILD_KIND.CivCivic]
+  ["CIVUNQ_", BUILD_KIND.CivUnique], ["CIVCIVC_", BUILD_KIND.CivCivics], ["CIVNODE_", BUILD_KIND.CivCivic],
+  ["CIVDROP_", BUILD_KIND.CivUniqueDrop]
 ];
+// Unique slots on the civilization build page beyond the civ's own count, so any civ can take a whole set of another
+// civ's uniques (the most a civ has is two) (owner, 2026-11-22).
+export const UNIQUE_EXTRA_SLOTS = 2;
 export function buildKindOf(id) {
   if (/^ATTR\d*_/.test(id)) return BUILD_KIND.Attribute;
   const byPrefix = KIND_BY_PREFIX.find(([prefix]) => id.startsWith(prefix));

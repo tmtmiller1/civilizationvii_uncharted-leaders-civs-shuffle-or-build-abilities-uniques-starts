@@ -8,10 +8,12 @@
 // back from it.
 
 import {
-  CIV_MODE_CUSTOM, CIV_PRESETS, EVENT, MODE_CUSTOM, OPTION_DEFAULTS, PARAM, PRESETS, PRESET_PERSONA, civPresetOf,
-  presetOf
+  CIV_MODE_CUSTOM, CIV_PRESETS, EVENT, HUMAN_SAME, MODE_CUSTOM, OPTION_DEFAULTS, PARAM, PRESETS, PRESET_PERSONA,
+  civPresetOf, presetOf
 } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
-import { paramValue, setParam } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import {
+  humanFollows, paramValue, setParam, storedHumanFollows
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 
 // Each preset: its parameter, its three parts, what each value sets, the reverse lookup and its Custom value.
 const GROUPS = [
@@ -69,7 +71,25 @@ function syncGroup(g) {
   }
 }
 
+// Your leader and Your civilization (CONTRACTS 34) decide LShufHumanFollows, the value the deal reads. A setup saved
+// by 1.0.0 (the box ticked, Your modes on a preset) is put on Same as the AI players once, when setup opens, so it
+// keeps following as it did.
+let legacyChecked = false;
+function syncFollows() {
+  if (paramValue(PARAM.HumanMode) == null) return;
+  if (!legacyChecked) {
+    legacyChecked = true;
+    if (storedHumanFollows() && !humanFollows()) {
+      write(PARAM.HumanMode, HUMAN_SAME.leader);
+      write(PARAM.HumanCivMode, HUMAN_SAME.civ);
+    }
+  }
+  const want = humanFollows();
+  if (want !== storedHumanFollows()) setParam(PARAM.HumanFollows, want);
+}
+
 export function syncPresets() {
+  syncFollows();
   for (const g of GROUPS) {
     // An older setup without the civilization mode keeps working on the leader one.
     if (paramValue(g.mode) == null && g.mode !== PARAM.Mode) continue;
@@ -80,6 +100,7 @@ export function syncPresets() {
 export function startPresetWatch() {
   if (timer) return;
   last.clear();
+  legacyChecked = false;
   timer = setInterval(() => {
     try {
       syncPresets();

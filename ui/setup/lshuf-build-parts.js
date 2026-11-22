@@ -4,7 +4,7 @@
 import { BUILD_KIND, buildKindOf } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import { el } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
 import {
-  attributeIdsOf, cantTake, cardFor, compose, isWholeCard, slotOfKind
+  attributeIdsOf, cantTake, cardFor, compose, isWholeCard, slotOfKind, slotsShown
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-cards.js";
 import { CARD_ATTR, TOOLTIP_STYLE } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-tooltip.js";
 import { slotLayout } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-layout.js";
@@ -22,6 +22,8 @@ const SLOT_GROUPS = [
   ["civCivics", "LOC_LSHUF_BUILD_SLOT_CIV_CIVICS"],
   ["civTerrain", "LOC_LSHUF_BUILD_SLOT_CIV_TERRAIN"]
 ];
+// A slot group's heading key, which also names the part in the note for a group over its normal count.
+export const groupLabelKey = (group) => (SLOT_GROUPS.find(([g]) => g === group) || [])[1] || "";
 
 // The kind dropdown's entries. A whole card and its single pieces (a leader ability and its bonuses, a civilization
 // ability and its bonuses, a civics tree and its civics) are one entry, since the Whole toggle already decides which
@@ -58,6 +60,9 @@ function terrainArt(card) {
   tile.appendChild(picture);
   return tile;
 }
+
+// A card's name with its number held to the last word ("Continental System 1", never "1" on a line alone).
+export const cardName = (card) => String(card.name || "").replace(/ (\d+)$/, "\u00a0$1");
 
 function artOf(card) {
   const art = el("div", "lshuf-build__art absolute inset-0");
@@ -141,7 +146,7 @@ function slotBox(win, card, groupKey, slotId = null) {
     const tag = el("div", "lshuf-build__equipped");
     tag.style.backgroundImage = TAG_EQUIPPED;
     const name = el("div", "lshuf-build__slot-name font-body text-xs uppercase");
-    name.textContent = card.name;
+    name.textContent = cardName(card);
     slot.append(tag, name);
     slot.setAttribute("data-tooltip-style", TOOLTIP_STYLE);
     slot.setAttribute(CARD_ATTR, card.id);
@@ -157,42 +162,15 @@ function slotBox(win, card, groupKey, slotId = null) {
   return slot;
 }
 
-// The builder civ's own uniques, shown as kept when the game keeps them beside what it takes (lshuf-build-cards.js
-// uniquesStayOwn): not slots, nothing to click.
-function keptUniques(win) {
-  const own = [...win.byId.values()].filter((c) => c.kind === BUILD_KIND.CivUnique && c.own);
-  if (!own.length) return null;
-  const box = el("div", "lshuf-build__slot-group flex flex-col items-center mr-4");
-  const label = el("div", "font-title text-xs uppercase text-accent-2 mb-1");
-  label.textContent = compose("LOC_LSHUF_BUILD_SLOTS_CIV_UNIQUES_KEPT");
-  label.setAttribute("data-tooltip-content", compose("LOC_LSHUF_BUILD_SLOTS_CIV_UNIQUES_KEPT_TIP"));
-  const slots = el("div", "flex flex-row");
-  for (const card of own) {
-    const slot = el("div", "lshuf-build__slot lshuf-build__slot--filled lshuf-build__slot--kept relative");
-    slot.style.backgroundImage = SLOT_BASE;
-    const name = el("div", "lshuf-build__slot-name font-body text-xs uppercase");
-    name.textContent = card.name;
-    slot.append(artOf(card), name);
-    slot.setAttribute("data-tooltip-content", compose("LOC_LSHUF_BUILD_SLOTS_CIV_UNIQUES_KEPT_TIP"));
-    slot.addEventListener("mouseenter", () => win.showDetails(card));
-    slots.appendChild(slot);
-  }
-  box.append(label, slots);
-  return box;
-}
-
+// The slots along the top. `picks` is what sits in them (the build window's inSlots): where the settings keep the
+// builder civ's own uniques, those come first and fill the unique slots like picks (CONTRACTS 35); a click on one
+// takes it out.
 export function renderSlots(win, picks) {
   const row = el("div", "flex flex-row flex-wrap items-start");
   const picked = picks.map((id) => ({ id, card: cardFor(win.byId, id) })).filter((p) => p.card);
-  for (const [group, baseKey] of SLOT_GROUPS) {
-    const n = win.counts[group];
+  for (const [group, key] of SLOT_GROUPS) {
+    const n = slotsShown(group, picks, win.counts, win.openSlots);
     if (!n) continue;
-    let key = baseKey;
-    if (group === "civUniques" && win.uniquesAdd) {
-      key = "LOC_LSHUF_BUILD_SLOTS_CIV_UNIQUES_ADD";
-      const kept = keptUniques(win);
-      if (kept) row.appendChild(kept);
-    }
     const box = el("div", "lshuf-build__slot-group flex flex-col items-center mr-4");
     const label = el("div", "font-title text-xs uppercase text-accent-2 mb-1");
     label.textContent = compose(key);
@@ -335,13 +313,13 @@ function stateLine(card, why) {
 }
 
 function cardEl(win, card, picks) {
-  const why = win.note ? "off" : cantTake(card, picks, win.counts);
+  const why = win.note ? "off" : cantTake(card, picks, win.counts, win.openSlots);
   const box = el("div", "lshuf-build__card relative group");
   if (why) box.classList.add(`lshuf-build__card--${why}`);
   box.appendChild(artOf(card));
   const band = el("div", "lshuf-build__band absolute flex flex-col items-center");
   const name = el("div", "lshuf-build__card-name font-title text-sm uppercase text-center");
-  name.textContent = card.name;
+  name.textContent = cardName(card);
   band.appendChild(name);
   if (card.from && card.kind !== BUILD_KIND.Persona && card.kind !== BUILD_KIND.Bias) {
     const from = el("div", "font-body text-xs text-accent-2 text-center");

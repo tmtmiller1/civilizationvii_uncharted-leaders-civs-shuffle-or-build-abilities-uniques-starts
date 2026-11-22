@@ -7,7 +7,9 @@
 // Slot by slot: a card a lower slot took is gone, a civ a lower slot built can't be a swap source, and a part
 // already swapped can't be swapped again. Writes LShufResultCivPieces rows and a CivBuilder<n> meta row per
 // builder. Pure, and the SQL twin (scripts/generate/sql-civ.mjs) walks the same steps in the same order.
-import { BUILD, BUILD_WHY, CA_MODE, CC_MODE, CIV_OWN_AGE_PIECES, CU_MODE, pieceWorksIn } from "../lshuf-constants.js";
+import {
+  BUILD, BUILD_WHY, CA_MODE, CC_MODE, CIV_OWN_AGE_PIECES, CU_MODE, pieceWorksIn, uniquesStayOwn
+} from "../lshuf-constants.js";
 import { SALT } from "../lshuf-key.js";
 import {
   BALANCE_SCALE, PIECE_STEP_CAP, POOL_STEP_CAP, cmp, compareBy, cyclicDonors, floorDiv, keyMap
@@ -458,6 +460,72 @@ function civShuffle(ctx, info, state, rows) {
   return meta;
 }
 
+// Own uniques taken out (CONTRACTS 35), after every builder's cards and before the shuffle, only where a builder keeps
+// its own uniques. A builder drops each own unique it picked CIVDROP_ for, unless it also picked that unique's card or
+// the unique is taken; a drop of a unique it doesn't hold is ignored, and a unique two builders drop goes with the
+// lower slot. The drops, by slot then id, go one each round the civs of the builder's play age that nobody built,
+// in key order (SALT.CivUniqueDrops over their sorted ids, then id); with none, the unique stays. A drop marks the
+// unique (and its riders) taken, so the shuffle leaves it alone. Returns the rows, numbered later (numberDrops).
+// One builder's drops that count, in id order; `seen` holds the ids a lower slot dropped.
+function buildDrops(build, info, state, seen) {
+  const B = build.civ;
+  if (!build.ok || B == null || !info.has(B) || !state.builtCivs.has(B)) return [];
+  const out = [];
+  for (const type of [...new Set(build.civUniqueDrops || [])].sort(cmp)) {
+    const id = BUILD.civUnique(type);
+    const keeps = !info.get(B).uniques.has(type) || (build.civUniques || []).includes(type);
+    if (keeps || state.taken.has(id) || seen.has(id)) continue;
+    seen.add(id);
+    out.push({ slot: build.slot, B, id });
+  }
+  return out;
+}
+
+function ownDrops(ctx, info, state, riders) {
+  if (!uniquesStayOwn((ctx.input.options || {}).CivUniques || CU_MODE.Normal)) return [];
+  const seen = new Set();
+  const drops = (ctx.builds || []).flatMap((build) => buildDrops(build, info, state, seen));
+  const orders = new Map();
+  const receiversOf = (age) => {
+    if (!orders.has(age)) {
+      const civs = [...info.keys()].filter((c) => !state.builtCivs.has(c) && playAge(info, c) === age).sort(cmp);
+      const keys = keyMap(ctx.seed, SALT.CivUniqueDrops, civs);
+      orders.set(age, civs.sort((a, b) => keys[a] - keys[b] || cmp(a, b)));
+    }
+    return orders.get(age);
+  };
+  const out = [];
+  drops.forEach((d, pos) => {
+    const order = receiversOf(playAge(info, d.B));
+    if (!order.length) return;
+    takeWith(state, riders, d.id);
+    out.push({ CivilizationType: order[pos % order.length], PieceId: d.id, FromCivilization: d.B, Kind: "unique",
+      SortIndex: 0, slot: d.slot });
+  });
+  return out;
+}
+
+// Each receiver's drops come after its other unique rows, in id order.
+function numberDrops(rows, drops) {
+  const top = new Map();
+  for (const r of rows) {
+    if (r.Kind === "unique") top.set(r.CivilizationType, Math.max(top.get(r.CivilizationType) || 0, Number(r.SortIndex)));
+  }
+  for (const d of [...drops].sort((a, b) => cmp(a.CivilizationType, b.CivilizationType) || cmp(a.PieceId, b.PieceId))) {
+    const n = (top.get(d.CivilizationType) || 0) + 1;
+    top.set(d.CivilizationType, n);
+    d.SortIndex = n;
+  }
+}
+
+// A builder whose only cards were drops still built something.
+function dropVerdicts(meta, drops) {
+  for (const m of meta) {
+    if (m.Value !== BUILD_WHY.NoPieces) continue;
+    if (drops.some((d) => metaName(d.slot) === m.Name)) m.Value = "ok";
+  }
+}
+
 // Each applying builder's civ plays in the game's age (playAge), when the deal knows it.
 function setPlayAges(ctx, info) {
   if (!ctx.input.age) return;
@@ -501,7 +569,14 @@ export function dealCivBuilds(ctx) {
     rows.push(...mine);
     meta.push({ Name: metaName(build.slot), Value: why == null ? "ok" : why });
   }
+  const drops = ownDrops(ctx, info, state, riders);
+  dropVerdicts(meta, drops);
   meta.push(...civShuffle(ctx, info, state, rows));
+  numberDrops(rows, drops);
+  for (const d of drops) {
+    delete d.slot;
+    rows.push(d);
+  }
   abilityTags(rows);
   splitRows(ctx, info, state, rows);
   poolRows(ctx, info, state, rows);

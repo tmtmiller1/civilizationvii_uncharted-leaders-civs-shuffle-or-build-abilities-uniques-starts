@@ -7,29 +7,26 @@ abilities, swap whole leaders, or have their abilities broken into single bonuse
 can do the same with their abilities, attribute tags, unique units and civics, within each age. Any part can be taken
 out of the game for everyone. The game's own screens show what each leader and civilization ended up with.
 
-Status: 1.0.0, unreleased. Checked offline with lint and tests on the Antiquity, Exploration and Modern databases; much
+Status: 1.0.2, released. Checked offline with lint and tests on the Antiquity, Exploration and Modern databases; much
 of it has been seen in lab games (devtools/probes/RESULTS-*.md), and what still has to be seen is on the workspace
 [WATCH_LIST.md](../../WATCH_LIST.md). It ships single-player only: multiplayer hasn't been tested, and the
 first release says so.
 
 ## What it does
 
-- **Uncharted Leaders & Civs Settings** in Advanced Settings: a Mode that sets the three leader rows (abilities,
-  attributes, start terrain), three civilization rows (abilities, uniques, civics), AI agendas, Human players keep
-  their own leader, Keep my built civilization and Reveal who got what, then buttons for the leader list, leaders
-  from other mods, the Leader pool, the Civilization pool, AI players, the two build screens and Advanced settings
-  (Split fairness and the shuffle number). The rows share their words: Base game, Swap whole, Split up, Follows
-  ability, Logical with bonuses, Random roll, Off entirely. The settings save with the game.
+- **Uncharted Leaders & Civs Settings** in Advanced Settings asks two questions: **AI players' leaders** and **AI
+  players' civilizations** (Play as normal, Trade places, Mixed swap, Mix bonuses and, for leaders, Mix bonuses with a
+  random start, New personalities, and New personalities and attributes), and **Your leader** and **Your civilization**
+  (Same as the AI players, or a choice of your own). Then **Leader personalities** (As the game made them, Follow
+  their bonuses, or Shuffled) and Reveal who got what. A line under each dropdown says what the pick does. Buttons
+  follow for the Leader pool, the Civilization pool, AI players, the two build screens and Advanced settings (a row
+  for each part, Split fairness and the shuffle number). The settings save with the game.
 - **Pools and AI players.** The pools narrow who Random can pick, with a button beside Random on the leader and
   civilization select. AI players gives each AI a Leader and a Civilization dropdown.
 - **Build your own leader and Build your own civilization**, card screens for your own leader and civilization. The
   cards you leave are shuffled among the AI players. When a card goes with another, a button adds the other one.
-- **Your own mode.** Each build page has **Follow the AI players' settings**, ticked by default, and your own Leader
-  mode or Civilization mode. Pick a mode of your own and the box unticks: you're shuffled by your mode and the AI
-  players by the settings in Advanced Settings, with your share laid on top as copies, so the AI players keep theirs.
-  Cards you build stay yours either way.
-- **Agendas only** and **Agendas and attributes**, two more Leader modes: abilities and start terrain stay as they
-  are, and AI agendas (and attributes) are shuffled.
+- **Notes for what travels together.** Wherever cards come together or one setting sets another, a note says so: on
+  the build cards and slots, under the settings, and in Who got what.
 - **Things that need each other stay together**: a quarter's two civics, the great people a quarter brings, the Sherpa
   and its power station, Sengoku's Samurai and Kinsei, Carthage's second Colonist with the Colonist, the Pirate
   Republic's "no Settlers" with the Buccaneer, and the rules the game keeps on an ability for one of its uniques
@@ -65,8 +62,8 @@ Steam doesn't take the preview through `steamcmd` for this account, so it goes u
 ![Civilizations' dealt attribute tags on the civilization select, the new buttons boxed](docs/screenshots/05-civilization-select.jpg)
 ![The Civilization pool button under Random](docs/screenshots/06-civilization-pool-button.jpg)
 ![The Build your own civilization button](docs/screenshots/07-build-your-own-civilization.jpg)
-![Build your own leader, with your own Leader mode and the AI players on Mix bonuses](docs/screenshots/08-build-leader.jpg)
-![Build your own civilization, following the AI players' settings, with Carthage's bonus and the Colonist](docs/screenshots/09-build-civilization.jpg)
+![Build your own leader, with the AI players' mode and yours](docs/screenshots/08-build-leader.jpg)
+![Build your own civilization, with Carthage's bonus and the Colonist](docs/screenshots/09-build-civilization.jpg)
 ![The Leader pool](docs/screenshots/10-leader-pool.jpg)
 ![The AI players window](docs/screenshots/11-ai-players.jpg)
 ![Who got what in the diplomacy leader panel](docs/screenshots/12-who-got-what.jpg)

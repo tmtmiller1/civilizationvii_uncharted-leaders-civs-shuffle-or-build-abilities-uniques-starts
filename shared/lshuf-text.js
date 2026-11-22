@@ -28,3 +28,17 @@ export function splitBullets(text) {
 export const bulletAt = (text, index) => splitBullets(text).bullets[index - 1] || "";
 
 export const joinBullets = (bullets) => (bullets.length ? `[BLIST]${bullets.map((b) => LI + b).join("")}[/BLIST]` : "");
+
+// The bonus numbers a mapping piece holds when it's more than one ("1|3|4", or a run of BulletCount from BulletIndex),
+// else null: those bonuses only work together, so the mapping merges them into one piece.
+export function mergedBullets(piece) {
+  const list = String((piece && piece.BulletList) || "").split("|").map(Number).filter((n) => n > 0);
+  const first = Number(piece && piece.BulletIndex);
+  const count = Math.max(1, Number((piece && piece.BulletCount) || 1));
+  const nums = list.length ? list : Array.from({ length: count }, (_, i) => first + i);
+  return nums.length > 1 ? nums : null;
+}
+
+// "1, 3 and 4" (the mod's text is English only for now).
+export const andList = (items) => (items.length < 2 ? items.join("")
+  : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`);

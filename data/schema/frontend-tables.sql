@@ -87,6 +87,15 @@ CREATE TABLE IF NOT EXISTS LShufSetup_CivRiders (
   LeadId TEXT NOT NULL,
   RiderId TEXT NOT NULL
 );
+-- The great people each civilization's ability grants (game 1.5.1; docs/GREAT-PEOPLE.md): AnchorType is the quarter's
+-- first building or the unique constructible a grant names, NULL when the person goes with the ability itself.
+CREATE TABLE IF NOT EXISTS LShufSetup_CivGreatPeople (
+  CivilizationType TEXT NOT NULL,
+  UnitType TEXT NOT NULL,
+  NameKey TEXT,
+  DescKey TEXT,
+  AnchorType TEXT
+);
 CREATE TABLE IF NOT EXISTS LShufSetup_CivItems (
   CivilizationType TEXT NOT NULL,
   Age TEXT,

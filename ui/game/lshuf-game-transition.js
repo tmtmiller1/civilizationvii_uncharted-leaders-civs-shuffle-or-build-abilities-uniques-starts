@@ -9,8 +9,15 @@ import { injectBuildButton } from "/uncharted-leaders-and-civs/ui/setup/lshuf-bu
 import { writeBuildKeys } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-keys.js";
 import { BUILD_SLOTS } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 import {
-  buildForLeader, buildPicks, isLocalHost, readSlots
+  ageCivs, buildForLeader, buildPicks, isLocalHost, readDealConfigFromSetup, readSlots
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
+import { startAge } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { readSetupTable } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-tables.js";
+import { buildDealInput, computeDeal } from "/uncharted-leaders-and-civs/shared/deal/lshuf-deal.js";
+import { civDealViews } from "/uncharted-leaders-and-civs/ui/display/lshuf-civ-views.js";
+import {
+  readCivItemRows, SHIPPED_CIV_ITEMS, shippedCivView, writeCivItemRows
+} from "/uncharted-leaders-and-civs/ui/display/lshuf-config-rows.js";
 
 const THROTTLE_MS = 150;
 const log = (msg) => console.warn(`[lshuf-game] ${msg}`);
@@ -38,16 +45,18 @@ function logConfigCivs() {
   log(`${screen} at turn ${Game.turn}: config civs ${line}`);
 }
 
-// Every builder slot's cards and leader as the setup parameters hold them now.
+// Every builder slot's cards and leader as they stand now (in a game the picks live in the game configuration),
+// with each player's civ, which changes once a civ is picked for the next age.
 function picksNow() {
   const out = [];
   for (let n = 1; n <= BUILD_SLOTS; n++) out.push(`${buildForLeader(n) || ""}:${buildPicks(n).join("|")}`);
+  out.push(readSlots().map((s) => s.civ).join("|"));
   return out.join(",");
 }
 
-// The picks as the game loaded; a build made on a transition screen changes them, and only then are the deal's
-// builder keys rewritten (with the civilization each player is taking into the next age), so the next age's data
-// load applies them. A player who doesn't build at the transition keeps what setup wrote.
+// The picks as the game loaded; a build made on a transition screen, or a civ picked for the next age, changes them,
+// and only then are the deal's builder keys rewritten (with the civilization each player is taking into the next
+// age), so the next age's data load applies them. A player who changes neither keeps what setup wrote.
 let loadedPicks = null;
 function writeTransitionBuilds() {
   if (loadedPicks == null) loadedPicks = picksNow();
@@ -55,12 +64,39 @@ function writeTransitionBuilds() {
   writeBuildKeys(readSlots());
 }
 
+// The next age's civilizations on the transition screens. The running game's deal comes from this age's data, which
+// holds only this age's uniques and civics trees, so the next age's civs would show a swapped ability next to their
+// own uniques and civics. The setup copy holds every age, so the deal is worked out here the way the setup screen
+// does it, for the next age, and written for that age's civs; the next age's data load deals the same from the same
+// seed and builds. Nobody plays those civs yet, so they show their deal under either Reveal setting.
+let shownFor = null;
+let shippedCivs = null;
+function showNextAgeCivs() {
+  const sign = picksNow();
+  if (sign === shownFor) return;
+  shownFor = sign;
+  const config = readDealConfigFromSetup();
+  const deal = computeDeal(buildDealInput(readSetupTable, config));
+  if (!shippedCivs) shippedCivs = readCivItemRows(SHIPPED_CIV_ITEMS);
+  const views = civDealViews(deal.civPieces || [], shippedCivs);
+  const next = ageCivs(startAge());
+  let n = 0;
+  for (const [civ, own] of shippedCivs) {
+    if (next && !next.has(civ)) continue;
+    if (writeCivItemRows(civ, views.get(civ) || shippedCivView(own), own)) n += 1;
+  }
+  log(`next age ${config.age}: wrote ${n} civs from the deal`);
+}
+
 function sweep() {
   pending = null;
   try {
     injectBuildButton();
     logConfigCivs();
-    if (onTransitionScreen()) writeTransitionBuilds();
+    if (onTransitionScreen()) {
+      writeTransitionBuilds();
+      showNextAgeCivs();
+    }
   } catch (e) {
     log(`transition sweep failed: ${e}`);
   }

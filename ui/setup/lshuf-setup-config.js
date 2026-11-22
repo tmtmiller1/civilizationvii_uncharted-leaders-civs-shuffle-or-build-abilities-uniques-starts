@@ -8,7 +8,7 @@ import {
   KNOWN_LEADERS, MODDED_LEADER_TYPES
 } from "/uncharted-leaders-and-civs/shared/lshuf-known-leaders.js";
 import {
-  paramValue, paramBool, paramValues, currentSeed, startAge, humanFollows
+  paramValue, paramBool, paramValues, currentSeed, startAge, humanFollows, inGame
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import { moddedCheckResult } from "/uncharted-leaders-and-civs/ui/setup/lshuf-mod-check.js";
 import { buildDealInput } from "/uncharted-leaders-and-civs/shared/deal/lshuf-deal.js";
@@ -29,7 +29,24 @@ export function isLocalHost() {
   }
 }
 
-// The slots in the game: [{ id, human, leader }].
+// The player setting the game's civ select writes at an age transition, for the civ a player takes into the next
+// age (core/ui-next/screens/create-game/civ-select-model.js); PlayerCivilization keeps the one being left.
+export const TRANSITION_CIV_PARAM = "AgeTransitionPlayerCivilization";
+
+// A player's next-age civ in a running game, once picked; null outside a game or before a pick.
+function transitionCiv(id) {
+  if (!inGame()) return null;
+  try {
+    const p = GameSetup.findPlayerParameter(id, TRANSITION_CIV_PARAM);
+    const v = p && p.value ? p.value.value : null;
+    return v && String(v) !== PLAIN_RANDOM ? String(v) : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+// The slots in the game: [{ id, human, leader, civ }]. At an age transition a player's civ is the one picked for
+// the next age, once there is one.
 export function readSlots() {
   const out = [];
   let ids = [];
@@ -45,7 +62,7 @@ export function readSlots() {
       id,
       human: !!p.isHuman,
       leader: String(p.leaderTypeName || PLAIN_RANDOM),
-      civ: String(p.civilizationTypeName || PLAIN_RANDOM)
+      civ: transitionCiv(id) || String(p.civilizationTypeName || PLAIN_RANDOM)
     });
   }
   return out;
@@ -186,8 +203,8 @@ export function keptLeaders(slots, options) {
 // LShufNotInGame: known leaders in no slot; empty when any slot is still plain Random (CONTRACTS section 12).
 export function notInGame(slots) {
   if (slots.some((s) => !s.leader || s.leader === PLAIN_RANDOM)) return [];
-  const inGame = new Set(slots.map((s) => s.leader));
-  return KNOWN_LEADERS.filter((l) => !inGame.has(l));
+  const playing = new Set(slots.map((s) => s.leader));
+  return KNOWN_LEADERS.filter((l) => !playing.has(l));
 }
 
 // modOK: listed modded leaders that pass the live check, only while a modded box is on.
@@ -260,8 +277,8 @@ export function builderFromSetup(slots, n = 1, hand = buildPicks(n)) {
 const ownCache = { key: "", picks: [] };
 function ownModePicks(slots, leader, civ) {
   const options = readOptions();
-  const humanMode = paramValue(PARAM.HumanMode) || "LSHUF_MODE_NONE";
-  const humanCivMode = paramValue(PARAM.HumanCivMode) || "LSHUF_CM_NORMAL";
+  const humanMode = paramValue(PARAM.HumanMode) || "LSHUF_MODE_SAME";
+  const humanCivMode = paramValue(PARAM.HumanCivMode) || "LSHUF_CM_SAME";
   const base = {
     seed: currentSeed(), options, kept: keptLeaders(slots, options), out: buildOut(slots), modOK: modOKLeaders(options),
     builders: [], age: startAge()

@@ -16,7 +16,7 @@ import {
   el, dropdownRow, checkboxRow, seedRow, leaderList
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
 import {
-  opt, pageButtons, readRevision
+  heading, opt, pageButtons, readRevision
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-section.js";
 
 import { buildAiPlayers } from "/uncharted-leaders-and-civs/ui/setup/lshuf-ai-players.js";
@@ -27,6 +27,16 @@ export const WINDOW_TAG = tagOf("advanced");
 
 const moddedBoxOn = () =>
   paramBool(PARAM.ModdedAbilities) || paramBool(PARAM.ModdedAttributes) || paramBool(PARAM.ModdedBiases);
+
+// The part rows on the advanced page: [parameter, option key], leaders then civilizations.
+const PART_ROWS = [
+  [PARAM.Abilities, "ABILITIES"],
+  [PARAM.Attributes, "ATTRIBUTES"],
+  [PARAM.Biases, "BIASES"],
+  [PARAM.CivAbilities, "CIV_ABILITIES"],
+  [PARAM.CivUniques, "CIV_UNIQUES"],
+  [PARAM.CivCivics, "CIV_CIVICS"]
+];
 
 // Each page: its frame title and a builder that fills `list` and returns its controls ({ el, sync }).
 const PAGES = {
@@ -49,6 +59,10 @@ const PAGES = {
   advanced: {
     title: "LOC_LSHUF_ADVANCED_TITLE",
     build: (win, list, ctx) => [
+      // The parts the AI players' modes set (CONTRACTS 34), one row each; changing one makes the mode read Custom.
+      { el: list.appendChild(heading("LOC_LSHUF_ADVANCED_PARTS_HEADING")), sync: () => {} },
+      { el: list.appendChild(el("div", "lshuf-setup__note font-body text-sm", "LOC_LSHUF_ADVANCED_PARTS_NOTE")), sync: () => {} },
+      ...PART_ROWS.map(([paramId, key]) => win.add(list, dropdownRow(paramId, ...opt(key), ctx))),
       win.add(list, dropdownRow(PARAM.Dealing, ...opt("DEALING"), ctx)),
       win.add(list, seedRow(PARAM.Seed, ...opt("SEED"), ctx)),
       { el: list.appendChild(pageButtons((page) => openSetupWindow(page))), sync: () => {} }

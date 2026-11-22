@@ -37,7 +37,7 @@ function withBonus(row, heldAlone) {
     if (heldAlone.has(piece)) continue;
     const key = civPieceKey(piece);
     const bonus = String(Locale.compose(key) || "").trim();
-    if (bonus && bonus !== key) added.push(bonus);
+    if (bonus && bonus !== key) added.push(`${String(Locale.compose("LOC_LSHUF_CIV_UNIT_BRINGS") || "").trim()} ${bonus}`.trim());
   }
   if (!added.length) return row;
   return { ...row, Description: `${String(Locale.compose(row.Description) || "")} ${added.join(" ")}`.trim() };

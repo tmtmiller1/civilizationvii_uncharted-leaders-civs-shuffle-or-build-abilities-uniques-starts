@@ -9,8 +9,9 @@
 //   leaderName(leaderType) -> string            the leader's composed name
 //   attributeName(traitType) -> string | null   the attribute an attribute trait stands for, composed
 //   whyOf(leaderType) -> string | null          the setup screen's check detail for a modded leader left out
+//   mergedOf(pieceId) -> number[] | null        the bonus numbers a merged piece holds (optional)
 import { REASON, STATUS } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
-import { bulletAt, splitBullets } from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
+import { andList, bulletAt, splitBullets } from "/uncharted-leaders-and-civs/shared/lshuf-text.js";
 import { reasonKey, whyKey } from "/uncharted-leaders-and-civs/ui/display/lshuf-display-util.js";
 
 // LShufResultLeaders.Axes holds the dealt axes as |ABILITY|ATTRIBUTES|BIASES|.
@@ -58,6 +59,14 @@ function pieceBullets(piece, lookups) {
   return whole.trim() ? [{ text: whole.trim(), from }] : [];
 }
 
+// Bonuses that only work together came as one piece (owner, 2026-11-12: say so whenever things come together).
+function mergedLine(piece, lookups) {
+  const merged = lookups.mergedOf && piece.Kind === "bullet" ? lookups.mergedOf(piece.PieceId) : null;
+  if (!merged) return [];
+  return [{ kind: "line", text: composed(lookups, "LOC_LSHUF_DIPLO_MERGED", andList(merged.map(String)),
+    lookups.leaderName(piece.FromLeaderType)) }];
+}
+
 // The ability lines: one "Ability from X" line for a whole ability, one bullet per bonus otherwise.
 function abilityLines(leaderType, row, deal, lookups) {
   if (!hasAxis(row, AXIS.Ability)) return [];
@@ -79,6 +88,7 @@ function abilityLines(leaderType, row, deal, lookups) {
         own: !bullet.from || bullet.from === leaderType
       });
     }
+    out.push(...mergedLine(piece, lookups));
   }
   return out;
 }

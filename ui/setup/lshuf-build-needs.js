@@ -3,10 +3,12 @@
 // one under the slots with a button to take the unique. Pure: cards and picks in, needs out.
 //
 // A unique counts as named when the card's text carries its icon ([icon:UNIT_COLONIST]) or its name as a whole word.
-// It counts as held when it's the builder civilization's own (its card is marked own) or one of the picks.
+// It counts as held when it's the builder civilization's own (its card is marked own) and not taken out, or one of the
+// picks.
 import { BUILD_KIND, PIECE_NEEDS, buildKindOf } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
 
 const UNIQUE_PREFIX = "CIVUNQ_";
+const DROP_PREFIX = "CIVDROP_";
 const ICON = /\[icon:([A-Za-z0-9_]+)\]/g;
 const MARKUP = /\[[^\]]*\]/g;
 // Shorter names (a three-letter unit) would match ordinary words.
@@ -40,9 +42,13 @@ function namedTypes(text, uniques) {
   return found;
 }
 
-// The uniques the builder holds: the builder civilization's own and the ones picked.
+// The uniques the builder holds: the builder civilization's own, less the ones taken out of its slots (CIVDROP_,
+// CONTRACTS 35), and the ones picked.
 function heldUniques(cards, picks) {
-  const held = new Set(cards.filter((c) => c.kind === BUILD_KIND.CivUnique && c.own).map(typeOf));
+  const dropped = new Set(picks.filter((id) => buildKindOf(id) === BUILD_KIND.CivUniqueDrop)
+    .map((id) => String(id).slice(DROP_PREFIX.length)));
+  const held = new Set(cards.filter((c) => c.kind === BUILD_KIND.CivUnique && c.own).map(typeOf)
+    .filter((type) => !dropped.has(type)));
   for (const id of picks) {
     if (buildKindOf(id) === BUILD_KIND.CivUnique) held.add(String(id).slice(UNIQUE_PREFIX.length));
   }

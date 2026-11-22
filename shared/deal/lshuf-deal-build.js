@@ -25,7 +25,8 @@ function sortTerrain(picks, id) {
   return false;
 }
 
-// Civilization cards (CONTRACTS 14): the first ability card, and every unique card.
+// Civilization cards (CONTRACTS 14): the first ability card, every unique card, and every own unique taken out
+// (CONTRACTS 35).
 function sortCiv(picks, id, kind) {
   if (kind === BUILD_KIND.CivAbility) {
     if (picks.civAbility == null) picks.civAbility = after(id, "CIVABIL_");
@@ -45,6 +46,10 @@ function sortCiv(picks, id, kind) {
   }
   if (kind === BUILD_KIND.CivCivic) {
     picks.civCivicNodes.push(id);
+    return true;
+  }
+  if (kind === BUILD_KIND.CivUniqueDrop) {
+    picks.civUniqueDrops.push(after(id, "CIVDROP_"));
     return true;
   }
   return false;
@@ -70,7 +75,7 @@ function sortOne(picks, id, attrTraits, majors) {
 function sortPicks(ids, attrTraits, majors) {
   const picks = {
     wholes: [], bullets: [], attrs: [], persona: null, bias: null, genericBias: null, civBias: null, civAbility: null,
-    civUniques: [], civCivics: null, civBullets: [], civCivicNodes: []
+    civUniques: [], civCivics: null, civBullets: [], civCivicNodes: [], civUniqueDrops: []
   };
   for (const id of ids) sortOne(picks, id, attrTraits, majors);
   picks.wholes.sort(cmp);
@@ -83,7 +88,8 @@ function sortPicks(ids, attrTraits, majors) {
 // The civilization cards that build with Leader shuffle on Base game (CONTRACTS 14): everything on the civ screen
 // but its start terrain, which belongs to the start terrain part.
 const CIV_ONLY_KINDS = new Set([
-  BUILD_KIND.CivAbility, BUILD_KIND.CivBullet, BUILD_KIND.CivUnique, BUILD_KIND.CivCivics, BUILD_KIND.CivCivic
+  BUILD_KIND.CivAbility, BUILD_KIND.CivBullet, BUILD_KIND.CivUnique, BUILD_KIND.CivCivics, BUILD_KIND.CivCivic,
+  BUILD_KIND.CivUniqueDrop
 ]);
 export const isCivOnlyPiece = (id) => CIV_ONLY_KINDS.has(buildKindOf(id));
 

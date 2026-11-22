@@ -165,19 +165,19 @@ function build() {
   const kind = `CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' OR substr(PieceId, 1, 6) = 'ATTR2_' THEN 'attr' WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN 'persona'
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN 'civbias' WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN 'civability'
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN 'civunique' WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN 'civcivics' WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN 'gbias' WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN 'bias'
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic'
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN 'civcivic' WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN 'civuniquedrop'
     WHEN substr(PieceId, 1, 13) = 'CIVILIZATION_' AND PieceId LIKE '%\\_\\_B__' ESCAPE '\\' THEN 'civbullet'
     WHEN substr(PieceId, -7) = '__WHOLE' THEN 'whole' ELSE 'bullet' END`;
   const arg = `CASE WHEN substr(PieceId, 1, 5) = 'ATTR_' THEN substr(PieceId, 6) WHEN substr(PieceId, 1, 6) = 'ATTR2_' THEN substr(PieceId, 7) WHEN substr(PieceId, 1, 8) = 'PERSONA_' THEN substr(PieceId, 9)
     WHEN substr(PieceId, 1, 8) = 'CIVBIAS_' THEN substr(PieceId, 9) WHEN substr(PieceId, 1, 8) = 'CIVABIL_' THEN substr(PieceId, 9)
     WHEN substr(PieceId, 1, 7) = 'CIVUNQ_' THEN substr(PieceId, 8) WHEN substr(PieceId, 1, 8) = 'CIVCIVC_' THEN substr(PieceId, 9) WHEN substr(PieceId, 1, 6) = 'GBIAS_' THEN substr(PieceId, 7) WHEN substr(PieceId, 1, 5) = 'BIAS_' THEN substr(PieceId, 6)
-    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN substr(PieceId, 9)
+    WHEN substr(PieceId, 1, 8) = 'CIVNODE_' THEN substr(PieceId, 9) WHEN substr(PieceId, 1, 8) = 'CIVDROP_' THEN substr(PieceId, 9)
     WHEN substr(PieceId, -7) = '__WHOLE' THEN substr(PieceId, 1, length(PieceId) - 7) ELSE PieceId END`;
   const pick = (k, extra = "") =>
     `(SELECT MIN(p.Arg) FROM LShufWork_BuildPiece p WHERE p.Kind = ${q(k)} AND p.Slot = LShufWork_Build.Slot${extra})`;
   const major = " AND p.Arg IN (SELECT LeaderType FROM LShufWork_L)";
   // With Leader shuffle on Base game only the civilization cards build (lshuf-deal-build.js CIV_ONLY_KINDS).
-  const civOnly = `(${kind}) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic')`;
+  const civOnly = `(${kind}) IN ('civability', 'civbullet', 'civunique', 'civcivics', 'civcivic', 'civuniquedrop')`;
   // A human keeping their own leader still builds their civilization's cards while Keep my built civilization is on
   // (lshuf-deal-build.js keptCiv); that slot then takes the civilization cards only.
   const keptCiv = (leader) => `(${opt("KeepBuiltCiv")} = '1' AND EXISTS (SELECT 1 FROM LShufWork_L l WHERE l.LeaderType = ${leader} AND l.Base = ${q(REASON.Kept)}))`;

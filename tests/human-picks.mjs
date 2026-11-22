@@ -9,7 +9,7 @@ import { loadForJs } from "./_deal.mjs";
 import { buildDealInput } from "../shared/deal/lshuf-deal.js";
 import { humanOptions, humanPicks, mergePicks, pickPart } from "../shared/deal/lshuf-human-picks.js";
 import {
-  BUILD_KIND, CIV_PRESETS, MODE, PERSONA, PRESETS, PRESET_PERSONA, T_MODE, buildKindOf
+  BUILD_KIND, CIV_PRESETS, HUMAN_SAME, MODE, PERSONA, PRESETS, PRESET_PERSONA, T_MODE, buildKindOf
 } from "../shared/lshuf-constants.js";
 
 const HUMAN_MODES = Object.keys(PRESETS);
@@ -90,6 +90,37 @@ test("a host that isn't a leader in the input gets nothing", async () => {
     const input = buildDealInput(readTableFrom(run.pre), dealConfig({ seed: 1, options: {} }));
     assert.deepEqual(humanPicks(input, null, MODE.SwapLeaders, "LSHUF_CM_SPLIT", { leader: "LEADER_NOBODY", civ: null }), []);
     assert.deepEqual(humanPicks(input, null, MODE.SwapLeaders, "LSHUF_CM_SPLIT", null), []);
+  } finally {
+    run.close();
+  }
+});
+
+// CONTRACTS 34: Same as the AI players leaves that part on the AI players' rows, so a host with Your leader on Same
+// and Your civilization on a mode of its own gets leader cards dealt the AI players' way.
+test("humanOptions: Same as the AI players keeps the AI players' rows for that part", () => {
+  const base = { Abilities: "LSHUF_A_SPLIT", Attributes: "LSHUF_T_RANDOM", Biases: "LSHUF_B_MATCHED", Personality: PERSONA.Follows,
+    CivAbilities: "LSHUF_CA_SPLIT", CivUniques: "LSHUF_CU_SPLIT", CivCivics: "LSHUF_CC_SPLIT", Mode: MODE.SplitMatched };
+  const o = humanOptions(base, HUMAN_SAME.leader, "LSHUF_CM_WHOLE");
+  assert.deepEqual([o.Abilities, o.Attributes, o.Biases, o.Personality, o.Mode],
+    [base.Abilities, base.Attributes, base.Biases, base.Personality, base.Mode]);
+  assert.deepEqual([o.CivAbilities, o.CivUniques, o.CivCivics], CIV_PRESETS.LSHUF_CM_WHOLE);
+  const c = humanOptions(base, MODE.SwapLeaders, HUMAN_SAME.civ);
+  assert.deepEqual([c.CivAbilities, c.CivUniques, c.CivCivics], [base.CivAbilities, base.CivUniques, base.CivCivics]);
+});
+
+test("base: Your leader Same with the AI players on Mix bonuses gives leader cards; Your civilization Same on Play as normal gives none", async () => {
+  const options = { Mode: MODE.SplitMatched, Abilities: "LSHUF_A_SPLIT", Attributes: "LSHUF_T_RANDOM", Biases: "LSHUF_B_MATCHED" };
+  const spec = { seed: 7, options };
+  const run = await loadForJs({ fixture: "base", spec });
+  try {
+    const input = buildDealInput(readTableFrom(run.pre), dealConfig({ ...spec, age: undefined }));
+    const host = HOSTS.base;
+    const ids = humanPicks(input, null, HUMAN_SAME.leader, HUMAN_SAME.civ, host);
+    const parts = new Set(ids.map(pickPart));
+    assert.ok(parts.has("abilities"), "leader cards from the AI players' Mix bonuses");
+    assert.ok(![...parts].some((p) => CIV_PARTS.has(p)), "no civilization cards while the AI civilizations play as normal");
+    const withCiv = humanPicks(input, null, HUMAN_SAME.leader, "LSHUF_CM_WHOLE", host);
+    assert.ok(withCiv.some((id) => CIV_PARTS.has(pickPart(id))), "Your civilization on Trade places adds civilization cards");
   } finally {
     run.close();
   }

@@ -50,12 +50,12 @@ The table below was written on 2026-11-06 from 513 SQL files, workstream B's fir
 | --- | --- | --- |
 | Common table expressions (WITH ... AS) | 3.8.3 | `data/text-generated/lshuf-civ-piece-text.sql`, `data/text-generated/lshuf-piece-text.sql` |
 | WITH RECURSIVE | 3.8.3 | `data/text-generated/lshuf-civ-piece-text.sql`, `data/text-generated/lshuf-piece-text.sql` |
-| INSERT OR IGNORE / OR REPLACE | 3.0.0 | `data/frontend/parameters.sql`, `data/generated/build/build-LEADER_ADA_LOVELACE.sql`, `data/generated/build/build-LEADER_ALEXANDER.sql` and 4514 more |
+| INSERT OR IGNORE / OR REPLACE | 3.0.0 | `data/frontend/parameters.sql`, `data/generated/build/build-LEADER_ADA_LOVELACE.sql`, `data/generated/build/build-LEADER_ALEXANDER.sql` and 4866 more |
 | REPLACE INTO | 3.0.0 | `data/generated/options/age-AGE_ANTIQUITY.sql`, `data/generated/options/age-AGE_EXPLORATION.sql`, `data/generated/options/age-AGE_MODERN.sql` and 52 more |
-| INSERT ... SELECT | 3.0.0 | `data/frontend/civ-items-copy.sql`, `data/frontend/parameters.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_CULTURAL.sql` and 3976 more |
+| INSERT ... SELECT | 3.0.0 | `data/frontend/civ-items-copy.sql`, `data/frontend/parameters.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_CULTURAL.sql` and 4328 more |
 | Multi-row VALUES | 3.7.11 | `data/frontend/parameters.sql`, `data/generated/deal/deal-6-apply.sql`, `data/generated/known-leaders.sql` and 7 more |
 | Correlated subqueries (COUNT(*) rank) | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql` and 3 more |
-| EXISTS / NOT EXISTS | 3.0.0 | `data/frontend/civ-items-copy.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_CULTURAL.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_ECONOMIC.sql` and 3973 more |
+| EXISTS / NOT EXISTS | 3.0.0 | `data/frontend/civ-items-copy.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_CULTURAL.sql`, `data/generated/built/built-ATTR2_TRAIT_LEADER_ATTRIBUTE_ECONOMIC.sql` and 4325 more |
 | UNION / UNION ALL / INTERSECT / EXCEPT | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-4-biases.sql`, `data/generated/deal/deal-6-apply.sql` and 2 more |
 | CASE expressions | 3.0.0 | `data/generated/deal/deal-1-prepare.sql`, `data/generated/deal/deal-2-ability.sql`, `data/generated/deal/deal-3-attributes.sql` and 6 more |
 | group_concat() | 3.5.4 | `data/text-generated/lshuf-civ-piece-text.sql`, `data/text-generated/lshuf-piece-text.sql` |

@@ -6,30 +6,32 @@
 // pools (hand-building them is parked in mod_ideas_tested/re-dealable-ai-leader-builds). Opened from the mod's
 // settings section (lshuf-setup-accordion.js) and the buttons on the game's own screens (lshuf-build-entry.js).
 
+import TooltipManager from "/core/ui/tooltips/tooltip-manager.js";
 import Panel from "/core/ui/panel-support.js";
 import ContextManager from "/core/ui/context-manager/context-manager.js";
 import { InputEngineEvent, InputEngineEventName } from "/core/ui/input/input-support.js";
 import {
-  MOD_ID, A_MODE, BUILD_KIND, CA_MODE, CC_MODE, MODE, PARAM, buildKindOf
+  MOD_ID, A_MODE, BUILD_KIND, CA_MODE, CC_MODE, CIV_MODE_CUSTOM, MODE, MODE_CUSTOM, PARAM, buildKindOf
 } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
-import { humanFollows, setParam, START_AGE_PARAM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { inGame, paramValue, setParam, START_AGE_PARAM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import { lineKey } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-lines.js";
 import {
-  el, dropdownRow, checkboxRow
+  el, dropdownRow
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
 import { opt, readRevision } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-section.js";
 import { isLocalHost, readOptions } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
 import { openSetupWindow } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-window.js";
 import { syncPresets } from "/uncharted-leaders-and-civs/ui/setup/lshuf-presets.js";
 import {
-  attributeIdsOf, buildCards, cantTake, cardFor, civicSlotCount, compose, disabledNote, hostCiv, hostLeader,
-  isWholeCard, nextIdFor, otherPagePicks, readPicks, slotCounts, slotOfKind, uniquesStayOwn, wholePickInGroup,
-  writePicks
+  attributeIdsOf, buildCards, cantTake, cardFor, civicSlotCount, compose, disabledNote, dropOfUnique, hostCiv,
+  hostLeader, isDrop, isWholeCard, nextIdFor, otherPagePicks, overGroups, readPicks, slotCounts, slotOfKind, slotPicks,
+  uniqueSlotCount, uniquesStayOwn, wholePickInGroup, writePicks
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-cards.js";
 import {
   civBackground, leaderPortrait, SLOT_BASE, TAG_EQUIPPED
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-art.js";
 import {
-  dropdown, renderGrid, renderSlots, renderToolbar
+  cardName, dropdown, groupLabelKey, renderGrid, renderSlots, renderToolbar
 } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-parts.js";
 import { registerCards } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-tooltip.js";
 import { uniqueNeeds } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-needs.js";
@@ -192,6 +194,7 @@ class LShufBuildWindow extends Panel {
     this.leaderNames = data.leaderNames;
     const all = this.builder ? slotCounts(this.builder, this.civ, data.cards, false) : null;
     this.ownCivics = all ? all.civCivics : 0;
+    this.ownUniques = all ? all.ownUniques : 0;
     if (!all) this.counts = null;
     else if (this.scope === "civ") {
       this.counts = { ability: 0, attributes: 0, behavior: 0, terrain: 0, civAbility: all.civAbility,
@@ -200,6 +203,44 @@ class LShufBuildWindow extends Panel {
     this.byId = new Map(this.cards.map((c) => [c.id, c]));
     registerCards(this.cards);
     this.syncCivicSlots();
+    this.syncUniqueSlots();
+  }
+
+  // The unique slots follow the Civilization uniques setting (CONTRACTS 35): where a builder keeps its own uniques
+  // they start in its slots, with UNIQUE_EXTRA_SLOTS more beside them; otherwise the slots start empty.
+  syncUniqueSlots() {
+    this.uniquesAdd = this.scope === "civ" && uniquesStayOwn(readOptions().CivUniques);
+    // With the page's AI players' setting on Custom, most groups take any number of cards (CONTRACTS 35).
+    this.openSlots = this.scope === "civ" ? paramValue(PARAM.CivMode) === CIV_MODE_CUSTOM
+      : paramValue(PARAM.Mode) === MODE_CUSTOM;
+    if (!this.counts || this.scope !== "civ") return;
+    this.counts.civUniques = this.civ ? uniqueSlotCount(this.ownUniques, this.uniquesAdd) : 0;
+  }
+
+  // What sits in the slots now: the kept own uniques first, then the picks, the drops left out.
+  inSlots() {
+    return slotPicks(this.cards, this.picks(), this.uniquesAdd);
+  }
+
+  // Your civilization's own unique, where the settings keep it: a click moves it in or out of its slots.
+  ownStays(card) {
+    return !!card && this.uniquesAdd && card.kind === BUILD_KIND.CivUnique && card.own;
+  }
+
+  // In its slot, a click takes it out (its drop goes into the picks, and the deal gives it to another civilization of
+  // the age); out of it, a click puts it back while there's room.
+  toggleOwn(card) {
+    const picks = this.picks();
+    const drop = dropOfUnique(card.id);
+    if (!picks.includes(drop)) {
+      this.commit([...picks, drop]);
+      return;
+    }
+    if (cantTake(card, this.inSlots(), this.counts, this.openSlots) === "full") {
+      this.flash("LOC_LSHUF_BUILD_SLOTS_FULL");
+      return;
+    }
+    this.commit(picks.filter((id) => id !== drop));
   }
 
   // A warning under the slots for each picked card that names a unique the builder doesn't hold (Carthage's bonus
@@ -207,7 +248,8 @@ class LShufBuildWindow extends Panel {
   drawNeeds() {
     this.needsBox.innerHTML = "";
     const needs = this.note ? [] : uniqueNeeds(this.cards, this.picks());
-    this.needsBox.style.display = needs.length ? "" : "none";
+    const over = this.drawOver();
+    this.needsBox.style.display = needs.length || over ? "" : "none";
     for (const { card, unique, bonus } of needs) {
       const row = el("div", "lshuf-build__need flex flex-row items-center");
       const text = el("div", "flex-auto");
@@ -219,6 +261,17 @@ class LShufBuildWindow extends Panel {
       row.append(text, btn);
       this.needsBox.appendChild(row);
     }
+  }
+
+  // A line for each group holding more than its normal count (CONTRACTS 35), above the needs; how many were drawn.
+  drawOver() {
+    const over = this.note || !this.counts ? [] : overGroups(this.inSlots(), this.counts, this.openSlots);
+    for (const o of over) {
+      const row = el("div", "lshuf-build__need lshuf-build__over");
+      row.textContent = compose("LOC_LSHUF_BUILD_OVER_NORMAL", compose(groupLabelKey(o.group)), o.have, o.normal);
+      this.needsBox.appendChild(row);
+    }
+    return over.length;
   }
 
   // The civics slots follow the Whole toggle: one slot while whole trees are shown, the builder civ's own civic count
@@ -272,9 +325,13 @@ class LShufBuildWindow extends Panel {
       this.takeGoesWith(card);
       return;
     }
-    if (this.hint === "LOC_LSHUF_BUILD_MODE_AUTO" && this.goesIn(card)) this.turnShuffleOn();
+    if (this.shufflesOnWith(card)) this.turnShuffleOn();
+    if (this.ownStays(card)) {
+      this.toggleOwn(card);
+      return;
+    }
     const picks = this.picks();
-    const why = cantTake(card, picks, this.counts);
+    const why = cantTake(card, this.inSlots(), this.counts, this.openSlots);
     if (why === "taken") {
       const mine = new Set(attributeIdsOf(card, picks));
       this.commit(picks.filter((id) => !mine.has(id)));
@@ -298,18 +355,24 @@ class LShufBuildWindow extends Panel {
     if (target) this.take(target);
   }
 
+  // A card taken while you follow AI players who play as normal turns your own shuffle on, except at an age
+  // transition, where the settings stay as the game started.
+  shufflesOnWith(card) {
+    return this.hint === "LOC_LSHUF_BUILD_MODE_AUTO" && !inGame() && this.goesIn(card);
+  }
+
   // Whether a click on this card would put it in a slot now (free slot, or a whole card it replaces).
   goesIn(card) {
     const picks = this.picks();
-    const why = cantTake(card, picks, this.counts);
+    const why = cantTake(card, this.inSlots(), this.counts, this.openSlots);
     return !why || (why === "full" && !!wholePickInGroup(card, picks));
   }
 
-  // The first card taken while Leader shuffle is on Base game sets it to Split random, the preset whose slots this
-  // screen fills, so the picks are used.
-  // Only the preset is written, the way its dropdown writes it; the preset watch fills in the three parts.
+  // The first card taken while you follow AI players who play as normal turns Your leader to Play as normal
+  // (CONTRACTS 34): your cards then count, and the AI players stay as they were. The preset watch writes the
+  // hidden LShufHumanFollows from it.
   turnShuffleOn() {
-    setParam(PARAM.Mode, MODE.SplitRandom);
+    setParam(PARAM.HumanMode, MODE.None);
     syncPresets();
     this.hint = null;
     this.load();
@@ -318,6 +381,11 @@ class LShufBuildWindow extends Panel {
 
   drop(id) {
     if (this.note) return;
+    const card = this.byId.get(id);
+    if (this.ownStays(card)) {
+      this.toggleOwn(card);
+      return;
+    }
     this.commit(this.picks().filter((p) => p !== id));
   }
 
@@ -326,12 +394,20 @@ class LShufBuildWindow extends Panel {
     this.commit([]);
   }
 
-  // Only this page's cards change; the other page's picks ride along untouched.
+  // Only this page's cards change; the other page's picks ride along untouched. On the civilization page a drop no
+  // card answers for belongs to another civilization than the builder's, and goes.
   commit(ids) {
-    const others = otherPagePicks(readPicks(this.slot), this.byId);
+    const others = otherPagePicks(readPicks(this.slot), this.byId)
+      .filter((id) => this.scope !== "civ" || !isDrop(id));
     writePicks([...others, ...ids], this.slot);
     this.revision = readRevision();
     this.refresh();
+    // The slot or card under the cursor was just redrawn, and the game's tooltip keeps the old element as its
+    // target, so the tooltip stayed up over the window until the mouse moved (lab 2026-11-22). The next move shows
+    // the right one.
+    try {
+      TooltipManager.reset();
+    } catch (_) { /* no tooltip manager */ }
   }
 
   // --- drawing ---
@@ -368,18 +444,10 @@ class LShufBuildWindow extends Panel {
       closeX);
     this.Root.appendChild(frame);
     this.load();
-    // The settings, in a box that says what they are: the shuffle for the whole game, AI players included, which
-    // needs no build. The page's mode shows; Advanced opens the rest (owner, 2026-11-10). Above it, your own line
-    // (CONTRACTS 33): Follow the AI players' settings, and your own mode for this page. Unticked, the box below is
-    // the AI players' shuffle and says so.
+    // The settings (CONTRACTS 34): the AI players' mode for this page and Your mode, each with its line, then the
+    // Advanced and pool buttons; Advanced opens the part rows.
     this.settingsPanel = this.buildSettings();
-    const yours = this.buildYours();
-    const shuffle = el("div", "lshuf-build__shuffle-box");
-    this.shuffleTitle = el("div", "lshuf-build__shuffle-title font-title text-sm uppercase text-secondary");
-    this.shuffleNote = el("div", "lshuf-build__shuffle-note font-body text-xs text-accent-2");
-    shuffle.append(this.shuffleTitle, this.shuffleNote, this.settingsPanel);
-    this.syncShuffleText();
-    this.settingsBox.append(yours, shuffle);
+    this.settingsBox.append(this.settingsPanel);
     this.toolbar.appendChild(renderToolbar(this));
     this.refresh();
   }
@@ -396,61 +464,37 @@ class LShufBuildWindow extends Panel {
     };
   }
 
-  // Your own line (CONTRACTS 33): the Follow the AI players' settings box, and your own Leader mode (leader page) or
-  // Civilization mode (civilization page). Picking your own mode unticks the box; ticking it puts you back on the AI
-  // players' settings and leaves your modes as they were.
-  buildYours() {
-    const ctx = this.settingsContext();
-    const own = {
-      locked: ctx.locked,
-      changed: () => {
-        if (humanFollows()) setParam(PARAM.HumanFollows, false);
-        ctx.changed();
-      }
-    };
-    const follows = checkboxRow(PARAM.HumanFollows, ...opt("HUMAN_FOLLOWS"), ctx);
-    const mine = this.scope === "civ" ? dropdownRow(PARAM.HumanCivMode, ...opt("HUMAN_CIV_MODE"), own)
-      : dropdownRow(PARAM.HumanMode, ...opt("HUMAN_MODE"), own);
-    const row = el("div", "lshuf-build__yours lshuf-build__settings-row flex flex-row flex-wrap items-center");
-    row.append(follows.el, mine.el);
-    this.yourControls = [follows, mine];
-    return row;
-  }
-
-  // The shuffle box's title and line: for everyone while you follow the AI players' settings, else for the AI.
-  syncShuffleText() {
-    if (!this.shuffleTitle) return;
-    const follows = humanFollows();
-    const civ = this.scope === "civ";
-    this.shuffleTitle.setAttribute("data-l10n-id", follows ? "LOC_LSHUF_BUILD_SHUFFLE_TITLE" : "LOC_LSHUF_BUILD_SHUFFLE_TITLE_AI");
-    const note = civ ? "LOC_LSHUF_BUILD_SHUFFLE_NOTE_CIV" : "LOC_LSHUF_BUILD_SHUFFLE_NOTE";
-    this.shuffleNote.setAttribute("data-l10n-id", follows ? note : `${note}_AI`);
-  }
-
   // The settings that decide whether a build counts, right here so the player can turn the shuffle on without
   // leaving: the leader screen gets the leader settings, the civ screen the start terrain switch and its pool.
   buildSettings() {
     const ctx = this.settingsContext();
-    // One line: this page's mode (CONTRACTS 32), the Advanced button and the pool. Advanced opens the rows the mode
-    // sets and the rest; it stays open or closed across both pages.
-    const main = el("div", "lshuf-build__settings-row flex flex-row flex-wrap items-center");
-    const mode = this.scope === "civ" ? dropdownRow(PARAM.CivMode, ...opt("CIV_MODE"), ctx)
-      : dropdownRow(PARAM.Mode, ...opt("MODE"), ctx);
-    const rows = this.scope === "civ" ? [
+    const civ = this.scope === "civ";
+    // The AI players' mode and Your mode for this page, each with the line that says what its pick does.
+    const aiParam = civ ? PARAM.CivMode : PARAM.Mode;
+    const youParam = civ ? PARAM.HumanCivMode : PARAM.HumanMode;
+    const ai = dropdownRow(aiParam, ...opt(civ ? "CIV_MODE" : "MODE"), ctx);
+    const you = dropdownRow(youParam, ...opt(civ ? "HUMAN_CIV_MODE" : "HUMAN_MODE"), ctx);
+    const lineOf = (paramId) => {
+      const line = el("div", "lshuf-build__line font-body text-xs text-accent-2");
+      return { el: line, sync: () => { line.textContent = compose(lineKey(paramId, paramValue(paramId)) || ""); } };
+    };
+    this.lines = [lineOf(aiParam), lineOf(youParam)];
+    const rowWith = (control, line) => {
+      const box = el("div", "lshuf-build__settings-row flex flex-col");
+      box.append(control.el, line.el);
+      return box;
+    };
+    const rows = civ ? [
       dropdownRow(START_AGE_PARAM, "LOC_AGE_NAME", "LOC_AGE_DESCRIPTION", ctx),
       dropdownRow(PARAM.CivAbilities, ...opt("CIV_ABILITIES"), ctx),
       dropdownRow(PARAM.CivUniques, ...opt("CIV_UNIQUES"), ctx),
       dropdownRow(PARAM.CivCivics, ...opt("CIV_CIVICS"), ctx),
-      dropdownRow(PARAM.Biases, ...opt("BIASES"), ctx),
-      checkboxRow(PARAM.KeepMine, ...opt("KEEP_MINE"), ctx),
-      checkboxRow(PARAM.KeepBuiltCiv, ...opt("KEEP_BUILT_CIV"), ctx)
+      dropdownRow(PARAM.Biases, ...opt("BIASES"), ctx)
     ] : [
       dropdownRow(PARAM.Abilities, ...opt("ABILITIES"), ctx),
       dropdownRow(PARAM.Attributes, ...opt("ATTRIBUTES"), ctx),
       dropdownRow(PARAM.Biases, ...opt("BIASES"), ctx),
-      dropdownRow(PARAM.Personality, ...opt("PERSONALITY"), ctx),
-      checkboxRow(PARAM.KeepMine, ...opt("KEEP_MINE"), ctx),
-      checkboxRow(PARAM.KeepBuiltCiv, ...opt("KEEP_BUILT_CIV"), ctx)
+      dropdownRow(PARAM.Personality, ...opt("PERSONALITY"), ctx)
     ];
     const panel = el("div", "lshuf-build__settings-row lshuf-build__advanced flex flex-row flex-wrap items-center");
     for (const r of rows) panel.appendChild(r.el);
@@ -464,13 +508,16 @@ class LShufBuildWindow extends Panel {
       showAdvanced();
     });
     const pool = el("fxs-button", "m-1");
-    pool.setAttribute("caption", this.scope === "civ" ? "LOC_LSHUF_BTN_CIVS" : "LOC_LSHUF_BTN_POOLS");
-    pool.addEventListener("action-activate", () => openSetupWindow(this.scope === "civ" ? "civs" : "pools"));
-    main.append(mode.el, advanced, pool);
+    pool.setAttribute("caption", civ ? "LOC_LSHUF_BTN_CIVS" : "LOC_LSHUF_BTN_POOLS");
+    pool.addEventListener("action-activate", () => openSetupWindow(civ ? "civs" : "pools"));
+    const buttons = el("div", "flex flex-row items-center");
+    buttons.append(advanced, pool);
+    const main = el("div", "lshuf-build__settings-row flex flex-row flex-wrap items-start");
+    main.append(rowWith(ai, this.lines[0]), rowWith(you, this.lines[1]), buttons);
     showAdvanced();
     const box = el("div", "lshuf-build__settings flex flex-col");
     box.append(main, panel);
-    this.settingControls = [mode, ...rows];
+    this.settingControls = [ai, you, ...rows];
     return box;
   }
 
@@ -483,18 +530,17 @@ class LShufBuildWindow extends Panel {
   refresh() {
     try {
       this.syncShown();
-      for (const c of [...(this.yourControls || []), ...(this.settingControls || [])]) c.sync();
-      this.syncShuffleText();
+      for (const c of [...(this.settingControls || []), ...(this.lines || [])]) c.sync();
       this.syncCivicSlots();
       this.drawHead();
       if (!this.flashing) this.showNote();
       this.slotsBox.innerHTML = "";
-      this.uniquesAdd = this.scope === "civ" && uniquesStayOwn(readOptions().CivUniques);
-      if (this.counts) this.slotsBox.appendChild(renderSlots(this, this.picks()));
+      this.syncUniqueSlots();
+      if (this.counts) this.slotsBox.appendChild(renderSlots(this, this.inSlots()));
       this.drawNeeds();
       this.grid.innerHTML = "";
       this.grid.classList.toggle("lshuf-build__grid--off", !!this.note);
-      this.grid.appendChild(renderGrid(this, this.picks()));
+      this.grid.appendChild(renderGrid(this, this.inSlots()));
       this.showDetails(this.detailCard || null);
     } catch (e) {
       log(`refresh failed: ${e}`);
@@ -559,7 +605,7 @@ class LShufBuildWindow extends Panel {
       return;
     }
     const title = el("div", "font-title text-lg uppercase text-secondary");
-    title.textContent = card.name;
+    title.textContent = cardName(card);
     const from = el("div", "font-body text-sm text-accent-2 mb-2");
     const kindText = card.kindLine || compose(`LOC_LSHUF_BUILD_KIND_${card.kind.toUpperCase()}`);
     from.textContent = card.from ? `${kindText} · ${compose("LOC_LSHUF_BUILD_CARD_FROM", card.from)}` : kindText;
@@ -592,7 +638,7 @@ class LShufBuildWindow extends Panel {
     const take = el("fxs-button", "mr-3");
     const civic = card.kind === BUILD_KIND.CivCivic;
     const syncTake = () => {
-      const taken = cantTake(card, this.picks(), this.counts) === "taken";
+      const taken = cantTake(card, this.inSlots(), this.counts, this.openSlots) === "taken";
       const key = `LOC_LSHUF_BUILD_${civic ? "CIVIC" : "TREE"}_${taken ? "PUT_BACK" : "TAKE"}`;
       take.setAttribute("caption", key);
       take.classList.toggle("hidden", !!this.note);

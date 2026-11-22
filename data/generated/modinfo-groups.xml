@@ -3503,6 +3503,358 @@
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
 	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVCIVC_CIVILIZATION_TONGA.sql</Item></UpdateDatabase></Actions>
 </ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_ABAMBOWA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_ABAMBOWA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_ABAMBOWA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_ANTIQUARIAN" scope="game" criteria="lshuf-built-CIVDROP_UNIT_ANTIQUARIAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_ANTIQUARIAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_BALIK" scope="game" criteria="lshuf-built-CIVDROP_UNIT_BALIK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_BALIK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_BARBARY_CORSAIR" scope="game" criteria="lshuf-built-CIVDROP_UNIT_BARBARY_CORSAIR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_BARBARY_CORSAIR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_BOYAR" scope="game" criteria="lshuf-built-CIVDROP_UNIT_BOYAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_BOYAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_BUCCANEER" scope="game" criteria="lshuf-built-CIVDROP_UNIT_BUCCANEER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_BUCCANEER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_BURNING_ARROW" scope="game" criteria="lshuf-built-CIVDROP_UNIT_BURNING_ARROW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_BURNING_ARROW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_BYEONGSA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_BYEONGSA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_BYEONGSA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_CETBANG" scope="game" criteria="lshuf-built-CIVDROP_UNIT_CETBANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_CETBANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_CHANG_BEUN" scope="game" criteria="lshuf-built-CIVDROP_UNIT_CHANG_BEUN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_CHANG_BEUN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_CHASQUI" scope="game" criteria="lshuf-built-CIVDROP_UNIT_CHASQUI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_CHASQUI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_CHEVALER" scope="game" criteria="lshuf-built-CIVDROP_UNIT_CHEVALER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_CHEVALER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_COLONIST" scope="game" criteria="lshuf-built-CIVDROP_UNIT_COLONIST">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_COLONIST.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_COSSACK" scope="game" criteria="lshuf-built-CIVDROP_UNIT_COSSACK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_COSSACK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_DANTINAS_TATHA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_DANTINAS_TATHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_DANTINAS_TATHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_DHOW" scope="game" criteria="lshuf-built-CIVDROP_UNIT_DHOW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_DHOW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_DRUID" scope="game" criteria="lshuf-built-CIVDROP_UNIT_DRUID">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_DRUID.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_GAISATAI" scope="game" criteria="lshuf-built-CIVDROP_UNIT_GAISATAI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_GAISATAI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_GARDE_IMPERIALE" scope="game" criteria="lshuf-built-CIVDROP_UNIT_GARDE_IMPERIALE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_GARDE_IMPERIALE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_GHILMAN" scope="game" criteria="lshuf-built-CIVDROP_UNIT_GHILMAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_GHILMAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_GOLD_BANGLES" scope="game" criteria="lshuf-built-CIVDROP_UNIT_GOLD_BANGLES">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_GOLD_BANGLES.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_GURKHA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_GURKHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_GURKHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_GUSA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_GUSA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_GUSA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_HANGSHANG" scope="game" criteria="lshuf-built-CIVDROP_UNIT_HANGSHANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_HANGSHANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_HAZARAPATIS" scope="game" criteria="lshuf-built-CIVDROP_UNIT_HAZARAPATIS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_HAZARAPATIS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_HOCEEPKILENI" scope="game" criteria="lshuf-built-CIVDROP_UNIT_HOCEEPKILENI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_HOCEEPKILENI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_HOPLITE" scope="game" criteria="lshuf-built-CIVDROP_UNIT_HOPLITE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_HOPLITE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_HULCHE" scope="game" criteria="lshuf-built-CIVDROP_UNIT_HULCHE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_HULCHE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_HUSSAR" scope="game" criteria="lshuf-built-CIVDROP_UNIT_HUSSAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_HUSSAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_HWACHA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_HWACHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_HWACHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_HWARANG" scope="game" criteria="lshuf-built-CIVDROP_UNIT_HWARANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_HWARANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_IMMORTAL" scope="game" criteria="lshuf-built-CIVDROP_UNIT_IMMORTAL">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_IMMORTAL.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_JAGUAR_SLAYER" scope="game" criteria="lshuf-built-CIVDROP_UNIT_JAGUAR_SLAYER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_JAGUAR_SLAYER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_JANISSARY" scope="game" criteria="lshuf-built-CIVDROP_UNIT_JANISSARY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_JANISSARY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_KAHUNA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_KAHUNA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_KAHUNA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_KALAM" scope="game" criteria="lshuf-built-CIVDROP_UNIT_KALAM">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_KALAM.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_KALIA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_KALIA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_KALIA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_KATYUSHA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_KATYUSHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_KATYUSHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_KESHIG" scope="game" criteria="lshuf-built-CIVDROP_UNIT_KESHIG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_KESHIG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_KISPOKO_NENA_TO" scope="game" criteria="lshuf-built-CIVDROP_UNIT_KISPOKO_NENA_TO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_KISPOKO_NENA_TO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_LEGATUS" scope="game" criteria="lshuf-built-CIVDROP_UNIT_LEGATUS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_LEGATUS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_LEGION" scope="game" criteria="lshuf-built-CIVDROP_UNIT_LEGION">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_LEGION.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_LEIOMANO" scope="game" criteria="lshuf-built-CIVDROP_UNIT_LEIOMANO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_LEIOMANO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_LONGBOW" scope="game" criteria="lshuf-built-CIVDROP_UNIT_LONGBOW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_LONGBOW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_MAGARRU" scope="game" criteria="lshuf-built-CIVDROP_UNIT_MAGARRU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_MAGARRU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_MAMLUK" scope="game" criteria="lshuf-built-CIVDROP_UNIT_MAMLUK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_MAMLUK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_MANDARIN" scope="game" criteria="lshuf-built-CIVDROP_UNIT_MANDARIN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_MANDARIN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_MARINE" scope="game" criteria="lshuf-built-CIVDROP_UNIT_MARINE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_MARINE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_MEDJAY" scope="game" criteria="lshuf-built-CIVDROP_UNIT_MEDJAY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_MEDJAY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_MERCHANT_ADVENTURER" scope="game" criteria="lshuf-built-CIVDROP_UNIT_MERCHANT_ADVENTURER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_MERCHANT_ADVENTURER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_MIKASA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_MIKASA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_MIKASA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_MWAMI" scope="game" criteria="lshuf-built-CIVDROP_UNIT_MWAMI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_MWAMI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_NAGARIKA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_NAGARIKA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_NAGARIKA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_NINJA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_NINJA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_NINJA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_NOYAN" scope="game" criteria="lshuf-built-CIVDROP_UNIT_NOYAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_NOYAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_NU" scope="game" criteria="lshuf-built-CIVDROP_UNIT_NU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_NU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_NUMIDIAN_CAVALRY" scope="game" criteria="lshuf-built-CIVDROP_UNIT_NUMIDIAN_CAVALRY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_NUMIDIAN_CAVALRY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_OTTRU" scope="game" criteria="lshuf-built-CIVDROP_UNIT_OTTRU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_OTTRU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_PEDANDA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_PEDANDA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_PEDANDA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_PROSPECTOR" scope="game" criteria="lshuf-built-CIVDROP_UNIT_PROSPECTOR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_PROSPECTOR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_PURABHETTARAH" scope="game" criteria="lshuf-built-CIVDROP_UNIT_PURABHETTARAH">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_PURABHETTARAH.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_QASTI" scope="game" criteria="lshuf-built-CIVDROP_UNIT_QASTI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_QASTI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_REVENGE" scope="game" criteria="lshuf-built-CIVDROP_UNIT_REVENGE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_REVENGE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_SANGDAEDEUNG" scope="game" criteria="lshuf-built-CIVDROP_UNIT_SANGDAEDEUNG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_SANGDAEDEUNG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_SEPOY" scope="game" criteria="lshuf-built-CIVDROP_UNIT_SEPOY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_SEPOY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_SHERPA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_SHERPA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_SHERPA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_SLOOP" scope="game" criteria="lshuf-built-CIVDROP_UNIT_SLOOP">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_SLOOP.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_SOKEMAN" scope="game" criteria="lshuf-built-CIVDROP_UNIT_SOKEMAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_SOKEMAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_SOLDADERAS" scope="game" criteria="lshuf-built-CIVDROP_UNIT_SOLDADERAS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_SOLDADERAS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_SOLTAN" scope="game" criteria="lshuf-built-CIVDROP_UNIT_SOLTAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_SOLTAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_STUKA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_STUKA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_STUKA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_TAJIRO" scope="game" criteria="lshuf-built-CIVDROP_UNIT_TAJIRO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_TAJIRO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_TAMKARU" scope="game" criteria="lshuf-built-CIVDROP_UNIT_TAMKARU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_TAMKARU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_TANKWA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_TANKWA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_TANKWA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_TEHINA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_TEHINA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_TEHINA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_TERCIO" scope="game" criteria="lshuf-built-CIVDROP_UNIT_TERCIO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_TERCIO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_TOBANG" scope="game" criteria="lshuf-built-CIVDROP_UNIT_TOBANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_TOBANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_TURTANU" scope="game" criteria="lshuf-built-CIVDROP_UNIT_TURTANU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_TURTANU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_TURTLE_SHIP" scope="game" criteria="lshuf-built-CIVDROP_UNIT_TURTLE_SHIP">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_TURTLE_SHIP.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_VAISHYA" scope="game" criteria="lshuf-built-CIVDROP_UNIT_VAISHYA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_VAISHYA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_VIET_KIEU" scope="game" criteria="lshuf-built-CIVDROP_UNIT_VIET_KIEU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_VIET_KIEU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_VIKINGR" scope="game" criteria="lshuf-built-CIVDROP_UNIT_VIKINGR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_VIKINGR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_VOI_CHIEN" scope="game" criteria="lshuf-built-CIVDROP_UNIT_VOI_CHIEN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_VOI_CHIEN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_WARAKAQ" scope="game" criteria="lshuf-built-CIVDROP_UNIT_WARAKAQ">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_WARAKAQ.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_XUNLEICHONG" scope="game" criteria="lshuf-built-CIVDROP_UNIT_XUNLEICHONG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_XUNLEICHONG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_YUMI" scope="game" criteria="lshuf-built-CIVDROP_UNIT_YUMI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_YUMI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_ZAMINDAR" scope="game" criteria="lshuf-built-CIVDROP_UNIT_ZAMINDAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_ZAMINDAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built-CIVDROP_UNIT_ZERO" scope="game" criteria="lshuf-built-CIVDROP_UNIT_ZERO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVDROP_UNIT_ZERO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
 <ActionGroup id="lshuf-built-CIVILIZATION_ABBASID__B01" scope="game" criteria="lshuf-built-CIVILIZATION_ABBASID__B01">
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
 	<Actions><UpdateDatabase><Item>data/generated/built/built-CIVILIZATION_ABBASID__B01.sql</Item></UpdateDatabase></Actions>
@@ -7930,6 +8282,358 @@
 <ActionGroup id="lshuf-built2-CIVCIVC_CIVILIZATION_TONGA" scope="game" criteria="lshuf-built2-CIVCIVC_CIVILIZATION_TONGA">
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
 	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVCIVC_CIVILIZATION_TONGA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_ABAMBOWA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_ABAMBOWA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_ABAMBOWA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_ANTIQUARIAN" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_ANTIQUARIAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_ANTIQUARIAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_BALIK" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_BALIK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_BALIK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_BARBARY_CORSAIR" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_BARBARY_CORSAIR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_BARBARY_CORSAIR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_BOYAR" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_BOYAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_BOYAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_BUCCANEER" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_BUCCANEER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_BUCCANEER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_BURNING_ARROW" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_BURNING_ARROW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_BURNING_ARROW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_BYEONGSA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_BYEONGSA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_BYEONGSA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_CETBANG" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_CETBANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_CETBANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_CHANG_BEUN" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_CHANG_BEUN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_CHANG_BEUN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_CHASQUI" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_CHASQUI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_CHASQUI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_CHEVALER" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_CHEVALER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_CHEVALER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_COLONIST" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_COLONIST">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_COLONIST.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_COSSACK" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_COSSACK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_COSSACK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_DANTINAS_TATHA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_DANTINAS_TATHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_DANTINAS_TATHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_DHOW" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_DHOW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_DHOW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_DRUID" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_DRUID">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_DRUID.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_GAISATAI" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_GAISATAI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_GAISATAI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_GARDE_IMPERIALE" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_GARDE_IMPERIALE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_GARDE_IMPERIALE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_GHILMAN" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_GHILMAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_GHILMAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_GOLD_BANGLES" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_GOLD_BANGLES">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_GOLD_BANGLES.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_GURKHA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_GURKHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_GURKHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_GUSA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_GUSA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_GUSA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_HANGSHANG" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_HANGSHANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_HANGSHANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_HAZARAPATIS" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_HAZARAPATIS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_HAZARAPATIS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_HOCEEPKILENI" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_HOCEEPKILENI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_HOCEEPKILENI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_HOPLITE" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_HOPLITE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_HOPLITE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_HULCHE" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_HULCHE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_HULCHE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_HUSSAR" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_HUSSAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_HUSSAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_HWACHA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_HWACHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_HWACHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_HWARANG" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_HWARANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_HWARANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_IMMORTAL" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_IMMORTAL">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_IMMORTAL.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_JAGUAR_SLAYER" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_JAGUAR_SLAYER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_JAGUAR_SLAYER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_JANISSARY" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_JANISSARY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_JANISSARY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_KAHUNA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_KAHUNA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_KAHUNA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_KALAM" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_KALAM">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_KALAM.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_KALIA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_KALIA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_KALIA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_KATYUSHA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_KATYUSHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_KATYUSHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_KESHIG" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_KESHIG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_KESHIG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_KISPOKO_NENA_TO" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_KISPOKO_NENA_TO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_KISPOKO_NENA_TO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_LEGATUS" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_LEGATUS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_LEGATUS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_LEGION" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_LEGION">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_LEGION.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_LEIOMANO" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_LEIOMANO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_LEIOMANO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_LONGBOW" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_LONGBOW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_LONGBOW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_MAGARRU" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_MAGARRU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_MAGARRU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_MAMLUK" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_MAMLUK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_MAMLUK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_MANDARIN" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_MANDARIN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_MANDARIN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_MARINE" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_MARINE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_MARINE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_MEDJAY" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_MEDJAY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_MEDJAY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_MERCHANT_ADVENTURER" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_MERCHANT_ADVENTURER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_MERCHANT_ADVENTURER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_MIKASA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_MIKASA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_MIKASA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_MWAMI" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_MWAMI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_MWAMI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_NAGARIKA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_NAGARIKA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_NAGARIKA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_NINJA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_NINJA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_NINJA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_NOYAN" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_NOYAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_NOYAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_NU" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_NU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_NU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_NUMIDIAN_CAVALRY" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_NUMIDIAN_CAVALRY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_NUMIDIAN_CAVALRY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_OTTRU" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_OTTRU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_OTTRU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_PEDANDA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_PEDANDA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_PEDANDA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_PROSPECTOR" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_PROSPECTOR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_PROSPECTOR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_PURABHETTARAH" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_PURABHETTARAH">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_PURABHETTARAH.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_QASTI" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_QASTI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_QASTI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_REVENGE" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_REVENGE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_REVENGE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_SANGDAEDEUNG" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_SANGDAEDEUNG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_SANGDAEDEUNG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_SEPOY" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_SEPOY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_SEPOY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_SHERPA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_SHERPA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_SHERPA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_SLOOP" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_SLOOP">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_SLOOP.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_SOKEMAN" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_SOKEMAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_SOKEMAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_SOLDADERAS" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_SOLDADERAS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_SOLDADERAS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_SOLTAN" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_SOLTAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_SOLTAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_STUKA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_STUKA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_STUKA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_TAJIRO" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_TAJIRO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_TAJIRO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_TAMKARU" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_TAMKARU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_TAMKARU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_TANKWA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_TANKWA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_TANKWA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_TEHINA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_TEHINA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_TEHINA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_TERCIO" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_TERCIO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_TERCIO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_TOBANG" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_TOBANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_TOBANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_TURTANU" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_TURTANU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_TURTANU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_TURTLE_SHIP" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_TURTLE_SHIP">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_TURTLE_SHIP.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_VAISHYA" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_VAISHYA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_VAISHYA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_VIET_KIEU" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_VIET_KIEU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_VIET_KIEU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_VIKINGR" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_VIKINGR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_VIKINGR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_VOI_CHIEN" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_VOI_CHIEN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_VOI_CHIEN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_WARAKAQ" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_WARAKAQ">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_WARAKAQ.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_XUNLEICHONG" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_XUNLEICHONG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_XUNLEICHONG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_YUMI" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_YUMI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_YUMI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_ZAMINDAR" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_ZAMINDAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_ZAMINDAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built2-CIVDROP_UNIT_ZERO" scope="game" criteria="lshuf-built2-CIVDROP_UNIT_ZERO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built2/built2-CIVDROP_UNIT_ZERO.sql</Item></UpdateDatabase></Actions>
 </ActionGroup>
 <ActionGroup id="lshuf-built2-CIVILIZATION_ABBASID__B01" scope="game" criteria="lshuf-built2-CIVILIZATION_ABBASID__B01">
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
@@ -12359,6 +13063,358 @@
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
 	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVCIVC_CIVILIZATION_TONGA.sql</Item></UpdateDatabase></Actions>
 </ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_ABAMBOWA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_ABAMBOWA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_ABAMBOWA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_ANTIQUARIAN" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_ANTIQUARIAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_ANTIQUARIAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_BALIK" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_BALIK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_BALIK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_BARBARY_CORSAIR" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_BARBARY_CORSAIR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_BARBARY_CORSAIR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_BOYAR" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_BOYAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_BOYAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_BUCCANEER" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_BUCCANEER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_BUCCANEER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_BURNING_ARROW" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_BURNING_ARROW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_BURNING_ARROW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_BYEONGSA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_BYEONGSA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_BYEONGSA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_CETBANG" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_CETBANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_CETBANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_CHANG_BEUN" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_CHANG_BEUN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_CHANG_BEUN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_CHASQUI" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_CHASQUI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_CHASQUI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_CHEVALER" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_CHEVALER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_CHEVALER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_COLONIST" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_COLONIST">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_COLONIST.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_COSSACK" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_COSSACK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_COSSACK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_DANTINAS_TATHA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_DANTINAS_TATHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_DANTINAS_TATHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_DHOW" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_DHOW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_DHOW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_DRUID" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_DRUID">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_DRUID.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_GAISATAI" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_GAISATAI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_GAISATAI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_GARDE_IMPERIALE" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_GARDE_IMPERIALE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_GARDE_IMPERIALE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_GHILMAN" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_GHILMAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_GHILMAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_GOLD_BANGLES" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_GOLD_BANGLES">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_GOLD_BANGLES.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_GURKHA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_GURKHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_GURKHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_GUSA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_GUSA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_GUSA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_HANGSHANG" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_HANGSHANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_HANGSHANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_HAZARAPATIS" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_HAZARAPATIS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_HAZARAPATIS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_HOCEEPKILENI" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_HOCEEPKILENI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_HOCEEPKILENI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_HOPLITE" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_HOPLITE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_HOPLITE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_HULCHE" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_HULCHE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_HULCHE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_HUSSAR" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_HUSSAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_HUSSAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_HWACHA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_HWACHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_HWACHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_HWARANG" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_HWARANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_HWARANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_IMMORTAL" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_IMMORTAL">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_IMMORTAL.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_JAGUAR_SLAYER" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_JAGUAR_SLAYER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_JAGUAR_SLAYER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_JANISSARY" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_JANISSARY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_JANISSARY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_KAHUNA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_KAHUNA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_KAHUNA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_KALAM" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_KALAM">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_KALAM.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_KALIA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_KALIA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_KALIA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_KATYUSHA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_KATYUSHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_KATYUSHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_KESHIG" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_KESHIG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_KESHIG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_KISPOKO_NENA_TO" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_KISPOKO_NENA_TO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_KISPOKO_NENA_TO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_LEGATUS" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_LEGATUS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_LEGATUS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_LEGION" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_LEGION">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_LEGION.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_LEIOMANO" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_LEIOMANO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_LEIOMANO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_LONGBOW" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_LONGBOW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_LONGBOW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_MAGARRU" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_MAGARRU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_MAGARRU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_MAMLUK" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_MAMLUK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_MAMLUK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_MANDARIN" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_MANDARIN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_MANDARIN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_MARINE" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_MARINE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_MARINE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_MEDJAY" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_MEDJAY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_MEDJAY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_MERCHANT_ADVENTURER" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_MERCHANT_ADVENTURER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_MERCHANT_ADVENTURER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_MIKASA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_MIKASA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_MIKASA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_MWAMI" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_MWAMI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_MWAMI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_NAGARIKA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_NAGARIKA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_NAGARIKA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_NINJA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_NINJA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_NINJA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_NOYAN" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_NOYAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_NOYAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_NU" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_NU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_NU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_NUMIDIAN_CAVALRY" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_NUMIDIAN_CAVALRY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_NUMIDIAN_CAVALRY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_OTTRU" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_OTTRU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_OTTRU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_PEDANDA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_PEDANDA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_PEDANDA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_PROSPECTOR" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_PROSPECTOR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_PROSPECTOR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_PURABHETTARAH" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_PURABHETTARAH">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_PURABHETTARAH.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_QASTI" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_QASTI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_QASTI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_REVENGE" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_REVENGE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_REVENGE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_SANGDAEDEUNG" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_SANGDAEDEUNG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_SANGDAEDEUNG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_SEPOY" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_SEPOY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_SEPOY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_SHERPA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_SHERPA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_SHERPA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_SLOOP" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_SLOOP">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_SLOOP.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_SOKEMAN" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_SOKEMAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_SOKEMAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_SOLDADERAS" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_SOLDADERAS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_SOLDADERAS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_SOLTAN" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_SOLTAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_SOLTAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_STUKA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_STUKA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_STUKA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_TAJIRO" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_TAJIRO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_TAJIRO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_TAMKARU" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_TAMKARU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_TAMKARU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_TANKWA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_TANKWA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_TANKWA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_TEHINA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_TEHINA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_TEHINA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_TERCIO" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_TERCIO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_TERCIO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_TOBANG" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_TOBANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_TOBANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_TURTANU" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_TURTANU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_TURTANU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_TURTLE_SHIP" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_TURTLE_SHIP">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_TURTLE_SHIP.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_VAISHYA" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_VAISHYA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_VAISHYA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_VIET_KIEU" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_VIET_KIEU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_VIET_KIEU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_VIKINGR" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_VIKINGR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_VIKINGR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_VOI_CHIEN" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_VOI_CHIEN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_VOI_CHIEN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_WARAKAQ" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_WARAKAQ">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_WARAKAQ.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_XUNLEICHONG" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_XUNLEICHONG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_XUNLEICHONG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_YUMI" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_YUMI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_YUMI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_ZAMINDAR" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_ZAMINDAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_ZAMINDAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built3-CIVDROP_UNIT_ZERO" scope="game" criteria="lshuf-built3-CIVDROP_UNIT_ZERO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVDROP_UNIT_ZERO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
 <ActionGroup id="lshuf-built3-CIVILIZATION_ABBASID__B01" scope="game" criteria="lshuf-built3-CIVILIZATION_ABBASID__B01">
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
 	<Actions><UpdateDatabase><Item>data/generated/built3/built3-CIVILIZATION_ABBASID__B01.sql</Item></UpdateDatabase></Actions>
@@ -16786,6 +17842,358 @@
 <ActionGroup id="lshuf-built4-CIVCIVC_CIVILIZATION_TONGA" scope="game" criteria="lshuf-built4-CIVCIVC_CIVILIZATION_TONGA">
 	<Properties><LoadOrder>20010</LoadOrder></Properties>
 	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVCIVC_CIVILIZATION_TONGA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_ABAMBOWA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_ABAMBOWA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_ABAMBOWA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_ANTIQUARIAN" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_ANTIQUARIAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_ANTIQUARIAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_BALIK" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_BALIK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_BALIK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_BARBARY_CORSAIR" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_BARBARY_CORSAIR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_BARBARY_CORSAIR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_BOYAR" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_BOYAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_BOYAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_BUCCANEER" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_BUCCANEER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_BUCCANEER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_BURNING_ARROW" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_BURNING_ARROW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_BURNING_ARROW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_BYEONGSA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_BYEONGSA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_BYEONGSA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_CETBANG" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_CETBANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_CETBANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_CHANG_BEUN" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_CHANG_BEUN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_CHANG_BEUN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_CHASQUI" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_CHASQUI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_CHASQUI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_CHEVALER" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_CHEVALER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_CHEVALER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_COLONIST" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_COLONIST">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_COLONIST.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_COSSACK" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_COSSACK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_COSSACK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_DANTINAS_TATHA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_DANTINAS_TATHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_DANTINAS_TATHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_DHOW" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_DHOW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_DHOW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_DRUID" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_DRUID">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_DRUID.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_GAISATAI" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_GAISATAI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_GAISATAI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_GARDE_IMPERIALE" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_GARDE_IMPERIALE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_GARDE_IMPERIALE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_GHILMAN" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_GHILMAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_GHILMAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_GOLD_BANGLES" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_GOLD_BANGLES">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_GOLD_BANGLES.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_GURKHA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_GURKHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_GURKHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_GUSA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_GUSA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_GUSA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_HANGSHANG" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_HANGSHANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_HANGSHANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_HAZARAPATIS" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_HAZARAPATIS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_HAZARAPATIS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_HOCEEPKILENI" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_HOCEEPKILENI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_HOCEEPKILENI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_HOPLITE" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_HOPLITE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_HOPLITE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_HULCHE" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_HULCHE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_HULCHE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_HUSSAR" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_HUSSAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_HUSSAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_HWACHA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_HWACHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_HWACHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_HWARANG" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_HWARANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_HWARANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_IMMORTAL" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_IMMORTAL">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_IMMORTAL.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_JAGUAR_SLAYER" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_JAGUAR_SLAYER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_JAGUAR_SLAYER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_JANISSARY" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_JANISSARY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_JANISSARY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_KAHUNA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_KAHUNA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_KAHUNA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_KALAM" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_KALAM">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_KALAM.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_KALIA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_KALIA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_KALIA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_KATYUSHA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_KATYUSHA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_KATYUSHA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_KESHIG" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_KESHIG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_KESHIG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_KISPOKO_NENA_TO" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_KISPOKO_NENA_TO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_KISPOKO_NENA_TO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_LEGATUS" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_LEGATUS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_LEGATUS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_LEGION" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_LEGION">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_LEGION.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_LEIOMANO" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_LEIOMANO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_LEIOMANO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_LONGBOW" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_LONGBOW">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_LONGBOW.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_MAGARRU" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_MAGARRU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_MAGARRU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_MAMLUK" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_MAMLUK">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_MAMLUK.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_MANDARIN" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_MANDARIN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_MANDARIN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_MARINE" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_MARINE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_MARINE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_MEDJAY" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_MEDJAY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_MEDJAY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_MERCHANT_ADVENTURER" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_MERCHANT_ADVENTURER">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_MERCHANT_ADVENTURER.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_MIKASA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_MIKASA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_MIKASA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_MWAMI" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_MWAMI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_MWAMI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_NAGARIKA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_NAGARIKA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_NAGARIKA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_NINJA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_NINJA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_NINJA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_NOYAN" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_NOYAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_NOYAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_NU" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_NU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_NU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_NUMIDIAN_CAVALRY" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_NUMIDIAN_CAVALRY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_NUMIDIAN_CAVALRY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_OTTRU" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_OTTRU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_OTTRU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_PEDANDA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_PEDANDA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_PEDANDA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_PROSPECTOR" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_PROSPECTOR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_PROSPECTOR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_PURABHETTARAH" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_PURABHETTARAH">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_PURABHETTARAH.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_QASTI" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_QASTI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_QASTI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_REVENGE" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_REVENGE">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_REVENGE.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_SANGDAEDEUNG" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_SANGDAEDEUNG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_SANGDAEDEUNG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_SEPOY" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_SEPOY">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_SEPOY.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_SHERPA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_SHERPA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_SHERPA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_SLOOP" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_SLOOP">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_SLOOP.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_SOKEMAN" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_SOKEMAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_SOKEMAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_SOLDADERAS" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_SOLDADERAS">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_SOLDADERAS.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_SOLTAN" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_SOLTAN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_SOLTAN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_STUKA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_STUKA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_STUKA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_TAJIRO" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_TAJIRO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_TAJIRO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_TAMKARU" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_TAMKARU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_TAMKARU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_TANKWA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_TANKWA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_TANKWA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_TEHINA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_TEHINA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_TEHINA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_TERCIO" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_TERCIO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_TERCIO.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_TOBANG" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_TOBANG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_TOBANG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_TURTANU" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_TURTANU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_TURTANU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_TURTLE_SHIP" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_TURTLE_SHIP">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_TURTLE_SHIP.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_VAISHYA" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_VAISHYA">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_VAISHYA.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_VIET_KIEU" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_VIET_KIEU">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_VIET_KIEU.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_VIKINGR" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_VIKINGR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_VIKINGR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_VOI_CHIEN" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_VOI_CHIEN">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_VOI_CHIEN.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_WARAKAQ" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_WARAKAQ">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_WARAKAQ.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_XUNLEICHONG" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_XUNLEICHONG">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_XUNLEICHONG.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_YUMI" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_YUMI">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_YUMI.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_ZAMINDAR" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_ZAMINDAR">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_ZAMINDAR.sql</Item></UpdateDatabase></Actions>
+</ActionGroup>
+<ActionGroup id="lshuf-built4-CIVDROP_UNIT_ZERO" scope="game" criteria="lshuf-built4-CIVDROP_UNIT_ZERO">
+	<Properties><LoadOrder>20010</LoadOrder></Properties>
+	<Actions><UpdateDatabase><Item>data/generated/built4/built4-CIVDROP_UNIT_ZERO.sql</Item></UpdateDatabase></Actions>
 </ActionGroup>
 <ActionGroup id="lshuf-built4-CIVILIZATION_ABBASID__B01" scope="game" criteria="lshuf-built4-CIVILIZATION_ABBASID__B01">
 	<Properties><LoadOrder>20010</LoadOrder></Properties>

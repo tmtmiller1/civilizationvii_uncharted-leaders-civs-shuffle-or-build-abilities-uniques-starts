@@ -338,6 +338,42 @@ INSERT INTO LShufWork_CivNTake (Slot, Builder, Node, Source)
 INSERT OR IGNORE INTO LShufWork_CivTaken (PieceId) SELECT 'CIVNODE_' || Node FROM LShufWork_CivNTake WHERE Slot = 4;
 INSERT OR IGNORE INTO LShufWork_CivTaken (PieceId) SELECT w.Rider FROM LShufWork_CivRider w
   WHERE w.Lead IN (SELECT 'CIVNODE_' || Node FROM LShufWork_CivNTake WHERE Slot = 4);
+CREATE TABLE IF NOT EXISTS LShufWork_CivDrop (Slot INTEGER, Builder TEXT, Type TEXT PRIMARY KEY, Age TEXT, Pos INTEGER, Receiver TEXT, SortIndex INTEGER);
+DELETE FROM LShufWork_CivDrop;
+INSERT OR IGNORE INTO LShufWork_CivDrop (Slot, Builder, Type, Age)
+  SELECT DISTINCT 1, (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo)), u.Type, (SELECT COALESCE(i.Play, i.Age) FROM LShufWork_CivInfo i WHERE i.Civ = (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo))) FROM LShufWork_BuildPiece p JOIN LShufWork_CivUnique u ON u.Type = p.Arg
+  WHERE COALESCE((SELECT CU FROM LShufWork_Cfg), 'LSHUF_CU_NORMAL') NOT IN ('LSHUF_CU_SPLIT', 'LSHUF_OFF') AND p.Slot = 1 AND p.Kind = 'civuniquedrop' AND (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo)) IS NOT NULL AND u.Civ = (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 1 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo))
+    AND NOT 'CIVUNQ_' || u.Type IN (SELECT Rider FROM LShufWork_CivRider) AND NOT 'CIVUNQ_' || u.Type IN (SELECT PieceId FROM LShufWork_CivTaken)
+    AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p2 WHERE p2.Slot = 1 AND p2.Kind = 'civunique' AND p2.Arg = u.Type);
+INSERT OR IGNORE INTO LShufWork_CivDrop (Slot, Builder, Type, Age)
+  SELECT DISTINCT 2, (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo)), u.Type, (SELECT COALESCE(i.Play, i.Age) FROM LShufWork_CivInfo i WHERE i.Civ = (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo))) FROM LShufWork_BuildPiece p JOIN LShufWork_CivUnique u ON u.Type = p.Arg
+  WHERE COALESCE((SELECT CU FROM LShufWork_Cfg), 'LSHUF_CU_NORMAL') NOT IN ('LSHUF_CU_SPLIT', 'LSHUF_OFF') AND p.Slot = 2 AND p.Kind = 'civuniquedrop' AND (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo)) IS NOT NULL AND u.Civ = (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 2 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo))
+    AND NOT 'CIVUNQ_' || u.Type IN (SELECT Rider FROM LShufWork_CivRider) AND NOT 'CIVUNQ_' || u.Type IN (SELECT PieceId FROM LShufWork_CivTaken)
+    AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p2 WHERE p2.Slot = 2 AND p2.Kind = 'civunique' AND p2.Arg = u.Type);
+INSERT OR IGNORE INTO LShufWork_CivDrop (Slot, Builder, Type, Age)
+  SELECT DISTINCT 3, (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo)), u.Type, (SELECT COALESCE(i.Play, i.Age) FROM LShufWork_CivInfo i WHERE i.Civ = (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo))) FROM LShufWork_BuildPiece p JOIN LShufWork_CivUnique u ON u.Type = p.Arg
+  WHERE COALESCE((SELECT CU FROM LShufWork_Cfg), 'LSHUF_CU_NORMAL') NOT IN ('LSHUF_CU_SPLIT', 'LSHUF_OFF') AND p.Slot = 3 AND p.Kind = 'civuniquedrop' AND (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo)) IS NOT NULL AND u.Civ = (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 3 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo))
+    AND NOT 'CIVUNQ_' || u.Type IN (SELECT Rider FROM LShufWork_CivRider) AND NOT 'CIVUNQ_' || u.Type IN (SELECT PieceId FROM LShufWork_CivTaken)
+    AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p2 WHERE p2.Slot = 3 AND p2.Kind = 'civunique' AND p2.Arg = u.Type);
+INSERT OR IGNORE INTO LShufWork_CivDrop (Slot, Builder, Type, Age)
+  SELECT DISTINCT 4, (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo)), u.Type, (SELECT COALESCE(i.Play, i.Age) FROM LShufWork_CivInfo i WHERE i.Civ = (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo))) FROM LShufWork_BuildPiece p JOIN LShufWork_CivUnique u ON u.Type = p.Arg
+  WHERE COALESCE((SELECT CU FROM LShufWork_Cfg), 'LSHUF_CU_NORMAL') NOT IN ('LSHUF_CU_SPLIT', 'LSHUF_OFF') AND p.Slot = 4 AND p.Kind = 'civuniquedrop' AND (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo)) IS NOT NULL AND u.Civ = (SELECT b.Civ FROM LShufWork_Build b WHERE b.Slot = 4 AND b.OK = 1 AND b.Civ IN (SELECT Civ FROM LShufWork_CivInfo))
+    AND NOT 'CIVUNQ_' || u.Type IN (SELECT Rider FROM LShufWork_CivRider) AND NOT 'CIVUNQ_' || u.Type IN (SELECT PieceId FROM LShufWork_CivTaken)
+    AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p2 WHERE p2.Slot = 4 AND p2.Kind = 'civunique' AND p2.Arg = u.Type);
+UPDATE LShufWork_CivDrop SET Pos = (SELECT COUNT(*) FROM LShufWork_CivDrop o WHERE 1 = 1 AND (o.Slot < LShufWork_CivDrop.Slot OR (o.Slot = LShufWork_CivDrop.Slot AND (o.Type < LShufWork_CivDrop.Type)))) WHERE 1 = 1;
+CREATE TABLE IF NOT EXISTS LShufWork_CivDropR (Civ TEXT PRIMARY KEY, Age TEXT, Rank INTEGER, K INTEGER, Pos INTEGER, N INTEGER);
+DELETE FROM LShufWork_CivDropR;
+INSERT INTO LShufWork_CivDropR (Civ, Age) SELECT i.Civ, COALESCE(i.Play, i.Age) FROM LShufWork_CivInfo i
+  WHERE i.Civ NOT IN (SELECT b.Civ FROM LShufWork_Build b WHERE b.OK = 1 AND b.Civ IS NOT NULL) AND EXISTS (SELECT 1 FROM LShufWork_CivDrop);
+UPDATE LShufWork_CivDropR SET Rank = (SELECT COUNT(*) FROM LShufWork_CivDropR o WHERE o.Age = LShufWork_CivDropR.Age AND (o.Civ < LShufWork_CivDropR.Civ)) WHERE 1 = 1;
+UPDATE LShufWork_CivDropR SET K = ((((((((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (20) * 104729 + (Rank) * 1299709 + 1) % 67108859) * ((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (20) * 104729 + (Rank) * 1299709 + 1) % 67108859)) + 1013904223) % 67108859) * (((((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (20) * 104729 + (Rank) * 1299709 + 1) % 67108859) * ((((SELECT Seed FROM LShufWork_Cfg)) * 7919 + (20) * 104729 + (Rank) * 1299709 + 1) % 67108859)) + 1013904223) % 67108859)) + 1664525) % 67108859), N = (SELECT COUNT(*) FROM LShufWork_CivDropR o WHERE o.Age = LShufWork_CivDropR.Age);
+UPDATE LShufWork_CivDropR SET Pos = (SELECT COUNT(*) FROM LShufWork_CivDropR o WHERE o.Age = LShufWork_CivDropR.Age
+    AND (o.K < LShufWork_CivDropR.K OR (o.K = LShufWork_CivDropR.K AND o.Civ < LShufWork_CivDropR.Civ)));
+UPDATE LShufWork_CivDrop SET Receiver = (SELECT r.Civ FROM LShufWork_CivDropR r WHERE r.Age = LShufWork_CivDrop.Age AND r.Pos = LShufWork_CivDrop.Pos % r.N);
+DELETE FROM LShufWork_CivDrop WHERE Receiver IS NULL;
+INSERT OR IGNORE INTO LShufWork_CivTaken (PieceId) SELECT 'CIVUNQ_' || Type FROM LShufWork_CivDrop;
+INSERT OR IGNORE INTO LShufWork_CivTaken (PieceId) SELECT w.Rider FROM LShufWork_CivRider w
+  WHERE w.Lead IN (SELECT 'CIVUNQ_' || Type FROM LShufWork_CivDrop);
 CREATE TABLE IF NOT EXISTS LShufWork_CivShuf (Civ TEXT PRIMARY KEY, Age TEXT, ForA INTEGER, ARank INTEGER, AK INTEGER, APos INTEGER, AN INTEGER, ADonor TEXT, URank INTEGER, UK INTEGER, UPos INTEGER, UN INTEGER, UDonor TEXT, ForU INTEGER, CRank INTEGER, CK INTEGER, CPos INTEGER, CN INTEGER, CDonor TEXT, ForC INTEGER, HasCivics INTEGER, TRank INTEGER, TK INTEGER, TPos INTEGER, TN INTEGER, TDonor TEXT, ForT INTEGER);
 DELETE FROM LShufWork_CivShuf;
 INSERT INTO LShufWork_CivShuf (Civ, Age, ForA, ForT, ForU, HasCivics, ForC) SELECT i.Civ, i.Age,
@@ -1707,6 +1743,11 @@ INSERT OR IGNORE INTO LShufResultCivPieces (CivilizationType, PieceId, FromCivil
 INSERT OR IGNORE INTO LShufResultCivPieces (CivilizationType, PieceId, FromCivilization, Kind, SortIndex) SELECT Civ, 'CIVABIL_' || ADonor, ADonor, 'ability', 0 FROM LShufWork_CivShuf WHERE ADonor IS NOT NULL;
 INSERT OR IGNORE INTO LShufResultCivPieces (CivilizationType, PieceId, FromCivilization, Kind, SortIndex) SELECT Civ, 'CIVCIVC_' || CDonor, CDonor, 'civics', 0 FROM LShufWork_CivShuf WHERE CDonor IS NOT NULL;
 INSERT OR IGNORE INTO LShufResultCivPieces (CivilizationType, PieceId, FromCivilization, Kind, SortIndex) SELECT Civ, 'CIVUNQ_' || Type, Donor, 'unique', SortIndex + 1 FROM LShufWork_CivShufU;
+-- Own uniques taken out (CONTRACTS 35): after the receiver's other unique rows, in type order.
+UPDATE LShufWork_CivDrop SET SortIndex = COALESCE((SELECT MAX(r.SortIndex) FROM LShufResultCivPieces r
+    WHERE r.CivilizationType = LShufWork_CivDrop.Receiver AND r.Kind = 'unique'), 0)
+  + (SELECT COUNT(*) FROM LShufWork_CivDrop o WHERE o.Receiver = LShufWork_CivDrop.Receiver AND o.Type <= LShufWork_CivDrop.Type);
+INSERT OR IGNORE INTO LShufResultCivPieces (CivilizationType, PieceId, FromCivilization, Kind, SortIndex) SELECT Receiver, 'CIVUNQ_' || Type, Builder, 'unique', SortIndex FROM LShufWork_CivDrop;
 -- Attribute tags (CONTRACTS 30): a whole ability brings its civ's tags; abilities in pieces deal them round a cycle.
 INSERT OR IGNORE INTO LShufResultCivPieces (CivilizationType, PieceId, FromCivilization, Kind, SortIndex) SELECT CivilizationType, 'CIVTAGS_' || FromCivilization, FromCivilization, 'tags', 0 FROM LShufResultCivPieces WHERE Kind = 'ability';
 INSERT OR IGNORE INTO LShufResultCivPieces (CivilizationType, PieceId, FromCivilization, Kind, SortIndex) SELECT Civ, 'CIVTAGS_' || TDonor, TDonor, 'tags', 0 FROM LShufWork_CivShuf WHERE TDonor IS NOT NULL;
@@ -1728,5 +1769,6 @@ INSERT INTO LShufResultMeta (Name, Value)
       AND NOT EXISTS (SELECT 1 FROM LShufWork_CivCSwap s WHERE s.Slot = b.Slot)
       AND NOT EXISTS (SELECT 1 FROM LShufWork_CivTake t WHERE t.Slot = b.Slot)
       AND NOT EXISTS (SELECT 1 FROM LShufWork_CivPTake t WHERE t.Slot = b.Slot)
-      AND NOT EXISTS (SELECT 1 FROM LShufWork_CivNTake t WHERE t.Slot = b.Slot) THEN 'no-pieces'
+      AND NOT EXISTS (SELECT 1 FROM LShufWork_CivNTake t WHERE t.Slot = b.Slot)
+      AND NOT EXISTS (SELECT 1 FROM LShufWork_CivDrop d WHERE d.Slot = b.Slot) THEN 'no-pieces'
     ELSE 'ok' END FROM LShufWork_Build b ORDER BY b.Slot;

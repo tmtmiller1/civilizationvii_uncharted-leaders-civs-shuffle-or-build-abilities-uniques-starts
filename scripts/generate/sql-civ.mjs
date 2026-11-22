@@ -336,6 +336,42 @@ function uniquePool() {
     AND u.Civ NOT IN (SELECT Builder FROM LShufWork_CivTake) GROUP BY u.Civ`);
 }
 
+// Own uniques taken out (lshuf-deal-civ.js ownDrops, CONTRACTS 35), after every slot and before the shuffle, only
+// where a builder keeps its own uniques. Slot by slot (a unique two builders drop stays with the lower slot): each
+// builder's own unique it picked CIVDROP_ for, unless it also picked the unique's card or the unique is taken. The
+// drops by slot then type go one each round the unbuilt civs of the builder's play age, in key order
+// (SALT.CivUniqueDrops over each age's sorted civs, then civ); with none, the unique stays. A drop marks the unique
+// and its riders taken.
+function drops() {
+  const stayOwn = `COALESCE(${CFG("CU")}, ${q(CU_MODE.Normal)}) NOT IN (${q(CU_MODE.Split)}, ${q(CU_MODE.Off)})`;
+  const built = "SELECT b.Civ FROM LShufWork_Build b WHERE b.OK = 1 AND b.Civ IS NOT NULL";
+  const R = "LShufWork_CivDropR";
+  const D = "LShufWork_CivDrop";
+  const slotDrops = SLOTS.map((n) => {
+    const B = BUILDER(n);
+    return `INSERT OR IGNORE INTO ${D} (Slot, Builder, Type, Age)
+  SELECT DISTINCT ${n}, ${B}, u.Type, ${PLAY_OF(B)} FROM LShufWork_BuildPiece p JOIN LShufWork_CivUnique u ON u.Type = p.Arg
+  WHERE ${stayOwn} AND p.Slot = ${n} AND p.Kind = 'civuniquedrop' AND ${B} IS NOT NULL AND u.Civ = ${B}
+    AND NOT ${RIDER(UNQ("u.Type"))} AND NOT ${TAKEN(UNQ("u.Type"))}
+    AND NOT EXISTS (SELECT 1 FROM LShufWork_BuildPiece p2 WHERE p2.Slot = ${n} AND p2.Kind = 'civunique' AND p2.Arg = u.Type);`;
+  }).join("\n");
+  return `${work(D, "Slot INTEGER, Builder TEXT, Type TEXT PRIMARY KEY, Age TEXT, Pos INTEGER, Receiver TEXT, SortIndex INTEGER")}
+${slotDrops}
+${rankUpdate(D, "Pos", [], [["Slot"], ["Type"]])}
+${work(R, "Civ TEXT PRIMARY KEY, Age TEXT, Rank INTEGER, K INTEGER, Pos INTEGER, N INTEGER")}
+INSERT INTO ${R} (Civ, Age) SELECT i.Civ, COALESCE(i.Play, i.Age) FROM LShufWork_CivInfo i
+  WHERE i.Civ NOT IN (${built}) AND EXISTS (SELECT 1 FROM ${D});
+${rankUpdate(R, "Rank", ["Age"], [["Civ"]])}
+UPDATE ${R} SET K = ${key(SALT.CivUniqueDrops, "Rank")}, N = (SELECT COUNT(*) FROM ${R} o WHERE o.Age = ${R}.Age);
+UPDATE ${R} SET Pos = (SELECT COUNT(*) FROM ${R} o WHERE o.Age = ${R}.Age
+    AND (o.K < ${R}.K OR (o.K = ${R}.K AND o.Civ < ${R}.Civ)));
+UPDATE ${D} SET Receiver = (SELECT r.Civ FROM ${R} r WHERE r.Age = ${D}.Age AND r.Pos = ${D}.Pos % r.N);
+DELETE FROM ${D} WHERE Receiver IS NULL;
+INSERT OR IGNORE INTO LShufWork_CivTaken (PieceId) SELECT ${UNQ("Type")} FROM ${D};
+INSERT OR IGNORE INTO LShufWork_CivTaken (PieceId) SELECT w.Rider FROM LShufWork_CivRider w
+  WHERE w.Lead IN (SELECT ${UNQ("Type")} FROM ${D});`;
+}
+
 // The shuffle (lshuf-deal-civ.js civShuffle): per age over the unbuilt civs. LShufWork_CivShuf holds one row per
 // unbuilt civ with its ability-cycle donor (over civs whose ability no builder took, SALT.CivAbilities) and its
 // unique-cycle donor (over every unbuilt civ, SALT.CivUniques). Ranks within an age follow CivilizationType order,
@@ -407,7 +443,8 @@ function results() {
       AND NOT EXISTS (SELECT 1 FROM LShufWork_CivCSwap s WHERE s.Slot = b.Slot)
       AND NOT EXISTS (SELECT 1 FROM LShufWork_CivTake t WHERE t.Slot = b.Slot)
       AND NOT EXISTS (SELECT 1 FROM LShufWork_CivPTake t WHERE t.Slot = b.Slot)
-      AND NOT EXISTS (SELECT 1 FROM LShufWork_CivNTake t WHERE t.Slot = b.Slot) THEN ${q(BUILD_WHY.NoPieces)}
+      AND NOT EXISTS (SELECT 1 FROM LShufWork_CivNTake t WHERE t.Slot = b.Slot)
+      AND NOT EXISTS (SELECT 1 FROM LShufWork_CivDrop d WHERE d.Slot = b.Slot) THEN ${q(BUILD_WHY.NoPieces)}
     ELSE 'ok' END`;
   return `${rankUpdate("LShufWork_CivTake", "SortIndex", ["Slot"], [["Type"]])}
 ${rankUpdate("LShufWork_CivNTake", "SortIndex", ["Slot"], [["Node"]])}
@@ -420,6 +457,11 @@ ${ins} SELECT Builder, ${UNQ("Type")}, Source, 'unique', SortIndex + 1 FROM LShu
 ${ins} SELECT Civ, ${ABIL("ADonor")}, ADonor, 'ability', 0 FROM LShufWork_CivShuf WHERE ADonor IS NOT NULL;
 ${ins} SELECT Civ, ${CIVC("CDonor")}, CDonor, 'civics', 0 FROM LShufWork_CivShuf WHERE CDonor IS NOT NULL;
 ${ins} SELECT Civ, ${UNQ("Type")}, Donor, 'unique', SortIndex + 1 FROM LShufWork_CivShufU;
+-- Own uniques taken out (CONTRACTS 35): after the receiver's other unique rows, in type order.
+UPDATE LShufWork_CivDrop SET SortIndex = COALESCE((SELECT MAX(r.SortIndex) FROM LShufResultCivPieces r
+    WHERE r.CivilizationType = LShufWork_CivDrop.Receiver AND r.Kind = 'unique'), 0)
+  + (SELECT COUNT(*) FROM LShufWork_CivDrop o WHERE o.Receiver = LShufWork_CivDrop.Receiver AND o.Type <= LShufWork_CivDrop.Type);
+${ins} SELECT Receiver, ${UNQ("Type")}, Builder, 'unique', SortIndex FROM LShufWork_CivDrop;
 -- Attribute tags (CONTRACTS 30): a whole ability brings its civ's tags; abilities in pieces deal them round a cycle.
 ${ins} SELECT CivilizationType, ${TAGS("FromCivilization")}, FromCivilization, 'tags', 0 FROM LShufResultCivPieces WHERE Kind = 'ability';
 ${ins} SELECT Civ, ${TAGS("TDonor")}, TDonor, 'tags', 0 FROM LShufWork_CivShuf WHERE TDonor IS NOT NULL;
@@ -451,6 +493,7 @@ export function civSql() {
     work("LShufWork_CivNTake", "Slot INTEGER, Builder TEXT, Node TEXT PRIMARY KEY, Source TEXT, SortIndex INTEGER"),
     work("LShufWork_CivPieced", "Civ TEXT PRIMARY KEY"),
     SLOTS.map(slot).join("\n"),
+    drops(),
     shuffle(),
     split(),
     civicPool(),

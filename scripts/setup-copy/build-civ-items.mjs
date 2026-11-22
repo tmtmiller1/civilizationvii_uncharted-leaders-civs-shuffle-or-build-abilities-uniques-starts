@@ -16,6 +16,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
 import { ageSource, civsOfAge } from "../mapping/civ-age-source.mjs";
+import { DataSource } from "../mapping/data-source.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const DEBUG_DIR = process.env.LSHUF_DEBUG_DIR || path.join(ROOT, "tests", "fixtures", "source-db");
@@ -149,6 +150,38 @@ function greatPeople(db, base, unlocks, tree) {
   return out;
 }
 
+// The great people the ability grants (game 1.5.1, docs/GREAT-PEOPLE.md): unit -> the quarter's first building or the
+// unique constructible its grant's requirements name, or null. Read from the grant modifiers (EFFECT_CITY_GRANT_UNIT,
+// directly or through a modifier the ability attaches), the same way the deal reads them (LShufWork_GpGrant).
+function grantedPeople(db, source, abilityTrait) {
+  const out = new Map();
+  let classes;
+  try {
+    classes = new Set(db.prepare("SELECT UnitType AS u FROM GreatPersonClasses").all().map((r) => r.u));
+  } catch {
+    return out;
+  }
+  const arg = (m, name) => ((m && m.args) || []).find((a) => a.name === name);
+  for (const r of db.prepare("SELECT ModifierId AS m FROM TraitModifiers WHERE TraitType = ? ORDER BY 1").all(abilityTrait)) {
+    let m = source.modifier(r.m);
+    if (m && m.effect === "EFFECT_ATTACH_MODIFIERS" && arg(m, "ModifierId")) m = source.modifier(arg(m, "ModifierId").value);
+    if (!m || m.effect !== "EFFECT_CITY_GRANT_UNIT" || !arg(m, "UnitType") || !classes.has(arg(m, "UnitType").value)) continue;
+    let anchor = null;
+    for (const req of [...(m.subject || []), ...(m.owner || [])]) {
+      for (const a of req.args || []) {
+        if (anchor) break;
+        if (a.name === "UniqueQuarterType") {
+          const q = db.prepare("SELECT BuildingType1 AS b FROM UniqueQuarters WHERE UniqueQuarterType = ?").get(a.value);
+          if (q) anchor = q.b;
+        } else if (a.name === "BuildingType" || a.name === "ConstructibleType") anchor = a.value;
+      }
+    }
+    const unit = arg(m, "UnitType").value;
+    if (!out.has(unit) || (anchor && !out.get(unit))) out.set(unit, anchor);
+  }
+  return out;
+}
+
 // R3: an improvement card only one of the civ's unit cards can build rides with that card. improvement -> unit card.
 function builtOnlyBy(db, units, improvements) {
   const out = new Map();
@@ -232,11 +265,13 @@ function abilityDescKey(key, age) {
 // [{ civ, age, kind, type, nameKey, descKey, trait }] and the civics rows for one age's civs.
 function itemsOf(db, civs, source = null) {
   const treeOf = treeFinder(db, source);
+  const effects = source || new DataSource(db);
   const links = civLinks();
   const items = [];
   const civics = [];
   const nodes = [];
   const riders = [];
+  const people = [];
   for (const c of civs) {
     const base = c.trait.slice(0, -"_ABILITY".length);
     const push = (kind, type, nameKey, descKey, trait) => {
@@ -247,6 +282,14 @@ function itemsOf(db, civs, source = null) {
     const tree = treeOf(base);
     const unlocks = tree ? treeUnlocks(db, tree) : new Map();
     const gp = tree ? greatPeople(db, base, unlocks, tree) : new Map();
+    // Since 1.5.1 a grant names the quarter or improvement; one the civ's own tree unlocks makes the person a civics
+    // unlock like before, and the others go with the ability.
+    for (const [unit, anchor] of grantedPeople(db, effects, c.trait)) {
+      const u = db.prepare("SELECT Name AS n, Description AS d FROM Units WHERE UnitType = ?").get(unit) || {};
+      const at = anchor ? unlocks.get(anchor) : null;
+      if (at && !gp.has(unit)) gp.set(unit, { ...at, name: u.n });
+      people.push({ civ: c.civ, unit, nameKey: u.n, descKey: u.d, anchor: at ? anchor : null });
+    }
     const units = db.prepare(BASE_UNITS).all(base).filter((u) => !gp.has(u.t));
     const improvements = db.prepare(IMPROVEMENTS).all(base);
     const unitRiders = builtOnlyBy(db, units, improvements);
@@ -263,7 +306,7 @@ function itemsOf(db, civs, source = null) {
     nodes.push(...civicNodes(db, c.civ, tree));
     for (const [lead, rider] of civicBundles(db, unlocks, links)) riders.push(["civic", c.civ, `CIVNODE_${lead}`, `CIVNODE_${rider}`]);
   }
-  return { items, civics, nodes, riders };
+  return { items, civics, nodes, riders, people };
 }
 
 const sqlValue = (v) => (v == null ? "NULL" : `'${String(v).replace(/'/g, "''")}'`);
@@ -277,9 +320,9 @@ function inserts(table, cols, rows) {
 
 export function buildCivItems() {
   const fixture = new DatabaseSync(path.join(DEBUG_DIR, "gameplay-copy.sqlite"), { readOnly: true });
-  const all = { items: [], civics: [], nodes: [], riders: [] };
+  const all = { items: [], civics: [], nodes: [], riders: [], people: [] };
   const add = (r) => (all.items.push(...r.items), all.civics.push(...r.civics), all.nodes.push(...r.nodes),
-  all.riders.push(...r.riders));
+  all.riders.push(...r.riders), all.people.push(...r.people));
   add(itemsOf(fixture, antiquityCivs(fixture)));
   fixture.close();
   for (const age of ["AGE_EXPLORATION", "AGE_MODERN"]) {
@@ -289,20 +332,22 @@ export function buildCivItems() {
   return all;
 }
 
-function writeOutputs({ items, civics, nodes, riders }) {
+function writeOutputs({ items, civics, nodes, riders, people }) {
   const sql = [
     "-- Generated by scripts/setup-copy/build-civ-items.mjs; don't edit by hand. Every civilization's cards for the civ",
     "-- build screen (CONTRACTS 14, 18, 19): Antiquity from the saved compiled database, Exploration and Modern from the",
     "-- game's data files for those ages. Loads after setup-copy.sql.",
     "", "DELETE FROM LShufSetup_CivItems;", "DELETE FROM LShufSetup_CivCivics;", "DELETE FROM LShufSetup_CivicNodes;",
-    "DELETE FROM LShufSetup_CivRiders;",
+    "DELETE FROM LShufSetup_CivRiders;", "DELETE FROM LShufSetup_CivGreatPeople;",
     ...inserts("LShufSetup_CivItems", ["CivilizationType", "Age", "Kind", "Type", "NameKey", "DescKey", "TraitType"],
       items.map((i) => [i.civ, i.age, i.kind, i.type, i.nameKey, i.descKey, i.trait])),
     ...inserts("LShufSetup_CivCivics", ["CivilizationType", "NodeType", "NodeNameKey", "UnlockType", "UnlockKind", "UnlockNameKey"],
       civics.map((r) => [r.civ, r.node, r.nodeName, r.type, r.kind, r.name])),
     ...inserts("LShufSetup_CivicNodes", ["CivilizationType", "NodeType", "NameKey", "Cost", "Depth", "Prereqs"],
       nodes.map((n) => [n.civ, n.node, n.name, n.cost, n.depth, n.prereqs])),
-    ...inserts("LShufSetup_CivRiders", ["Kind", "CivilizationType", "LeadId", "RiderId"], riders)
+    ...inserts("LShufSetup_CivRiders", ["Kind", "CivilizationType", "LeadId", "RiderId"], riders),
+    ...inserts("LShufSetup_CivGreatPeople", ["CivilizationType", "UnitType", "NameKey", "DescKey", "AnchorType"],
+      people.map((g) => [g.civ, g.unit, g.nameKey, g.descKey, g.anchor]))
   ];
   fs.writeFileSync(OUT_SQL, `${sql.join("\n")}\n`);
   const js = `// The civilization cards the mod knows by name (CONTRACTS 14, 18): each civilization's ability, its uniques (one
@@ -326,5 +371,5 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const civs = new Set(all.items.map((i) => i.civ)).size;
   console.log(`wrote ${all.items.length} cards for ${civs} civilizations (${count("ability")} abilities, ${count("unit")} unit families, `
     + `${count("improvement")} improvements, ${count("civics")} civics), ${all.civics.length} civics rows, ${all.nodes.length} nodes `
-    + `and ${all.riders.length} riders`);
+    + `and ${all.riders.length} riders, ${all.people.length} granted great people`);
 }

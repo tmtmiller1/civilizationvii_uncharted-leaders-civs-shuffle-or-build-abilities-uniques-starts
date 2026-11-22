@@ -1,7 +1,8 @@
 // The card ids of Build your own leader (CONTRACTS 13), one action group each: every bullet in the mapping file,
 // one whole, one behavior and one start terrain card per known leader, the seven attribute traits
 // (data/schema/gameplay-tables.sql), a civilization start terrain card per known civilization, and the civilization
-// ability and unique cards of shared/lshuf-known-civ-items.js, and every bonus in the civilization mapping file.
+// ability and unique cards of shared/lshuf-known-civ-items.js (each unique also as a CIVDROP_ card, CONTRACTS 35), and
+// every bonus in the civilization mapping file.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -58,7 +59,11 @@ export function buildPieceIds() {
   for (const i of KNOWN_CIV_ITEMS) {
     if (i.kind === "ability") ids.add(BUILD.civAbility(i.civ));
     else if (i.kind === "civics") ids.add(BUILD.civCivics(i.civ));
-    else ids.add(BUILD.civUnique(i.type));
+    else {
+      ids.add(BUILD.civUnique(i.type));
+      // The same unique taken out of its own civ's slots (CONTRACTS 35).
+      ids.add(BUILD.civUniqueDrop(i.type));
+    }
   }
   for (const id of civMappingBulletIds()) ids.add(id);
   for (const node of civicNodeTypes()) ids.add(BUILD.civCivic(node));

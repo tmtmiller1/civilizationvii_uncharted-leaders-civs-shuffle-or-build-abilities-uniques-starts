@@ -1503,3 +1503,116 @@ so a loaded save and every later age read the same picks.
 **Tests.** JS equals SQL for `HumanFollows` "0" across the seven leader presets for the AI rows and a sample of
 human picks; agendas-only and agendas-and-attributes in the conservation suite; `humanPicks` for every human mode on
 the three age fixtures; parameters-and-text for the new rows and text.
+
+## 34. Two questions, said once (owner, 2026-11-12 night; in 1.0.1)
+
+**What the player sees.** The Uncharted Leaders & Civs Settings section asks two questions and answers each once:
+
+```
+UNCHARTED LEADERS & CIVS SETTINGS
+AI players' leaders ........ [Mix bonuses            ]
+   Each AI leader gets single bonuses from several other leaders.
+AI players' civilizations .. [Play as normal         ]
+   Each AI civilization plays as the game made it.
+Your leader ................ [Same as the AI players ]
+Your civilization .......... [Same as the AI players ]
+   Or build yours card by card: Build your own leader... / civilization...
+Leader personalities ....... [Follow their bonuses   ]
+   Each AI plays like the leader its bonuses came from.
+Reveal who got what ........ [From the start         ]
+[Leader pool...] [Civilization pool...] [AI players...] [Advanced settings...]
+```
+
+- Under every dropdown, one line in the player's words says what the current pick does; it changes with the pick.
+  The line is drawn by the mod beside the game's own row (the section is already the mod's to dress, as its
+  buttons are), so it's on screen without a hover. The same line is the row's tooltip.
+- The leader presets are renamed (values unchanged, so saves keep working): Play as normal (`LSHUF_MODE_NONE`),
+  Trade places (`SWAP_LEADERS`), Mixed swap (`SWAP_ABILITIES`), Mix bonuses (`SPLIT_MATCHED`), Mix bonuses, random
+  start (`SPLIT_RANDOM`), New personalities (`AGENDAS`), New personalities and attributes (`AGENDAS_ATTRIBUTES`),
+  Custom. The civilization presets: Play as normal, Trade places, Mixed swap, Mix bonuses, Custom.
+- Lines (leaders): Play as normal "Everyone plays as the game made them." Trade places "Each leader takes everything
+  from one other leader." Mixed swap "Each leader takes an ability from one leader, and attributes and start terrain
+  from others." Mix bonuses "Each leader gets single bonuses from several leaders, and starts that suit them." Mix
+  bonuses, random start "The same, with a random start." New personalities "Same leaders; the AI players behave like
+  other leaders." New personalities and attributes "Same abilities; the AI players get new attributes and behave like
+  other leaders." Custom "Set part by part under Advanced settings." Civilizations: Trade places "Each civilization
+  takes another's ability, uniques and civics, all from the same one." Mixed swap "Ability, uniques and civics each
+  come whole from a different civilization." Mix bonuses "Abilities, uniques and civics are split up and dealt out."
+  The AI rows say "Each AI leader..." / "Each AI civilization..." where the line speaks of the AI players only.
+- **Your leader** and **Your civilization** offer Same as the AI players, then the same presets (no Custom). Same as
+  the AI players: you're shuffled with the AI players exactly as today. Any other pick: you're shuffled by it and the
+  AI players by theirs (section 33's own mode).
+- **Leader personalities** (owner, 2026-11-14) stays on the main screen as its own option: the AI agendas row
+  (`LShufPersonality`) renamed, values unchanged. Choices and lines: As the game made them (`STAYS`) "Each AI keeps its
+  own personality."; Follow their bonuses (`FOLLOWS`) "Each AI plays like the leader its bonuses came from.";
+  Shuffled (`REDEALT`) "Personalities are dealt out to other leaders, apart from the bonuses." The New personalities
+  presets set it to Shuffled, as section 33 says.
+- The other per-part rows (abilities, attributes, start terrain; civilization abilities, uniques, civics) move
+  behind Advanced settings..., where Split fairness and the shuffle number already are. Changing one there makes the
+  AI players' mode read Custom, as today.
+- **Human players keep their own leader** and **Keep my built civilization** leave the screen. Your leader: Play as
+  normal does the first; cards you build always count, which the second was for. Their parameters stay (hidden, at
+  their defaults) so older saves load.
+- The build pages show the same two "Your" dropdowns with their lines, and the AI players' two above them, in place
+  of section 33's checkbox and the "Shuffle for everyone" box. Advanced and the pool button stay.
+
+**Parameters.** `LShufHumanMode` and `LShufHumanCivMode` gain `LSHUF_MODE_SAME` / `LSHUF_CM_SAME` (first, the
+default) and become visible rows in the section (sort just after the two AI modes). `LShufHumanFollows` is no longer
+shown; the setup writes it: "1" when both Your rows are Same, else "0". With one Your row on Same and the other not,
+the Same part takes its cards from the AI players' rows for that part (`humanPicks` reads the AI rows there), so you
+get a share dealt the AI players' way. `LShufKeepMine` and `LShufKeepBuiltCiv` become hidden at their defaults (0, 1).
+The part rows become hidden in the section and are drawn on the Advanced settings page.
+
+**As built (2026-11-12 night).** Your leader leaves out New personalities: for a human it would change nothing,
+since agendas only steer an AI; New personalities and attributes stays ("You keep your ability and start terrain, and
+get new attributes"). The lines live in `ui/setup/lshuf-setup-lines.js` (`lineKey`, one key per row and value:
+`LOC_LSHUF_LINE_AI_*`, `_YOU_*`, `_REVEAL_*`); the section draws them in `lshuf-setup-accordion.js` and the build
+pages in `lshuf-build-window.js`. `humanFollows()` reads the two Your rows; the preset watch writes the hidden
+`LShufHumanFollows` from it, and a 1.0.0 setup (box ticked, Your rows on a preset) is put on Same once when setup
+opens. A card taken on the leader page while you follow AI players on Play as normal turns Your leader to Play as
+normal, not the AI players' mode.
+
+**Tests.** parameters-and-text for the renamed values, the new Same values, the hidden rows and every line's text;
+human-picks for the mixed case (one part Same); the deal suites run unchanged (no deal change).
+
+## 35. Your civilization's own uniques are yours to take out (owner, 2026-11-22; for 1.0.2)
+
+**What the player sees.** On Build your own civilization, under the Civilization uniques settings where a builder
+keeps its own uniques (Base game, Follows ability, Swap whole: `uniquesStayOwn`), the civ's own uniques start in its
+unique slots like picks. Clicking one takes it out, and another civ's unique can go in its place; clicking the own card
+in the grid puts it back. A unique taken out is dealt to another civilization of the age. Every civ has room for its
+own uniques plus `UNIQUE_EXTRA_SLOTS` (2) more, so a civ with one unique (Spain, Greece, Egypt and eight others) can
+still take a whole two-unit set. Under Split up and Off entirely the slots start empty as before, with
+`max(own count, UNIQUE_EXTRA_SLOTS)` slots.
+
+**Ids.** `BUILD.civUniqueDrop(type)` = `CIVDROP_<type>` (kind `civuniquedrop`), stored in the builder slot's picks
+like any card and written to the `LShufBuilt<n>` keys. Builds without one keep today's behavior, so older setups and
+saves deal the same.
+
+**Deal (JS `shared/deal/lshuf-deal-civ.js` and its SQL twin, same steps, same order).** After every builder's cards
+and before the shuffle, only when `uniquesStayOwn(CivUniques)`:
+1. A builder B with an ok build drops each own unique `type` whose `CIVDROP_<type>` it picked, unless B also picked
+   `CIVUNQ_<type>` or the unique is already taken (`state.taken`). A drop of a type B doesn't hold is ignored.
+2. The receivers are the civs whose play age equals B's, minus every builder's civ, keyed with
+   `keyMap(seed, SALT.CivUniqueDrops, receivers sorted)` and taken in key order (then id).
+3. B's drops, sorted by id, go one each round the receivers (drop i to receiver i mod count), builders in slot order,
+   the round carrying on from the previous builder's last receiver. With no receiver the unique stays with B.
+4. Each drop is a row `{ CivilizationType: R, PieceId: CIVUNQ_<type>, FromCivilization: B, Kind: "unique" }`
+   numbered after R's other unique rows, and marks the unique taken, so the shuffle and later steps leave it alone.
+   Riders follow their lead as for any unique row.
+The apply needs no change: a unique row moves the unique's trait to the receiver, which takes it off B.
+
+**Build screen.** The civ page draws one unique group: kept own uniques first (clickable, adds the drop), then picks,
+then empty slots, `own + UNIQUE_EXTRA_SLOTS` in all; picks fit in what the kept own uniques leave. A drop for a civ
+other than the page's builder civ is ignored and cleared on the next write. The needs list counts a dropped unique as
+not held.
+
+**Generated.** `built*-CIVDROP_<type>.sql` groups for every unique type the builds can name, all four slots, with
+their criteria in the modinfo.
+
+**Taking more than the normal number (owner, 2026-11-22).** When the page's AI players' setting reads Custom (leader
+page: `LShufMode` = `LSHUF_MODE_CUSTOM`; civ page: `LShufCivMode` = `LSHUF_CM_CUSTOM`), every slot group but start
+terrain and AI behavior has no limit: it draws its normal count of slots, or one more than it holds once it's full,
+so there's always an empty slot to click into. Once a group holds more than its normal count, a note under the slots
+says so in plain words and that it makes the build stronger than the others. Every other setting keeps the normal
+counts. The deal takes every card a build holds, so it needs no change.

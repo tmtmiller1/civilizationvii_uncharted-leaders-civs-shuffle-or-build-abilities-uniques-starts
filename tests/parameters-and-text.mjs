@@ -8,11 +8,12 @@ import test from "node:test";
 
 import { loadShell, need, PROJECT_ROOT, rows } from "./_harness.mjs";
 import { ADDED_LEADER, DLC_LEADER } from "../scripts/fixtures/build-fixtures.mjs";
-import { CIV_MODE_CUSTOM, CIV_PRESETS,
+import { CIV_MODE_CUSTOM, CIV_PRESETS, HUMAN_SAME,
   CONFIG_KEY, DEALING, listValue, MODE, PARAM, PERSONA, REASON, REVEAL, A_MODE, T_MODE, B_MODE,
   CA_MODE, CU_MODE, CC_MODE, MODE_CUSTOM
 } from "../shared/lshuf-constants.js";
 import { MODDED_LEADER_TYPES, VANILLA_LEADERS } from "../shared/lshuf-known-leaders.js";
+import { LINE_VALUES, BUILD_HINT_KEY, lineKey } from "../ui/setup/lshuf-setup-lines.js";
 
 // Section 2's table, in order: [ParameterID, Domain, Array, Default, Name key].
 const PARAMS = [
@@ -47,20 +48,22 @@ const PARAMS = [
   ["LShufBuildFor4", "text", 0, null, "LOC_LSHUF_BUILD_FOR"],
   // Added after the hidden rows took their numbers; its own row number comes from MAIN_SORT.
   [PARAM.KeepBuiltCiv, "bool", 0, "1", "LOC_LSHUF_KEEP_BUILT_CIV_NAME"],
-  // Your own mode (CONTRACTS 33), shown on the build pages only.
+  // Your own mode (CONTRACTS 33, 34): Your leader and Your civilization are rows in the section, Same as the AI
+  // players by default; the setup writes the hidden LShufHumanFollows from them.
   [PARAM.HumanFollows, "bool", 0, "1", "LOC_LSHUF_HUMAN_FOLLOWS_NAME"],
-  [PARAM.HumanMode, "LShufHumanModeValues", 0, MODE.None, "LOC_LSHUF_HUMAN_MODE_NAME"],
-  [PARAM.HumanCivMode, "LShufHumanCivModeValues", 0, "LSHUF_CM_NORMAL", "LOC_LSHUF_HUMAN_CIV_MODE_NAME"]
+  [PARAM.HumanMode, "LShufHumanModeValues", 0, HUMAN_SAME.leader, "LOC_LSHUF_HUMAN_MODE_NAME"],
+  [PARAM.HumanCivMode, "LShufHumanCivModeValues", 0, HUMAN_SAME.civ, "LOC_LSHUF_HUMAN_CIV_MODE_NAME"]
 ];
 
 const SELECT_DOMAINS = {
   // Swap whole before Swap partial, the order the civilization mode uses too (CONTRACTS 32).
   LShufModeValues: [MODE.None, MODE.AgendasOnly, MODE.AgendasAttributes, MODE.SwapLeaders, MODE.SwapAbilities,
     MODE.SplitMatched, MODE.SplitRandom, MODE_CUSTOM],
-  // Your own modes (CONTRACTS 33): the same presets, no Custom.
-  LShufHumanModeValues: [MODE.None, MODE.AgendasOnly, MODE.AgendasAttributes, MODE.SwapLeaders, MODE.SwapAbilities,
+  // Your leader and Your civilization (CONTRACTS 34): Same as the AI players first, then the presets, no Custom;
+  // Your leader leaves out New personalities, which only changes how an AI behaves.
+  LShufHumanModeValues: [HUMAN_SAME.leader, MODE.None, MODE.AgendasAttributes, MODE.SwapLeaders, MODE.SwapAbilities,
     MODE.SplitMatched, MODE.SplitRandom],
-  LShufHumanCivModeValues: Object.keys(CIV_PRESETS),
+  LShufHumanCivModeValues: [HUMAN_SAME.civ, ...Object.keys(CIV_PRESETS)],
   LShufCivModeValues: [...Object.keys(CIV_PRESETS), CIV_MODE_CUSTOM],
   LShufAValues: Object.values(A_MODE),
   LShufTValues: Object.values(T_MODE),
@@ -97,19 +100,26 @@ test("parameters.sql loads into the frontend copies", async () => {
 
 // The main options are ordinary rows in the mod's own section (LShufOptions), in this order; the rest stay hidden
 // in GameOptions and are set from the advanced window.
+// CONTRACTS 34: the two AI players' modes, Your leader, Your civilization, Leader personalities and Reveal.
 const MAIN_SORT = {
   [PARAM.Mode]: 2300,
+  [PARAM.CivMode]: 2301,
+  [PARAM.HumanMode]: 2302,
+  [PARAM.HumanCivMode]: 2303,
+  [PARAM.Personality]: 2304,
+  [PARAM.Reveal]: 2311
+};
+// Rows that left the section in CONTRACTS 34 keep the numbers they had there.
+const MOVED_SORT = {
   [PARAM.Abilities]: 2301,
   [PARAM.Attributes]: 2302,
   [PARAM.Biases]: 2303,
-  [PARAM.CivMode]: 2304,
   [PARAM.CivAbilities]: 2305,
   [PARAM.CivUniques]: 2306,
   [PARAM.CivCivics]: 2307,
-  [PARAM.Personality]: 2308,
   [PARAM.KeepMine]: 2309,
   [PARAM.KeepBuiltCiv]: 2310,
-  [PARAM.Reveal]: 2311
+  [PARAM.HumanFollows]: 2324
 };
 
 test("each parameter row matches section 2", async () => {
@@ -135,7 +145,7 @@ test("each parameter row matches section 2", async () => {
         SupportsHotseatMultiplayer: 1,
         ChangeableAfterGameStart: 0,
         // Hidden rows keep their numbers from before the civilization rows went in above them.
-        SortIndex: id in MAIN_SORT ? MAIN_SORT[id] : 2300 + i - 4,
+        SortIndex: MAIN_SORT[id] ?? MOVED_SORT[id] ?? 2300 + i - 4,
         UxHint: [PARAM.LeadersOut, PARAM.ModdedOut, PARAM.CivsOut, PARAM.LeaderPoolOut].includes(id) ? "InvertSelection" : null
       };
       for (const [k, v] of Object.entries(want)) assert.equal(p[k], v, `${id}.${k}`);
@@ -282,4 +292,34 @@ test("every LOC key parameters.sql names has English text", () => {
   const used = [...new Set(sql.match(KEY_RE) || [])];
   const missing = used.filter((k) => !text.has(k));
   assert.deepEqual(missing, []);
+});
+
+test("every line under a row has English text, for every value it covers (CONTRACTS 34)", () => {
+  const text = readText();
+  const missing = [];
+  for (const [paramId, values] of Object.entries(LINE_VALUES)) {
+    for (const v of values) {
+      const key = lineKey(paramId, v);
+      if (!text.has(key)) missing.push(key);
+    }
+  }
+  if (!text.has(BUILD_HINT_KEY)) missing.push(BUILD_HINT_KEY);
+  assert.deepEqual(missing, []);
+  assert.equal(text.get("LOC_LSHUF_MODE_NAME"), "AI players' leaders");
+  assert.equal(text.get("LOC_LSHUF_HUMAN_MODE_NAME"), "Your leader");
+  assert.equal(text.get("LOC_LSHUF_MODE_SWAP_LEADERS"), "Trade places");
+  assert.equal(text.get("LOC_LSHUF_MODE_SAME"), "Same as the AI players");
+});
+
+test("the lines cover every value their rows offer", async () => {
+  const run = await shell("base");
+  try {
+    for (const [paramId, values] of Object.entries(LINE_VALUES)) {
+      const domain = rows(run.db, "SELECT Domain FROM Parameters WHERE ParameterID = ?", paramId)[0].Domain;
+      const offered = rows(run.db, "SELECT Value FROM DomainValues WHERE Domain = ? ORDER BY SortIndex", domain).map((r) => r.Value);
+      assert.deepEqual([...values].sort(), [...offered].sort(), `${paramId}: a line for each value`);
+    }
+  } finally {
+    run.close();
+  }
 });

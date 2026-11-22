@@ -7,6 +7,13 @@
   max-width: 120rem;
 }
 
+/* Solid behind the cards and settings, so the screen underneath (the main menu's text) doesn't show through. */
+.lshuf-build__frame .lshuf-build__body,
+.lshuf-build__settings,
+.lshuf-build__head {
+  background-color: rgb(12, 14, 20);
+}
+
 .lshuf-build__head {
   padding-top: 0.5rem;
 }
@@ -136,7 +143,7 @@
   height: 9.2rem;
   margin: 0.45rem;
   border: 0.0555rem solid rgba(197, 176, 128, 0.5);
-  background-color: rgba(10, 12, 18, 0.85);
+  background-color: rgb(10, 12, 18);
   overflow: hidden;
   cursor: pointer;
 }
@@ -147,8 +154,9 @@
   background-repeat: no-repeat;
 }
 
+/* The portrait ends above the name band, so a two-line name doesn't sit on the face. */
 .lshuf-build__art--portrait {
-  background-size: 62%;
+  background-size: auto 4.4rem;
   background-position: center 0.2rem;
 }
 
@@ -184,7 +192,7 @@
   right: 0;
   bottom: 0;
   padding: 0.25rem 0.4rem 0.3rem 0.4rem;
-  background-color: rgba(8, 10, 16, 0.78);
+  background-color: rgba(8, 10, 16, 0.92);
 }
 
 /* Up to two lines, so a long ability name reads whole. */
@@ -277,14 +285,27 @@
   border-bottom: 0.0555rem solid rgba(197, 176, 128, 0.35);
 }
 
+/* Each setting's name sits above its dropdown. Side by side, the game's 20rem dropdown minimum left the name a few rem
+   and it wrapped under the dropdown ("AI players' civilizations", "Your civilization"). */
 .lshuf-build__settings .lshuf-setup__row {
   width: 31%;
-  min-width: 24rem;
+  min-width: 16rem;
   margin-right: 1.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.lshuf-build__settings .lshuf-setup__label {
+  margin-right: 0;
+  margin-bottom: 0.15rem;
+  white-space: nowrap;
 }
 
 .lshuf-build__settings .lshuf-setup__dropdown {
-  width: 14rem;
+  width: 15rem;
+  min-width: 0;
+  flex: 0 0 auto;
 }
 
 /* What the card does, on its face: a few lines, cut off cleanly; the full text is the tooltip and the details pane. */

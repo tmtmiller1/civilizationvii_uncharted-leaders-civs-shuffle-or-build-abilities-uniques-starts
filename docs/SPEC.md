@@ -23,7 +23,9 @@ At game setup, under the advanced options, a **Leader Shuffle** dropdown:
 | Split full random | The same deal as Split random, with start biases rolled from scratch as in Full random |
 
 Next to it, under the mod's own "Uncharted Leaders & Civs" heading (section 3, "The setup screen", has the full list,
-order and wording):
+order and wording). This is the first design; the settings as they ship in 1.0.1 (two questions, AI players' leaders
+and civilizations and Your leader and civilization, with the part rows under Advanced settings) are in CONTRACTS.md
+section 34:
 
 | Option | Values | Default |
 | --- | --- | --- |
