@@ -1,8 +1,6 @@
 // Your own leader and civilization, picked right in the build window instead of going back to the game's list. It
 // writes the same player setting the game's leader and civ lists write (PlayerLeader, PlayerCivilization), so those
 // screens show the same pick, and offers only what the game's list lets you choose (owned, unlocked).
-import { B_MODE, ONOFF, PARAM } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
-import { paramValue } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import { PLAIN_RANDOM, TRANSITION_CIV_PARAM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-config.js";
 import { inGame } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import { el } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-controls.js";
@@ -56,12 +54,6 @@ export function hostChoices(paramName, opts = {}) {
     log(`choices for ${paramName} failed: ${e}`);
     return { items: [], selected: 0 };
   }
-}
-
-// Whether the start terrain part deals, which a civ start terrain card needs to count (the deal's B axis).
-export function biasesLive() {
-  const v = paramValue(PARAM.Biases) || B_MODE.Normal;
-  return v !== B_MODE.Normal && v !== ONOFF.Off;
 }
 
 function setHost(paramName, value, playerId) {

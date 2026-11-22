@@ -1618,3 +1618,29 @@ terrain and AI behavior has no limit: it draws its normal count of slots, or one
 so there's always an empty slot to click into. Once a group holds more than its normal count, a note under the slots
 says so in plain words and that it makes the build stronger than the others. Every other setting keeps the normal
 counts. The deal takes every card a build holds, so it needs no change.
+
+## 36. Your civilization's cards count whatever the AI players' rows say (owner, 2026-11-22; for 1.0.4)
+
+**What the player sees.** With Your civilization on a choice of its own (Mix bonuses, say) and the AI players'
+civilizations on Custom or anything else, the civilization build page shows the cards of *your* choice: Mix bonuses
+shows single bonuses, and on Custom you take as many as you like. The bonuses you take are your civilization's ability
+in the game. A civilization start terrain card you take counts even while start terrain is on Base game: your civ
+starts on that terrain and every other civ keeps its own.
+
+**Proven broken before (lab-free, deal run on the fixtures 2026-11-22).** Seed 44, AI civilization abilities Swap
+whole, HumanFollows 0, Amina building Rome with Spain's first bonus: CivBuilder `no-pieces`, nothing dealt, in JS and
+SQL. The same card under Split up: `ok`, Rome holds the bonus. `bulletTakes` gates on the AI row
+(`isSplit(ctx)`), and `civBuild` in the biases deal runs only while the start terrain part deals.
+
+**Deal (JS and SQL twin).**
+1. A builder's civilization bonus cards (`<CIV>__Bnn`) apply whatever `CivAbilities` says. Under Split up nothing
+   changes. Under any other setting the builder's ability becomes the bonuses it picked (its own bonuses only where
+   picked, as Split up does for a builder), each a copy: the civilization it came from keeps it. A builder with bonus
+   cards takes no whole-ability swap in the same build; a whole ability card still swaps as now.
+2. A builder's civilization start terrain card applies whatever the start terrain row says: its civ's start terrain
+   rows become the card civ's, the rest stay shipped.
+
+**Build page.** The civ page (slot 1, you not following the AI players) picks whole or single cards from your own
+rows (`humanOptions`), as does the unique-slot rule (`uniquesStayOwn`). Taking any number stays tied to the AI
+players' row reading Custom, since Your civilization has no Custom. The civilization start terrain card is no longer
+greyed when start terrain is on Base game.

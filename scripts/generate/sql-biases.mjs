@@ -24,7 +24,8 @@ export const OWN_CIVBIAS = `(SELECT b.CivBiasPick FROM LShufWork_Build b WHERE b
   AND EXISTS (SELECT 1 FROM LShufWork_BRow rr WHERE rr.LeaderType IS NULL AND rr.CivilizationType = b.CivBiasPick))`;
 const OWN_B = "(SELECT l.OB FROM LShufWork_L l WHERE l.Own = 1)";
 // A builder's start terrain card applies (lshuf-deal-biases.js dealLeaders), and its civilization card applies
-// (civBuild: the builder's civ is picked by hand and the card's civ has rows). Builders in the bias pool only.
+// (civBuild: the builder's civ is picked by hand and the card's civ has rows), the leader card for builders in the
+// bias pool only, the civilization card for any builder.
 // No LeaderType column inside these subqueries: `col` is often the outer row's bare LeaderType.
 // A builder's generic start terrain card (GENERIC_BIASES): one row of the tag's table, the usual score, moved.
 function genericRows(ins) {
@@ -43,8 +44,10 @@ const notBiasBuilder = (col) =>
   `NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND (bb.BiasPick IS NOT NULL OR bb.GenericBiasPick IS NOT NULL)
     AND ${IN_B} AND bb.Leader = ${col})`;
 const CIV_ROWS = (civ) => `EXISTS (SELECT 1 FROM LShufWork_BRow rr WHERE rr.LeaderType IS NULL AND rr.CivilizationType = ${civ})`;
-const notCivBuild = (col) => `NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND bb.Civ = ${col}
-  AND bb.CivBiasPick IS NOT NULL AND ${IN_B} AND ${CIV_ROWS("bb.CivBiasPick")})`;
+// A builder's civilization card counts whatever the start terrain row says (CONTRACTS 36); the host on its own mode
+// has its own route (OWN_CIVBIAS).
+const notCivBuild = (col) => `NOT EXISTS (SELECT 1 FROM LShufWork_Build bb WHERE bb.OK = 1 AND bb.Own = 0
+  AND bb.Civ = ${col} AND bb.CivBiasPick IS NOT NULL AND ${CIV_ROWS("bb.CivBiasPick")})`;
 
 function snapshot() {
   const parts = BIAS_TABLES.map((t) => {
@@ -227,8 +230,8 @@ ${ins} SELECT r.TableName, NULL, c.CivilizationType, r.TargetType, r.Score,
   FROM LShufWork_Civ c JOIN LShufWork_BRow r ON r.CivilizationType = c.Donor AND r.LeaderType IS NULL
   WHERE ${dealtB} = 1 AND ${CFG("RollBiases")} = 0 AND ${notCivBuild("c.CivilizationType")};
 ${ins} SELECT r.TableName, NULL, b.Civ, r.TargetType, r.Score, 'moved'
-  FROM ${BUILDS_IN("B")} JOIN LShufWork_BRow r ON r.CivilizationType = b.CivBiasPick AND r.LeaderType IS NULL
-  WHERE b.OK = 1 AND b.Civ IS NOT NULL AND b.CivBiasPick IS NOT NULL;
+  FROM LShufWork_Build b JOIN LShufWork_BRow r ON r.CivilizationType = b.CivBiasPick AND r.LeaderType IS NULL
+  WHERE b.OK = 1 AND b.Own = 0 AND b.Civ IS NOT NULL AND b.CivBiasPick IS NOT NULL;
 ${ins} SELECT r.TableName, b.Leader, r.CivilizationType, r.TargetType, r.Score, 'moved' FROM LShufWork_Build b
   JOIN LShufWork_BRow r ON r.LeaderType = b.BiasPick WHERE b.Own = 1 AND b.OK = 1 AND b.BiasPick IS NOT NULL;
 ${ownGenericRows(ins)}

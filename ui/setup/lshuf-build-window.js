@@ -13,7 +13,9 @@ import { InputEngineEvent, InputEngineEventName } from "/core/ui/input/input-sup
 import {
   MOD_ID, A_MODE, BUILD_KIND, CA_MODE, CC_MODE, CIV_MODE_CUSTOM, MODE, MODE_CUSTOM, PARAM, buildKindOf
 } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
-import { inGame, paramValue, setParam, START_AGE_PARAM } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
+import {
+  humanFollows, inGame, paramValue, setParam, START_AGE_PARAM
+} from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-params.js";
 import { lineKey } from "/uncharted-leaders-and-civs/ui/setup/lshuf-setup-lines.js";
 import {
   el, dropdownRow
@@ -36,8 +38,8 @@ import {
 import { registerCards } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-tooltip.js";
 import { uniqueNeeds } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-needs.js";
 import { renderCivicsTree } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-tree.js";
-import { BUILD_PAGES, cardsShown, pageOf } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-layout.js";
-import { biasesLive, hostPicker } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-pick.js";
+import { BUILD_PAGES, cardsShown, pageOf, pageOptions } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-layout.js";
+import { hostPicker } from "/uncharted-leaders-and-civs/ui/setup/lshuf-build-pick.js";
 
 export const BUILD_WINDOW_TAG = "lshuf-build-window";
 const SYNC_MS = 500;
@@ -188,7 +190,6 @@ class LShufBuildWindow extends Panel {
     const data = buildCards(this.builder, this.civ);
     const mine = data.cards.filter((c) => this.kinds.includes(c.kind));
     this.cards = mine;
-    this.markBlocked();
     this.civNames = data.civNames || new Map();
     this.tagNames = data.tagNames;
     this.leaderNames = data.leaderNames;
@@ -209,7 +210,7 @@ class LShufBuildWindow extends Panel {
   // The unique slots follow the Civilization uniques setting (CONTRACTS 35): where a builder keeps its own uniques
   // they start in its slots, which hold UNIQUE_MIN_SLOTS in all (or its own count); otherwise the slots start empty.
   syncUniqueSlots() {
-    this.uniquesAdd = this.scope === "civ" && uniquesStayOwn(readOptions().CivUniques);
+    this.uniquesAdd = this.scope === "civ" && uniquesStayOwn(this.pageRows().CivUniques);
     // With the page's AI players' setting on Custom, most groups take any number of cards (CONTRACTS 35).
     this.openSlots = this.scope === "civ" ? paramValue(PARAM.CivMode) === CIV_MODE_CUSTOM
       : paramValue(PARAM.Mode) === MODE_CUSTOM;
@@ -283,13 +284,13 @@ class LShufBuildWindow extends Panel {
     this.counts.civCivics = civicSlotCount(this.ownCivics, this.filters.wholeCivics && !civicIn);
   }
 
-  // Cards that can't count for this builder right now: a civ start terrain card while start terrain doesn't deal.
-  // Another age's civics and trees are kept out by their cards' otherAge mark (that age's data isn't loaded).
-  markBlocked() {
-    const terrainOff = !biasesLive();
-    for (const c of this.cards) {
-      if (c.kind === BUILD_KIND.CivBias && terrainOff) c.blocked = "terrainoff";
-    }
+  // The rows this page goes by (CONTRACTS 36): yours on your own pages while you play a choice of your own, else the
+  // AI players'. A civ start terrain card counts whatever the start terrain row says, so nothing is greyed for it;
+  // another age's civics and trees are kept out by their cards' otherAge mark.
+  pageRows() {
+    return pageOptions(readOptions(), this.slot, {
+      follows: humanFollows(), humanMode: paramValue(PARAM.HumanMode), humanCivMode: paramValue(PARAM.HumanCivMode)
+    });
   }
 
   // Why the screen can't build right now (this.note), or a hint that it will once a card is taken (this.hint).
@@ -523,7 +524,7 @@ class LShufBuildWindow extends Panel {
 
   // Whole cards or single pieces, from the settings as they stand now.
   syncShown() {
-    Object.assign(this.filters, cardsShown(this.scope, readOptions(),
+    Object.assign(this.filters, cardsShown(this.scope, this.pageRows(),
       { leaderWhole: A_MODE.Whole, civAbilitySplit: CA_MODE.Split, civCivicsSplit: CC_MODE.Split }));
   }
 

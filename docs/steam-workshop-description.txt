@@ -1,5 +1,5 @@
 [h1]Uncharted Leaders & Civs: Shuffle or build abilities, uniques & starts[/h1]
-[b]Version 1.0.3. Compatible with Civilization VII 1.5.1. Single-player only.[/b]
+[b]Version 1.0.4. Compatible with Civilization VII 1.5.1. Single-player only.[/b]
 
 Shuffle what leaders and civilizations bring to a game. Leaders can swap whole abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random. Civilizations can do the same with their abilities, unique units and civics, within each age. You can also take any part out of the game for everyone. The game's own screens show what each leader and civilization ended up with.
 
@@ -12,7 +12,7 @@ In New Game, open Advanced Settings and expand [b]Uncharted Leaders & Civs Setti
 The section asks how the AI players are shuffled and how you are, and the line under each dropdown says what the pick does.
 [list]
 [*][b]AI players' leaders[/b] and [b]AI players' civilizations:[/b] Play as normal, Trade places (everything from one other leader or civilization), Mixed swap (an ability from one, the rest from others), Mix bonuses (single bonuses from several, with starts that suit them) and, for leaders, Mix bonuses with a random start, New personalities and New personalities and attributes.
-[*][b]Your leader[/b] and [b]Your civilization:[/b] Same as the AI players, or one of the same choices for you alone.
+[*][b]Your leader[/b] and [b]Your civilization:[/b] Shuffled like the AI players, or one of the same choices for you alone.
 [*][b]Leader personalities:[/b] As the game made them, Follow their bonuses (each AI plays like the leader its bonuses came from) or Shuffled (personalities dealt out apart from the bonuses).
 [/list]
 

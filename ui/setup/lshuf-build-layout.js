@@ -1,5 +1,6 @@
 // Pure layout rules for the build screens: how picks fill a slot group when a card brings riders along (CONTRACTS 23).
 // No game globals here, so the tests can run it.
+import { humanOptions } from "/uncharted-leaders-and-civs/shared/deal/lshuf-human-picks.js";
 // What each slot of a group shows, left to right, for `n` slots: a pick, then one linked slot per rider it brings
 // ({ pick, rider: name }), then empty slots (null) up to n. A bundle that no longer fits still draws whole, so the
 // row never hides a pick.
@@ -65,4 +66,13 @@ export function cardsShown(scope, options, values) {
     };
   }
   return { wholeAbility: options.Abilities === values.leaderWhole, wholeCivics: false };
+}
+
+// The rows a build page goes by (CONTRACTS 36): your own pages (slot 1), while you play a choice of your own, go by
+// your Your leader / Your civilization picks turned into rows, so Mix bonuses shows single bonuses even while the AI
+// players swap whole; while you follow the AI players, and on an AI builder's page (slots 2 to 4), the AI players'
+// rows. `options` is readOptions(); `you` is { follows, humanMode, humanCivMode }.
+export function pageOptions(options, slot, you) {
+  if (slot !== 1 || !you || you.follows) return options;
+  return humanOptions(options, you.humanMode, you.humanCivMode);
 }

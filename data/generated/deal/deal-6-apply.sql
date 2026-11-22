@@ -308,10 +308,11 @@ UPDATE ProgressionTreeNodeUnlocks SET RequiredTraitType = (SELECT 'TRAIT_LSHUF_C
       AND (r.PieceId = 'CIVUNQ_' || ProgressionTreeNodeUnlocks.TargetType
         OR ProgressionTreeNodeUnlocks.TargetType LIKE substr(r.PieceId, 8) || '\_%' ESCAPE '\')
       AND 'TRAIT_LSHUF_CIV_' || r.CivilizationType IN (SELECT TraitType FROM Traits));
--- Civilization abilities Off for everyone (CONTRACTS 16): every civ's ability trait row goes, except a civ that took one.
+-- Civilization abilities Off for everyone (CONTRACTS 16): every civ's ability trait row goes, except a civ that took one
+-- whole or took bonus cards (CONTRACTS 36; its ability trait becomes its dealt trait below).
 DELETE FROM CivilizationTraits WHERE (SELECT CA FROM LShufWork_Cfg) = 'LSHUF_OFF'
   AND TraitType IN (SELECT Ability FROM LShufWork_CivInfo)
-  AND CivilizationType NOT IN (SELECT CivilizationType FROM LShufResultCivPieces WHERE Kind = 'ability');
+  AND CivilizationType NOT IN (SELECT CivilizationType FROM LShufResultCivPieces WHERE Kind IN ('ability', 'bullet'));
 -- Civilization uniques Off for everyone: every unique goes onto a trait no civ holds, except the ones builders took.
 INSERT OR IGNORE INTO Types (Type, Kind) SELECT 'TRAIT_LSHUF_NONE', 'KIND_TRAIT' WHERE (SELECT CU FROM LShufWork_Cfg) = 'LSHUF_OFF';
 INSERT OR IGNORE INTO Traits (TraitType, InternalOnly) SELECT 'TRAIT_LSHUF_NONE', 1 WHERE 'TRAIT_LSHUF_NONE' IN (SELECT Type FROM Types);

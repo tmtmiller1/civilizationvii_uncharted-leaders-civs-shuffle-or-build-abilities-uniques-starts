@@ -306,7 +306,6 @@ function stateLine(card, why) {
     const key = CIVICS_KINDS.includes(card.kind) ? "LOC_LSHUF_BUILD_CARD_OTHER_AGE_CIVICS" : "LOC_LSHUF_BUILD_CARD_OTHER_AGE";
     return compose(key, card.otherAge);
   }
-  if (why === "terrainoff") return compose("LOC_LSHUF_BUILD_CARD_TERRAIN_OFF");
   if (why === "goeswith") return compose("LOC_LSHUF_BUILD_CARD_GOES_WITH_MISSING");
   if (why === "bundle") return compose("LOC_LSHUF_BUILD_CARD_BUNDLE_FULL", String(1 + (card.withNames || []).length));
   return null;

@@ -219,7 +219,7 @@ INSERT OR IGNORE INTO LShufWork_CivTaken (PieceId) SELECT w.Rider FROM LShufWork
 INSERT INTO LShufWork_CivPTake (Slot, Builder, PieceId, Source, BI)
   SELECT ${n}, ${B}, m.PieceId, m.CivilizationType, m.BulletIndex FROM LShufWork_BuildPiece p
   JOIN LShufCivMapping m ON m.PieceId = p.PieceId JOIN LShufWork_CivInfo s ON s.Civ = m.CivilizationType
-  WHERE p.Slot = ${n} AND p.Kind = 'civbullet' AND ${SPLIT} AND ${B} IS NOT NULL AND NOT ${TAKEN(ABIL(B))}
+  WHERE p.Slot = ${n} AND p.Kind = 'civbullet' AND ${B} IS NOT NULL AND NOT ${TAKEN(ABIL(B))}
     AND (COALESCE(s.Play, s.Age) = ${PLAY_OF(B)} OR m.PieceId NOT IN (${CIV_OWN_AGE_PIECES.map(q).join(", ")}))${aiAgeCheck(n, B)} AND ${IN_PLAY("m", "s")} AND NOT ${TAKEN(ABIL("s.Civ"))} AND NOT ${TAKEN("m.PieceId")};
 INSERT OR IGNORE INTO LShufWork_CivTaken (PieceId) SELECT PieceId FROM LShufWork_CivPTake WHERE Slot = ${n};
 INSERT OR IGNORE INTO LShufWork_CivPieced (Civ) SELECT Source FROM LShufWork_CivPTake WHERE Slot = ${n};
@@ -564,10 +564,11 @@ UPDATE ProgressionTreeNodeUnlocks SET RequiredTraitType = (SELECT ${trait("r.Civ
       AND (r.PieceId = ${UNQ("ProgressionTreeNodeUnlocks.TargetType")}
         OR ProgressionTreeNodeUnlocks.TargetType LIKE substr(r.PieceId, 8) || '\\_%' ESCAPE '\\')
       AND ${trait("r.CivilizationType")} IN (SELECT TraitType FROM Traits));
--- Civilization abilities Off for everyone (CONTRACTS 16): every civ's ability trait row goes, except a civ that took one.
+-- Civilization abilities Off for everyone (CONTRACTS 16): every civ's ability trait row goes, except a civ that took one
+-- whole or took bonus cards (CONTRACTS 36; its ability trait becomes its dealt trait below).
 DELETE FROM CivilizationTraits WHERE ${CFG("CA")} = ${q(CA_MODE.Off)}
   AND TraitType IN (SELECT Ability FROM LShufWork_CivInfo)
-  AND CivilizationType NOT IN (SELECT CivilizationType FROM LShufResultCivPieces WHERE Kind = 'ability');
+  AND CivilizationType NOT IN (SELECT CivilizationType FROM LShufResultCivPieces WHERE Kind IN ('ability', 'bullet'));
 -- Civilization uniques Off for everyone: every unique goes onto a trait no civ holds, except the ones builders took.
 INSERT OR IGNORE INTO Types (Type, Kind) SELECT 'TRAIT_LSHUF_NONE', 'KIND_TRAIT' WHERE ${CFG("CU")} = ${q(CU_MODE.Off)};
 INSERT OR IGNORE INTO Traits (TraitType, InternalOnly) SELECT 'TRAIT_LSHUF_NONE', 1 WHERE 'TRAIT_LSHUF_NONE' IN (SELECT Type FROM Types);

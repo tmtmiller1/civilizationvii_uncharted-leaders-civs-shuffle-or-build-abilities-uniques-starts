@@ -7,7 +7,7 @@ abilities, swap whole leaders, or have their abilities broken into single bonuse
 can do the same with their abilities, attribute tags, unique units and civics, within each age. Any part can be taken
 out of the game for everyone. The game's own screens show what each leader and civilization ended up with.
 
-Status: 1.0.3, released. Checked offline with lint and tests on the Antiquity, Exploration and Modern databases; much
+Status: 1.0.4, released. Checked offline with lint and tests on the Antiquity, Exploration and Modern databases; much
 of it has been seen in lab games (devtools/probes/RESULTS-*.md), and what still has to be seen is on the workspace
 [WATCH_LIST.md](../../WATCH_LIST.md). It ships single-player only: multiplayer hasn't been tested, and the
 first release says so.
@@ -17,7 +17,7 @@ first release says so.
 - **Uncharted Leaders & Civs Settings** in Advanced Settings asks two questions: **AI players' leaders** and **AI
   players' civilizations** (Play as normal, Trade places, Mixed swap, Mix bonuses and, for leaders, Mix bonuses with a
   random start, New personalities, and New personalities and attributes), and **Your leader** and **Your civilization**
-  (Same as the AI players, or a choice of your own). Then **Leader personalities** (As the game made them, Follow
+  (Shuffled like the AI players, or a choice of your own). Then **Leader personalities** (As the game made them, Follow
   their bonuses, or Shuffled) and Reveal who got what. A line under each dropdown says what the pick does. Buttons
   follow for the Leader pool, the Civilization pool, AI players, the two build screens and Advanced settings (a row
   for each part, Split fairness and the shuffle number). The settings save with the game.

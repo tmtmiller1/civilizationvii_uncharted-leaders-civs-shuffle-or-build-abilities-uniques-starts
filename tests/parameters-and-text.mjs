@@ -308,7 +308,7 @@ test("every line under a row has English text, for every value it covers (CONTRA
   assert.equal(text.get("LOC_LSHUF_MODE_NAME"), "AI players' leaders");
   assert.equal(text.get("LOC_LSHUF_HUMAN_MODE_NAME"), "Your leader");
   assert.equal(text.get("LOC_LSHUF_MODE_SWAP_LEADERS"), "Trade places");
-  assert.equal(text.get("LOC_LSHUF_MODE_SAME"), "Same as the AI players");
+  assert.equal(text.get("LOC_LSHUF_MODE_SAME"), "Shuffled like the AI players");
 });
 
 test("the lines cover every value their rows offer", async () => {

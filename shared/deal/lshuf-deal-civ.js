@@ -180,16 +180,17 @@ function deckPieces(ctx, info, civ) {
 // A civ's ability is in pieces when nobody holds it whole: not swapped by a builder.
 const inPieces = (state, civ) => !state.taken.has(BUILD.civAbility(civ));
 
-// The builder's bonus cards (CONTRACTS 19): each takes that one piece when its civ is in the game, the piece is in
-// play and nobody holds it, and the builder's own ability is still in pieces. A piece of another age's civ can be
-// taken unless it's one of CIV_OWN_AGE_PIECES; an AI builder (slot 2 up) also skips a PIECE_AGES piece that doesn't
-// work in its civ's age.
+// The builder's bonus cards (CONTRACTS 19 and 36): each takes that one piece when its civ is in the game, the piece
+// is in play and nobody holds it, and the builder's own ability is still in pieces, whatever Civilization abilities
+// says. Outside Split up nobody else is dealt pieces, so the piece is a copy: its civ keeps the whole ability. A
+// piece of another age's civ can be taken unless it's one of CIV_OWN_AGE_PIECES; an AI builder (slot 2 up) also
+// skips a PIECE_AGES piece that doesn't work in its civ's age.
 const OWN_AGE = new Set(CIV_OWN_AGE_PIECES);
 const ageAllows = (build, id, fromAge, toAge) => (fromAge === toAge || !OWN_AGE.has(id))
   && (build.slot <= 1 || pieceWorksIn(id, toAge));
 function bulletTakes(ctx, state, build, B, info) {
   const rows = [];
-  if (!isSplit(ctx) || !inPieces(state, B)) return rows;
+  if (!inPieces(state, B)) return rows;
   for (const id of [...build.civBullets].sort(cmp)) {
     const S = civOfPiece(ctx, id);
     if (S == null || !info.has(S) || !inPieces(state, S)) continue;

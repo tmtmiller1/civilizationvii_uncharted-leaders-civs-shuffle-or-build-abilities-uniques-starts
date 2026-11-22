@@ -1,6 +1,6 @@
-<p align="center"><img src="https://raw.githubusercontent.com/tmtmiller1/civilizationvii_uncharted-leaders-civs-shuffle-or-build-abilities-uniques-starts/v1.0.3/docs/workshop-preview.png" alt="Uncharted Leaders & Civs" width="200"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/tmtmiller1/civilizationvii_uncharted-leaders-civs-shuffle-or-build-abilities-uniques-starts/v1.0.4/docs/workshop-preview.png" alt="Uncharted Leaders & Civs" width="200"></p>
 
-**Version 1.0.3. Compatible with Civilization VII 1.5.1. Single-player only.**
+**Version 1.0.4. Compatible with Civilization VII 1.5.1. Single-player only.**
 
 Shuffle what leaders and civilizations bring to a game. Leaders can swap whole abilities, swap whole leaders, or have their abilities broken into single bonuses and dealt out at random. Civilizations can do the same with their abilities, unique units and civics, within each age. You can also take any part out of the game for everyone. The game's own screens show what each leader and civilization ended up with.
 
@@ -12,7 +12,7 @@ In New Game, open Advanced Settings and expand **Uncharted Leaders & Civs Settin
 ## Two questions
 The section asks how the AI players are shuffled and how you are, and the line under each dropdown says what the pick does.
 - **AI players' leaders** and **AI players' civilizations:** Play as normal, Trade places (everything from one other leader or civilization), Mixed swap (an ability from one, the rest from others), Mix bonuses (single bonuses from several, with starts that suit them) and, for leaders, Mix bonuses with a random start, New personalities and New personalities and attributes.
-- **Your leader** and **Your civilization:** Same as the AI players, or one of the same choices for you alone.
+- **Your leader** and **Your civilization:** Shuffled like the AI players, or one of the same choices for you alone.
 - **Leader personalities:** As the game made them, Follow their bonuses (each AI plays like the leader its bonuses came from) or Shuffled (personalities dealt out apart from the bonuses).
 
 ## Part by part

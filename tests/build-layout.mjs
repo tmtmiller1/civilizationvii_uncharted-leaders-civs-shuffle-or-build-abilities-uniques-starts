@@ -82,3 +82,36 @@ test("the cards follow the settings: Split up shows single pieces, anything else
   assert.deepEqual(cardsShown("leader", { Abilities: "A_SPLIT" }, values), { wholeAbility: false, wholeCivics: false });
   assert.deepEqual(cardsShown("leader", { Abilities: "A_NORMAL" }, values), { wholeAbility: false, wholeCivics: false });
 });
+
+// --- CONTRACTS 36: your own pages go by your own rows ---
+
+test("your own pages go by your rows: Mix bonuses shows single civ bonuses while the AI players swap whole", async () => {
+  const { cardsShown, pageOptions } = await import("../ui/setup/lshuf-build-layout.js");
+  const { CA_MODE, CC_MODE, A_MODE, CU_MODE } = await import("../shared/lshuf-constants.js");
+  const values = { leaderWhole: A_MODE.Whole, civAbilitySplit: CA_MODE.Split, civCivicsSplit: CC_MODE.Split };
+  const ai = { CivAbilities: CA_MODE.Swapped, CivUniques: CU_MODE.Shuffled, CivCivics: CC_MODE.Shuffled };
+  const mine = { follows: false, humanMode: "LSHUF_MODE_NONE", humanCivMode: "LSHUF_CM_SPLIT" };
+  assert.deepEqual(cardsShown("civ", pageOptions(ai, 1, mine), values), { wholeAbility: false, wholeCivics: false },
+    "Mix bonuses: single bonuses and single civics");
+  assert.equal(pageOptions(ai, 1, mine).CivUniques, CU_MODE.Split, "your uniques row is Split up too");
+  assert.deepEqual(cardsShown("civ", pageOptions(ai, 1, { ...mine, follows: true }), values),
+    { wholeAbility: true, wholeCivics: true }, "following the AI players: their rows");
+  assert.deepEqual(cardsShown("civ", pageOptions(ai, 2, mine), values), { wholeAbility: true, wholeCivics: true },
+    "an AI builder's page (slot 2) keeps the AI players' rows");
+  assert.equal(pageOptions(ai, 1, null), ai);
+});
+
+test("a civilization start terrain card is never greyed for the start terrain row", async () => {
+  const fs = await import("node:fs");
+  const src = fs.readFileSync(new URL("../ui/setup/lshuf-build-window.js", import.meta.url), "utf8");
+  assert.ok(!src.includes("terrainoff"), "no start terrain block on the build window");
+  globalThis.Locale = globalThis.Locale || { compose: (k) => k };
+  globalThis.Database = globalThis.Database || { query: () => [] };
+  globalThis.Controls = globalThis.Controls || { define() {} };
+  const { cantTake } = await import("../ui/setup/lshuf-build-cards.js");
+  const card = { id: "CIVBIAS_CIVILIZATION_EGYPT", kind: "civbias", reviewed: true };
+  const counts = {
+    ability: 0, attributes: 0, behavior: 0, terrain: 0, civAbility: 1, civUniques: 2, civCivics: 1, civTerrain: 1
+  };
+  assert.equal(cantTake(card, [], counts), null);
+});

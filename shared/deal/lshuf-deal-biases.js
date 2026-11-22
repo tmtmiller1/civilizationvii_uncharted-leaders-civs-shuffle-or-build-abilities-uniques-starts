@@ -132,16 +132,17 @@ export function dealBiases(ctx, axes, ability) {
   if (civActive) {
     dealLeaders(ctx, B, ability, stats, res);
     dealCivs(ctx, civs, stats, res);
-    civBuild(ctx, B, res);
   }
+  civBuild(ctx, res);
   return res;
 }
 
-// The builder's civilization start terrain card (CONTRACTS 13): its civ, when picked by hand, gets that
-// civilization's shipped rows (moved) in place of whatever the civ shuffle gave it. Ignored without a civ, and when
-// the card's civilization has no rows in this game.
-function civBuild(ctx, B, res) {
-  for (const build of buildsFor(ctx, B)) {
+// The builder's civilization start terrain card (CONTRACTS 13 and 36): its civ, when picked by hand, gets that
+// civilization's shipped rows (moved) in place of whatever the civ shuffle gave it, whatever the start terrain row
+// says. Ignored without a civ, and when the card's civilization has no rows in this game. The host on its own mode
+// has its own route (lshuf-deal-own.js biasRows).
+function civBuild(ctx, res) {
+  for (const build of (ctx.builds || []).filter((b) => b.ok && !b.own)) {
     if (build.civ == null || build.civBias == null) continue;
     const source = ctx.input.biasRows.filter((r) => isCivRow(r) && r.CivilizationType === build.civBias);
     if (!source.length) continue;

@@ -3,6 +3,21 @@
 Changes to Uncharted Leaders & Civs for Civilization VII. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and Semantic Versioning.
 
+## [1.0.4] - 2026-11-22
+
+### Fixed
+- With Your civilization on a choice of its own, like Mix bonuses, the build page showed the AI players' kind of
+  cards. It now shows yours: Mix bonuses shows single bonuses even while the AI players swap whole abilities.
+- The bonuses you took for your civilization were dropped in the game unless the AI players' civilization abilities
+  were also split up. They now count whatever the AI players' setting is, as copies: the civilization each came from
+  keeps it.
+- A civilization start terrain card was greyed out while start terrain was on Base game. It now counts: your
+  civilization starts on that terrain and the others keep theirs.
+
+### Changed
+- Your leader and Your civilization's first choice is now called Shuffled like the AI players, and the line under it
+  and the build page's notes say plainly what it does.
+
 ## [1.0.3] - 2026-11-22
 
 ### Changed
