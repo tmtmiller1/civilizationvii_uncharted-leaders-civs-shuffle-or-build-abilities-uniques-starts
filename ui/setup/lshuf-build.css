@@ -580,3 +580,14 @@
 .lshuf-build__need {
   margin-top: 0.2rem;
 }
+
+/* The line under each setting stays in its own column: a long one wraps instead of running into the next setting's
+   line ("...made it.You play..."). */
+.lshuf-build__settings-row {
+  margin-right: 1.5rem;
+}
+
+.lshuf-build__line {
+  max-width: 16rem;
+  white-space: normal;
+}

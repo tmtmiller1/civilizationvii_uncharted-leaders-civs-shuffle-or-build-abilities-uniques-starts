@@ -1580,10 +1580,12 @@ human-picks for the mixed case (one part Same); the deal suites run unchanged (n
 **What the player sees.** On Build your own civilization, under the Civilization uniques settings where a builder
 keeps its own uniques (Base game, Follows ability, Swap whole: `uniquesStayOwn`), the civ's own uniques start in its
 unique slots like picks. Clicking one takes it out, and another civ's unique can go in its place; clicking the own card
-in the grid puts it back. A unique taken out is dealt to another civilization of the age. Every civ has room for its
-own uniques plus `UNIQUE_EXTRA_SLOTS` (2) more, so a civ with one unique (Spain, Greece, Egypt and eight others) can
-still take a whole two-unit set. Under Split up and Off entirely the slots start empty as before, with
-`max(own count, UNIQUE_EXTRA_SLOTS)` slots.
+in the grid puts it back. A unique taken out is dealt to another civilization of the age. Every civ has
+`UNIQUE_MIN_SLOTS` (2) unique slots in all, its own included, or its own count where that's more (1.0.3; 1.0.2 gave
+own + 2, which let every civ double its uniques): a
+civ with one unique (Spain, Greece, Egypt and eight others) takes one more, and a civ with two takes one of its own out
+to take another. Custom goes past the count with a note (below). Under Split up and Off entirely the slots start
+empty, the same count.
 
 **Ids.** `BUILD.civUniqueDrop(type)` = `CIVDROP_<type>` (kind `civuniquedrop`), stored in the builder slot's picks
 like any card and written to the `LShufBuilt<n>` keys. Builds without one keep today's behavior, so older setups and
@@ -1603,7 +1605,7 @@ and before the shuffle, only when `uniquesStayOwn(CivUniques)`:
 The apply needs no change: a unique row moves the unique's trait to the receiver, which takes it off B.
 
 **Build screen.** The civ page draws one unique group: kept own uniques first (clickable, adds the drop), then picks,
-then empty slots, `own + UNIQUE_EXTRA_SLOTS` in all; picks fit in what the kept own uniques leave. A drop for a civ
+then empty slots, `max(own, UNIQUE_MIN_SLOTS)` in all; picks fit in what the kept own uniques leave. A drop for a civ
 other than the page's builder civ is ignored and cleared on the next write. The needs list counts a dropped unique as
 not held.
 

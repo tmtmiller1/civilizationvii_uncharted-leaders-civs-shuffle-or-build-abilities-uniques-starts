@@ -7,7 +7,7 @@
 
 import {
   A_MODE, B_MODE, BUILD, BUILD_KIND, CU_MODE, BUILD_UNREVIEWED_BULLETS, BIAS_TABLES, CIV_OWN_AGE_PIECES,
-  GENERIC_BIASES, ONOFF, PARAM, T_MODE, UNIQUE_EXTRA_SLOTS,
+  GENERIC_BIASES, ONOFF, PARAM, T_MODE, UNIQUE_MIN_SLOTS,
   biasTableOfTag, pieceId,
   splitTags, joinTags, buildKindOf
 } from "/uncharted-leaders-and-civs/shared/lshuf-constants.js";
@@ -588,8 +588,8 @@ export function markGoesWith(cards) {
 
 // The builder's slots: what its leader gave up. ability: bullet count in the mapping (0 -> 1 whole slot);
 // attributes: its own attribute count; behavior 1; terrain 1; civAbility: the civ's own movable bonus count (0 -> 1
-// whole slot), civUniques: its own unique count with room for UNIQUE_EXTRA_SLOTS at least (CONTRACTS 35; the build
-// window adds the extra slots on top where the civ keeps its own, uniqueSlotCount), ownUniques: that own count,
+// whole slot), civUniques: its own unique count or UNIQUE_MIN_SLOTS, whichever is more (CONTRACTS 35,
+// uniqueSlotCount), ownUniques: that own count,
 // civCivics: one slot for a whole tree, or with single civic
 // cards shown (wholeCivics false) the civ's own civic count (0 -> 1, so a civ with no tree of its own still takes
 // civics); civTerrain 1. The civ groups need a civ picked by hand.
@@ -611,7 +611,7 @@ export function slotCounts(builder, civ, cards, wholeCivics = true) {
     behavior: 1,
     terrain: 1,
     civAbility: civ ? Math.max(1, civBullets) : 0,
-    civUniques: civ ? uniqueSlotCount(ownUniques, false) : 0,
+    civUniques: civ ? uniqueSlotCount(ownUniques) : 0,
     ownUniques: civ ? ownUniques : 0,
     civCivics: civ ? civicSlotCount(ownCivics, wholeCivics) : 0,
     civTerrain: civ ? 1 : 0
@@ -623,10 +623,9 @@ export function slotCounts(builder, civ, cards, wholeCivics = true) {
 // entirely nobody keeps theirs; on every other setting the game keeps the civ's own and adds what it took.
 export const uniquesStayOwn = (cuMode) => cuMode !== CU_MODE.Split && cuMode !== CU_MODE.Off;
 
-// How many unique slots a builder civ has (CONTRACTS 35): where it keeps its own uniques, its own count (they start
-// in the slots) plus UNIQUE_EXTRA_SLOTS; otherwise enough for its own count or a whole set of another civ's, whichever
-// is more.
-export const uniqueSlotCount = (own, stay) => (stay ? own + UNIQUE_EXTRA_SLOTS : Math.max(own, UNIQUE_EXTRA_SLOTS));
+// How many unique slots a builder civ has (CONTRACTS 35): its own count or UNIQUE_MIN_SLOTS, whichever is more, the
+// own uniques it keeps included. The same on every setting; `stay` only says whether its own start in the slots.
+export const uniqueSlotCount = (own) => Math.max(own, UNIQUE_MIN_SLOTS);
 
 // --- your civilization's own uniques (CONTRACTS 35) ---
 

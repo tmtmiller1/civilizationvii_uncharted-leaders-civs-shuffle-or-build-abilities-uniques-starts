@@ -234,9 +234,10 @@ const KIND_BY_PREFIX = [
   ["CIVUNQ_", BUILD_KIND.CivUnique], ["CIVCIVC_", BUILD_KIND.CivCivics], ["CIVNODE_", BUILD_KIND.CivCivic],
   ["CIVDROP_", BUILD_KIND.CivUniqueDrop]
 ];
-// Unique slots on the civilization build page beyond the civ's own count, so any civ can take a whole set of another
-// civ's uniques (the most a civ has is two) (owner, 2026-11-22).
-export const UNIQUE_EXTRA_SLOTS = 2;
+// Unique slots on the civilization build page: two in all, the civ's own included, or its own count where it has more
+// (the most a civ has is two). A civ with one unique can take one more; a civ with two takes one out to take another.
+// Custom goes past this with a note (owner, 2026-11-22; 1.0.2 gave own + 2, which let every civ double its uniques).
+export const UNIQUE_MIN_SLOTS = 2;
 export function buildKindOf(id) {
   if (/^ATTR\d*_/.test(id)) return BUILD_KIND.Attribute;
   const byPrefix = KIND_BY_PREFIX.find(([prefix]) => id.startsWith(prefix));

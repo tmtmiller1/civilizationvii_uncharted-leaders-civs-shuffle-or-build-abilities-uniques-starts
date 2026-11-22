@@ -1,6 +1,6 @@
 // Your civilization's own uniques on the civ build page (ui/setup/lshuf-build-cards.js, CONTRACTS 35): where the
-// settings keep them they start in the slots and a drop (CIVDROP_) takes one out; every civ has room for its own plus
-// UNIQUE_EXTRA_SLOTS more, or at least that many where it keeps none.
+// settings keep them they start in the slots and a drop (CIVDROP_) takes one out; every civ has UNIQUE_MIN_SLOTS unique
+// slots in all, or its own count where that's more, and Custom goes past them with a note.
 import assert from "node:assert/strict";
 import test from "node:test";
 
@@ -12,7 +12,7 @@ const {
   cantTake, cardFor, dropOfUnique, isDrop, keptOwnUniques, otherPagePicks, overGroups, slotPicks, slotsShown,
   uniqueOfDrop, uniqueSlotCount
 } = await import("../ui/setup/lshuf-build-cards.js");
-const { UNIQUE_EXTRA_SLOTS } = await import("../shared/lshuf-constants.js");
+const { UNIQUE_MIN_SLOTS } = await import("../shared/lshuf-constants.js");
 
 const TERCIO = { id: "CIVUNQ_UNIT_TERCIO", kind: "civunique", own: true, reviewed: true, civ: "CIVILIZATION_SPAIN" };
 const LEGION = { id: "CIVUNQ_UNIT_LEGION", kind: "civunique", reviewed: true, civ: "CIVILIZATION_ROME" };
@@ -21,12 +21,12 @@ const CARDS = [TERCIO, LEGION, LEGATUS];
 const byId = new Map(CARDS.map((c) => [c.id, c]));
 const DROP = "CIVDROP_UNIT_TERCIO";
 
-test("slot counts: own plus two where the civ keeps its own, at least two where it doesn't", () => {
-  assert.equal(UNIQUE_EXTRA_SLOTS, 2);
-  assert.equal(uniqueSlotCount(1, true), 3, "Spain on Base game: the Tercio and two more");
-  assert.equal(uniqueSlotCount(1, false), 2, "Spain on Split up: room for a whole two-unit set");
-  assert.equal(uniqueSlotCount(2, true), 4);
-  assert.equal(uniqueSlotCount(2, false), 2);
+test("slot counts: two in all, own included, or the own count where that's more", () => {
+  assert.equal(UNIQUE_MIN_SLOTS, 2);
+  assert.equal(uniqueSlotCount(1), 2, "Spain: the Tercio and one more");
+  assert.equal(uniqueSlotCount(2), 2, "the Inca: Chasqui and Warakaq; one comes out to take another");
+  assert.equal(uniqueSlotCount(3), 3);
+  assert.equal(uniqueSlotCount(0), 2);
 });
 
 test("a drop names the own unique it takes out", () => {
@@ -43,18 +43,25 @@ test("kept own uniques start in the slots, and a drop takes one out", () => {
   assert.deepEqual(slotPicks(CARDS, [LEGION.id], false), [LEGION.id], "Split up and Off keep none");
 });
 
-test("the kept own unique uses a slot: with it, two more fit; out, a whole two-unit set plus one more fits", () => {
-  const counts = { civUniques: uniqueSlotCount(1, true) };
+test("the kept own unique uses a slot: with it, one more fits; out, a whole two-unit set fits", () => {
+  const counts = { civUniques: uniqueSlotCount(1) };
   assert.equal(cantTake(TERCIO, slotPicks(CARDS, [], true), counts), "taken", "in its slot, a click takes it out");
-  const two = slotPicks(CARDS, [LEGION.id, LEGATUS.id], true);
-  assert.equal(two.length, 3);
-  const extra = { id: "CIVUNQ_UNIT_HOPLITE", kind: "civunique", reviewed: true };
-  assert.equal(cantTake(extra, two, counts), "full");
-  const dropped = slotPicks(CARDS, [DROP, LEGION.id, LEGATUS.id], true);
-  assert.equal(cantTake(extra, dropped, counts), null, "the Tercio's slot is free");
-  assert.equal(cantTake(TERCIO, slotPicks(CARDS, [DROP, LEGION.id, LEGATUS.id, extra.id], true), counts), "full",
+  const one = slotPicks(CARDS, [LEGION.id], true);
+  assert.equal(one.length, 2);
+  assert.equal(cantTake(LEGATUS, one, counts), "full", "the Tercio and the Legion fill Spain's two");
+  const dropped = slotPicks(CARDS, [DROP, LEGION.id], true);
+  assert.equal(cantTake(LEGATUS, dropped, counts), null, "the Tercio's slot is free");
+  assert.equal(cantTake(TERCIO, slotPicks(CARDS, [DROP, LEGION.id, LEGATUS.id], true), counts), "full",
     "putting the Tercio back needs a free slot");
   assert.equal(cantTake(TERCIO, dropped, counts), null);
+});
+
+test("on Custom the uniques group still goes past two, and says so", () => {
+  const counts = { ...COUNTS, civUniques: uniqueSlotCount(1) };
+  const three = slotPicks(CARDS, [LEGION.id, LEGATUS.id], true);
+  assert.equal(cantTake(HOPLITE, three, counts, true), null, "Custom: a fourth goes in");
+  assert.equal(cantTake(HOPLITE, three, counts, false), "full", "not Custom: two is the limit");
+  assert.deepEqual(overGroups(three, counts, true), [{ group: "civUniques", have: 3, normal: 2 }]);
 });
 
 test("a drop belongs to the civ page of its civ; the leader page and another civ's page don't hold it", () => {
@@ -112,7 +119,7 @@ test("the note lists only the groups over their normal count, and only on Custom
 });
 
 test("the kept own uniques count toward the uniques group's normal", () => {
-  const counts = { ...COUNTS, civUniques: uniqueSlotCount(1, true) };
-  const inSlots = slotPicks(CARDS, [LEGION.id, LEGATUS.id, HOPLITE.id], true);
-  assert.deepEqual(overGroups(inSlots, counts, true), [{ group: "civUniques", have: 4, normal: 3 }]);
+  const counts = { ...COUNTS, civUniques: uniqueSlotCount(1) };
+  const inSlots = slotPicks(CARDS, [LEGION.id, LEGATUS.id], true);
+  assert.deepEqual(overGroups(inSlots, counts, true), [{ group: "civUniques", have: 3, normal: 2 }]);
 });

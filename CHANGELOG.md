@@ -3,6 +3,18 @@
 Changes to Uncharted Leaders & Civs for Civilization VII. The format follows
 [Keep a Changelog](https://keepachangelog.com/) and Semantic Versioning.
 
+## [1.0.3] - 2026-11-22
+
+### Changed
+- A civilization's unique slots hold two uniques in all, its own included. A civilization with one unique unit takes
+  one more; one with two takes one of its own out to take another. 1.0.2 gave every civilization its own uniques plus
+  two more, which let any civilization double its uniques without a word. On Custom you can still take more, and the
+  line under the slots says when you have.
+
+### Fixed
+- On the build pages, the line under each setting ran into the next setting's line. Each one now wraps in its own
+  column.
+
 ## [1.0.2] - 2026-11-22
 
 ### Changed
@@ -10,7 +22,7 @@ Changes to Uncharted Leaders & Civs for Civilization VII. The format follows
   A unique you take out goes to another civilization of the age. This applies when Civilization uniques is on Base
   game, Follows ability or Swap whole.
 - Every civilization has room for its own uniques plus two more, so a civilization with one unique unit can still take
-  another's pair.
+  another's pair. (Changed in 1.0.3.)
 - With a page set to Custom, you can take as many cards as you like into every part but start terrain and AI behavior.
   A line under the slots says when a part holds more than its normal number, since that makes your build stronger.
 

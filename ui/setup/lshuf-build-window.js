@@ -207,14 +207,14 @@ class LShufBuildWindow extends Panel {
   }
 
   // The unique slots follow the Civilization uniques setting (CONTRACTS 35): where a builder keeps its own uniques
-  // they start in its slots, with UNIQUE_EXTRA_SLOTS more beside them; otherwise the slots start empty.
+  // they start in its slots, which hold UNIQUE_MIN_SLOTS in all (or its own count); otherwise the slots start empty.
   syncUniqueSlots() {
     this.uniquesAdd = this.scope === "civ" && uniquesStayOwn(readOptions().CivUniques);
     // With the page's AI players' setting on Custom, most groups take any number of cards (CONTRACTS 35).
     this.openSlots = this.scope === "civ" ? paramValue(PARAM.CivMode) === CIV_MODE_CUSTOM
       : paramValue(PARAM.Mode) === MODE_CUSTOM;
     if (!this.counts || this.scope !== "civ") return;
-    this.counts.civUniques = this.civ ? uniqueSlotCount(this.ownUniques, this.uniquesAdd) : 0;
+    this.counts.civUniques = this.civ ? uniqueSlotCount(this.ownUniques) : 0;
   }
 
   // What sits in the slots now: the kept own uniques first, then the picks, the drops left out.
